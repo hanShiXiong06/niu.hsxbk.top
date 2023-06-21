@@ -101,10 +101,10 @@ const loadNoticeList = () => {
             item.sms_type = item.support_type.indexOf('sms') !== -1 ? 1 : 0;
             item.wechat_type = item.support_type.indexOf('wechat') !== -1 ? 1 : 0;
             item.weapp_type = item.support_type.indexOf('weapp') !== -1 ? 1 : 0;
-            if(item.receiver_type == 1){
+            if(item.receiver_type == 0){
                 noticeTableData.buyer.push(item)
             }
-            if(item.receiver_type == 2){
+            if(item.receiver_type == 1){
                 noticeTableData.seller.push(item)
             }
         })

@@ -25,6 +25,7 @@ import { setMap, getMap } from '@/api/sys'
 import { FormInstance, } from 'element-plus'
 
 const loading = ref(false)
+const formRef = ref<FormInstance>()
 const formData = reactive<Record<string, string>>({
 	key : ''
 })
@@ -39,7 +40,6 @@ setFormData()
  */
 const save = async (formEl: FormInstance | undefined) => {
     if (loading.value || !formEl) return
-
     setMap(formData).then(() => {
         loading.value = false
     }).catch(() => {

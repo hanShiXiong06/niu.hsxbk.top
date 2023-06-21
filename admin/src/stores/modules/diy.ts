@@ -15,6 +15,7 @@ const useDiyStore = defineStore('diy', {
             name: '', // 页面标识
             type: '', // 页面模板
             typeName: '',  // 页面模板名称
+            templateName : '', // 页面模板标识
             isDefault: 0, // 是否默认页面
             predefineColors: [
                 '#F4391c',

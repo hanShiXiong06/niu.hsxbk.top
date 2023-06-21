@@ -111,7 +111,7 @@ const setTemplateList = async () => {
         Object.keys(res.data).forEach(key => {
             const item = res.data[key]
             const value = { value: key, name: item.name }
-            item.receiver_type == 1 ? templateList.buyer.list.push(value) : templateList.seller.list.push(value)
+            item.receiver_type == 0 ? templateList.buyer.list.push(value) : templateList.seller.list.push(value)
         })
     }).catch(() => {
 

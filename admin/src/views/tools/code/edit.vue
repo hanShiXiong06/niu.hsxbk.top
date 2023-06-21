@@ -126,20 +126,20 @@
                                 </el-radio-group>
                             </div>
                         </div>
-                    </div>
-                    <el-divider content-position="left">{{ t('commentField') }}</el-divider>
-                    <div>
                         <div class="flex flex-row ">
-                            <div class="text-xs text-gray-500 w-20 items-center	justify-end	 flex">{{ t('isRequired') }}：
+                            <div class="text-xs text-gray-500 w-20 items-center	justify-end	 flex">{{ t('viewType') }}：
                             </div>
                             <div>
-                                <el-radio-group class="ml-4"
-                                    v-model="formData.table_column[formData.editFiledIndex]['is_required']">
-                                    <el-radio :label="1" size="large">{{ t('yes') }}</el-radio>
-                                    <el-radio :label="0" size="large">{{ t('no') }}</el-radio>
-                                </el-radio-group>
+                                <el-select class="m-2" :placeholder="t('selectPlaceholder')" size="small"
+                                    v-model="formData.table_column[formData.editFiledIndex]['view_type']">
+                                    <el-option :label="item.label" :value="item.value" v-for="(item, index) in viewType"
+                                        :key="index" />
+                                </el-select>
                             </div>
                         </div>
+                    </div>
+                    <el-divider content-position="left">{{t('addAndEdit')}}</el-divider>
+                    <div>
                         <div class="flex flex-row ">
                             <div class="text-xs text-gray-500 w-20 items-center	justify-end	 flex">{{ t('isInsert') }}：
                             </div>
@@ -162,6 +162,21 @@
                                 </el-radio-group>
                             </div>
                         </div>
+                        <div class="flex flex-row ">
+                            <div class="text-xs text-gray-500 w-20 items-center	justify-end	 flex">{{ t('isRequired') }}：
+                            </div>
+                            <div>
+                                <el-radio-group class="ml-4"
+                                    v-model="formData.table_column[formData.editFiledIndex]['is_required']">
+                                    <el-radio :label="1" size="large">{{ t('yes') }}</el-radio>
+                                    <el-radio :label="0" size="large">{{ t('no') }}</el-radio>
+                                </el-radio-group>
+                            </div>
+                        </div>
+                    </div>
+                    <el-divider content-position="left">{{t('listSearch')}}</el-divider>
+                    <div>
+                   
                         <div class="flex flex-row ">
                             <div class="text-xs text-gray-500 w-20 items-center	justify-end	 flex">{{ t('isLists') }}：</div>
                             <div>
@@ -204,17 +219,7 @@
                                 </el-select>
                             </div>
                         </div>
-                        <div class="flex flex-row ">
-                            <div class="text-xs text-gray-500 w-20 items-center	justify-end	 flex">{{ t('viewType') }}：
-                            </div>
-                            <div>
-                                <el-select class="m-2" :placeholder="t('selectPlaceholder')" size="small"
-                                    v-model="formData.table_column[formData.editFiledIndex]['view_type']">
-                                    <el-option :label="item.label" :value="item.value" v-for="(item, index) in viewType"
-                                        :key="index" />
-                                </el-select>
-                            </div>
-                        </div>
+
                     </div>
 
                 </el-card>

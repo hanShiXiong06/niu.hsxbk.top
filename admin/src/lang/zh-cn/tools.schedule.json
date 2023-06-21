@@ -13,5 +13,8 @@
       "nextTime":"下次执行时间",
       "task":"任务命令",
       "data":"附加参数",
-      "statusDesc":"最后执行结果"
+      "statusDesc":"最后执行结果",
+	  "key": "key",
+	  "timeClass": "时间类型",
+	  "executeTime": "执行时间"
 }

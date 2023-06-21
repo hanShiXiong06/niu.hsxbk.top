@@ -23,7 +23,7 @@ class Request {
 
     constructor() {
         this.instance = axios.create({
-            baseURL: import.meta.env.VITE_APP_BASE_URL,
+            baseURL: import.meta.env.VITE_APP_BASE_URL.substr(-1) == '/' ? import.meta.env.VITE_APP_BASE_URL : `${import.meta.env.VITE_APP_BASE_URL}/`,
             timeout: 30000,
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded;',
@@ -111,7 +111,7 @@ class Request {
      * @param err 
      */
     private handleNetworkError(err: any) {
-        let errMessage = t('axios.requestError')
+        let errMessage = ''
 
         if (err.response && err.response.status) {
             const errStatus = err.response.status
@@ -158,8 +158,9 @@ class Request {
                     break
             }
         }
-        if (err.message.includes('timeout')) errMessage = t('axios.timeout')
-        ElMessage({ message: errMessage, type: 'error' })
+        err.message.includes('timeout') && (errMessage = t('axios.timeout'))
+        err.code == 'ERR_NETWORK' && (errMessage = err.config.baseURL + t('axios.errNetwork'))
+        errMessage && ElMessage({ message: errMessage, type: 'error' })
     }
 
     private handleAuthError(code: number) {

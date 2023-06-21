@@ -90,7 +90,9 @@
     "503": "服务不可用",
     "504": "网络超时",
     "505": "http版本不支持该请求",
-    "timeout": "网络请求超时！"
+    "timeout": "网络请求超时！",
+    "requestError": "请求错误",
+    "errNetwork": "网络请求错误"
   },
   "linkPlaceholder": "请选择跳转链接",
   "selectLinkTips": "链接选择",
@@ -105,5 +107,8 @@
   "emptyApp": "暂未安装任何应用",
   "newInfo": "最新消息",
   "mapSetting": "地图设置",
-  "mapKey": "腾讯地图KEY"
+  "mapKey": "腾讯地图KEY",
+  "indexTemplate": "首页模版",
+  "indexSwitch": "切换首页",
+  "indexWarning": "你确定要切换首页吗？"
 }

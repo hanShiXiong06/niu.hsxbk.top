@@ -125,7 +125,7 @@
     }
 
     const blurImageHeight = ()=> {
-        diyStore.editComponent.imageHeight = parseFloat(diyStore.editComponent.imageHeight).toFixed(2);
+        diyStore.editComponent.imageHeight = parseInt(diyStore.editComponent.imageHeight);
     }
 
     const imageBoxRef = ref()

@@ -217,3 +217,38 @@ export function getLogList(params: Record<string, any>) {
 export function getLogInfo(id: number) {
     return request.get(`site/log/${id}`)
 }
+/***************************************************** 账单列表 **************************************************/
+
+/**
+ * 获取账单列表
+ * @param params 
+ * @returns 
+ */
+export function getAccountList(params: Record<string, any>) {
+    return request.get(`site/account`, { params })
+}
+
+/**
+ * 获取账单详情
+ * @param params 
+ * @returns 
+ */
+export function getAccountInfo(id: number) {
+    return request.get(`site/account/${id}`)
+}
+
+/**
+ * 获取账单统计
+ * @returns 
+ */
+export function getAccountStat() {
+    return request.get(`site/account/stat`)
+}
+
+/**
+ * 获取账单类型
+ * @returns 
+ */
+export function getAccountType() {
+    return request.get(`site/account/type`)
+}

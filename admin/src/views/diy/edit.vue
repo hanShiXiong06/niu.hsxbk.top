@@ -155,6 +155,13 @@ const diyStore = useDiyStore()
 const route = useRoute();
 const router = useRouter()
 
+route.query.id = route.query.id || 0;
+route.query.name = route.query.name || '';
+route.query.type = route.query.type || ''; // 页面模板，新页面传入
+route.query.template = route.query.template || ''; // 页面模板名称，新页面传入
+route.query.title = route.query.title || '';
+route.query.back = route.query.back || '/diy/list';
+
 const wapUrl = ref('')
 const wapDomain = ref('')
 const wapPreview = ref('')
@@ -163,7 +170,7 @@ const loadingIframe = ref(false) // 加载iframe
 const loadingDev = ref(false) // 加载开发环境配置
 const timeFrame = ref(0)
 
-const backPath = route.query.back || '/diy/list'
+const backPath = route.query.back
 const component = ref([])
 const componentType: string[] = reactive([])
 const page = ref('')
@@ -171,12 +178,6 @@ const siteId = ref(0)
 
 const activeNames = ref(componentType)
 const handleChange = (val: string[]) => { }
-
-route.query.id = route.query.id || 0;
-route.query.name = route.query.name || '';
-route.query.template = route.query.template || ''; // 页面模板，新页面传入
-route.query.template_name = route.query.template_name || ''; // 页面模板名称，新页面传入
-route.query.title = route.query.title || '';
 
 // 初始化原数据
 const originData = reactive({
@@ -245,8 +246,8 @@ watch(
 initPage({
     id: route.query.id,
     name: route.query.name,
+    type: route.query.type,
     template: route.query.template,
-    template_name: route.query.template_name,
     title: route.query.title
 }).then(res => {
     let data = res.data;
@@ -255,6 +256,7 @@ initPage({
     diyStore.name = data.name;
     diyStore.type = data.type;
     diyStore.typeName = data.type_name;
+    diyStore.templateName = data.template;
     diyStore.isDefault = data.is_default;
     if (data.value) {
         let sources = JSON.parse(data.value);
@@ -387,11 +389,13 @@ const save = () => {
         name: diyStore.name,
         title: diyStore.global.title,
         type: diyStore.type,
+        template: diyStore.templateName,
         is_default: diyStore.isDefault,
+        is_change: isChange.value ? 0 : 1,
         value: JSON.stringify({
             global: toRaw(diyStore.global),
             value: toRaw(diyStore.value)
-        })
+        }),
     };
 
     const save = diyStore.id ? editDiyPage : addDiyPage

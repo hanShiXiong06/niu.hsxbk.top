@@ -244,6 +244,26 @@ export function moveAttachment(params: Record<string, any>) {
     return request.put(`sys/attachment/batchmove`, params)
 }
 
+/**
+ * 获取menu菜单
+ */
+export function getAuthMenu() {
+    return request.get(`auth/site/showmenu`)
+}
+
+/**
+ * 获取快捷菜单
+ */
+export function getShortcutMenu() {
+    return request.get(`sys/config/shortcut_menu`)
+}
+
+/**
+ * 添加快捷菜单
+ */
+export function setShortcutMenu(params: Record<string, any>) {
+    return request.put(`sys/config/shortcut_menu`, params, { showSuccessMessage: true })
+}
 
 /***************************************************** 地址管理 ****************************************************/
 
@@ -263,6 +283,21 @@ export function getAreaListByPid(pid: number = 0) {
  */
 export function getAreatree(level: number = 1) {
     return request.get(`sys/area/tree/${level}`)
+}
+
+
+/**
+ * 获取地址信息
+ */
+export function getAddressInfo(params: any) {
+    return request.get(`sys/area/get_info`, { params })
+}
+
+/**
+ * 获取地址信息
+ */
+export function getContraryAddress(params: any) {
+    return request.get(`sys/area/contrary`, { params })
 }
 
 /***************************************************** 存储设置 ****************************************************/
@@ -345,7 +380,7 @@ export function setTransferInfo(params: Record<string, any>) {
  * @returns 
  */
 export function getCronList(params: any) {
-    return request.get(`sys/cron`, { params })
+    return request.get(`sys/schedule/list`, { params })
 }
 
 /**
@@ -481,5 +516,17 @@ export function getMap() {
     return request.get(`sys/config/map`)
 }
 
+/***************************************************** 首页 ****************************************************/
+/**
+ * 获取首页列表
+ */
+export function getIndexList() {
+    return request.get(`sys/config/site_index`)
+}
 
-
+/**
+ * 设置首页模版
+ */
+export function setIndexList(params: Record<string, any>) {
+    return request.put(`sys/config/site_index`, params, { showSuccessMessage: true })
+}

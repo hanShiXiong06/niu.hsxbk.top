@@ -23,7 +23,12 @@
             <el-col :span="12">
                 <div class="right-panel h-full flex items-center justify-end">
                     <!-- 预览 只有站点时展示-->
+					
                     <i class="iconfont iconlingdang-xianxing cursor-pointer px-[8px]" :title="t('newInfo')" v-if="appType == 'site'"></i>
+					<!-- 切换首页 -->
+					<div class="navbar-item flex items-center h-full cursor-pointer"  v-if="appType == 'site'" @click="checkIndexList">
+						<icon name="iconfont-iconqiehuan" :title="t('indexSwitch')"/>
+					</div>
                     <!-- 切换语言 -->
                     <div class="navbar-item flex items-center h-full cursor-pointer">
                         <switch-lang />
@@ -55,6 +60,26 @@
                 </span>
             </template>
         </el-dialog>
+		
+		<el-dialog v-model="showDialog" :title="t('indexTemplate')" width="550px" :destroy-on-close="true" >
+			<div class="flex flex-wrap">
+				<div v-for="(items, index) in indexList" :key="index" v-if="index_path == ''">
+					<div @click="index_path = items.view_path" class="index-item py-[5px] px-[10px] mr-[10px] rounded-[3px] cursor-pointer" :class="items.is_use == 1 ? 'selected' : '' ">
+						<span >{{ items.name }}</span>
+					</div>
+				</div>
+				<div v-for="(itemTo, indexTo) in indexList" :key="indexTo" v-else>
+					<div @click="index_path = itemTo.view_path" class="index-item py-[5px] px-[10px] mr-[10px] rounded-[3px] cursor-pointer" :class="index_path == itemTo.view_path ? 'selected' : '' ">
+						<span >{{ itemTo.name }}</span>
+					</div>
+				</div>
+			</div>
+		    <template #footer>
+		        <span class="dialog-footer">
+		            <el-button type="primary" @click="submitIndex">{{ t('confirm') }}</el-button>
+		        </span>
+		    </template>
+		</el-dialog>
     </el-container>
 </template>
 
@@ -70,6 +95,9 @@ import { useRoute, useRouter } from 'vue-router'
 import { t } from '@/lang'
 import storage from '@/utils/storage'
 import useUserStore from '@/stores/modules/user'
+import { getIndexList, setIndexList } from '@/api/sys'
+import { ElMessageBox } from 'element-plus'
+
 const router = useRouter()
 const appType = storage.get('app_type')
 const { toggle: toggleFullscreen, isFullscreen } = useFullscreen()
@@ -138,7 +166,7 @@ const toggleMenuCollapse = () => {
 
 // 刷新路由
 const refreshRouter = () => {
-    if (!appStore.routeRefrehTag) return
+    if (!appStore.routeRefreshTag) return
     appStore.refreshRouterView()
 }
 
@@ -152,6 +180,25 @@ const breadcrumb = computed(() => {
 // 返回上一页
 const backFn = () => {
     router.go(-1)
+}
+
+const indexList = ref();
+const showDialog = ref(false)
+const checkIndexList = () => {
+	getIndexList().then(res => {
+		showDialog.value = true
+		indexList.value = res.data
+	})
+}
+
+const index_path = ref('');
+const submitIndex = () => {
+	setIndexList({
+		view_path: index_path.value
+	}).then(() => {
+	    showDialog.value = false
+	    router.go(0)
+	})
 }
 </script>
 
@@ -167,4 +214,16 @@ const backFn = () => {
     &:hover {
         background-color: var(--el-bg-color-page);
     }
-}</style>
+}
+.index-item {
+	background-color: var(--el-bg-color-page);
+	&:hover {
+		color: #fff;
+		background-color: #2C3EEF;
+	}
+}
+.selected {
+	color: #fff;
+	background-color: #2C3EEF;
+}
+</style>
