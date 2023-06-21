@@ -1,0 +1,1 @@
+import{c1 as i,bS as t,cB as f}from"./base-d2ce4248.js";import{l as n}from"./_Uint8Array-6ca580e8.js";function p(e,s,r){if(!i(r))return!1;var a=typeof s;return(a=="number"?n(r)&&t(s,r.length):a=="string"&&s in r)?f(r[s],e):!1}export{p as i};
