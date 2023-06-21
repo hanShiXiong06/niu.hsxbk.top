@@ -94,6 +94,7 @@ class Http {
                 // 处理首次请求baseurl空的问题
                 const runtimeConfig = useRuntimeConfig()
                 !this.options.baseURL && (this.options.baseURL = runtimeConfig.public.VITE_APP_BASE_URL || `${location.origin}/api/`)
+                this.options.baseURL.substr(-1) != '/' && (this.options.baseURL += '/')
 
                 useFetch(url, { ...this.options }).then((response) => {
                     const { data: { value }, error } = response
