@@ -41,7 +41,7 @@
 					</div>
 					<div class="flex flex-wrap" >
 						<div class="flex flex-wrap" ref="shortcutModel" v-if="edit_menu">
-							<div v-for="(items, index) in shortcut_menu" :style="{backgroundColor : items.bg_color}" :data-id="items.id" class="design-field w-[180px] h-[120px] relative mt-[30px] rounded-[5px] mr-[30px] cursor-pointer">
+							<div v-for="(items, index) in shortcut_menu" :style="{backgroundColor : items.bg_color}" :id="items.id" class="design-field w-[180px] h-[120px] relative mt-[30px] rounded-[5px] mr-[30px] cursor-pointer">
 								<div class="flex items-center h-[88px]" @click="editModel(items)">
 									<img class="ml-[24px] w-[40px]" :src="img(items.img)"/>
 									<span class="text-item text-[16px] text-[#fff] ml-[12px] max-w-[120px]">{{ items.name }}</span>
@@ -337,6 +337,7 @@ const remowMenu = (item) => {
 const primary = () => {
 	edit_menu.value = false;
 	if(!is_remove.value) return
+	if(new_model_arr.value.length > 0) shortcut_menu.value = new_model_arr.value;
 	setShortcutMenu({
 		menu: shortcut_menu.value
 	}).then(() =>{})
@@ -364,6 +365,7 @@ const selectMenu = (item) => {
 	showMenu.value = false
 }
 const shortcutModel = ref()
+const new_model_arr = ref([])
 const optionModel = () =>{
 	edit_menu.value = true
 	setTimeout(() => {
@@ -384,16 +386,50 @@ const optionModel = () =>{
 				// evt.newIndex  当前位置下标
 				// console.log(evt.oldIndex+"原位置下标")
 				// console.log(evt.newIndex+"当前位置下标")
-				// for(let k = 0; k < evt.newIndex; k ++){
-				// 	new_data.push(shortcut_menu.value[k])
-				// }
-				// new_data.push(shortcut_menu.value[evt.oldIndex])
-				// let v =  evt.newIndex + 1;
-				// for(v; v < shortcut_menu.value.length; v ++){
-				// 	new_data.push(shortcut_menu.value[v])
-				// }
-				// shortcut_menu.value = new_data
-				// is_remove.value = true
+				if(new_model_arr.value.length > 0){
+					let k = 0;
+					let newIndex = evt.newIndex;
+					if(evt.oldIndex < evt.newIndex) newIndex = evt.newIndex + 1; //向后
+					for(k; k < newIndex; k ++){
+						if(k != evt.oldIndex){
+							new_data.push(new_model_arr.value[k])
+						}
+					}
+					
+					new_data.push(new_model_arr.value[evt.oldIndex])
+					
+					let i = 0;
+					if(evt.newIndex > 0 && evt.oldIndex > evt.newIndex) i = i+1
+					if(evt.oldIndex < evt.newIndex) i = evt.newIndex + 1; //向后
+					
+					for(i; i < new_model_arr.value.length; i ++){
+						if(i != evt.oldIndex){
+							new_data.push(new_model_arr.value[i])
+						}
+					}
+				}else{
+					let k2 = 0;
+					let newIndex = evt.newIndex;
+					if(evt.oldIndex < evt.newIndex) newIndex = evt.newIndex + 1; //向后
+					for(k2; k2 < newIndex; k2 ++){
+						if(k2 != evt.oldIndex){
+							new_data.push(shortcut_menu.value[k2])
+						}
+					}
+					new_data.push(shortcut_menu.value[evt.oldIndex])
+					let i2 = 0;
+					if(evt.newIndex > 0 && evt.oldIndex > evt.newIndex) i2 = i2+1
+					if(evt.oldIndex < evt.newIndex) i2 = evt.newIndex + 1; //向后
+
+					for( i2; i2 < shortcut_menu.value.length; i2 ++){
+						if(i2 != evt.oldIndex){
+							new_data.push(shortcut_menu.value[i2])
+						}
+					}
+				}
+
+				new_model_arr.value = new_data;
+				is_remove.value = true;
 			}
 		})
 	}, 500)
