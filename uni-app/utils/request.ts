@@ -21,10 +21,10 @@ class Request {
 		// #ifdef H5
 		this.baseUrl = import.meta.env.VITE_APP_BASE_URL || `${location.origin}/api/`
 		// #endif
-
 		// #ifndef H5
 		this.baseUrl = import.meta.env.VITE_APP_BASE_URL
 		// #endif
+        this.baseUrl.substr(-1) != '/' && (this.baseUrl += '/')
 
 		try {
 			if (process.env.NODE_ENV == 'development') {

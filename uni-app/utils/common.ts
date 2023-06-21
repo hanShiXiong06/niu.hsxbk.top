@@ -224,7 +224,7 @@ export function mobileConceal(mobile : string) : string {
  */
 export function getSiteId(siteid : number) {
     // #ifdef H5
-    const match = location.href.match(/\/s(\d*)\//);
+    const match = location.href.match(/\/wap\/(\d*)\//);
     if (match) return match[1]
     else return siteid
     // #endif

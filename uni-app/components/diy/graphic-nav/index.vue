@@ -129,7 +129,7 @@
 	import { ref, onMounted, watch, computed } from 'vue';
 	import { img, diyRedirect, currRoute, getToken } from '@/utils/common';
 	import useDiyStore from '@/stores/diy';
-	import { useLogin } from '@/hooks/useLogin'
+	import { useLogin } from '@/hooks/useLogin';
 
 	const props = defineProps(['component', 'index']);
 

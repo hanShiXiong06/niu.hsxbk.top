@@ -1,10 +1,24 @@
 <template>
 	<view>
-		<u-loading-page :loading="loading" loadingText=""></u-loading-page>
-		<view v-show="!loading"
-			:style="{ backgroundColor: data.global.pageBgColor,minHeight: 'calc(100vh - 50px)',backgroundImage : data.global.bgUrl ? 'url(' +  img(data.global.bgUrl) + ')' : '' }"
-			class="bg-index">
-			<diy-group :data="data"></diy-group>
+		<u-loading-page :loading="loading" loadingText="" bg-color="#f7f7f7"></u-loading-page>
+
+		<view v-show="!loading">
+
+			<!-- 自定义模板渲染 -->
+			<view class="diy-template-wrap bg-index" v-if="data.mode != 'fixed'"
+				:style="{ backgroundColor: data.global.pageBgColor,minHeight: 'calc(100vh - 50px)',backgroundImage : data.global.bgUrl ? 'url(' +  img(data.global.bgUrl) + ')' : '' }">
+
+				<diy-group :data="data"></diy-group>
+
+			</view>
+
+			<!-- 固定模板渲染 -->
+			<view class="fixed-template-wrap" v-if="data.mode == 'fixed'">
+
+				<fixed-group :data="data"></fixed-group>
+
+			</view>
+
 		</view>
 	</view>
 </template>
@@ -25,6 +39,7 @@
 	const loading = ref(true);
 	const diyStore = useDiyStore();
 
+	// 自定义页面 数据
 	const diyData = reactive({
 		global: {},
 		value: []
@@ -57,22 +72,37 @@
 				name: 'DIY_INDEX'
 			}).then((res : any) => {
 				if (res.data.value) {
-					let sources = JSON.parse(res.data.value);
-					diyData.global = sources.global;
-					diyData.value = sources.value;
-					diyData.value.forEach((item, index) => {
-						item.pageStyle = '';
-						if (item.pageBgColor) item.pageStyle += 'background-color:' + item.pageBgColor + ';';
-						if (item.margin) {
-							item.pageStyle += 'padding-top:' + item.margin.top * 2 + 'rpx' + ';';
-							item.pageStyle += 'padding-bottom:' + item.margin.bottom * 2 + 'rpx' + ';';
-							item.pageStyle += 'padding-right:' + item.margin.both * 2 + 'rpx' + ';';
-							item.pageStyle += 'padding-left:' + item.margin.both * 2 + 'rpx' + ';';
-						}
-					});
-					uni.setNavigationBarTitle({
-						title: diyData.global.title
-					})
+					let data = res.data;
+					diyData.mode = data.mode;
+					if (data.mode == 'diy') {
+						// 自定义模板
+						let sources = JSON.parse(data.value);
+						diyData.title = sources.title;
+						diyData.global = sources.global;
+						diyData.value = sources.value;
+						diyData.value.forEach((item, index) => {
+							item.pageStyle = '';
+							if (item.pageBgColor) item.pageStyle += 'background-color:' + item.pageBgColor + ';';
+							if (item.margin) {
+								item.pageStyle += 'padding-top:' + item.margin.top * 2 + 'rpx' + ';';
+								item.pageStyle += 'padding-bottom:' + item.margin.bottom * 2 + 'rpx' + ';';
+								item.pageStyle += 'padding-right:' + item.margin.both * 2 + 'rpx' + ';';
+								item.pageStyle += 'padding-left:' + item.margin.both * 2 + 'rpx' + ';';
+							}
+						});
+						uni.setNavigationBarTitle({
+							title: diyData.global.title
+						})
+
+					} else if (data.mode == 'fixed') {
+						// 固定模板
+						let sources = JSON.parse(res.data.value);
+						diyData.title = data.title;
+						diyData.value = sources;
+						uni.setNavigationBarTitle({
+							title: diyData.title
+						})
+					}
 				}
 
 				loading.value = false;

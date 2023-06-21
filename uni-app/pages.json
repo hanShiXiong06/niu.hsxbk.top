@@ -296,7 +296,8 @@
 	"easycom": {
 		"custom": {
 			"^u-(.*)": "uview-plus/components/u-$1/u-$1.vue",
-			"diy-(\W.*)": "@/components/diy/$1/index.vue"
+			"diy-(\W.*)": "@/components/diy/$1/index.vue",
+			"fixed-(\W.*)": "@/components/fixed/$1/index.vue"
 		}
 	}
 }
