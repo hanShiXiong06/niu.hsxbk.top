@@ -3,7 +3,7 @@
         'name' => 'topthink/think',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => 'dc3bba8859823f8836483423b8b7bfdda3a18e7d',
+        'reference' => 'bdc0c0b0594f0eff6e5ca8d8018f125190f8ee95',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -161,6 +161,17 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../intervention/image',
             'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'kosinix/grafika' => array(
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => '211f61fc334b8b36616b23e8af7c5727971d96ee',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../kosinix/grafika',
+            'aliases' => array(
+                0 => '9999999-dev',
+            ),
             'dev_requirement' => false,
         ),
         'laravel/serializable-closure' => array(
@@ -652,7 +663,7 @@
         'topthink/think' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'dc3bba8859823f8836483423b8b7bfdda3a18e7d',
+            'reference' => 'bdc0c0b0594f0eff6e5ca8d8018f125190f8ee95',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -766,12 +777,12 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'yzh52521/schedule' => array(
-            'pretty_version' => 'v1.0.0',
-            'version' => '1.0.0.0',
-            'reference' => '4c8f537f0c08417e785f84b8b91bf16b083cb163',
+        'yunwuxin/think-cron' => array(
+            'pretty_version' => 'v3.0.5',
+            'version' => '3.0.5.0',
+            'reference' => 'a5e5c679b7f5daedab9fb4bb00b641b6c4a054ca',
             'type' => 'library',
-            'install_path' => __DIR__ . '/../yzh52521/schedule',
+            'install_path' => __DIR__ . '/../yunwuxin/think-cron',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
