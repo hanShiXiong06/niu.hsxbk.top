@@ -23,18 +23,19 @@ class PagesDict
 
     /**
      * 获取页面数据
-     * @param string $type
+     * @param array $params
      * @return array|string|null
      */
-    public static function getPages($type = '')
+    public static function getPages($params = [])
     {
         $system_pages = [
             'DIY_INDEX' => [
                 'default_index' => [ // 页面标识
                     "title" => "首页", // 页面名称
-                    'cover' => '', // 页面封面图
+                    'cover' => 'static/resource/images/diy/template/default_index_cover.png', // 页面封面图
                     'preview' => '', // 页面预览图
-                    'desc' => '', // 页面描述
+                    'desc' => '官方推出的系统首页', // 页面描述
+                    'mode' => 'diy', // 页面模式：diy：自定义，fixed：固定
                     // 页面数据源
                     "data" => [
                         "global" => [
@@ -255,14 +256,26 @@ class PagesDict
                             ]
                         ]
                     ]
-                ]
+                ],
+//                'tourism' => [
+//                    "title" => "旅游", // 页面名称
+//                    'cover' => 'static/resource/images/diy/template/tourism_cover.png', // 页面封面图
+//                    'preview' => '', // 页面预览图
+//                    'desc' => '酒店旅游住宿门票景点', // 页面描述
+//                    'mode' => 'fixed', // 页面模式：diy：自定义，fixed：固定
+//                    'data' => [
+//                        'component' => 'tourism-index', // 模板组件名称
+//                        'link' => '' // 装修链接
+//                    ]
+//                ]
             ],
             'DIY_MEMBER_INDEX' => [
                 'default_member_index_one' => [
                     "title" => "个人中心（风格一）", // 页面名称
-                    'cover' => '', // 页面封面图
+                    'cover' => 'static/resource/images/diy/template/default_member_index_one_cover.png', // 页面封面图
                     'preview' => '', // 页面预览图
-                    'desc' => '', // 页面描述
+                    'desc' => '官方推出个人中心（风格一）', // 页面描述
+                    'mode' => 'diy',
                     // 页面数据源
                     "data" => [
                         "global" => [
@@ -583,9 +596,10 @@ class PagesDict
                 ],
                 'default_member_index_two' => [
                     "title" => "个人中心（风格二）", // 页面名称
-                    'cover' => '', // 页面封面图
+                    'cover' => 'static/resource/images/diy/template/default_member_index_two_cover.png', // 页面封面图
                     'preview' => '', // 页面预览图
-                    'desc' => '', // 页面描述
+                    'desc' => '官方推出个人中心（风格二）', // 页面描述
+                    'mode' => 'diy',
                     // 页面数据源
                     "data" => [
                         "global" => [
@@ -904,14 +918,40 @@ class PagesDict
 
                         ]
                     ]
-                ]
+                ],
+//                'tourism' => [
+//                    "title" => "旅游", // 页面名称
+//                    'cover' => 'static/resource/images/diy/template/tourism_member_index_cover.png', // 页面封面图
+//                    'preview' => '', // 页面预览图
+//                    'desc' => '酒店旅游住宿门票景点', // 页面描述
+//                    'mode' => 'fixed', // 页面模式：diy：自定义，fixed：固定
+//                    'data' => [
+//                        'component' => 'tourism-member', // 模板组件名称
+//                        'link' => '' // 装修链接
+//                    ]
+//                ]
             ]
         ];
         $pages = ( new DictLoader("UniappPages") )->load($system_pages);
-        if (empty($type)) {
-            return $pages;
+        if (!empty($params[ 'type' ])) {
+            if (!empty($pages[ $params[ 'type' ] ])) {
+                $temp = $pages[ $params[ 'type' ] ];
+                if (isset($params[ 'mode' ]) && !empty($params[ 'mode' ])) {
+                    foreach ($temp as $k => $v) {
+                        if ($params[ 'mode' ] != $v[ 'mode' ]) {
+                            unset($temp[ $k ]);
+                        }
+                    }
+                }
+            } else {
+
+                return [];
+            }
+
+            return $temp;
         }
-        return $pages[ $type ] ?? '';
+
+        return $pages;
     }
 
 }

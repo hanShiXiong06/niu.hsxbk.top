@@ -525,6 +525,19 @@
                         'sort' => 50,
                         'status' => 1,
                         'is_show' => 1,
+                    ],
+                    [
+                        'menu_name' => '计划任务',
+                        'menu_key' => 'tools_schedule',
+                        'menu_type' => 1,
+                        'icon' => 'element-SetUp',
+                        'api_url' => '',
+                        'router_path' => 'schedule',
+                        'view_path' => 'tools/schedule',
+                        'methods' => '',
+                        'sort' => 40,
+                        'status' => 1,
+                        'is_show' => 1,
                     ]
                 ]
             ],

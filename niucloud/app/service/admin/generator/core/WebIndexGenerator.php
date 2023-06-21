@@ -101,7 +101,7 @@ class WebIndexGenerator extends BaseGenerator
 
         $file_name = str_replace('_', '-', Str::lower($this->getTableName())).'-edit';
         if($this->className){
-            $file_name = Str::lower($this->className) . '-edit';;
+            $file_name = Str::lower($this->className) . '-edit';
         }
 
         return '<'.$file_name.' ref="edit'.$this->getUCaseClassName().'Dialog" @complete="load'.$this->getUCaseName().'List" />';

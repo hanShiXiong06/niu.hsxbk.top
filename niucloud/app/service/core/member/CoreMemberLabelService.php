@@ -48,9 +48,6 @@ class CoreMemberLabelService extends BaseCoreService
             },
             self::$cache_tag_name.$site_id
         );
-//        return Cache::tag(self::$cache_tag_name.$site_id)->remember($cache_name, function () use ($site_id, $label_ids) {
-//            return array_keys_search($this->getAll($site_id), $label_ids, 'label_id');
-//        });
     }
 
     /**
@@ -72,11 +69,6 @@ class CoreMemberLabelService extends BaseCoreService
             },
             self::$cache_tag_name.$site_id
         );
-//        return Cache::tag(self::$cache_tag_name.$site_id)->remember($cache_name, function () use ($site_id) {
-//            $field = 'label_id, label_name';
-//            return $this->model->where([['site_id', '=', $site_id]])->field($field)->select()->toArray();
-//
-//        });
     }
 
     /**

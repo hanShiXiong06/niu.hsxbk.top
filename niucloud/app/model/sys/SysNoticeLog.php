@@ -11,7 +11,9 @@
 
 namespace app\model\sys;
 
+use app\dict\notice\NoticeDict;
 use app\dict\notice\NoticeTypeDict;
+use app\dict\sys\SmsDict;
 use core\base\BaseModel;
 use think\db\Query;
 
@@ -52,7 +54,9 @@ class SysNoticeLog extends BaseModel
      */
     public function getContentAttr($value,$data)
     {
-        $temp = json_decode($value);
+        if($value){
+            $temp = json_decode($value, true);
+        }
         if(!$temp){
             $temp = $value;
         }
@@ -66,8 +70,12 @@ class SysNoticeLog extends BaseModel
      */
     public function getNameAttr($value,$data)
     {
-        $temp = \app\dict\notice\NoticeDict::getNotice()[$data['key'] ?? ''] ?? '';
-        return  $temp['name'] ?? '';
+        $name = '';
+        if(!empty($data['key'])){
+            $temp = NoticeDict::getNotice()[$data['key']] ?? [];
+            $name = $temp['name'] ?? '';
+        }
+        return  $name;
     }
 
     /**
@@ -78,8 +86,12 @@ class SysNoticeLog extends BaseModel
      */
     public function getNoticeTypeNameAttr($value,$data)
     {
-        $temp = NoticeTypeDict::getType()[$data['notice_type'] ?? ''] ?? '';
-        return  $temp['name'] ?? '';
+        $name = '';
+        if (!empty($data['notice_type'])) {
+            $temp = NoticeTypeDict::getType()[$data['notice_type']] ?? [];
+            $name = $temp['name'] ?? '';
+        }
+        return $name;
     }
     /**
      * 消息类型

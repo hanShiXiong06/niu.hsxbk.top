@@ -91,7 +91,7 @@ class ExceptionHandle extends Handle
         // 添加自定义异常处理机制
 
         if ($e instanceof DbException) {
-            return fail('DATA_GET_FAIL', [
+            return fail(get_lang('DATA_GET_FAIL').':'.$e->getMessage(), [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
                 'message' => $e->getMessage(),

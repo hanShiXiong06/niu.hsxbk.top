@@ -128,9 +128,6 @@ class SiteGroupService extends BaseAdminService
             },
             [MenuService::$cache_tag_name,self::$cache_tag_name]
         );
-//        return Cache::tag([MenuService::$cache_tag_name,self::$cache_tag_name])->remember($cache_name, function () use ($group_id) {
-//            return $this->model->findOrEmpty($group_id)?->group_roles ?? [];
-//        });
     }
 
     /**

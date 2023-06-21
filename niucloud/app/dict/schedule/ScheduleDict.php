@@ -9,41 +9,35 @@
 // | Author: Niucloud Team
 // +----------------------------------------------------------------------
 
-namespace app\dict\sys;
+namespace app\dict\schedule;
 
-class CronDict
+class ScheduleDict
 {
 
     const CRON = 'cron';//定时任务
     const CROND = 'crond';//周期任务
-    const MINUTE = 'minute';//分钟
 
-    const DAY = 'day';//天
-    const WEEK = 'week';//星期
-    const MONTH = 'month';//月份
-
+    const ON = 1;
+    const OFF = 2;
     /**
      * 任务模式
      * @return array
      */
     public static function getType(){
         return [
-            self::CRON => get_lang('dict_cron.type_cron'),//定时任务
-            self::CROND  => get_lang('dict_cron.type_crond'),//周期任务
+            self::CRON => get_lang('dict_schedule.type_cron'),//定时任务
+            self::CROND  => get_lang('dict_schedule.type_crond'),//周期任务
         ];
     }
+
     /**
-     * 周期类型
+     * 任务启用状态
      * @return array
      */
-    public static function getCrondType(){
+    public static function getStatus(){
         return [
-            self::MINUTE => get_lang('dict_cron.type_minute'),//分钟
-            self::DAY  => get_lang('dict_cron.type_day'),//天
-            self::WEEK  => get_lang('dict_cron.type_week'),//星期
-            self::MONTH  => get_lang('dict_cron.type_month'),//月份
+            self::ON => get_lang('dict_schedule.on'),//启用
+            self::OFF  => get_lang('dict_schedule.off'),//关闭
         ];
     }
-
-
 }

@@ -11,16 +11,14 @@
 
 namespace app\model\sys;
 
-use app\dict\sys\CronDict;
+use app\dict\schedule\ScheduleDict;
 use core\base\BaseModel;
 use think\db\Query;
 
 /**
  * 定时任务模型
- * Class SysArea
- * @package app\model\sys
  */
-class SysCronTask extends BaseModel
+class SysSchedule extends BaseModel
 {
 
     /**
@@ -33,7 +31,7 @@ class SysCronTask extends BaseModel
      * 模型名称
      * @var string
      */
-    protected $name = 'sys_cron_task';
+    protected $name = 'sys_schedule';
 
     protected $type = [
         'last_time'  =>  'timestamp',
@@ -42,49 +40,46 @@ class SysCronTask extends BaseModel
     ];
 
     // 设置json类型字段
-    protected $json = ['data'];
+    protected $json = ['time'];
     // 设置JSON数据返回数组
     protected $jsonAssoc = true;
+
+
     /**
-     * 任务模式
+     * 启用状态
      * @param $value
      * @return mixed
      */
-    public function getTypeNameAttr($value, $data)
+    public function getStatusNameAttr($value, $data)
     {
-        return CronDict::getType()[$data['type'] ?? ''] ?? '';
+        if(empty($data['status'])) return '';
+        return ScheduleDict::getStatus()[$data['status']] ?? '';
     }
-
-    /**
-     * 任务周期
-     * @param $value
-     * @return mixed
-     */
-    public function getCrondTypeNameAttr($value, $data)
-    {
-        return CronDict::getCrondType()[$data['crond_type'] ?? ''] ?? '';
-    }
-    /**
-     * 任务名称搜索器
-     * @param $value
-     */
-    public function searchTitleAttr(Query $query, $value, $data)
-    {
-        if ($value) {
-            $query->whereLike('title', '%'.$value.'%');
-        }
-    }
-
     /**
      * 任务类型搜索器
      * @param $value
      */
-    public function searchTypeAttr(Query $query, $value, $data)
+    public function searchKeyAttr(Query $query, $value, $data)
     {
         if ($value) {
-            $query->where('type', $value);
+            $query->where('key', $value);
         }
     }
+
+    /**
+     * 状态搜索
+     * @param Query $query
+     * @param $value
+     * @param $data
+     * @return void
+     */
+    public function searchStatusAttr(Query $query, $value, $data)
+    {
+        if ($value) {
+            $query->where('status', $value);
+        }
+    }
+
 
     /**
      * 执行时间搜索器

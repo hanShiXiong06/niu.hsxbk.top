@@ -58,7 +58,9 @@ class SysMenu extends BaseModel
      */
     public function getMenuTypeNameAttr($value,$data)
     {
-        return MenuTypeDict::getMenuType()[$data['menu_type'] ?? ''] ?? '';
+        if(empty($data['menu_type']))
+            return '';
+        return MenuTypeDict::getMenuType()[$data['menu_type']] ?? '';
     }
 
     /**
@@ -69,6 +71,8 @@ class SysMenu extends BaseModel
      */
     public function getStatusNameAttr($value,$data)
     {
-        return MenuDict::getStatus()[$data['status'] ?? ''] ?? '';
+        if(empty($data['status']))
+            return '';
+        return MenuDict::getStatus()[$data['status']] ?? '';
     }
 }

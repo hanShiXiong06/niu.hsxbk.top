@@ -28,8 +28,8 @@ return
             'is_show' => 1,
             'children' => [
                 [
-                    'menu_name' => '首页装修',
-                    'menu_key' => 'diy_page_index',
+                    'menu_name' => '页面装修',
+                    'menu_key' => 'diy_page_decorate',
                     'menu_type' => 1,
                     'icon' => 'element-House',
                     'api_url' => '',
@@ -37,19 +37,6 @@ return
                     'view_path' => 'diy/index',
                     'methods' => '',
                     'sort' => 100,
-                    'status' => 1,
-                    'is_show' => 1,
-                ],
-                [
-                    'menu_name' => '个人中心',
-                    'menu_key' => 'diy_page_member',
-                    'menu_type' => 1,
-                    'icon' => 'element-ScaleToOriginal',
-                    'api_url' => '',
-                    'router_path' => 'member',
-                    'view_path' => 'diy/member',
-                    'methods' => '',
-                    'sort' => 90,
                     'status' => 1,
                     'is_show' => 1,
                 ],
@@ -62,12 +49,12 @@ return
                     'router_path' => '',
                     'view_path' => '',
                     'methods' => 'post',
-                    'sort' => 80,
+                    'sort' => 95,
                     'status' => 1,
                     'is_show' => 1,
                 ],
                 [
-                    'menu_name' => '页面管理',
+                    'menu_name' => '微页面',
                     'menu_key' => 'diy_page_list',
                     'menu_type' => 1,
                     'icon' => 'iconfont-icondianpuzhuangxiu',
@@ -75,7 +62,20 @@ return
                     'router_path' => 'list',
                     'view_path' => 'diy/list',
                     'methods' => 'get',
-                    'sort' => 70,
+                    'sort' => 90,
+                    'status' => 1,
+                    'is_show' => 1,
+                ],
+                [
+                    'menu_name' => '页面路径',
+                    'menu_key' => 'diy_page_route',
+                    'menu_type' => 1,
+                    'icon' => 'iconfont-icondianpuzhuangxiu',
+                    'api_url' => 'diy/diy',
+                    'router_path' => 'route',
+                    'view_path' => 'diy/route',
+                    'methods' => 'get',
+                    'sort' => 85,
                     'status' => 1,
                     'is_show' => 1,
                 ],
@@ -88,25 +88,24 @@ return
                     'router_path' => 'tabbar',
                     'view_path' => 'diy/tabbar',
                     'methods' => 'get',
-                    'sort' => 60,
+                    'sort' => 80,
                     'status' => 1,
                     'is_show' => 1,
-                    'children' =>
+                    'children' => [
                         [
-                            [
-                                'menu_name' => '保存',
-                                'menu_key' => 'diy_tabbar_update',
-                                'menu_type' => 2,
-                                'icon' => '',
-                                'api_url' => 'diy/bottom',
-                                'router_path' => '',
-                                'view_path' => '',
-                                'methods' => 'post',
-                                'sort' => 100,
-                                'status' => 1,
-                                'is_show' => 1,
-                            ],
+                            'menu_name' => '保存',
+                            'menu_key' => 'diy_tabbar_update',
+                            'menu_type' => 2,
+                            'icon' => '',
+                            'api_url' => 'diy/bottom',
+                            'router_path' => '',
+                            'view_path' => '',
+                            'methods' => 'post',
+                            'sort' => 100,
+                            'status' => 1,
+                            'is_show' => 1,
                         ],
+                    ],
                 ],
                 [
                     'menu_name' => '素材管理',
@@ -117,7 +116,7 @@ return
                     'router_path' => 'attachment',
                     'view_path' => 'tools/attachment',
                     'methods' => 'get',
-                    'sort' => 50,
+                    'sort' => 75,
                     'status' => 1,
                     'is_show' => 1,
                 ]
@@ -146,6 +145,19 @@ return
                     'view_path' => 'diy/edit',
                     'methods' => 'put',
                     'sort' => 0,
+                    'status' => 1,
+                    'is_show' => 0,
+                ],
+                [
+                    'menu_name' => '页面预览',
+                    'menu_key' => 'page_preview',
+                    'menu_type' => 1,
+                    'icon' => '',
+                    'api_url' => '',
+                    'router_path' => 'preview',
+                    'view_path' => 'diy/preview',
+                    'methods' => '',
+                    'sort' => 1,
                     'status' => 1,
                     'is_show' => 0,
                 ]
@@ -473,6 +485,19 @@ return
             'is_show' => 1,
             'children' => [
                 [
+                    'menu_name' => '账单管理',
+                    'menu_key' => 'site_account_list',
+                    'menu_type' => 1,
+                    'icon' => 'element-Postcard',
+                    'api_url' => 'finance/account',
+                    'router_path' => 'account',
+                    'view_path' => 'finance/account',
+                    'methods' => 'get',
+                    'sort' => 100,
+                    'status' => 1,
+                    'is_show' => 1,
+                ],
+                [
                     'menu_name' => '会员提现',
                     'menu_key' => 'cash_out_list',
                     'menu_type' => 1,
@@ -484,7 +509,7 @@ return
                     'sort' => 99,
                     'status' => 1,
                     'is_show' => 1,
-                ]
+                ],
             ]
         ],
         [
@@ -887,7 +912,7 @@ return
                     'sort' => 100,
                     'status' => 1,
                     'is_show' => 1,
-                    
+
                 ],
                 [
                     'menu_name' => '协议管理',
@@ -997,7 +1022,7 @@ return
                             'sort' => 90,
                             'status' => 1,
                             'is_show' => 1,
-                            'children'  => [
+                            'children' => [
                                 [
                                     'menu_name' => '设置',
                                     'menu_key' => 'setting_pay_transfer_set',
@@ -1010,7 +1035,7 @@ return
                                     'sort' => 90,
                                     'status' => 1,
                                     'is_show' => 1,
-                                    
+
                                 ],
                             ]
                         ],
@@ -1151,7 +1176,7 @@ return
                             'sort' => 12,
                             'status' => 1,
                             'is_show' => 1,
-                            
+
                         ],
                         [
                             'menu_name' => '发送记录',

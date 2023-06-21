@@ -72,6 +72,16 @@ Route::group('sys', function () {
     //地图设置
     Route::get('config/map', 'sys.Config/getMap');
 
+    //首页加载设置
+    Route::put('config/site_index', 'sys.Config/setSiteIndex');
+    //获取首页加载
+    Route::get('config/site_index', 'sys.Config/getSiteIndexList');
+
+    //快捷菜单设置
+    Route::put('config/shortcut_menu', 'sys.Config/setShortcutMenu');
+    //获取快捷菜单
+    Route::get('config/shortcut_menu', 'sys.Config/getShortcutMenu');
+
     //登录注册设置
     Route::get('config/login', 'login.Config/getConfig');
     //登录注册设置
@@ -126,14 +136,10 @@ Route::group('sys', function () {
     Route::get('area/list_by_pid/:pid', 'sys.Area/listByPid');
     //通过层级获取列表
     Route::get('area/tree/:level', 'sys.Area/tree');
+    //获取地址位置信息
+    Route::get('area/get_info', 'sys.Area/addressInfo');
+    Route::get('area/contrary', 'sys.Area/contraryAddress');
 
-    /***************************************************** 任务管理 ****************************************************/
-    //任务列表
-    Route::get('cron', 'sys.Cron/lists');
-    //任务详情
-    Route::get('cron/:id', 'sys.Cron/info');
-    //任务模式
-    Route::get('cron/type', 'sys.Cron/getType');
     /***************************************************** 渠道管理 ****************************************************/
     Route::get('channel', 'sys.Channel/getChannelType');
     //场景域名
@@ -144,11 +150,30 @@ Route::group('sys', function () {
     Route::get('job', 'sys.System/checkJob');
     //校验计划任务
     Route::get('schedule', 'sys.System/checkSchedule');
+
+
+    /***************************************************** 计划任务 ****************************************************/
+    //计划任务列表
+    Route::get('schedule/list', 'sys.Schedule/lists');
+    //任务详情
+    Route::get('schedule/:id', 'sys.Schedule/info');
+    //设置任务状态
+    Route::put('schedule/modify/status/:id', 'sys.Schedule/modifyStatus');
+    //任务新增
+    Route::post('schedule', 'sys.Schedule/add');
+    //编辑任务
+    Route::put('schedule/:id', 'sys.Schedule/edit');
+    //删除任务
+    Route::delete('schedule/:id', 'sys.Schedule/del');
+    //任务模式
+    Route::get('schedule/type', 'sys.Schedule/getType');
     /***************************************************** 应用管理 ****************************************************/
     Route::get('applist', 'sys.App/getAppList');
 
     /***************************************************** 清理缓存-刷新菜单 ****************************************************/
     Route::post('schema/clear', 'sys.System/schemaCache');
+
+
 
 })->middleware([
     AdminCheckToken::class,

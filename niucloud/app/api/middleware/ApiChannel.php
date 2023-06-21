@@ -12,13 +12,15 @@
 namespace app\api\middleware;
 
 use app\Request;
+use app\service\core\site\CoreSiteService;
 use Closure;
+use core\exception\AuthException;
 use Exception;
 use think\facade\Log;
 
 
 /**
- * api渠道处理, 各种渠道的请求不叫特殊, 会在这儿将渠道的公共数据处理好
+ * api渠道处理, 各种渠道的请求, 会在这儿将渠道的公共数据处理好
  */
 class ApiChannel
 {
@@ -38,7 +40,10 @@ class ApiChannel
         if (in_array($request->rule()->getRule(), $channel_rules)) {
             $site_id = $request->param('site_id', -1);
             if ($site_id != -1) {
-                $request->pushHeader([ system_name('api_site_id_name') => $site_id ]);
+                $site_info = (new CoreSiteService())->getSiteCache($site_id);
+                if(empty($site_info)) throw new AuthException('SITE_NOT_EXIST');
+                $site_code = $site_info['code'] ?? '';
+                $request->pushHeader([ system_name('api_site_id_name') => $site_code ]);
             }
         }
         return $next($request);

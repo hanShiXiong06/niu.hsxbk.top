@@ -129,6 +129,66 @@ trait WapTrait
     }
 
     /**
+     * 编译 fixed-group 固定模板组件代码文件
+     * @param $compile_path
+     * @param $addon_name
+     * @return string
+     */
+    public function compileFixedComponentsCode($compile_path)
+    {
+        $content = "<template>\n";
+        $content .= "    <view class=\"fixed-group\">\n";
+
+        $root_path = $compile_path . str_replace('/', DIRECTORY_SEPARATOR, 'components/fixed'); // 扩展组件根目录
+        $file_arr = getFileMap($root_path);
+
+        if (!empty($file_arr)) {
+            foreach ($file_arr as $ck => $cv) {
+                if (strpos($cv, 'index.vue') !== false) {
+
+                    $path = str_replace($root_path . '/', '', $ck);
+                    $path = str_replace('/index.vue', '', $path);
+                    if ($path == 'group') {
+                        continue;
+                    }
+
+                    // 获取自定义组件 key 关键词
+                    $name_arr = explode('-', $path);
+                    foreach ($name_arr as $k => $v) {
+                        // 首字母大写
+                        $name_arr[ $k ] = strtoupper(substr($v, 0, 1)) . substr($v, 1);
+                    }
+                    $name = implode('', $name_arr);
+                    $file_name = 'fixed-' . $path;
+
+                    $content .= "        <template v-if=\"data.component == '{$name}'\">\n";
+                    $content .= "            <$file_name :data=\"data\"></$file_name>\n";
+                    $content .= "        </template>\n";
+                }
+            }
+        }
+
+        $content .= "    </view>\n";
+        $content .= "</template>\n";
+
+        $content .= "<script lang=\"ts\" setup>\n";
+        $content .= "   import { computed } from 'vue';\n";
+        $content .= "   const props = defineProps(['data']);\n";
+        $content .= "   const data = computed(() => {\n";
+        $content .= "       return props.data.value;\n";
+        $content .= "   })\n\n";
+
+        $content .= "</script>\n";
+
+        $content .= "<style lang=\"scss\" scoped>\n";
+        $content .= "   @import './index.scss';\n";
+        $content .= "</style>\n";
+
+        $res = file_put_contents($compile_path . str_replace('/', DIRECTORY_SEPARATOR, 'components/fixed/group/index.vue'), $content);
+        return $res;
+    }
+
+    /**
      * 编译 pages.json 页面路由代码文件
      * @param $compile_path
      * @return bool|int|void

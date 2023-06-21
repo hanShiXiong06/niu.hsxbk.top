@@ -99,6 +99,10 @@ class SiteStatService extends BaseAdminService
         $woman_count = (new MemberService())->getCount([ ['sex', '=', '2'] ]);
         $data['member_stat']['value'] = [$man_count, $woman_count, (int)($member_count - $man_count - $woman_count)];
         $data['site_info'] = (new SiteService())->getInfo($this->site_id);
+        $site_create_time = strtotime($data['site_info']['create_time']);
+        $site_expire_time = strtotime($data['site_info']['expire_time']);
+        $data['site_info']['mix'] = (number_format((time() - $site_create_time) / ($site_expire_time - $site_create_time), 2) * 100).'%';  ;
+        $data['site_info']['over_date'] = $site_expire_time - time() > 0 ? number_format(($site_expire_time - time())/ 86400, 2) : 0;
 
         return $data;
     }

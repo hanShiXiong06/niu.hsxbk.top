@@ -38,8 +38,7 @@ class CoreConfigService extends BaseCoreService
             ['config_key', '=', $key],
             ['site_id', '=', $site_id]
         );
-        $info = $this->model->where($where)->field('id,site_id,config_key,value,status,create_time,update_time')->findOrEmpty()->toArray();
-        return $info;
+        return $this->model->where($where)->field('id,site_id,config_key,value,status,create_time,update_time')->findOrEmpty()->toArray();
     }
 
     /**
@@ -86,7 +85,6 @@ class CoreConfigService extends BaseCoreService
         $data = array(
             'status' => $status,
         );
-        $res = $this->model->where($where)->save($data);
-        return $res;
+        return $this->model->where($where)->save($data);
     }
 }

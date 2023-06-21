@@ -45,7 +45,7 @@ class CoreRefundService extends BaseCoreService
         if($pay->isEmpty()) throw new PayException();//单据不存在
         //校验当前数据是否存在
         //存在就修改,不存在就创建
-        $refund_no = create_no('refund', $pay->id);
+        $refund_no = create_no();
         $data = array(
             'site_id' => $site_id,
             'money' => $money,
@@ -217,7 +217,7 @@ class CoreRefundService extends BaseCoreService
             ['site_id', '=', $site_id],
             ['refund_no', '=', $refund_no]
         ])->update([
-            'status' => RefundDict::SUCCESS,
+            'status' => RefundDict::FAIL,
             'fail_reason' => $data['fail_reason']
         ]);
         return true;

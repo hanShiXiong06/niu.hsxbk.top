@@ -44,7 +44,9 @@ class MemberAccountLog extends BaseModel
      */
     public function getAccountTypeNameAttr($value,$data)
     {
-        return MemberAccountTypeDict::getType()[$data['account_type'] ?? ''] ?? '';
+        if(empty($data['account_type']))
+            return '';
+        return MemberAccountTypeDict::getType()[$data['account_type']] ?? '';
     }
 
     /**

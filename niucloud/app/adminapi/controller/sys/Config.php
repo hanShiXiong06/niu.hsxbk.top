@@ -123,4 +123,44 @@ class Config extends BaseAdminController
     public function getMap(){
         return success((new ConfigService())->getMap());
     }
+
+    /**
+     * 获取站点首页列表（如果正在使用is_use = 1）
+     */
+    public function getSiteIndexList()
+    {
+        return success((new ConfigService())->getSiteIndexList());
+    }
+
+    /**
+     * 首页配置
+     */
+    public function setSiteIndex()
+    {
+        $data = $this->request->params([
+            ['view_path', ''],
+        ]);
+        (new ConfigService())->setSiteIndexConfig($data);
+        return success();
+    }
+
+    /**
+     * 设置快捷菜单
+     */
+    public function setShortcutMenu()
+    {
+        $data = $this->request->params([
+            ['menu', []],
+        ]);
+        (new ConfigService())->setShortcutMenu($data['menu']);
+        return success();
+    }
+
+    /**
+     * 获取站点快捷菜单
+     */
+    public function getShortcutMenu()
+    {
+        return success(data:(new ConfigService())->getShortcutMenu());
+    }
 }

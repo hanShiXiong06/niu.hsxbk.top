@@ -53,7 +53,9 @@ class Pay extends BaseModel
      */
     public function getStatusNameAttr($value, $data)
     {
-        return PayDict::getStatus()[$data['status'] ?? ''] ?? '';
+        if(empty($data['status']))
+            return '';
+        return PayDict::getStatus()[$data['status']] ?? '';
     }
     /**
      * 支付方式字段转化
@@ -62,7 +64,10 @@ class Pay extends BaseModel
      */
     public function getTypeNameAttr($value, $data)
     {
-        return PayDict::getPayType()[$data['type'] ?? '']['name'] ?? '';
+        if(empty($data['type']))
+            return '';
+        $temp = PayDict::getPayType()[$data['type']] ?? [];
+        return $temp['name'] ?? '';
     }
 
 }

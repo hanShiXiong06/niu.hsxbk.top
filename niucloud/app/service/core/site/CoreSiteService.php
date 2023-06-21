@@ -24,71 +24,96 @@ use core\exception\CommonException;
 class CoreSiteService extends BaseCoreService
 {
     public static $cache_tag_name = 'site_cash';
+
     public function __construct()
     {
         parent::__construct();
         $this->model = new Site();
     }
 
-
-
     /**
      * 获取授权当前站点信息(用做缓存)
-     * @return mixed
+     * @param $site_id
+     * @return mixed|string
      */
-    public function getSiteCache(int $site_id){
+    public function getSiteCache($site_id)
+    {
         $cache_name = 'site_info_cache';
         return cache_remember(
-            $cache_name.$site_id,
-            function () use ($site_id) {
+            $cache_name . $site_id,
+            function() use ($site_id) {
                 $where = [
-                    ['site_id', '=', $site_id],
+                    [ 'site_id', '=', $site_id ],
                 ];
-                $site = $this->model->where($where)->field('app_type,site_name,logo,front_end_name,front_end_logo,group_id, status, expire_time')->findOrEmpty();
-                if(!$site->isEmpty()){
-                    $site->append(['status_name']);
-                }
+                $site = $this->model->where($where)->field('site_id, app_type,site_name,logo,front_end_name,front_end_logo,group_id, status, expire_time, site_code')->append([ 'status_name' ])->findOrEmpty();
                 return $site->toArray();
             },
-            self::$cache_tag_name.$site_id
+            self::$cache_tag_name . $site_id
         );
     }
 
     /**
      * 模型实例
-     * @param int $site_id
+     * @param $site_id
      * @return Site|array|mixed|\think\Model
      */
-    public function find(int $site_id){
+    public function find($site_id)
+    {
         return $this->model->findOrEmpty($site_id);
     }
+
     /**
      * 获取过期的站点
      * @return void
      */
-    public function getExpireSiteList(){
+    public function getExpireSiteList()
+    {
         return $this->model->where([
-            ['status', '<>', SiteDict::EXPIRE],
-            ['expire_time', 'between', [1,time()]],
+            [ 'status', '<>', SiteDict::EXPIRE ],
+            [ 'expire_time', 'between', [ 1, time() ] ],
         ])->field('site_id,status,site_name')->select()->toArray();
     }
+
     /**
      * 站点到期(计划任务专用,切勿调用)
-     * @param int $site_id
-     * @return void
+     * @param $site_id
+     * @return bool
      */
-    public function expire(int $site_id){
+    public function expire(int $site_id)
+    {
         $site = $this->find($site_id);
-        if($site->isEmpty())throw new CommonException('SITE_NOT_EXIST');
-        if($site->status == SiteDict::EXPIRE) throw new CommonException('SITE_EXPIRE');
-        $this->model->where([[
+        if ($site->isEmpty()) throw new CommonException('SITE_NOT_EXIST');
+        if ($site->status == SiteDict::EXPIRE) throw new CommonException('SITE_EXPIRE');
+        $this->model->where([ [
             'site_id', '=', $site_id
-        ]])->update(
+        ] ])->update(
             [
                 'status' => SiteDict::EXPIRE,
             ]
         );
         return true;
+    }
+
+    /**
+     * 通过站点编号获取站点信息
+     * @param $site_code
+     * @return mixed|string
+     */
+    public function getSiteInfoBySiteCode($site_code){
+        $cache_name = 'site_id_cache';
+        return cache_remember(
+            $cache_name . $site_code,
+            function() use ($site_code) {
+                $site_info = $this->model->where([[
+                    'site_code', '=', $site_code
+                ]])->findOrEmpty();
+                if(!$site_info->isEmpty()){
+                    return $site_info->toArray();
+                }
+                return [];
+            }
+        );
+
     }
 
 }

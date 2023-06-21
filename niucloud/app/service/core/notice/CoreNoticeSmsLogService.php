@@ -35,14 +35,11 @@ class CoreNoticeSmsLogService extends BaseCoreService
      */
     public function getPage(int $site_id, array $where = [])
     {
-
-        $field = 'mobile, sms_type, key, content, data, status, result, create_time, send_time, update_time';
+        $field = 'id,mobile,sms_type,key,template_id,content,params,status,result,create_time,send_time,update_time';
         $order = 'create_time desc';
-        $search_model = $this->model->where([['site_id', '=', $site_id]])->withSearch(['name'], $where)->field($field)->order($order)->append(['name', 'app_type_name', 'status_name']);
-        $list = $this->pageQuery($search_model);
-        return $list;
+        $search_model = $this->model->where([['site_id', '=', $site_id]])->withSearch(['name', 'key', 'mobile', 'sms_type'], $where)->field($field)->order($order)->append(['name', 'sms_type_name', 'status_name']);
+        return $this->pageQuery($search_model);
     }
-
 
 
     /**
@@ -51,9 +48,8 @@ class CoreNoticeSmsLogService extends BaseCoreService
      */
     public function getInfo(int $site_id, int $id)
     {
-        $field = 'mobile, sms_type, key, content, data, status, result, create_time, send_time, update_time';
-        $info = $this->model->field($field)->where([['id', '=', $id], ['site_id', '=', $site_id]])->findOrEmpty()->append(['name', 'app_type_name', 'status_name'])->toArray();
-        return $info;
+        $field = 'id, mobile,sms_type,key,template_id,content,params,status,result,create_time,send_time,update_time';
+        return $this->model->field($field)->where([['id', '=', $id], ['site_id', '=', $site_id]])->append(['name', 'sms_type_name', 'status_name'])->findOrEmpty()->toArray();
     }
 
     /**
@@ -88,8 +84,7 @@ class CoreNoticeSmsLogService extends BaseCoreService
      */
     public function del(int $site_id, int $id)
     {
-        $res = $this->model->where([['id', '=', $id], ['site_id', '=', $site_id]])->delete();
-        return $res;
+        return $this->model->where([['id', '=', $id], ['site_id', '=', $site_id]])->delete();
     }
 
 

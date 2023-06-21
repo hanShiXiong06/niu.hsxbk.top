@@ -72,4 +72,15 @@ class Auth extends BaseAdminController
     public function site(){
         return success((new AuthSiteService())->getSiteInfo());
     }
+
+    /**
+     * 选择可以选择的页面
+     * @return \think\Response
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function getShowMenuList(){
+        return success((new AuthSiteService())->getShowMenuList());
+    }
 }

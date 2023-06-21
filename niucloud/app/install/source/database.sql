@@ -1,4 +1,5 @@
-﻿SET NAMES 'utf8mb4';
+﻿
+SET NAMES 'utf8mb4';
 
 DROP TABLE IF EXISTS addon;
 
@@ -34,14 +35,6 @@ DROP TABLE IF EXISTS member_label;
 
 DROP TABLE IF EXISTS member_level;
 
-DROP TABLE IF EXISTS `order`;
-
-DROP TABLE IF EXISTS order_item;
-
-DROP TABLE IF EXISTS order_item_refund;
-
-DROP TABLE IF EXISTS order_log;
-
 DROP TABLE IF EXISTS pay;
 
 DROP TABLE IF EXISTS pay_channel;
@@ -50,7 +43,17 @@ DROP TABLE IF EXISTS pay_refund;
 
 DROP TABLE IF EXISTS pay_transfer;
 
+DROP TABLE IF EXISTS recharge_order;
+
+DROP TABLE IF EXISTS recharge_order_item;
+
+DROP TABLE IF EXISTS recharge_order_item_refund;
+
+DROP TABLE IF EXISTS recharge_order_log;
+
 DROP TABLE IF EXISTS site;
+
+DROP TABLE IF EXISTS site_account_log;
 
 DROP TABLE IF EXISTS site_group;
 
@@ -76,6 +79,8 @@ DROP TABLE IF EXISTS sys_notice_sms_log;
 
 DROP TABLE IF EXISTS sys_role;
 
+DROP TABLE IF EXISTS sys_schedule;
+
 DROP TABLE IF EXISTS sys_user;
 
 DROP TABLE IF EXISTS sys_user_log;
@@ -88,9 +93,6 @@ DROP TABLE IF EXISTS wechat_media;
 
 DROP TABLE IF EXISTS wechat_reply;
 
---
--- `ns_wechat_reply`
---
 CREATE TABLE wechat_reply (
   id int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   name varchar(64) NOT NULL DEFAULT '' COMMENT '规则名称',
@@ -102,13 +104,12 @@ CREATE TABLE wechat_reply (
   content text NOT NULL COMMENT '回复内容',
   status tinyint(3) UNSIGNED NOT NULL DEFAULT 0 COMMENT '启动状态：1-启动；0-关闭',
   sort int(10) UNSIGNED NOT NULL DEFAULT 50 COMMENT '排序',
-  create_time int(11) NOT NULL COMMENT '创建时间',
-  update_time int(11) NOT NULL COMMENT '更新时间',
-  delete_time int(11) NOT NULL COMMENT '删除时间',
+  create_time int(11) NOT NULL DEFAULT 0 COMMENT '创建时间',
+  update_time int(11) NOT NULL DEFAULT 0 COMMENT '更新时间',
+  delete_time int(11) NOT NULL DEFAULT 0 COMMENT '删除时间',
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 16384,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
 COMMENT = '公众号消息回调表';
@@ -116,9 +117,6 @@ COMMENT = '公众号消息回调表';
 ALTER TABLE wechat_reply
 ADD INDEX keyword (keyword, reply_type);
 
---
--- `ns_wechat_media`
---
 CREATE TABLE wechat_media (
   id int(11) NOT NULL AUTO_INCREMENT,
   site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -130,7 +128,6 @@ CREATE TABLE wechat_media (
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 1872,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
 COMMENT = '微信素材表';
@@ -138,9 +135,6 @@ COMMENT = '微信素材表';
 ALTER TABLE wechat_media
 ADD INDEX type (type, site_id);
 
---
--- `ns_wechat_fans`
---
 CREATE TABLE wechat_fans (
   fans_id int(11) NOT NULL AUTO_INCREMENT COMMENT '粉丝ID',
   site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -165,7 +159,6 @@ CREATE TABLE wechat_fans (
   PRIMARY KEY (fans_id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 5461,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
 COMMENT = '微信粉丝列表';
@@ -176,9 +169,6 @@ ADD INDEX openid (openid, site_id);
 ALTER TABLE wechat_fans
 ADD INDEX unionid (unionid, site_id);
 
---
--- `ns_sys_user_role`
---
 CREATE TABLE sys_user_role (
   id int(11) NOT NULL AUTO_INCREMENT,
   uid int(11) NOT NULL DEFAULT 0 COMMENT '用户id',
@@ -189,6 +179,7 @@ CREATE TABLE sys_user_role (
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
+AUTO_INCREMENT = 2,
 AVG_ROW_LENGTH = 481,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
@@ -203,9 +194,6 @@ ADD INDEX site_id (site_id);
 ALTER TABLE sys_user_role
 ADD INDEX uid (uid);
 
---
--- `ns_sys_user_log`
---
 CREATE TABLE sys_user_log (
   id int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '管理员操作记录ID',
   ip varchar(16) NOT NULL DEFAULT '' COMMENT '登录IP',
@@ -219,11 +207,9 @@ CREATE TABLE sys_user_log (
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 857,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
-COMMENT = '管理员操作记录表',
-ROW_FORMAT = COMPACT;
+COMMENT = '管理员操作记录表';
 
 ALTER TABLE sys_user_log
 ADD INDEX create_time (create_time);
@@ -234,9 +220,6 @@ ADD INDEX site_id (site_id);
 ALTER TABLE sys_user_log
 ADD INDEX uid (uid);
 
---
--- `ns_sys_user`
---
 CREATE TABLE sys_user (
   uid smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '系统用户ID',
   username varchar(255) NOT NULL DEFAULT '' COMMENT '用户账号',
@@ -255,11 +238,11 @@ CREATE TABLE sys_user (
   INDEX uid (uid)
 )
 ENGINE = INNODB,
+AUTO_INCREMENT = 2,
 AVG_ROW_LENGTH = 372,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
-COMMENT = '后台管理员表',
-ROW_FORMAT = COMPACT;
+COMMENT = '后台管理员表';
 
 ALTER TABLE sys_user
 ADD INDEX delete_time (delete_time);
@@ -273,12 +256,27 @@ ADD INDEX password (password);
 ALTER TABLE sys_user
 ADD INDEX update_time (update_time);
 
-ALTER TABLE sys_user
-ADD INDEX username (username (191));
+CREATE TABLE sys_schedule (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  site_id int(11) NOT NULL DEFAULT 0,
+  addon varchar(255) NOT NULL DEFAULT '' COMMENT '所属插件',
+  `key` varchar(255) NOT NULL DEFAULT '' COMMENT '计划任务模板key',
+  status int(11) NOT NULL DEFAULT 1 COMMENT '任务状态 是否启用',
+  time varchar(500) NOT NULL DEFAULT '' COMMENT '任务周期  json结构',
+  count int(11) NOT NULL DEFAULT 0 COMMENT '执行次数',
+  last_time int(11) NOT NULL DEFAULT 0 COMMENT '最后执行时间',
+  next_time int(11) NOT NULL DEFAULT 0 COMMENT '下次执行时间',
+  create_time int(11) NOT NULL DEFAULT 0 COMMENT '创建时间',
+  delete_time int(11) NOT NULL DEFAULT 0 COMMENT '删除时间',
+  update_time int(11) NOT NULL DEFAULT 0 COMMENT '更新时间',
+  sort int(11) NOT NULL DEFAULT 0 COMMENT '排序',
+  PRIMARY KEY (id)
+)
+ENGINE = INNODB,
+CHARACTER SET utf8mb4,
+COLLATE utf8mb4_general_ci,
+COMMENT = '系统任务';
 
---
--- `ns_sys_role`
---
 CREATE TABLE sys_role (
   role_id int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '角色id',
   site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -290,11 +288,9 @@ CREATE TABLE sys_role (
   PRIMARY KEY (role_id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 1638,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
-COMMENT = '角色表',
-ROW_FORMAT = COMPACT;
+COMMENT = '角色表';
 
 ALTER TABLE sys_role
 ADD INDEX site_id (site_id);
@@ -302,9 +298,6 @@ ADD INDEX site_id (site_id);
 ALTER TABLE sys_role
 ADD INDEX status (status);
 
---
--- `ns_sys_notice_sms_log`
---
 CREATE TABLE sys_notice_sms_log (
   id int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
   site_id int(11) NOT NULL DEFAULT 0,
@@ -323,14 +316,10 @@ CREATE TABLE sys_notice_sms_log (
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 496,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
 COMMENT = '短信发送表';
 
---
--- `ns_sys_notice_log`
---
 CREATE TABLE sys_notice_log (
   id int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '通知记录ID',
   site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -350,24 +339,19 @@ CREATE TABLE sys_notice_log (
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 712,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
-COMMENT = '通知记录表',
-ROW_FORMAT = COMPACT;
+COMMENT = '通知记录表';
 
 ALTER TABLE sys_notice_log
 ADD INDEX member_id (member_id);
 
 ALTER TABLE sys_notice_log
-ADD INDEX message_key (`key` (191));
+ADD INDEX message_key (`key`);
 
 ALTER TABLE sys_notice_log
 ADD INDEX uid (uid);
 
---
--- `ns_sys_notice`
---
 CREATE TABLE sys_notice (
   id int(11) NOT NULL AUTO_INCREMENT,
   site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点ID',
@@ -385,18 +369,13 @@ CREATE TABLE sys_notice (
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 2048,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
-COMMENT = '通知模型',
-ROW_FORMAT = COMPACT;
+COMMENT = '通知模型';
 
 ALTER TABLE sys_notice
 ADD INDEX message_key (`key`, site_id);
 
---
--- `ns_sys_menu`
---
 CREATE TABLE sys_menu (
   id int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '菜单ID',
   app_type varchar(255) NOT NULL DEFAULT 'admin' COMMENT '应用类型',
@@ -421,21 +400,17 @@ ENGINE = INNODB,
 AVG_ROW_LENGTH = 406,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
-COMMENT = '菜单表',
-ROW_FORMAT = COMPACT;
+COMMENT = '菜单表';
 
 ALTER TABLE sys_menu
 ADD INDEX is_show (is_show);
 
 ALTER TABLE sys_menu
-ADD INDEX menu_key (menu_key (191), app_type (191));
+ADD INDEX menu_key (menu_key, app_type);
 
 ALTER TABLE sys_menu
-ADD INDEX parent_key (parent_key (191));
+ADD INDEX parent_key (parent_key);
 
---
--- `ns_sys_cron_task`
---
 CREATE TABLE sys_cron_task (
   id int(11) NOT NULL AUTO_INCREMENT,
   site_id int(11) NOT NULL DEFAULT 0,
@@ -457,14 +432,10 @@ CREATE TABLE sys_cron_task (
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 8192,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
 COMMENT = ' 系统任务';
 
---
--- `ns_sys_config`
---
 CREATE TABLE sys_config (
   id int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
   site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -477,18 +448,13 @@ CREATE TABLE sys_config (
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 910,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
-COMMENT = '系统配置表',
-ROW_FORMAT = COMPACT;
+COMMENT = '系统配置表';
 
 ALTER TABLE sys_config
-ADD INDEX config_key (config_key (191), site_id);
+ADD INDEX config_key (config_key, site_id);
 
---
--- `ns_sys_attachment_category`
---
 CREATE TABLE sys_attachment_category (
   id int(11) NOT NULL AUTO_INCREMENT,
   site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -501,11 +467,9 @@ CREATE TABLE sys_attachment_category (
   UNIQUE INDEX id (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 3276,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
-COMMENT = '附件分类表',
-ROW_FORMAT = COMPACT;
+COMMENT = '附件分类表';
 
 ALTER TABLE sys_attachment_category
 ADD INDEX pid (pid);
@@ -513,9 +477,6 @@ ADD INDEX pid (pid);
 ALTER TABLE sys_attachment_category
 ADD INDEX sort (sort);
 
---
--- `ns_sys_attachment`
---
 CREATE TABLE sys_attachment (
   att_id int(11) NOT NULL AUTO_INCREMENT,
   site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -533,11 +494,9 @@ CREATE TABLE sys_attachment (
   PRIMARY KEY (att_id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 702,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
-COMMENT = '附件管理表',
-ROW_FORMAT = COMPACT;
+COMMENT = '附件管理表';
 
 ALTER TABLE sys_attachment
 ADD INDEX cate_id (cate_id);
@@ -548,9 +507,6 @@ ADD INDEX create_time (create_time);
 ALTER TABLE sys_attachment
 ADD INDEX site_id (site_id);
 
---
--- `ns_sys_area`
---
 CREATE TABLE sys_area (
   id int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   pid int(11) NOT NULL DEFAULT 0 COMMENT '父级',
@@ -582,9 +538,6 @@ ADD INDEX longitude (longitude, latitude);
 ALTER TABLE sys_area
 ADD INDEX pid (pid);
 
---
--- `ns_sys_agreement`
---
 CREATE TABLE sys_agreement (
   id int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
   site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -596,7 +549,6 @@ CREATE TABLE sys_agreement (
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 6553,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
 COMMENT = '协议表';
@@ -607,9 +559,6 @@ ADD INDEX agreement_key (agreement_key);
 ALTER TABLE sys_agreement
 ADD INDEX site_id (site_id);
 
---
--- `ns_site_group`
---
 CREATE TABLE site_group (
   group_id int(11) NOT NULL AUTO_INCREMENT COMMENT '分组ID',
   group_name varchar(255) NOT NULL DEFAULT '' COMMENT '分组名称',
@@ -621,16 +570,27 @@ CREATE TABLE site_group (
   PRIMARY KEY (group_id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 2048,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
 COMMENT = '店铺分组（分组权限）';
 
---
--- `ns_site`
---
+CREATE TABLE site_account_log (
+  id int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
+  type varchar(255) NOT NULL DEFAULT 'pay' COMMENT '账单类型pay,refund,transfer',
+  money decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '交易金额',
+  trade_no varchar(255) NOT NULL DEFAULT '' COMMENT '对应类型交易单号',
+  create_time varchar(255) NOT NULL DEFAULT '0' COMMENT '添加时间',
+  PRIMARY KEY (id)
+)
+ENGINE = INNODB,
+CHARACTER SET utf8mb4,
+COLLATE utf8mb4_general_ci,
+COMMENT = '站点账单记录';
+
 CREATE TABLE site (
   site_id int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  site_code varchar(32) NOT NULL DEFAULT '' COMMENT '站点code码',
   site_name varchar(50) NOT NULL DEFAULT '' COMMENT '站点名称',
   group_id int(11) NOT NULL DEFAULT 0 COMMENT '分组ID(0:不限制)',
   keywords varchar(255) NOT NULL DEFAULT '' COMMENT '关键字',
@@ -648,7 +608,7 @@ CREATE TABLE site (
   phone varchar(255) NOT NULL DEFAULT '' COMMENT '客服电话',
   business_hours varchar(255) NOT NULL DEFAULT '' COMMENT '营业时间',
   create_time int(11) NOT NULL DEFAULT 0 COMMENT '创建时间',
-  expire_time BIGINT NOT NULL DEFAULT 0 COMMENT '到期时间（如果是0 无限期）',
+  expire_time bigint(20) NOT NULL DEFAULT 0 COMMENT '到期时间（如果是0 无限期）',
   front_end_name varchar(50) NOT NULL DEFAULT '' COMMENT '前台名称',
   front_end_logo varchar(255) NOT NULL DEFAULT '' COMMENT '前台logo',
   icon varchar(255) NOT NULL DEFAULT '' COMMENT '网站图标',
@@ -656,11 +616,11 @@ CREATE TABLE site (
   PRIMARY KEY (site_id)
 )
 ENGINE = INNODB,
+AUTO_INCREMENT = 2,
 AVG_ROW_LENGTH = 1365,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
-COMMENT = '站点表',
-ROW_FORMAT = COMPACT;
+COMMENT = '站点表';
 
 ALTER TABLE site
 ADD INDEX create_time (create_time);
@@ -668,9 +628,99 @@ ADD INDEX create_time (create_time);
 ALTER TABLE site
 ADD INDEX group_id (group_id);
 
---
--- `ns_pay_transfer`
---
+CREATE TABLE recharge_order_log (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  order_id int(11) NOT NULL DEFAULT 0 COMMENT '订单id',
+  site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
+  action varchar(255) NOT NULL DEFAULT '' COMMENT '操作内容',
+  uid int(11) NOT NULL DEFAULT 0 COMMENT '操作人id',
+  nick_name varchar(50) NOT NULL DEFAULT '' COMMENT '操作人名称',
+  order_status int(11) NOT NULL DEFAULT 0 COMMENT '订单状态，操作后',
+  action_way bigint(20) NOT NULL DEFAULT 2 COMMENT '操作类型1买家2卖家 3 系统任务',
+  order_status_name varchar(255) NOT NULL DEFAULT '' COMMENT '订单状态名称，操作后',
+  action_time int(11) NOT NULL DEFAULT 0 COMMENT '操作时间',
+  PRIMARY KEY (id)
+)
+ENGINE = INNODB,
+CHARACTER SET utf8mb4,
+COLLATE utf8mb4_general_ci,
+COMMENT = '订单操作记录表';
+
+CREATE TABLE recharge_order_item_refund (
+  refund_id int(11) NOT NULL AUTO_INCREMENT,
+  order_item_id int(11) NOT NULL DEFAULT 0 COMMENT '订单id',
+  order_id int(11) NOT NULL DEFAULT 0 COMMENT '订单id',
+  order_no varchar(255) NOT NULL DEFAULT '' COMMENT '订单编号',
+  refund_no varchar(255) NOT NULL DEFAULT '0' COMMENT '退款单号',
+  site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
+  member_id int(11) NOT NULL DEFAULT 0 COMMENT '会员id',
+  num decimal(10, 3) NOT NULL DEFAULT 0.000 COMMENT '退货数量',
+  money decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '总退款',
+  status int(11) NOT NULL DEFAULT 0 COMMENT '退款状态',
+  create_time int(11) NOT NULL DEFAULT 0 COMMENT '创建时间',
+  audit_time int(11) NOT NULL DEFAULT 0 COMMENT '审核时间',
+  transfer_time int(11) NOT NULL DEFAULT 0 COMMENT '转账时间',
+  item_type varchar(255) NOT NULL DEFAULT '' COMMENT '项目类型',
+  PRIMARY KEY (refund_id)
+)
+ENGINE = INNODB,
+CHARACTER SET utf8mb4,
+COLLATE utf8mb4_general_ci,
+COMMENT = '订单退款表';
+
+CREATE TABLE recharge_order_item (
+  order_item_id int(11) NOT NULL AUTO_INCREMENT,
+  order_id int(11) NOT NULL DEFAULT 0 COMMENT '订单id',
+  site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
+  member_id int(11) NOT NULL DEFAULT 0 COMMENT '购买会员id',
+  item_id int(11) NOT NULL DEFAULT 0 COMMENT '项目id',
+  item_type varchar(255) NOT NULL DEFAULT '' COMMENT '项目类型',
+  item_name varchar(400) NOT NULL DEFAULT '' COMMENT '项目名称',
+  item_image varchar(2000) NOT NULL DEFAULT '' COMMENT '项目图片',
+  price decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '项目单价',
+  num decimal(10, 3) NOT NULL DEFAULT 0.000 COMMENT '购买数量',
+  item_money decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '项目总价',
+  is_refund int(11) NOT NULL DEFAULT 0 COMMENT '是否退款',
+  refund_no varchar(255) NOT NULL DEFAULT '' COMMENT '退款编号',
+  refund_status int(11) NOT NULL DEFAULT 0 COMMENT '退款状态',
+  create_time int(11) NOT NULL DEFAULT 0 COMMENT '创建时间',
+  PRIMARY KEY (order_item_id)
+)
+ENGINE = INNODB,
+CHARACTER SET utf8mb4,
+COLLATE utf8mb4_general_ci,
+COMMENT = '订单商品表';
+
+CREATE TABLE recharge_order (
+  order_id int(11) NOT NULL AUTO_INCREMENT,
+  site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
+  order_no varchar(50) NOT NULL DEFAULT '' COMMENT '订单编号',
+  order_from varchar(55) NOT NULL DEFAULT '' COMMENT '订单来源',
+  order_type varchar(50) NOT NULL DEFAULT '' COMMENT '订单类型',
+  out_trade_no varchar(50) NOT NULL DEFAULT '' COMMENT '支付流水号',
+  order_status int(11) NOT NULL DEFAULT 0 COMMENT '订单状态',
+  refund_status int(11) NOT NULL DEFAULT 0 COMMENT '退款状态',
+  member_id int(11) NOT NULL DEFAULT 0 COMMENT '会员id',
+  ip varchar(20) NOT NULL DEFAULT '' COMMENT '会员ip',
+  member_message varchar(50) NOT NULL DEFAULT '' COMMENT '会员留言信息',
+  order_item_money decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '订单项目金额',
+  order_discount_money decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '订单优惠金额',
+  order_money decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '订单金额',
+  create_time int(11) NOT NULL DEFAULT 0 COMMENT '创建时间',
+  pay_time int(11) NOT NULL DEFAULT 0 COMMENT '订单支付时间',
+  close_time int(11) NOT NULL DEFAULT 0 COMMENT '订单关闭时间',
+  is_delete int(11) NOT NULL DEFAULT 0 COMMENT '是否删除(针对后台)',
+  is_enable_refund int(11) NOT NULL DEFAULT 0 COMMENT '是否允许退款',
+  remark varchar(255) NOT NULL DEFAULT '' COMMENT '商家留言',
+  invoice_id int(11) NOT NULL DEFAULT 0 COMMENT '发票id，0表示不开发票',
+  close_reason varchar(255) NOT NULL DEFAULT '' COMMENT '关闭原因',
+  PRIMARY KEY (order_id)
+)
+ENGINE = INNODB,
+CHARACTER SET utf8mb4,
+COLLATE utf8mb4_general_ci,
+COMMENT = '订单表';
+
 CREATE TABLE pay_transfer (
   id int(11) NOT NULL AUTO_INCREMENT,
   site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -697,7 +747,6 @@ CREATE TABLE pay_transfer (
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 3276,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
 COMMENT = '转账表';
@@ -714,19 +763,19 @@ ADD INDEX member_withdraw_site_id (site_id, main_id);
 ALTER TABLE pay_transfer
 ADD INDEX member_withdraw_status (transfer_status);
 
---
--- `ns_pay_refund`
---
+ALTER TABLE pay_transfer
+ADD UNIQUE INDEX UK_ns_pay_transfer_transfer_no (transfer_no);
+
 CREATE TABLE pay_refund (
   id int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
   site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
-  refund_no varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '退款单号',
-  out_trade_no varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '支付流水号',
-  type varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '支付方式',
+  refund_no varchar(255) NOT NULL DEFAULT '' COMMENT '退款单号',
+  out_trade_no varchar(255) NOT NULL DEFAULT '' COMMENT '支付流水号',
+  type varchar(255) NOT NULL DEFAULT '' COMMENT '支付方式',
   channel varchar(50) NOT NULL DEFAULT '' COMMENT '支付渠道',
   money decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '支付金额',
-  reason varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '退款原因',
-  status varchar(255) NOT NULL DEFAULT '0' COMMENT '支付状态（0.待退款 1. 退款中中 2. 已退款 -1已关闭）',
+  reason varchar(255) NOT NULL DEFAULT '' COMMENT '退款原因',
+  status varchar(255) NOT NULL DEFAULT '0' COMMENT '支付状态（0.待退款 1. 退款中 2. 已退款 -1已关闭）',
   create_time int(11) NOT NULL DEFAULT 0 COMMENT '创建时间',
   refund_time int(11) NOT NULL DEFAULT 0 COMMENT '支付时间',
   close_time int(11) NOT NULL DEFAULT 0 COMMENT '关闭时间',
@@ -734,19 +783,18 @@ CREATE TABLE pay_refund (
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 5461,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
 COMMENT = '支付记录表';
 
---
--- `ns_pay_channel`
---
+ALTER TABLE pay_refund
+ADD UNIQUE INDEX UK_ns_pay_refund_refund_no (refund_no);
+
 CREATE TABLE pay_channel (
   id int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
-  site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
-  type varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '支付类型',
-  channel varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '支付渠道',
+  site_id int(11) NOT NULL DEFAULT 1 COMMENT '站点id',
+  type varchar(255) NOT NULL DEFAULT '' COMMENT '支付类型',
+  channel varchar(255) NOT NULL DEFAULT '' COMMENT '支付渠道',
   config text NOT NULL COMMENT '支付配置',
   create_time int(11) NOT NULL DEFAULT 0 COMMENT '创建时间',
   update_time int(11) NOT NULL DEFAULT 0 COMMENT '修改时间',
@@ -755,14 +803,10 @@ CREATE TABLE pay_channel (
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 496,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
 COMMENT = '支付渠道配置表';
 
---
--- `ns_pay`
---
 CREATE TABLE pay (
   id int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
   site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -785,7 +829,6 @@ CREATE TABLE pay (
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 16384,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
 COMMENT = '支付记录表';
@@ -793,122 +836,6 @@ COMMENT = '支付记录表';
 ALTER TABLE pay
 ADD UNIQUE INDEX UK_ns_pay_out_trade_no (out_trade_no);
 
---
--- `ns_recharge_order_log`
---
-CREATE TABLE recharge_order_log (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  order_id int(11) NOT NULL DEFAULT 0 COMMENT '订单id',
-  site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
-  action varchar(255) NOT NULL DEFAULT '' COMMENT '操作内容',
-  uid int(11) NOT NULL DEFAULT 0 COMMENT '操作人id',
-  nick_name varchar(50) NOT NULL DEFAULT '' COMMENT '操作人名称',
-  order_status int(11) NOT NULL DEFAULT 0 COMMENT '订单状态，操作后',
-  action_way bigint(20) NOT NULL DEFAULT 2 COMMENT '操作类型1买家2卖家 3 系统任务',
-  order_status_name varchar(255) NOT NULL DEFAULT '' COMMENT '订单状态名称，操作后',
-  action_time int(11) NOT NULL DEFAULT 0 COMMENT '操作时间',
-  PRIMARY KEY (id)
-)
-ENGINE = INNODB,
-AVG_ROW_LENGTH = 223,
-CHARACTER SET utf8mb4,
-COLLATE utf8mb4_general_ci,
-COMMENT = '订单操作记录表',
-ROW_FORMAT = COMPACT;
-
---
--- `ns_recharge_order_item_refund`
---
-CREATE TABLE recharge_order_item_refund (
-  refund_id int(11) NOT NULL AUTO_INCREMENT,
-  order_item_id int(11) NOT NULL DEFAULT 0 COMMENT '订单id',
-  order_id int(11) NOT NULL DEFAULT 0 COMMENT '订单id',
-  order_no varchar(255) NOT NULL DEFAULT '' COMMENT '订单编号',
-  refund_no varchar(255) NOT NULL DEFAULT '0' COMMENT '退款单号',
-  site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
-  member_id int(11) NOT NULL DEFAULT 0 COMMENT '会员id',
-  num decimal(10, 3) NOT NULL DEFAULT 0.000 COMMENT '退货数量',
-  money decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '总退款',
-  status int(11) NOT NULL DEFAULT 0 COMMENT '退款状态',
-  create_time int(11) NOT NULL DEFAULT 0 COMMENT '创建时间',
-  audit_time int(11) NOT NULL DEFAULT 0 COMMENT '审核时间',
-  transfer_time int(11) NOT NULL DEFAULT 0 COMMENT '转账时间',
-  item_type varchar(255) NOT NULL DEFAULT '' COMMENT '项目类型',
-  PRIMARY KEY (refund_id)
-)
-ENGINE = INNODB,
-AVG_ROW_LENGTH = 16384,
-CHARACTER SET utf8mb4,
-COLLATE utf8mb4_general_ci,
-COMMENT = '订单退款表',
-ROW_FORMAT = COMPACT;
-
---
--- `recharge_order_item`
---
-CREATE TABLE recharge_order_item (
-  order_item_id int(11) NOT NULL AUTO_INCREMENT,
-  order_id int(11) NOT NULL DEFAULT 0 COMMENT '订单id',
-  site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
-  member_id int(11) NOT NULL DEFAULT 0 COMMENT '购买会员id',
-  item_id int(11) NOT NULL DEFAULT 0 COMMENT '项目id',
-  item_type varchar(255) NOT NULL DEFAULT '' COMMENT '项目类型',
-  item_name varchar(400) NOT NULL DEFAULT '' COMMENT '项目名称',
-  item_image varchar(2000) NOT NULL DEFAULT '' COMMENT '项目图片',
-  price decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '项目单价',
-  num decimal(10, 3) NOT NULL DEFAULT 0.000 COMMENT '购买数量',
-  item_money decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '项目总价',
-  is_refund int(11) NOT NULL DEFAULT 0 COMMENT '是否退款',
-  refund_no varchar(255) NOT NULL DEFAULT '' COMMENT '退款编号',
-  refund_status int(11) NOT NULL DEFAULT 0 COMMENT '退款状态',
-  create_time int(11) NOT NULL DEFAULT 0,
-  PRIMARY KEY (order_item_id)
-)
-ENGINE = INNODB,
-AVG_ROW_LENGTH = 16384,
-CHARACTER SET utf8mb4,
-COLLATE utf8mb4_general_ci,
-COMMENT = '订单商品表',
-ROW_FORMAT = COMPACT;
-
---
--- `recharge_order`
---
-CREATE TABLE `recharge_order` (
-  order_id int(11) NOT NULL AUTO_INCREMENT,
-  site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
-  order_no varchar(50) NOT NULL DEFAULT '' COMMENT '订单编号',
-  order_from varchar(55) NOT NULL DEFAULT '' COMMENT '订单来源',
-  order_type varchar(50) NOT NULL DEFAULT '' COMMENT '订单类型',
-  out_trade_no varchar(50) NOT NULL DEFAULT '' COMMENT '支付流水号',
-  order_status int(11) NOT NULL DEFAULT 0 COMMENT '订单状态',
-  refund_status int(11) NOT NULL DEFAULT 0 COMMENT '退款状态',
-  member_id int(11) NOT NULL DEFAULT 0 COMMENT '会员id',
-  ip varchar(20) NOT NULL DEFAULT '' COMMENT '会员ip',
-  member_message varchar(50) NOT NULL DEFAULT '' COMMENT '会员留言信息',
-  order_item_money decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '订单项目金额',
-  order_discount_money decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '订单优惠金额',
-  order_money decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '订单金额',
-  create_time int(11) NOT NULL DEFAULT 0 COMMENT '创建时间',
-  pay_time int(11) NOT NULL DEFAULT 0 COMMENT '订单支付时间',
-  close_time int(11) NOT NULL DEFAULT 0 COMMENT '订单关闭时间',
-  is_delete int(11) NOT NULL DEFAULT 0 COMMENT '是否删除(针对后台)',
-  is_enable_refund int(11) NOT NULL DEFAULT 0 COMMENT '是否允许退款',
-  remark varchar(255) NOT NULL DEFAULT '' COMMENT '商家留言',
-  invoice_id int(11) NOT NULL DEFAULT 0 COMMENT '发票id，0表示不开发票',
-  close_reason varchar(255) NOT NULL DEFAULT '' COMMENT '关闭原因',
-  PRIMARY KEY (order_id)
-)
-ENGINE = INNODB,
-AVG_ROW_LENGTH = 16384,
-CHARACTER SET utf8mb4,
-COLLATE utf8mb4_general_ci,
-COMMENT = '订单表',
-ROW_FORMAT = COMPACT;
-
---
--- `ns_member_level`
---
 CREATE TABLE member_level (
   level_id int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '会员等级',
   site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -921,11 +848,9 @@ CREATE TABLE member_level (
   PRIMARY KEY (level_id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 16384,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
-COMMENT = '会员等级',
-ROW_FORMAT = COMPACT;
+COMMENT = '会员等级';
 
 ALTER TABLE member_level
 ADD INDEX site_id (site_id);
@@ -933,9 +858,6 @@ ADD INDEX site_id (site_id);
 ALTER TABLE member_level
 ADD INDEX status (status);
 
---
--- `ns_member_label`
---
 CREATE TABLE member_label (
   label_id int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '标签id',
   site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -948,11 +870,9 @@ CREATE TABLE member_label (
   INDEX label_id (label_id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 8192,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
-COMMENT = '会员标签',
-ROW_FORMAT = COMPACT;
+COMMENT = '会员标签';
 
 ALTER TABLE member_label
 ADD INDEX site_id (site_id);
@@ -960,13 +880,10 @@ ADD INDEX site_id (site_id);
 ALTER TABLE member_label
 ADD INDEX sort (sort);
 
---
--- `ns_member_cash_out_account`
---
 CREATE TABLE member_cash_out_account (
   account_id int(11) NOT NULL AUTO_INCREMENT,
-  site_id int(11) NOT NULL COMMENT '站点id',
-  member_id int(11) NOT NULL COMMENT '会员id',
+  site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
+  member_id int(11) NOT NULL DEFAULT 0 COMMENT '会员id',
   account_type varchar(255) NOT NULL DEFAULT '' COMMENT '账户类型',
   bank_name varchar(255) NOT NULL DEFAULT '' COMMENT '银行名称',
   realname varchar(255) NOT NULL DEFAULT '' COMMENT '真实名称',
@@ -976,14 +893,10 @@ CREATE TABLE member_cash_out_account (
   PRIMARY KEY (account_id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 8192,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
 COMMENT = '会员提现账户';
 
---
--- `ns_member_cash_out`
---
 CREATE TABLE member_cash_out (
   id int(11) NOT NULL AUTO_INCREMENT,
   site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -1014,7 +927,6 @@ CREATE TABLE member_cash_out (
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 297,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
 COMMENT = '会员提现表';
@@ -1034,9 +946,6 @@ ADD INDEX member_withdraw_status (status);
 ALTER TABLE member_cash_out
 ADD INDEX member_withdraw_withdraw_no (cash_out_no);
 
---
--- `ns_member_address`
---
 CREATE TABLE member_address (
   id int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   member_id int(11) NOT NULL DEFAULT 0 COMMENT '会员id',
@@ -1057,18 +966,13 @@ CREATE TABLE member_address (
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 16384,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
-COMMENT = '会员收货地址',
-ROW_FORMAT = COMPACT;
+COMMENT = '会员收货地址';
 
 ALTER TABLE member_address
 ADD INDEX IDX_member_address (member_id, site_id);
 
---
--- `ns_member_account_log`
---
 CREATE TABLE member_account_log (
   id int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   member_id int(11) NOT NULL DEFAULT 0 COMMENT '用户id',
@@ -1083,27 +987,22 @@ CREATE TABLE member_account_log (
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 4096,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
-COMMENT = '会员账单表',
-ROW_FORMAT = COMPACT;
+COMMENT = '会员账单表';
 
 ALTER TABLE member_account_log
-ADD INDEX account_type (account_type (191));
+ADD INDEX account_type (account_type);
 
 ALTER TABLE member_account_log
 ADD INDEX create_time (create_time);
 
 ALTER TABLE member_account_log
-ADD INDEX from_type (from_type (191));
+ADD INDEX from_type (from_type);
 
 ALTER TABLE member_account_log
 ADD INDEX member_id (member_id);
 
---
--- `ns_member`
---
 CREATE TABLE member (
   member_id int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
   member_no varchar(255) NOT NULL DEFAULT '' COMMENT '会员编码',
@@ -1145,7 +1044,7 @@ CREATE TABLE member (
   growth_get int(11) NOT NULL DEFAULT 0 COMMENT '累计获得成长值',
   commission decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '当前佣金',
   commission_get decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '佣金获取',
-  commission_cash_outing decimal(10, 2) NOT NULL COMMENT '提现中佣金',
+  commission_cash_outing decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '提现中佣金',
   is_member tinyint(4) NOT NULL DEFAULT 0 COMMENT '是否是会员',
   member_time int(11) NOT NULL DEFAULT 0 COMMENT '成为会员时间',
   is_del tinyint(4) NOT NULL DEFAULT 0 COMMENT '0正常  1已删除',
@@ -1159,36 +1058,31 @@ CREATE TABLE member (
   PRIMARY KEY (member_id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 4096,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
-COMMENT = '会员表',
-ROW_FORMAT = COMPACT;
+COMMENT = '会员表';
 
 ALTER TABLE member
 ADD INDEX mobile (mobile);
 
 ALTER TABLE member
-ADD INDEX password (password (191));
+ADD INDEX password (password);
 
 ALTER TABLE member
 ADD INDEX site_id (site_id);
 
 ALTER TABLE member
-ADD INDEX username (username (191));
+ADD INDEX username (username);
 
 ALTER TABLE member
-ADD INDEX weapp_openid (weapp_openid (191));
+ADD INDEX weapp_openid (weapp_openid);
 
 ALTER TABLE member
-ADD INDEX wx_openid (wx_openid (191));
+ADD INDEX wx_openid (wx_openid);
 
 ALTER TABLE member
-ADD INDEX wx_unionid (wx_unionid (191));
+ADD INDEX wx_unionid (wx_unionid);
 
---
--- `ns_jobs_failed`
---
 CREATE TABLE jobs_failed (
   id int(11) NOT NULL AUTO_INCREMENT,
   `connection` text NOT NULL,
@@ -1203,9 +1097,6 @@ CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
 COMMENT = '消息队列任务失败记录表';
 
---
--- `ns_jobs`
---
 CREATE TABLE jobs (
   id int(11) NOT NULL AUTO_INCREMENT,
   queue varchar(255) NOT NULL,
@@ -1217,16 +1108,13 @@ CREATE TABLE jobs (
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 5461,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
 COMMENT = '消息队列任务表';
 
-ALTER TABLE jobs ADD INDEX queue (queue);
+ALTER TABLE jobs
+ADD INDEX queue (queue);
 
---
--- `ns_generate_table`
---
 CREATE TABLE generate_table (
   id int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   table_name varchar(255) NOT NULL DEFAULT '' COMMENT '表名',
@@ -1238,14 +1126,10 @@ CREATE TABLE generate_table (
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 780,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
 COMMENT = '代码生成表';
 
---
--- `ns_generate_column`
---
 CREATE TABLE generate_column (
   id int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
   table_id int(11) NOT NULL DEFAULT 0 COMMENT '表id',
@@ -1263,18 +1147,14 @@ CREATE TABLE generate_column (
   view_type varchar(100) DEFAULT 'input' COMMENT '显示类型',
   dict_type varchar(255) DEFAULT '' COMMENT '字典类型',
   create_time int(11) NOT NULL DEFAULT 0 COMMENT '创建时间',
-  update_time int(11) NOT NULL DEFAULT 0 NULL COMMENT '修改时间',
+  update_time int(11) NOT NULL DEFAULT 0 COMMENT '修改时间',
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 321,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
 COMMENT = '代码生成表字段信息表';
 
---
--- `ns_diy_route`
---
 CREATE TABLE diy_route (
   id int(11) NOT NULL AUTO_INCREMENT,
   site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
@@ -1287,22 +1167,21 @@ CREATE TABLE diy_route (
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 2730,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
 COMMENT = '自定义路由';
 
---
--- `ns_diy_page`
---
 CREATE TABLE diy_page (
   id int(11) NOT NULL AUTO_INCREMENT,
   site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点id',
   title varchar(255) NOT NULL DEFAULT '' COMMENT '页面名称',
   name varchar(255) NOT NULL DEFAULT '' COMMENT '页面标识',
   type varchar(255) NOT NULL DEFAULT '' COMMENT '页面模板',
+  template varchar(255) NOT NULL DEFAULT '' COMMENT '模板名称',
+  mode varchar(255) NOT NULL DEFAULT 'diy' COMMENT '页面展示模式，diy：自定义，fixed：固定',
   value longtext DEFAULT NULL COMMENT '页面数据，json格式',
   is_default int(11) NOT NULL DEFAULT 0 COMMENT '是否默认页面，1：是，0：否',
+  is_change int(11) NOT NULL DEFAULT 0 COMMENT '数据是否发生过变化，1：变化了，2：没有',
   share varchar(1000) NOT NULL DEFAULT '' COMMENT '分享内容',
   visit_count int(11) NOT NULL DEFAULT 0 COMMENT '访问量',
   create_time int(11) NOT NULL DEFAULT 0 COMMENT '创建时间',
@@ -1310,14 +1189,10 @@ CREATE TABLE diy_page (
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 5461,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
 COMMENT = '自定义页面';
 
---
--- `ns_article_category`
---
 CREATE TABLE article_category (
   category_id int(11) NOT NULL AUTO_INCREMENT COMMENT '文章分类id',
   site_id int(11) NOT NULL DEFAULT 0 COMMENT '站点ID',
@@ -1329,7 +1204,6 @@ CREATE TABLE article_category (
   PRIMARY KEY (category_id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 8192,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
 COMMENT = '文章分类表';
@@ -1346,9 +1220,6 @@ ADD INDEX site_id (site_id);
 ALTER TABLE article_category
 ADD INDEX sort (sort);
 
---
--- `ns_article`
---
 CREATE TABLE article (
   id int(11) NOT NULL AUTO_INCREMENT COMMENT '文章id',
   category_id int(11) NOT NULL COMMENT '文章分类',
@@ -1368,7 +1239,6 @@ CREATE TABLE article (
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
-AVG_ROW_LENGTH = 5461,
 CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
 COMMENT = '文章表';
@@ -1388,9 +1258,6 @@ ADD INDEX IDX_article_site_id (site_id);
 ALTER TABLE article
 ADD INDEX IDX_ns_article_sort (sort);
 
---
--- `ns_addon_log`
---
 CREATE TABLE addon_log (
   id int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   action varchar(40) NOT NULL DEFAULT '' COMMENT '操作类型   install 安装 uninstall 卸载 update 更新',
@@ -1405,18 +1272,15 @@ CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci,
 COMMENT = '插件日志表';
 
---
--- `ns_addon`
---
 CREATE TABLE addon (
   id int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  title varchar(40)  NOT NULL DEFAULT '' COMMENT '插件名称',
-  icon varchar(255)  NOT NULL DEFAULT '' COMMENT '插件图标',
-  `key` varchar(20)  NOT NULL DEFAULT '' COMMENT '插件标识',
-  `desc` text  DEFAULT NULL COMMENT '插件描述',
+  title varchar(40) NOT NULL DEFAULT '' COMMENT '插件名称',
+  icon varchar(255) NOT NULL DEFAULT '' COMMENT '插件图标',
+  `key` varchar(20) NOT NULL DEFAULT '' COMMENT '插件标识',
+  `desc` text DEFAULT NULL COMMENT '插件描述',
   status tinyint(4) NOT NULL DEFAULT 1 COMMENT '状态',
-  author varchar(40)  NOT NULL DEFAULT '' COMMENT '作者',
-  version varchar(20)  NOT NULL DEFAULT '' COMMENT '版本号',
+  author varchar(40) NOT NULL DEFAULT '' COMMENT '作者',
+  version varchar(20) NOT NULL DEFAULT '' COMMENT '版本号',
   create_time int(11) NOT NULL DEFAULT 0 COMMENT '创建时间',
   install_time int(11) NOT NULL DEFAULT 0 COMMENT '安装时间',
   update_time int(11) NOT NULL DEFAULT 0 COMMENT '更新时间',
@@ -1431,9 +1295,12 @@ COMMENT = '插件表';
 ALTER TABLE addon
 ADD UNIQUE INDEX UK_title (title);
 
--- 
--- Dumping data for table ns_sys_area
---
+INSERT INTO sys_user_role VALUES
+(1, 1, 0, '', 0, 1);
+
+INSERT INTO sys_user VALUES
+(1, '', '', '', '', '', 0, 0, 0, 1, 0, 0, 0);
+
 INSERT INTO sys_area VALUES
 (110000, 0, '北京市', '北京', '116.40529', '39.904987', 1, 0, 1),
 (110100, 110000, '北京市', '北京', '116.40529', '39.904987', 2, 0, 1),
@@ -5081,10 +4948,5 @@ INSERT INTO sys_area VALUES
 (460400499, 460400, '洋浦经济开发区', '洋浦经济开发区', '109.202064', '19.736941', 3, 0, 1),
 (460400500, 460400, '华南热作学院', '华南热作学院', '109.494073', '19.505382', 3, 0, 1);
 
-INSERT INTO sys_user_role(id, uid, site_id, is_admin) VALUE
-(1, 1, 0, 1);
-
-INSERT INTO sys_user(uid, username) VALUE
-(1, '');
-INSERT INTO site(site_id, site_name, app_type) VALUE
-(1, 'niucloud-admin', 'admin');
+INSERT INTO site VALUES
+(1, '', 'niucloud-admin', 0, '', 'admin', '', '', 1, '', '', 0, 0, 0, '', '', '', '', 0, 0, '', '', '', '0');

@@ -48,7 +48,8 @@ class Transfer extends BaseModel
      */
     public function getTransferStatusNameAttr($value, $data)
     {
-        return TransferDict::getStatus()[$data['transfer_status'] ?? ''] ?? '';
+        if(empty($data['transfer_status'])) return '';
+        return TransferDict::getStatus()[$data['transfer_status']] ?? '';
     }
 
 
@@ -59,7 +60,9 @@ class Transfer extends BaseModel
      */
     public function getTransferTypeNameAttr($value, $data)
     {
-        return TransferDict::getTransferType()[$data['transfer_type'] ?? '']['name'] ?? '';
+        if(empty($data['transfer_type'])) return '';
+        $temp = TransferDict::getTransferType()[$data['transfer_type']] ?? [];
+        return $temp['name'] ?? '';
     }
 
 }

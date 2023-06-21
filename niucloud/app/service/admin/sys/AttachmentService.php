@@ -174,8 +174,7 @@ class AttachmentService extends BaseAdminService
             ['id', '=', $id]
         );
         $category_model = new SysAttachmentCategory();
-        $res = $category_model->where($where)->update($data);
-        return $res;
+        return $category_model->where($where)->update($data);
     }
 
     /**
@@ -191,8 +190,7 @@ class AttachmentService extends BaseAdminService
             throw new AdminException('ATTACHMENT_GROUP_HAS_IMAGE');
 
         //下级存在图片不能删除
-        $res = $category->delete();
-        return $res;
+        return $category->delete();
 
     }
 

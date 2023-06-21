@@ -42,11 +42,15 @@ class CoreBalanceService extends BaseCoreService
 //        if(empty($password)){
 //
 //        }
-        $site_id = $params['site_id'];
-        $main_id = $params['main_id'];
-        $main_type = $params['main_type'];
-        $money = $params['money'];
         $out_trade_no = $params['out_trade_no'];//交易流水号
+        $site_id = $params['site_id'];
+
+        $pay = (new CorePayService())->findPayInfoByOutTradeNo($site_id, $out_trade_no);
+
+        $main_id = $pay['main_id'];
+        $main_type = $pay['main_type'];
+        $money = $params['money'];
+
         switch($main_type){
             case 'member':
 

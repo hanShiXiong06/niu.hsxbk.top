@@ -45,7 +45,7 @@ class CorePayService extends BaseCoreService
      * @return string|null
      */
     public function create($site_id, string $main_type, int $main_id, float $money, string $trade_type, string $body){
-        $out_trade_no = create_no('pay', $main_id);
+        $out_trade_no = create_no();
         $data = array(
             'site_id' => $site_id,
             'money' => $money,
@@ -262,7 +262,8 @@ class CorePayService extends BaseCoreService
                         return (new CoreRefundService())->refundNotify($site_id, $out_trade_no, $type, $params);
                         break;
                 }
-
+                //找不到对应的业务
+                return true;
             } catch (PayException $e) {
                 return false;
             }
@@ -292,9 +293,8 @@ class CorePayService extends BaseCoreService
         if(!$money){
             $money = $pay->money;
         }
-        $new_out_trade_no = $this->create($site_id, $pay->main_type, $pay->main_id, $money, $pay->trade_type, $pay->body);
         //todo  需要考虑是业务调用重置支付,还是支付重置反馈业务
-        return $new_out_trade_no;
+        return $this->create($site_id, $pay->main_type, $pay->main_id, $money, $pay->trade_type, $pay->body);
     }
 
     /**

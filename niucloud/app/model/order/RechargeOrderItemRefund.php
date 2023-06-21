@@ -49,7 +49,10 @@ class RechargeOrderItemRefund extends BaseModel
      */
     public function getStatusNameAttr($value, $data)
     {
-        return  RechargeOrderDict::getRefundStatus()[$data['status'] ?? '']['name'] ?? '';
+        if(empty($data['status']))
+            return '';
+        $temp = RechargeOrderDict::getRefundStatus()[$data['status']] ?? [];
+        return  $temp['name'] ?? '';
     }
 
     /**

@@ -61,7 +61,7 @@ class MemberAccountService extends BaseAdminService
     public function getInfo(int $id)
     {
         $field = 'id, member_id, site_id, account_type, account_data, from_type, related_id, create_time, memo';
-        return $this->model->where([ [ 'id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->with('memberInfo')->field($field)->findOrEmpty()->append([ 'from_type_name', 'account_type_name' ])->toArray();
+        return $this->model->where([ [ 'id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->with('memberInfo')->field($field)->append([ 'from_type_name', 'account_type_name' ])->findOrEmpty()->toArray();
     }
 
     /**

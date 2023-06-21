@@ -72,7 +72,9 @@ class Member extends BaseModel
      */
     public function getStatusNameAttr($value, $data)
     {
-        return MemberDict::getStatus()[$data['status'] ?? ''] ?? '';
+        if(empty($data['status']))
+            return '';
+        return MemberDict::getStatus()[$data['status']] ?? '';
     }
     /**
      * 注册来源字段转化
@@ -81,7 +83,9 @@ class Member extends BaseModel
      */
     public function getRegisterChannelNameAttr($value, $data)
     {
-        return MemberRegisterChannelDict::getType()[ $data[ 'register_channel' ] ?? '' ] ?? '';
+        if(empty($data['register_channel']))
+            return '';
+        return MemberRegisterChannelDict::getType()[ $data[ 'register_channel' ]] ?? '';
     }
 
     /**
@@ -91,7 +95,9 @@ class Member extends BaseModel
      */
     public function getRegisterTypeNameAttr($value, $data)
     {
-        return MemberRegisterTypeDict::getType()[ $data[ 'register_type' ] ?? '' ] ?? '';
+        if(empty($data['register_type']))
+            return '';
+        return MemberRegisterTypeDict::getType()[ $data[ 'register_type' ]] ?? '';
     }
 
     /**
@@ -101,7 +107,9 @@ class Member extends BaseModel
      */
     public function getLoginChannelNameAttr($value, $data)
     {
-        return ChannelDict::getType()[ $data[ 'login_channel' ] ?? '' ] ?? '';
+        if(empty($data['login_channel']))
+            return '';
+        return ChannelDict::getType()[ $data[ 'login_channel' ]] ?? '';
     }
 
     /**
@@ -111,7 +119,9 @@ class Member extends BaseModel
      */
     public function getLoginTypeNameAttr($value, $data)
     {
-        return MemberLoginTypeDict::getType()[ $data[ 'login_type' ] ?? '' ] ?? '';
+        if(empty($data['login_type']))
+            return '';
+        return MemberLoginTypeDict::getType()[ $data[ 'login_type' ]] ?? '';
     }
 
     /**
@@ -122,7 +132,9 @@ class Member extends BaseModel
      */
     public function getSexNameAttr($value, $data)
     {
-        return CommonDict::getSexType()[ $data[ 'sex' ] ?? '' ] ?? '';
+        if(empty($data['sex']))
+            return '';
+        return CommonDict::getSexType()[ $data[ 'sex' ]] ?? '';
     }
 
     /**

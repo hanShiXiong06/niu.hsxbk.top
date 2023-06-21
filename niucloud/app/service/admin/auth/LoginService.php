@@ -70,7 +70,6 @@ class LoginService extends BaseAdminService
             throw new AuthException('USER_LOCK');
         }
 
-
         if($app_type == AppTypeDict::ADMIN){
             $default_site_id = $this->request->defaultSiteId();
             $userrole = (new UserRoleService())->getUserRole($default_site_id, $userinfo->uid);

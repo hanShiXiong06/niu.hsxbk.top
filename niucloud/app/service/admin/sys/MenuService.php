@@ -142,11 +142,62 @@ class MenuService extends BaseAdminService
             {
                 $menu_list[$k]['menu_name'] = $lang_menu_name;
             }
+            //首页加载
+            if($v['menu_key'] == 'overview' && $v['app_type'] == 'site')
+            {
+                $view_path = (new ConfigService())->getSiteIndexConfig();
+                $menu_list[$k]['view_path'] = $view_path;
+            }
+
         }
 
         return $is_tree ? $this->menuToTree($menu_list, 'menu_key', 'parent_key', 'children', 'auth', '', 1) : $menu_list;
 
     }
+
+    /**
+     * 获取所有接口菜单
+     */
+    public function getAllMenuList($app_type = '', $status = 'all', $is_tree = 0, $is_button = 0)
+    {
+        $cache_name = 'menu_api_' .$app_type.'_'. $status . '_' . $is_tree . '_' . $is_button;
+        $menu_list = cache_remember(
+            $cache_name,
+            function () use ($status, $is_tree, $is_button, $app_type) {
+                $where = [
+//                ['menu_type', 'in', [0,1]]
+                    ['app_type', '=', $app_type],
+                ];
+                if ($status != 'all') {
+                    $where[] = ['status', '=', $status];
+                }
+                $menu_list = $this->model->where($where)->order('sort desc')->select()->toArray();
+                return $menu_list;
+            },
+            self::$cache_tag_name
+        );
+        foreach ($menu_list as $k => $v)
+        {
+            $lang_menu_key = "dict_menu_". $v['app_type']. '.'. $v['menu_key'];
+            $lang_menu_name = get_lang("dict_menu_". $v['app_type']. '.'. $v['menu_key']);
+            //语言已定义
+            if($lang_menu_key != $lang_menu_name)
+            {
+                $menu_list[$k]['menu_name'] = $lang_menu_name;
+            }
+            //首页加载
+            if($v['menu_key'] == 'overview' && $v['app_type'] == 'site')
+            {
+                $view_path = (new ConfigService())->getSiteIndexConfig();
+                $menu_list[$k]['view_path'] = $view_path;
+            }
+
+        }
+
+        return $is_tree ? $this->menuToTree($menu_list, 'menu_key', 'parent_key', 'children', 'auth', '', $is_button) : $menu_list;
+
+    }
+
 
     /**
      * 通过菜单menu_key组获取接口数组
@@ -173,19 +224,6 @@ class MenuService extends BaseAdminService
             },
             self::$cache_tag_name
         );
-//        return Cache::tag(self::$cache_tag_name)->remember($cache_name, function () use ($menu_keys, $app_type) {
-//            $where = [
-//                ['menu_key', 'in', $menu_keys]
-//            ];
-//            if(!empty($app_type)){
-//                $where[] = ['app_type', '=', $app_type];
-//            }
-//            $menu_list = (new SysMenu())->where($where)->order('sort', 'desc')->column('api_url,methods');
-//            foreach ($menu_list as $v) {
-//                $auth_menu_list[$v['methods']][] = $v['api_url'];
-//            }
-//            return $auth_menu_list ?? [];
-//        });
     }
 
 
@@ -214,18 +252,6 @@ class MenuService extends BaseAdminService
             },
             self::$cache_tag_name
         );
-//        return Cache::tag(self::$cache_tag_name)->remember($cache_name, function () use ($menu_keys, $app_type) {
-//            $where = [
-//                ['menu_key', 'in', $menu_keys],
-//                ['menu_type', '=', MenuTypeDict::BUTTON]
-//            ];
-//            if(!empty($app_type)){
-//                $where[] = ['app_type', '=', $app_type];
-//            }
-//            $menu_list = $this->model->where($where)->order('sort', 'desc')->column('menu_key');
-//            return $menu_list;
-//
-//        });
     }
 
     /**
@@ -256,21 +282,6 @@ class MenuService extends BaseAdminService
             },
             self::$cache_tag_name
         );
-//        return Cache::tag(self::$cache_tag_name)->remember($cache_name, function () use ($status, $app_type) {
-//            $where = [
-//                ['api_url', '<>', ''],
-//                ['app_type', '=', $app_type],
-//            ];
-//            if ($status != 'all') {
-//                $where[] = ['status', '=', $status];
-//            }
-//            $menu_list = $this->model->where($where)->order('sort', 'desc')->column('methods, api_url');
-//            $auth_menu_list = [];
-//            foreach ($menu_list as $v) {
-//                $auth_menu_list[$v['methods']][] = $v['api_url'];
-//            }
-//            return $auth_menu_list;
-//        });
     }
 
     /**
@@ -296,41 +307,6 @@ class MenuService extends BaseAdminService
             self::$cache_tag_name
         );
     }
-    /**
-     * 获取所有接口菜单
-     */
-    public function getAllMenuList($app_type = '', $status = 'all', $is_tree = 0, $is_button = 0)
-    {
-        $cache_name = 'menu_api_' .$app_type.'_'. $status . '_' . $is_tree . '_' . $is_button;
-        $menu_list = cache_remember(
-            $cache_name,
-            function () use ($status, $is_tree, $is_button, $app_type) {
-                $where = [
-//                ['menu_type', 'in', [0,1]]
-                    ['app_type', '=', $app_type],
-                ];
-                if ($status != 'all') {
-                    $where[] = ['status', '=', $status];
-                }
-                $menu_list = $this->model->where($where)->order('sort desc')->select()->toArray();
-               return $menu_list;
-            },
-            self::$cache_tag_name
-        );
-        foreach ($menu_list as $k => $v)
-        {
-            $lang_menu_key = "dict_menu_". $v['app_type']. '.'. $v['menu_key'];
-            $lang_menu_name = get_lang("dict_menu_". $v['app_type']. '.'. $v['menu_key']);
-            //语言已定义
-            if($lang_menu_key != $lang_menu_name)
-            {
-                $menu_list[$k]['menu_name'] = $lang_menu_name;
-            }
-        }
-
-        return $is_tree ? $this->menuToTree($menu_list, 'menu_key', 'parent_key', 'children', 'auth', '', $is_button) : $menu_list;;
-
-    }
 
 
 
@@ -355,17 +331,6 @@ class MenuService extends BaseAdminService
             },
             self::$cache_tag_name
         );
-//        return Cache::tag(self::$cache_tag_name)->remember($cache_name, function () use ($status, $is_tree, $app_type) {
-//            $where = [
-//                ['menu_type', '=', MenuTypeDict::BUTTON],
-//                ['app_type', '=', $app_type],
-//            ];
-//            if ($status != 'all') {
-//                $where[] = ['status', '=', $status];
-//            }
-//            $menu_list = $this->model->where($where)->order('sort', 'desc')->column('menu_key');
-//            return $menu_list;
-//        });
     }
 
     /**
@@ -409,6 +374,40 @@ class MenuService extends BaseAdminService
 
     }
 
+    /**
+     * 获取完整的路由地址
+     * @param $menu
+     * @return string
+     */
+    public function getFullRouterPath($menu_key){
+        $menu = $this->find($menu_key);
+        $parents = [];
+        $this->getParentDirectory($menu, $parents);
+        $parents = array_reverse($parents);
+        $router_path = implode('/', $parents);
+        if(!empty($router_path)){
+            $router_path .= '/'.$menu['router_path'];
+        }else{
+            $router_path = $menu['router_path'];
+        }
+        return $router_path;
+    }
 
+    /**
+     * 递归查询模板集合
+     * @param SysMenu $menu
+     * @param $parents
+     * @return void
+     */
+    public function getParentDirectory(SysMenu $menu, &$parents){
+        if(!$menu->isEmpty() && !empty($menu['parent_key'])){
+            $parent_menu = $this->model->where([['menu_key', '=', $menu['parent_key']]])->findOrEmpty();
+            if(!empty($parent_menu)){
+                if(!empty($parent_menu['router_path'])) $parents[] = $parent_menu['router_path'];
+                $this->getParentDirectory($parent_menu, $parents);
+            }
+        }
+
+    }
 
 }

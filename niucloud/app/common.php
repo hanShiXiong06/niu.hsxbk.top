@@ -5,7 +5,7 @@ use think\Response;
 use think\facade\Lang;
 use think\facade\Queue;
 use think\facade\Cache;
-
+use core\util\Snowflake;
 // 应用公共文件
 
 /**
@@ -369,8 +369,11 @@ function filter($string)
  */
 function create_no(string $prefix = '', string $tag = '')
 {
-    return $prefix . substr(md5($tag), -5) . uniqid();
-
+    $dataCenterId = 1;
+    $machineId = 2;
+    $snowflake = new Snowflake($dataCenterId, $machineId);
+    $id = $snowflake->generateId();
+    return $prefix.$tag.$id;
 }
 
 /**
@@ -416,8 +419,7 @@ function unique_random($len = 10)
 {
     $str = 'qwertyuiopasdfghjklzxcvbnmasdfgh';
     str_shuffle($str);
-    $res = substr(str_shuffle($str), 0, $len);
-    return $res;
+    return substr(str_shuffle($str), 0, $len);
 }
 
 /**
@@ -623,6 +625,7 @@ function parse_sql($content = '', $string = false, $replace = [])
  * 递归查询目录下所有文件
  * @param $path
  * @param $data
+ * @param $search
  * @return void
  */
 function search_dir($path, &$data, $search = '')
@@ -677,8 +680,8 @@ function getFileMap($path, $arr = [])
  * 如果不存在则写入缓存
  * @param string|null $name
  * @param $value
- * @param $options
  * @param $tag
+ * @param $options
  * @return mixed|string
  */
 function cache_remember(string $name = null, $value = '', $tag = null, $options = null){

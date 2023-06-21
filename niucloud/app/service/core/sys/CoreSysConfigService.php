@@ -11,6 +11,7 @@
 
 namespace app\service\core\sys;
 
+use app\model\site\Site;
 use core\base\BaseCoreService;
 
 /**
@@ -32,17 +33,15 @@ class CoreSysConfigService extends BaseCoreService
      * @return array
      */
     public function getSceneDomain(int $site_id){
-        //todo  如果是默认站点
-        $domain = env('system.wap_domain') ?: $this->request->domain();
-        $wap_domain = $domain.'/wap';
-        $web_domain = $domain.'/web';
-        if($site_id != $this->request->defaultSiteId()){
-            $wap_domain = $wap_domain.'/'.$site_id.'/' ;
-            $web_domain = $web_domain.'/'.$site_id.'/' ;
-        }
-        return [
-            'wap_domain' => $wap_domain,
-            'web_domain' => $web_domain,
+        $site = Site::find($site_id);
+        $site_tag = $site[ 'site_code' ];
+
+        $wap_domain = !empty(env("system.wap_domain")) ? preg_replace('#/$#', '', env("system.wap_domain")) : request()->domain();
+        $web_domain = !empty(env("system.web_domain")) ? preg_replace('#/$#', '', env("system.web_domain")) : request()->domain();
+
+        return  [
+            'wap_url' => $wap_domain . "/wap/" . $site_tag . "/",
+            'web_url' => $web_domain . "/web/" . $site_tag . "/"
         ];
     }
 

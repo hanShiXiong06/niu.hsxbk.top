@@ -11,6 +11,7 @@
 
 namespace app\model\article;
 
+use app\model\site\Site;
 use core\base\BaseModel;
 use think\db\Query;
 use think\model\relation\HasOne;
@@ -99,12 +100,16 @@ class Article extends BaseModel
     }
 
     public function getArticleUrlAttr($value, $data) {
-        $site_tag = $data['site_id'] == 1 ? '' : '/s' . $data['site_id'];
-        $data = [
-            'wap_url' => ( !empty(env("system.wap_domain")) ? env("system.wap_domain") : request()->domain() ) . "/wap" . $site_tag . "/pages/article/detail?id={$data['id']}",
-            'web_url' => ( !empty(env("system.web_domain")) ? env("system.web_domain") : request()->domain() ) . "/web" . $site_tag . "/article/detail?id={$data['id']}"
+        $site = Site::find($data['site_id']);
+        $site_tag = $site['site_code'];
+
+        $wap_domain = !empty(env("system.wap_domain")) ? preg_replace('#/$#', '', env("system.wap_domain")) : request()->domain();
+        $web_domain = !empty(env("system.web_domain")) ? preg_replace('#/$#', '', env("system.web_domain")) : request()->domain();
+
+        return  [
+            'wap_url' => $wap_domain . "/wap/" . $site_tag . "/pages/article/detail?id={$data['id']}",
+            'web_url' => $web_domain . "/web/" . $site_tag . "/article/detail?id={$data['id']}"
         ];
-        return $data;
     }
 
 }

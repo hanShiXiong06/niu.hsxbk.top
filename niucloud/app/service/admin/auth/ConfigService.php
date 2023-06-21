@@ -37,13 +37,12 @@ class ConfigService extends BaseAdminService
     public function getConfig()
     {
         $info = (new CoreConfigService())->getConfig($this->request->defaultSiteId(), ConfigKeyDict::ADMIN_LOGIN)['value'] ?? [];
-        $config = [
+        return [
             'is_captcha' => $info['is_captcha'] ?? 0,//是否启用验证码
             'is_site_captcha' => $info['is_site_captcha'] ?? 0,//是否启用站点验证码
             'bg' => $info['bg'] ?? '',//平台登录端 背景
             'site_bg' => $info['site_bg'] ?? '',//站点登录端  背景
         ];
-        return $config;
     }
 
     /**

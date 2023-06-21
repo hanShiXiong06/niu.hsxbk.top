@@ -27,9 +27,7 @@ class AliappConfigService extends BaseAdminService
      */
     public function getAliappConfig()
     {
-        $config_info = (new CoreAliappConfigService())->getAliappConfig($this->site_id);
-        return $config_info;
-
+        return (new CoreAliappConfigService())->getAliappConfig($this->site_id);
     }
 
     /**

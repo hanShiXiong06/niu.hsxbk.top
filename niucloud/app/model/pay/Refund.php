@@ -47,7 +47,8 @@ class Refund extends BaseModel
      */
     public function getStatusNameAttr($value, $data)
     {
-        return RefundDict::getStatus()[$data['status'] ?? ''] ?? '';
+        if(empty($data['status'])) return '';
+        return RefundDict::getStatus()[$data['status']] ?? '';
     }
 
     /**
@@ -57,7 +58,8 @@ class Refund extends BaseModel
      */
     public function getTypeNameAttr($value, $data)
     {
-        return RefundDict::getType()[$data['type'] ?? ''] ?? '';
+        if(empty($data['type'])) return '';
+        return RefundDict::getType()[$data['type']] ?? '';
     }
 
 }

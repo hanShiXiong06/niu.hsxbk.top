@@ -54,11 +54,8 @@ class UserService extends BaseAdminService
             ['uid', '=', $uid],
         );
         $field = 'uid, username, head_img, real_name, last_ip, last_time, create_time, login_count, status, delete_time, update_time';
-        $user = $this->model->where($where)->field($field)->findOrEmpty();
-        if($user->isEmpty()){
-            return [];
-        }
-        return $user->append(['status_name'])->toArray();
+        $user = $this->model->where($where)->field($field)->append(['status_name'])->findOrEmpty();
+        return $user->toArray();
     }
 
     /**
@@ -248,7 +245,7 @@ class UserService extends BaseAdminService
      * @return SysUser|array|mixed|\think\Model
      */
     public function getUserInfoByUsername(string $username){
-        return $this->model->withSearch(['username'], ['username' => $username])->findOrEmpty();
+        return $this->model->where([['username', '=',$username]])->findOrEmpty();
     }
 
 }

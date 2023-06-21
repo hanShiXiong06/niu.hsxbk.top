@@ -24,7 +24,7 @@ class Diy extends \think\Validate
     protected $rule = [
         'title' => 'require',
         'name' => 'require',
-        'type' => 'checkType',
+        'type' => 'require',
         'value' => 'require',
         'is_default' => 'number|between:0,1',
     ];
@@ -35,17 +35,5 @@ class Diy extends \think\Validate
         "add" => [ 'title', 'name', 'type', 'value', 'is_default' ],
         "edit" => [ 'title', 'name', 'value', 'is_default' ],
     ];
-
-    /**
-     * 自定义验证 性别
-     * @param $value
-     * @param $rule
-     * @param array $data
-     * @return bool|string
-     */
-    protected function checkType($value, $rule, $data = [])
-    {
-        return isset(TemplateDict::getTemplate()[ $value ]) ? true : get_lang("validate_diy.type_not_exist");
-    }
 
 }

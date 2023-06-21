@@ -19,6 +19,7 @@ use app\service\admin\sys\MenuService;
 use app\service\admin\sys\RoleService;
 use app\service\admin\user\UserRoleService;
 use app\service\admin\user\UserService;
+use app\service\core\site\CoreSiteService;
 use core\base\BaseAdminService;
 use core\exception\AuthException;
 use Exception;
@@ -35,21 +36,15 @@ class AuthService extends BaseAdminService
      * @param $site_id
      */
     public function checkSiteAuth(Request $request){
-        $site_id = $request->adminSiteId();
-        //没有当前站点的信息
-        if(!$this->getAuthRole($site_id))
-        {
-            throw new AuthException('NO_SITE_PERMISSION');
-        }
-
-        //查询站点信息并返回
-        $site_service = new SiteService();
-        $site_info = $site_service->getSiteCache($site_id);
+        $site_code = $request->adminSiteId();
+        //todo  将站点编号转化为站点id
+        $site_info = (new CoreSiteService())->getSiteInfoBySiteCode($site_code);
         //站点不存在
-        if(empty($site_info))
-        {
-            throw new AuthException('SITE_NOT_EXIST');
-        }
+        if(empty($site_info)) throw new AuthException('SITE_NOT_EXIST');
+        $site_id = $site_info['site_id'];
+        //没有当前站点的信息
+        if(!$this->getAuthRole($site_id)) throw new AuthException('NO_SITE_PERMISSION');
+
         $request->siteId($site_id);
         $request->appType($site_info['app_type']);
         return true;

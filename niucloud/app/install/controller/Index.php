@@ -8,6 +8,7 @@ use app\model\sys\SysUser;
 use app\service\admin\install\InstallSystemService;
 use app\service\admin\site\SiteGroupService;
 use app\service\admin\site\SiteService;
+use app\service\core\schedule\CoreScheduleInstallService;
 use think\facade\Cache;
 use think\facade\Db;
 use think\facade\View;
@@ -320,6 +321,13 @@ class Index extends BaseInstall
                 $this->setSuccessLog([ '菜单初始化失败', 'error' ]);
                 return fail('菜单初始化失败');
             }
+            //初始化计划任务
+            $res = ( new CoreScheduleInstallService())->installSystemSchedule();
+            if (!$res) {
+                $this->setSuccessLog([ '计划任务初始化失败', 'error' ]);
+                return fail('计划任务初始化失败');
+            }
+
 
             $user = ( new SysUser() )->where([ [ 'uid', '=', 1 ] ])->findOrEmpty();
             if (!$user->isEmpty()) {

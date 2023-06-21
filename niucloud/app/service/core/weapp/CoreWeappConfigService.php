@@ -31,7 +31,7 @@ class  CoreWeappConfigService extends BaseCoreService
      */
     public function getWeappConfig(int $site_id){
         $info = (new CoreConfigService())->getConfig($site_id, ConfigKeyDict::WEAPP)['value'] ?? [];
-        $config = [
+        return [
             'weapp_name' => $info['weapp_name'] ?? '',//小程序名称
             'weapp_original' => $info['weapp_original'] ?? '',//原始ID
             'app_id'            => $info['app_id'] ?? '',//AppID
@@ -41,7 +41,6 @@ class  CoreWeappConfigService extends BaseCoreService
             'encoding_aes_key'  => $info['encoding_aes_key'] ?? '',
             'encryption_type'   => $info['encryption_type'] ?? 'not_encrypt',//加解密模式   not_encrypt 明文   compatible 兼容  safe 安全
         ];
-        return $config;
     }
 
     /**

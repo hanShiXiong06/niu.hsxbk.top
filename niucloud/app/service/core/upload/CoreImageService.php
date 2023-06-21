@@ -51,8 +51,7 @@ class CoreImageService extends CoreFileService
         }
         //如果是网络图片,可以将网络图片拉取到本地
         try {
-            $thumb_list = $this->upload_driver->thumb($file_path, $thumb_type);
-            return $thumb_list;
+            return $this->upload_driver->thumb($file_path, $thumb_type);
         } catch (\Throwable $e) {
             throw new UploadFileException($e->getMessage());
         }

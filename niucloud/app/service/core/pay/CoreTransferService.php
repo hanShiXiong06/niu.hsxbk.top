@@ -44,7 +44,7 @@ class CoreTransferService extends BaseCoreService
      * @return string|null
      */
     public function create(int $site_id, string $main_type, int $main_id, float $money, string $trade_type, string $remark){
-        $transfer_no = create_no('pay', $main_id);
+        $transfer_no = create_no();
         $transfer_data = array(
             'site_id' => $site_id,
             'money' => $money,

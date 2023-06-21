@@ -24,8 +24,7 @@ class Aliyun extends BaseUpload
         $access_key_secret = $this->config['secret_key'];
 
         $endpoint = $this->config['endpoint'];// yourEndpoint填写Bucket所在地域对应的Endpoint。以华东1（杭州）为例，Endpoint填写为https://oss-cn-hangzhou.aliyuncs.com。
-        $oss_client = new OssClient($access_key_id, $access_key_secret, $endpoint);
-        return $oss_client;
+        return new OssClient($access_key_id, $access_key_secret, $endpoint);
     }
 
     /**

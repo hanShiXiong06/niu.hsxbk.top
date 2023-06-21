@@ -143,6 +143,7 @@ class DiyRouteService extends BaseAdminService
     public function modifyShare($data)
     {
         $field = 'id';
+        $data[ 'site_id' ] = $this->site_id;
         $info = $this->model->field($field)->where([ [ 'name', '=', $data[ 'name' ] ], [ 'site_id', '=', $this->site_id ] ])->findOrEmpty()->toArray();
         if (!empty($info)) {
             $this->model->where([ [ 'id', '=', $info[ 'id' ] ], [ 'site_id', '=', $this->site_id ] ])->update([ 'share' => $data[ 'share' ] ]);

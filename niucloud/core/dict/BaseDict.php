@@ -93,7 +93,7 @@ abstract class BaseDict extends Storage
      */
     protected function getDictPath()
     {
-        return root_path(). "app". DIRECTORY_SEPARATOR. "dict". DIRECTORY_SEPARATOR;;
+        return root_path(). 'app'. DIRECTORY_SEPARATOR. 'dict'. DIRECTORY_SEPARATOR;
     }
 
     /**
@@ -102,7 +102,7 @@ abstract class BaseDict extends Storage
      */
     protected function getAddonDictPath(string $addon)
     {
-        return $this->getAddonPath($addon). "app". DIRECTORY_SEPARATOR. "dict". DIRECTORY_SEPARATOR;
+        return $this->getAddonPath($addon). 'app'. DIRECTORY_SEPARATOR. 'dict'. DIRECTORY_SEPARATOR;
     }
 
     /**
@@ -111,7 +111,7 @@ abstract class BaseDict extends Storage
      */
     protected function getAddonConfigPath(string $addon)
     {
-        return $this->getAddonPath($addon). "config". DIRECTORY_SEPARATOR;
+        return $this->getAddonPath($addon). 'config'. DIRECTORY_SEPARATOR;
     }
 
     /**

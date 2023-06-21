@@ -16,6 +16,7 @@ use app\job\sys\AddonInstall;
 use app\service\admin\sys\MenuService;
 use app\service\admin\sys\SystemService;
 use app\service\core\menu\CoreMenuService;
+use app\service\core\schedule\CoreScheduleInstallService;
 use core\exception\AddonException;
 use core\exception\CommonException;
 use core\util\Terminal;
@@ -72,6 +73,7 @@ class CoreAddonInstallService extends CoreAddonBaseService
     const SQL_INSTALLED = 'sql_installed';
 
     const MENU_INSTALLED = 'menu_installed';
+    const SCHEDULE_INSTALLED = 'schedule_installed';
 
     const WAIT_DEPEND = 'wait_depend';
 
@@ -267,6 +269,13 @@ class CoreAddonInstallService extends CoreAddonBaseService
                 'step' => 'installMenu',
                 'command' => "php think addon:install {$this->addon} --step installMenu",
                 'desc' => '安装插件菜单',
+                'state' => AddonDict::INSTALL_UNEXECUTED
+            ],
+            'installSchedule' => [//安装计划任务
+                'addon' => $this->addon,
+                'step' => 'installSchedule',
+                'command' => "php think addon:install {$this->addon} --step installSchedule",
+                'desc' => '安装插件计划任务',
                 'state' => AddonDict::INSTALL_UNEXECUTED
             ],
             'installWap' => [
@@ -552,7 +561,8 @@ class CoreAddonInstallService extends CoreAddonBaseService
         if (!$this->uninstallDir()) throw new AddonException();
         // 卸载菜单
         $this->uninstallMenu();
-
+        // 卸载计划任务
+        $this->uninstallSchedule();
         // 卸载wap
         $this->uninstallWap();
 
@@ -660,6 +670,9 @@ class CoreAddonInstallService extends CoreAddonBaseService
         // 编译 diy-group 自定义组件代码文件
         $this->compileDiyComponentsCode($this->root_path . "uni-app" . DIRECTORY_SEPARATOR);
 
+        // 编译 fixed-group 固定模板组件代码文件
+        $this->compileFixedComponentsCode($this->root_path . "uni-app" . DIRECTORY_SEPARATOR);
+
         // 编译 pages.json 页面路由代码文件
         $this->installPageCode($this->root_path . "uni-app" . DIRECTORY_SEPARATOR);
 
@@ -673,6 +686,9 @@ class CoreAddonInstallService extends CoreAddonBaseService
     {
         // 编译 diy-group 自定义组件代码文件
         $this->compileDiyComponentsCode($this->root_path . "uni-app" . DIRECTORY_SEPARATOR);
+
+        // 编译 fixed-group 固定模板组件代码文件
+        $this->compileFixedComponentsCode($this->root_path . "uni-app" . DIRECTORY_SEPARATOR);
 
         // 编译 pages.json 页面路由代码文件
         $this->uninstallPageCode($this->root_path . "uni-app" . DIRECTORY_SEPARATOR);
@@ -746,6 +762,28 @@ class CoreAddonInstallService extends CoreAddonBaseService
      */
     public function installComplete()
     {
+        return true;
+    }
+
+
+    /**
+     * 安装计划任务
+     * @return true
+     */
+    public function installSchedule()
+    {
+        ( new CoreScheduleInstallService())->installAddonSchedule($this->addon);
+        $this->state = self::SCHEDULE_INSTALLED;
+        return true;
+    }
+
+    /**
+     * 卸载计划任务
+     * @return true
+     */
+    public function uninstallSchedule()
+    {
+        ( new CoreScheduleInstallService())->uninstallAddonSchedule($this->addon);
         return true;
     }
 

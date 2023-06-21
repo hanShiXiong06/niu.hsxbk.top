@@ -39,8 +39,7 @@ class ArticleService extends BaseAdminService
         $field = 'id, category_id, site_id, title, intro, summary, image, author, content, visit, visit_virtual, is_show, sort, create_time, update_time';
         $order = 'create_time desc';
         $search_model = $this->model->where([ [ 'site_id', '=', $this->site_id ] ])->withSearch([ 'title', 'category_id', 'is_show'], $where)->with('articleCategory')->field($field)->order($order)->append(['article_url']);
-        $list = $this->pageQuery($search_model);
-        return $list;
+        return $this->pageQuery($search_model);
     }
 
     /**
@@ -51,8 +50,7 @@ class ArticleService extends BaseAdminService
     {
         $field = 'id, category_id, site_id, title, intro, summary, image, author, content, visit, visit_virtual, is_show, sort, create_time, update_time';
 
-        $info = $this->model->where([ [ 'id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->with('articleCategory')->field($field)->findOrEmpty()->toArray();
-        return $info;
+        return $this->model->where([ [ 'id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->with('articleCategory')->field($field)->findOrEmpty()->toArray();
     }
 
     /**
@@ -86,8 +84,7 @@ class ArticleService extends BaseAdminService
      */
     public function del(int $id)
     {
-        $res = $this->model->where([ [ 'id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->delete();
-        return $res;
+        return $this->model->where([ [ 'id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->delete();
     }
 
 }

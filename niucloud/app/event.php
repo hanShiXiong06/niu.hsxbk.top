@@ -39,17 +39,23 @@ $system_event = [
         //退款成功
         'RefundSuccess' => [ 'app\listener\pay\RefundSuccessListener' ],
         //转账成功
-        'TransferSuccess' => [ 'app\listener\pay\TransferSuccessListener' ],
+        'TransferSuccess' => [ 'app\listener\pay\TransferSuccessListener' ],        'SiteIndex' => [
+            'app\listener\system\SiteIndexListener'
+        ],
 
 
         // 任务失败统一回调,有四种定义方式
         'queue_failed'=> [
             ['app\listener\job\QueueFailedLoggerListener', 'report'],
         ],
+        //系统应用管理加载
         'AppManage' => [
             'app\listener\system\AppManageListener'
         ],
-
+        //站点首页加载
+        'siteIndex' => [
+            'app\listener\system\SiteIndexListener'
+        ],
         //消息模板数据内容
         'NoticeData' => [
             'app\listener\notice_template\VerifyCode',//手机验证码

@@ -83,8 +83,7 @@ class CoreAddonService extends CoreAddonBaseService
     public function getPage(array $where){
         $field = 'id, title, key, desc, version, status, icon, create_time, install_time';
         $search_model = $this->model->where([])->withSearch(['title'],$where)->field($field)->order('id desc');
-        $data = $this->pageQuery($search_model);
-        return $data;
+        return $this->pageQuery($search_model);
     }
 
     /**

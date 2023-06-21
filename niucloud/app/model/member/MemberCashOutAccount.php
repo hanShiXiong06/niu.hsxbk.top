@@ -39,7 +39,10 @@ class MemberCashOutAccount extends BaseModel
      * @return mixed|string
      */
     public function getAccountTypeNameAttr($value, $data){
-        return TransferDict::getTransferType()[ $data[ 'transfer_type' ] ?? '' ] ?? '';
+        if(empty($data[ 'transfer_type' ]))
+            return '';
+        $temp = TransferDict::getTransferType()[ $data[ 'transfer_type' ]] ?? [];
+        return $temp['name'] ?? '';
     }
 
     /**

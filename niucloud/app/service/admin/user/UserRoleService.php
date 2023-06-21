@@ -102,14 +102,6 @@ class UserRoleService extends BaseAdminService
             },
             [self::$role_cache_name, RoleService::$cache_tag_name.$this->site_id]
         );
-//        return Cache::tag([self::$role_cache_name, RoleService::$cache_tag_name.$this->site_id])->remember($cache_name,  function() use($uid, $site_id) {
-//            $user_role_model = new SysUserRole();
-//            $where = array(
-//                ['uid', '=', $uid],
-//                ['site_id', '=', $site_id]
-//            );
-//            return $user_role_model::where($where)->findOrEmpty()->toArray();
-//        });
     }
 
     /**
@@ -143,32 +135,7 @@ class UserRoleService extends BaseAdminService
             },
             [self::$role_cache_name, RoleService::$cache_tag_name.$this->site_id]
         );
-//        return Cache::tag([self::$role_cache_name, RoleService::$cache_tag_name.$this->site_id])->remember($cache_name,  function() use($role_ids, $site_id) {
-//            $where = array(
-//                ['role_id', 'in', $role_ids],
-//                ['site_id', '=', $site_id]
-//            );
-//            return SysRole::where($where)->column('role_name');
-//        });
     }
 
-//    public function getFirstMenuByUser(int $site_id, int $uid){
-//        $role_service = (new RoleService())->getMenuIdsByRoleIds();
-//        $userrole = $this->getUserRole($site_id, $uid);
-//        $site_info = (new SiteService())->getSiteCache($site_id);
-//        if(empty($userrole)) throw new AuthException('SITE_USER_CAN_NOT_LOGIN_IN_ADMIN');
-//        if($userrole->is_admin){
-//            if($site_info->app_type == AppTypeDict::SITE){
-//
-//            }else if($site_info->app_type == AppTypeDict::ADMIN){
-//
-//            }
-//        }else{
-//            $user_role_ids = $userrole->role_ids;
-//            $menu_keys = (new RoleService())->getMenuIdsByRoleIds($site_id, $user_role_ids);
-//            if(in_array('siteindex', $menu_keys)){
-//
-//            }
-//        }
-//    }
+
 }

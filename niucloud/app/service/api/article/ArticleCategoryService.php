@@ -36,8 +36,7 @@ class ArticleCategoryService extends BaseApiService
         $field = 'category_id, site_id, name, sort, is_show, create_time, update_time';
         $order = 'create_time desc';
         $search_model = $this->model->where([['site_id', '=', $this->site_id]])->withSearch(['name'], $where)->field($field)->order($order);
-        $list = $this->pageQuery($search_model);
-        return $list;
+        return $this->pageQuery($search_model);
     }
 
     /**
@@ -47,8 +46,6 @@ class ArticleCategoryService extends BaseApiService
     public function getInfo(int $id)
     {
         $field = 'category_id, site_id, name, sort, is_show, create_time, update_time';
-
-        $info = $this->model->field($field)->where([['category_id', '=', $id], ['site_id', '=', $this->site_id]])->findOrEmpty()->toArray();
-        return $info;
+        return  $this->model->field($field)->where([['category_id', '=', $id], ['site_id', '=', $this->site_id]])->findOrEmpty()->toArray();
     }
 }

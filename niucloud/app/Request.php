@@ -149,7 +149,7 @@ class Request extends \think\Request
      * @return array|string|null
      */
     public function adminSiteId(){
-        return $this->header(system_name('admin_site_id_name')) ?? $this->defaultSiteId();
+        return $this->header(system_name('admin_site_id_name'));
     }
 
     /**
@@ -157,7 +157,7 @@ class Request extends \think\Request
      * @return array|string|null
      */
     public function apiSiteId(){
-        return $this->header(system_name('api_site_id_name')) ?? $this->defaultSiteId();
+        return $this->header(system_name('api_site_id_name'));
     }
 
     /**

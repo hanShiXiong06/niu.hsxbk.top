@@ -91,7 +91,8 @@ class CorePayEventService extends BaseCoreService
             'refund_url' => $refund_url,
             'quit_url' => $quit_url,
             'buyer_id' => $buyer_id,
-            'openid' => $openid
+            'openid' => $openid,
+            'site_id' => $this->site_id
         );
         switch ($this->type) {
             case PayDict::WECHATPAY:
@@ -116,7 +117,7 @@ class CorePayEventService extends BaseCoreService
                         $pay_fun = 'app';
                         break;
                 }
-
+                if (empty($pay_fun)) throw new PayException('PAYMENT_METHOD_NOT_SCENE');
                 break;
             case PayDict::ALIPAY:
                 switch ($this->channel) {
@@ -133,8 +134,12 @@ class CorePayEventService extends BaseCoreService
                         $pay_fun = 'wap';
                         break;
                 }
+                if (empty($pay_fun)) throw new PayException('PAYMENT_METHOD_NOT_SCENE');
+                break;
         }
-        if (empty($pay_fun)) throw new PayException('PAYMENT_METHOD_NOT_SCENE');
+
+        if (empty($pay_fun)) $pay_fun = 'pay';
+
         return $this->app('pay')->$pay_fun($params);
     }
 
@@ -158,7 +163,7 @@ class CorePayEventService extends BaseCoreService
                 $money = $money * 100;
                 break;
             case PayDict::ALIPAY:
-
+                break;
         }
         return $this->app('transfer')->transfer([
             'transfer_no' => $transfer_no,

@@ -120,4 +120,8 @@ class Site extends BaseAdminController
         (new SiteService())->edit($id, $data);
         return success('SUCCESS');
     }
+    public function indexConfig()
+    {
+
+    }
 }

@@ -12,6 +12,7 @@
 namespace app\model\sys;
 
 use app\dict\sys\AgreementDict;
+use app\dict\sys\StorageDict;
 use core\base\BaseModel;
 
 /**
@@ -45,6 +46,7 @@ class SysAgreement extends BaseModel
      */
     public function getAgreementKeyNameAttr($value, $data)
     {
-        return AgreementDict::getType()[$data['agreement_key'] ?? ''] ?? '';
+        if(empty($data['agreement_key'])) return '';
+        return AgreementDict::getType()[$data['agreement_key']] ?? '';
     }
 }

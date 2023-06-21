@@ -76,7 +76,9 @@ class MemberCashOut extends BaseModel
      * @return mixed|string
      */
     public function getAccountTypeNameAttr($value, $data){
-        return MemberAccountTypeDict::getType()[ $data[ 'account_type' ] ?? '' ] ?? '';
+        if(empty($data['account_type']))
+            return '';
+        return MemberAccountTypeDict::getType()[ $data[ 'account_type' ]] ?? '';
     }
     /**
      * 提现状态名称
@@ -85,7 +87,9 @@ class MemberCashOut extends BaseModel
      * @return mixed|string
      */
     public function getStatusNameAttr($value, $data){
-        return MemberCashOutDict::getStatus()[ $data[ 'status' ] ?? '' ] ?? '';
+        if(empty($data[ 'status' ]))
+            return '';
+        return MemberCashOutDict::getStatus()[ $data[ 'status' ]] ?? '';
     }
     /**
      * 转账方式名称
@@ -95,7 +99,10 @@ class MemberCashOut extends BaseModel
      */
     public function getTransferTypeNameAttr($value, $data)
     {
-        return TransferDict::getTransferType()[ $data[ 'transfer_type' ] ?? '' ]['name'] ?? '';
+        if(empty($data[ 'transfer_type' ]))
+            return '';
+        $temp = TransferDict::getTransferType()[ $data[ 'transfer_type' ]] ?? [];
+        return $temp['name'] ?? '';
     }
 
     /**
@@ -105,7 +112,9 @@ class MemberCashOut extends BaseModel
      * @return mixed|string
      */
     public function getTransferStatusNameAttr($value, $data){
-        return TransferDict::getStatus()[ $data[ 'transfer_status' ] ?? '' ] ?? '';
+        if(empty($data[ 'transfer_status' ]))
+            return '';
+        return TransferDict::getStatus()[ $data[ 'transfer_status' ]] ?? '';
     }
     /**
      * 会员搜索

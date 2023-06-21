@@ -12,6 +12,7 @@
 namespace app\listener\pay;
 
 use app\service\core\order\recharge\CoreRechargeOrderService;
+use app\service\core\site\CoreSiteAccountService;
 
 /**
  * 支付异步回调事件
@@ -25,5 +26,8 @@ class PaySuccessListener
         {
             (new CoreRechargeOrderService())->pay($pay_info);
         }
+        //账单记录添加
+        (new CoreSiteAccountService())->addPayLog($pay_info);
+
     }
 }

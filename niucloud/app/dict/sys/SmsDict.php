@@ -53,7 +53,7 @@ class SmsDict
     const SUCCESS = 'success';
     const FAIL = 'fail';
 
-    public function getStatusType(){
+    public static function getStatusType(){
         return [
             self::SENDING => 'dict_sms.status_sending',
             self::SUCCESS => 'dict_sms.status_success',

@@ -37,7 +37,7 @@ class SmsLog extends BaseAdminController
 
     public function info($id)
     {
-        $res = ( new NoticeLogService() )->getInfo($id);
+        $res = ( new NoticeSmsLogService() )->getInfo($id);
         return success($res);
     }
 

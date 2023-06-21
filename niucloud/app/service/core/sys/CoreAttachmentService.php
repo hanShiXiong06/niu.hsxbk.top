@@ -90,8 +90,7 @@ class CoreAttachmentService extends BaseCoreService
             ['site_id', '=', $site_id],
             ['att_id', '=', $att_id]
         );
-        $res = $this->model->update($data, $where);
-        return $res;
+        return $this->model->update($data, $where);
     }
 
     /**
@@ -102,8 +101,7 @@ class CoreAttachmentService extends BaseCoreService
     public function del(int $site_id, int $att_id){
         //查询是否有下级菜单或按钮
         $menu = $this->find($site_id, $att_id);
-        $res = $menu->delete();
-        return  $res;
+        return $menu->delete();
 
     }
 

@@ -47,7 +47,10 @@ class Diy extends BaseModel
      */
     public function getTypeNameAttr($value, $data)
     {
-        return TemplateDict::getTemplate($data[ 'type' ] ?? '')[ 'title' ] ?? '';
+        if (!empty($data[ 'type' ])) {
+            return TemplateDict::getTemplate([ 'type' => $data[ 'type' ] ])[ $data[ 'type' ] ][ 'title' ] ?? '';
+        }
+        return '';
     }
 
     /**

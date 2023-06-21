@@ -34,4 +34,26 @@ class Area extends BaseAdminController
     {
         return success((new AreaService())->getAreaTree($level));
     }
+
+    /**
+     * @param string $address
+     * 地址解析
+     */
+    public function addressInfo(){
+        $data = $this->request->params([
+            ['address', ''],
+        ]);
+        return success((new AreaService())->getAddress($data['address']));
+    }
+
+    /**
+     * @param string $location
+     * 逆地址解析
+     */
+    public function contraryAddress(){
+        $data = $this->request->params([
+            ['location', ''],
+        ]);
+        return success((new AreaService())->getAddressInfo($data['location']));
+    }
 }

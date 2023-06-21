@@ -11,6 +11,7 @@
 
 namespace app\adminapi\controller\sys;
 
+use app\service\admin\schedule\ScheduleService;
 use app\service\admin\sys\SystemService;
 use core\base\BaseAdminController;
 
@@ -70,4 +71,6 @@ class System extends BaseAdminController
     public function checkSchedule(){
         return success(data:(new SystemService())->checkSchedule());
     }
+
+
 }

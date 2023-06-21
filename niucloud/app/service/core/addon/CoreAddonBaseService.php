@@ -81,8 +81,7 @@ class CoreAddonBaseService extends BaseCoreService
     {
         if (file_exists($json_file_path)) {
             $content_json = @file_get_contents($json_file_path);
-            $content_array = json_decode($content_json, true);
-            return $content_array;
+            return json_decode($content_json, true);
         }else
             return [];
     }

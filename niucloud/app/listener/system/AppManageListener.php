@@ -20,7 +20,7 @@ class AppManageListener
 {
     public function handle()
     {
-        $data = [
+        return [
             "category" =>[
 
                 [
@@ -45,9 +45,8 @@ class AppManageListener
                 "desc" => get_lang('dict_app_manage.member_recharge'),
                 "icon" => "static/resource/images/app/recharge_icon.png",
                 "cover" => "static/resource/images/app/recharge_cover.png",
-                "url" => "/finance/recharge"
+                "url" => "/order/recharge/order"
             ],
         ];
-        return $data;
     }
 }

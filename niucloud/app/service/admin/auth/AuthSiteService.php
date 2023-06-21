@@ -12,7 +12,11 @@
 namespace app\service\admin\auth;
 
 
+use app\dict\sys\AppTypeDict;
+use app\dict\sys\MenuDict;
+use app\dict\sys\MenuTypeDict;
 use app\model\site\Site;
+use app\model\sys\SysMenu;
 use app\service\admin\site\SiteService;
 use core\base\BaseAdminService;
 use think\facade\Cache;
@@ -50,18 +54,11 @@ class AuthSiteService extends BaseAdminService
                 $auth_service = new AuthService();
                 $user_role_list = $auth_service->getAuthSiteRoleList();
                 $site_ids = array_column($user_role_list, 'site_id');
-                $site_list = $this->model->where([['site_id', 'in', $site_ids]])->field('app_type,site_name,logo')->column('site_id, site_name, logo, app_type');
-                return $site_list;
+                return $this->model->where([['site_id', 'in', $site_ids]])->field('app_type,site_name,logo')->column('site_id, site_name, logo, app_type');
             },
             SiteService::$cache_tag_name
         );
-//        return Cache::tag(SiteService::$cache_tag_name)->remember($cache_name, function (){
-//            $auth_service = new AuthService();
-//            $user_role_list = $auth_service->getAuthSiteRoleList();
-//            $site_ids = array_column($user_role_list, 'site_id');
-//            $site_list = $this->model->where([['site_id', 'in', $site_ids]])->field('app_type,site_name,logo')->column('site_id, site_name, logo, app_type');
-//            return $site_list;
-//        });
+
     }
 
     /**
@@ -82,5 +79,15 @@ class AuthSiteService extends BaseAdminService
         return (new SiteService())->getApiList($this->site_id, $status);
     }
 
-
+    /**
+     * 查询当前站点可以单独显示的菜单(仅支持站点端调用)
+     * @return SysMenu[]|array|\think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function getShowMenuList(){
+        $menu_keys = (new SiteService())->getMenuIdsBySiteId($this->site_id, 1);
+        return (new SysMenu())->where([['menu_key', 'in', $menu_keys], ['menu_type', '=', MenuTypeDict::MENU], ['app_type', '=', AppTypeDict::SITE],['is_show', '=', 1]])->select()->toArray();
+    }
 }

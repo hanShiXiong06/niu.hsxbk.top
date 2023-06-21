@@ -92,7 +92,7 @@ class CoreWechatServeService extends BaseCoreService
             // ...
         });
         $response = $app->server->serve();
-        $response->send();
+        return $response->send();
     }
 
     public function jssdkConfig(int $site_id, string $url = '')

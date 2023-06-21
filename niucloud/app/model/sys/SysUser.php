@@ -72,7 +72,8 @@ class SysUser extends BaseModel
      */
     public function getStatusNameAttr($value, $data)
     {
-        return UserDict::getStatus()[$data['status'] ?? ''] ?? '';
+        if(empty($data['status'])) return '';
+        return UserDict::getStatus()[$data['status']] ?? '';
     }
 
     public function getCreateTimeAttr($value, $data)

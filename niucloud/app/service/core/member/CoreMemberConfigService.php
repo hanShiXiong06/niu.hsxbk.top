@@ -32,14 +32,13 @@ class CoreMemberConfigService extends BaseCoreService
      */
     public function getLoginConfig(int $site_id){
         $info = (new CoreConfigService())->getConfig($site_id, 'LOGIN')['value'] ?? [];
-        $config = [
+        return [
             'is_username' => $info['is_username'] ?? 1,//是否用户名密码登录
             'is_mobile' => $info['is_mobile'] ?? 0,//是否手机验证码登录
             'is_auth_register' => $info['is_auth_register'] ?? 1,//是否第三方自动注册
             'is_bind_mobile'            => $info['is_bind_mobile'] ?? 0,//是否强制绑定手机
             'agreement_show' => $info['agreement_show'] ?? 0 // 政策协议是否展示
         ];
-        return $config;
     }
 
     /**
@@ -66,11 +65,10 @@ class CoreMemberConfigService extends BaseCoreService
      */
     public function getMemberConfig(int $site_id){
         $info = (new CoreConfigService())->getConfig($site_id, 'MEMBER')['value'] ?? [];
-        $config = [
+        return [
             'prefix' => $info['prefix'] ?? '',// 会员编码前缀
             'length' => $info['length'] ?? 4, // 会员编码长度
         ];
-        return $config;
     }
 
     /**

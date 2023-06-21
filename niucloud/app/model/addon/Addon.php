@@ -45,7 +45,7 @@ class Addon extends BaseModel
      */
     public function getStatusNameAttr($value, $data)
     {
-        return AddonDict::getStatus()[ $data[ 'status' ] ?? '' ] ?? '';
+        return AddonDict::getStatus()[ $data[ 'status' ]] ?? '';
     }
 
     /**

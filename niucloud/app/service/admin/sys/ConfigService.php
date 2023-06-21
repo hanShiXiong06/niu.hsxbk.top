@@ -15,6 +15,7 @@ use app\service\admin\site\SiteService;
 use app\service\core\sys\CoreConfigService;
 use app\service\core\sys\CoreSysConfigService;
 use core\base\BaseAdminService;
+use core\exception\AdminException;
 
 /**
  * 配置服务层
@@ -58,8 +59,7 @@ class ConfigService extends BaseAdminService
             'copyright_link' => $value['copyright_link'],
             'copyright_desc' => $value['copyright_desc']
         ];
-        $res = $this->core_config_service->setConfig(0,'COPYRIGHT', $data);
-        return $res;
+        return $this->core_config_service->setConfig(0,'COPYRIGHT', $data);
     }
 
     /**
@@ -120,8 +120,7 @@ class ConfigService extends BaseAdminService
             "enterprise_wechat" => $value['enterprise_wechat'],
             "tel" => $value['tel']
         ];
-        $res = $this->core_config_service->setConfig(0,'SERVICE_INFO', $data);
-        return $res;
+        return $this->core_config_service->setConfig(0,'SERVICE_INFO', $data);
     }
 
     /**
@@ -134,8 +133,7 @@ class ConfigService extends BaseAdminService
         $data = [
             'key' => $value['key'],
         ];
-        $res = $this->core_config_service->setConfig($this->site_id,'MAPKEY', $data);
-        return $res;
+        return $this->core_config_service->setConfig($this->site_id,'MAPKEY', $data);
     }
 
     /**
@@ -148,9 +146,100 @@ class ConfigService extends BaseAdminService
         {
             $info = [];
             $info['value'] = [
-                'key' => '',
+                'key' => 'IZQBZ-3UHEU-WTCVD-2464U-I5N4V-ZFFU3',
             ];
         }
         return $info['value'];
+    }
+
+    /**
+     * 获取站点主页配置
+     * @return mixed|string[]
+     */
+    public function getSiteIndexConfig()
+    {
+        $config = (new CoreConfigService())->getConfig($this->site_id, "site_index");
+        if(empty($config))
+        {
+            $config['value'] = [
+              'view_path' => 'index/site_index'
+            ];
+        }
+        return $config['value']['view_path'];
+    }
+
+    /**
+     * 站点主页配置
+     * @param $data
+     * @return \app\model\sys\SysConfig|bool|\think\Model
+     */
+    public function setSiteIndexConfig($data)
+    {
+        $config = [
+            'view_path' => $data['view_path'] ,
+        ];
+        //检测是否路劲一个异常
+        $index_list = $this->getSiteIndexList();
+        $check_tag = 0;
+        foreach($index_list as $k => $v)
+        {
+            if($v['view_path'] == $data['view_path'])
+            {
+                $check_tag = 1;
+            }
+        }
+        if($check_tag == 0) throw new AdminException('SITE_INDEX_VIEW_PATH_NOT_EXIST');
+        (new CoreConfigService())->setConfig($this->site_id, "site_index", $config);
+        return true;
+    }
+
+    /**
+     * 获取站点配置的首页列表
+     * @return array
+     */
+    public function getSiteIndexList()
+    {
+        $result = event("SiteIndex");
+        $index_list = [];
+        foreach ($result as $k => $v)
+        {
+            $index_list = empty($index_list) ? $v: array_merge($index_list, $v);
+        }
+        $view_path = $this->getSiteIndexConfig();
+        foreach ($index_list as $k => $v)
+        {
+            $v_view_path = $v['view_path'] ?? '';
+            $index_list[$k]['is_use'] = ($v_view_path == $view_path) ? 1: 0;
+        }
+        return $index_list;
+    }
+
+    /**
+     * 设置站点快捷菜单
+     * @param $data
+     * @return bool
+     */
+    public function setShortcutMenu($data)
+    {
+        (new CoreConfigService())->setConfig($this->site_id, 'shortcut_menu', $data);
+        return true;
+    }
+
+    /**
+     * 获取站点快捷菜单
+     * @return array|mixed
+     */
+    public function getShortcutMenu()
+    {
+        $config = (new CoreConfigService())->getConfig($this->site_id, 'shortcut_menu');
+        $menu = $config['value'] ?? [];
+        if(!empty($menu)){
+            $menu_service = new MenuService();
+            foreach($menu as &$v){
+                $item_router_path = $v['router_path'] ?? '';
+                if(!$item_router_path) $v['router_path'] = $menu_service->getFullRouterPath($v['menu_key']);
+            }
+        }
+        return $menu;
     }
 }

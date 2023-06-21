@@ -38,6 +38,7 @@ return [
     'ADDON_INSTALL_NOT_EXIST' => '未找到插件安装任务',
     'ADDON_INSTALL_EXECUTED' => '插件安装任务已执行',
     'INSTALL_CHECK_NOT_PASS' => '安装校验未通过',
+    'SITE_INDEX_VIEW_PATH_NOT_EXIST' => '当前首页路径不存在',
 
     //登录注册重置账号....
 

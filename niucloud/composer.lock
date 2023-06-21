@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c28d105402847e957afdd94104f190aa",
+    "content-hash": "f7b6e94eac121eb357defdcb7669d03e",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -1295,6 +1295,58 @@
                 }
             ],
             "time": "2022-05-21T17:30:32+00:00"
+        },
+        {
+            "name": "kosinix/grafika",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kosinix/grafika.git",
+                "reference": "211f61fc334b8b36616b23e8af7c5727971d96ee"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kosinix/grafika/zipball/211f61fc334b8b36616b23e8af7c5727971d96ee",
+                "reference": "211f61fc334b8b36616b23e8af7c5727971d96ee",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Grafika\\": "src/Grafika"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT",
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Nico Amarilla",
+                    "homepage": "https://www.kosinix.com"
+                }
+            ],
+            "description": "An image manipulation library for PHP.",
+            "homepage": "http://kosinix.github.io/grafika",
+            "keywords": [
+                "grafika"
+            ],
+            "support": {
+                "issues": "https://github.com/kosinix/grafika/issues",
+                "source": "https://github.com/kosinix/grafika/tree/2.0.8"
+            },
+            "time": "2017-06-20T03:13:49+00:00"
         },
         {
             "name": "laravel/serializable-closure",
@@ -5258,17 +5310,17 @@
             "time": "2022-03-28T10:25:04+00:00"
         },
         {
-            "name": "yzh52521/schedule",
-            "version": "v1.0.0",
+            "name": "yunwuxin/think-cron",
+            "version": "v3.0.5",
             "source": {
                 "type": "git",
-                "url": "https://github.com/yzh52521/schedule.git",
-                "reference": "4c8f537f0c08417e785f84b8b91bf16b083cb163"
+                "url": "https://github.com/yunwuxin/think-cron.git",
+                "reference": "a5e5c679b7f5daedab9fb4bb00b641b6c4a054ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yzh52521/schedule/zipball/4c8f537f0c08417e785f84b8b91bf16b083cb163",
-                "reference": "4c8f537f0c08417e785f84b8b91bf16b083cb163",
+                "url": "https://api.github.com/repos/yunwuxin/think-cron/zipball/a5e5c679b7f5daedab9fb4bb00b641b6c4a054ca",
+                "reference": "a5e5c679b7f5daedab9fb4bb00b641b6c4a054ca",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -5278,33 +5330,46 @@
                 ]
             },
             "require": {
-                "nesbot/carbon": "^2.0",
-                "php": ">=7.1"
+                "dragonmantank/cron-expression": "^3.0",
+                "nesbot/carbon": "^2.28",
+                "symfony/process": "^4.4|^5.0",
+                "topthink/framework": "^6.0"
+            },
+            "require-dev": {
+                "topthink/think-swoole": "^4.0"
             },
             "type": "library",
+            "extra": {
+                "think": {
+                    "config": {
+                        "cron": "src/config.php"
+                    },
+                    "services": [
+                        "yunwuxin\\cron\\Service"
+                    ]
+                }
+            },
             "autoload": {
                 "psr-4": {
-                    "schedule\\": "src/"
+                    "yunwuxin\\cron\\": "src/cron"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "MIT"
+                "Apache-2.0"
             ],
-            "description": "task schedule,schedule,thinkphp schedule,任务调度",
-            "keywords": [
-                "schedule",
-                "task schedule",
-                "think-schedule",
-                "thinkphp",
-                "thinkphp5.1",
-                "thinkphp6"
+            "authors": [
+                {
+                    "name": "yunwuxin",
+                    "email": "448901948@qq.com"
+                }
             ],
+            "description": "计划任务",
             "support": {
-                "issues": "https://github.com/yzh52521/schedule/issues",
-                "source": "https://github.com/yzh52521/schedule/tree/v1.0.0"
+                "issues": "https://github.com/yunwuxin/think-cron/issues",
+                "source": "https://github.com/yunwuxin/think-cron/tree/v3.0.5"
             },
-            "time": "2020-07-02T01:34:32+00:00"
+            "time": "2021-12-22T09:25:54+00:00"
         }
     ],
     "packages-dev": [
@@ -5545,7 +5610,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "kosinix/grafika": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

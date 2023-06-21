@@ -23,7 +23,7 @@ use core\base\BaseAdminController;
 class Diy extends BaseAdminController
 {
     /**
-     * @notes 获取自定义页面列表
+     * @notes 获取自定义页面分页列表
      * @return \think\Response
      */
     public function lists()
@@ -33,6 +33,20 @@ class Diy extends BaseAdminController
             [ "type", "" ],
         ]);
         return success(( new DiyService() )->getPage($data));
+    }
+
+    /**
+     * @notes 获取自定义页面列表
+     * @return \think\Response
+     */
+    public function getList()
+    {
+        $data = $this->request->params([
+            [ "title", "" ],
+            [ "type", "" ],
+            [ 'mode', '' ]
+        ]);
+        return success(( new DiyService() )->getList($data));
     }
 
     /**
@@ -55,6 +69,8 @@ class Diy extends BaseAdminController
             [ "title", "" ],
             [ "name", "" ],
             [ "type", "" ],
+            [ 'template', '' ],
+            [ 'mode', 'diy' ],
             [ "value", "" ],
             [ 'is_default', 0 ]
         ]);
@@ -75,6 +91,7 @@ class Diy extends BaseAdminController
             [ "title", "" ],
             [ "name", "" ],
             [ "value", "" ],
+            [ 'is_change', '' ]
         ]);
         $this->validate($data, 'app\validate\diy\Diy.edit');
         ( new DiyService() )->edit($id, $data);
@@ -113,8 +130,8 @@ class Diy extends BaseAdminController
         $params = $this->request->params([
             [ 'id', "" ],
             [ "name", "" ],
-            [ "template", "" ],
-            [ 'template_name', '' ],
+            [ "type", "" ],
+            [ 'template', '' ],
             [ "title", "" ],
         ]);
 
@@ -138,10 +155,12 @@ class Diy extends BaseAdminController
     public function getTemplate()
     {
         $params = $this->request->params([
-            [ 'type', "" ],
+            [ 'type', "" ], // 页面类型模板
+            [ 'action', '' ], // 页面是否装修标识，为空标识不装修，decorate：装修
+            [ 'mode', '' ] // 页面展示模式，diy：自定义，fixed：固定
         ]);
         $diy_service = new DiyService();
-        return success($diy_service->getTemplate($params[ 'type' ]));
+        return success($diy_service->getTemplate($params));
     }
 
     /**
@@ -155,6 +174,41 @@ class Diy extends BaseAdminController
         ]);
         ( new DiyService() )->modifyShare($id, $data);
         return success('MODIFY_SUCCESS');
+    }
+
+    /**
+     * 获取装修页面列表
+     */
+    public function getDecoratePage()
+    {
+        return success(( new DiyService() )->getDecoratePage());
+    }
+
+    /**
+     * 切换模板
+     */
+    public function changeTemplate()
+    {
+        $data = $this->request->params([
+            [ "id", "" ],
+            [ 'type', '' ], // 页面类型
+            [ 'mode', '' ], //  页面展示模式，diy：自定义，fixed：固定
+            [ 'template', '' ] // 模板名称
+        ]);
+        return success(( new DiyService() )->changeTemplate($data));
+    }
+
+    /**
+     * 获取页面预览数据
+     */
+    public function getPreviewData()
+    {
+        $data = $this->request->params([
+            [ "id", "" ],
+            [ 'name', '' ]
+        ]);
+        $res = ( new DiyService() )->getPreviewData($data);
+        return success($res);
     }
 
 }
