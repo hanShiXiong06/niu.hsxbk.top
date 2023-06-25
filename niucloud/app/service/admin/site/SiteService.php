@@ -88,7 +88,7 @@ class SiteService extends BaseAdminService
         try {
             $site = $this->model->create($data_site);
             $site_id = $site->site_id;
-            //$this->model->where([['site_id', '=', $site_id]])->update(['site_code' => $this->createSiteCodeBySiteId($site_id)]);
+            $this->model->where([ [ 'site_id', '=', $site_id ] ])->update([ 'site_code' => $this->createSiteCodeBySiteId($site_id) ]);
             //添加用户
             $data_user = [
                 'username' => $data[ 'username' ],
@@ -118,7 +118,7 @@ class SiteService extends BaseAdminService
      */
     public function createSiteCodeBySiteId(int $site_id)
     {
-        retrun ($site_id + 1000000) *11 + 1;
+        return ( $site_id + 1000000 ) * 11 + 1;
     }
 
     /**
@@ -127,7 +127,7 @@ class SiteService extends BaseAdminService
      */
     public function getSiteIdBySiteCode($site_code)
     {
-        retrun ($site_code-1) /11-1000000;
+        return ( $site_code - 1 ) / 11 - 1000000;
     }
 
     /**
