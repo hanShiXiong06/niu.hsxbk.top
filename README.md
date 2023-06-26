@@ -153,7 +153,7 @@ npm run build
 
 ![输入图片说明](https://www.niucloud.com/img/readme/%E6%B7%BB%E5%8A%A0%E5%AE%A2%E6%9C%8D-old.png)
 #### 扫描下方二维码加入niucloud-admin开发者交流群
-![输入图片说明](https://www.niucloud.com/img/readme/%E5%BC%80%E5%8F%91%E8%80%85%E4%BA%A4%E6%B5%81%E7%BE%A4-old.png)
+![输入图片说明](https://www.niucloud.com/img/readme/%E5%BC%80%E5%8F%91%E8%80%85%E4%BA%A4%E6%B5%81%E7%BE%A4.png)
 
 ### 框架管理端部分页面展示
 
