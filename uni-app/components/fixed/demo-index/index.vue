@@ -1,10 +1,11 @@
 <template>
 	<view :style="warpCss">
+		固定模板示例，我也可以装修
+		我定义的数据源：{{ diyComponent.componentName }}
 	</view>
 </template>
 
 <script setup lang="ts">
-	// 辅助空白
 	import { computed, watch } from 'vue';
 	import useDiyStore from '@/stores/diy';
 

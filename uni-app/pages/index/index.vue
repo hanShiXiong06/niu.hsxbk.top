@@ -4,18 +4,10 @@
 
 		<view v-show="!loading">
 
-			<!-- 自定义模板渲染 -->
-			<view class="diy-template-wrap bg-index" v-if="data.mode != 'fixed'"
+			<view class="diy-template-wrap bg-index"
 				:style="{ backgroundColor: data.global.pageBgColor,minHeight: 'calc(100vh - 50px)',backgroundImage : data.global.bgUrl ? 'url(' +  img(data.global.bgUrl) + ')' : '' }">
 
-				<diy-group :data="data"></diy-group>
-
-			</view>
-
-			<!-- 固定模板渲染 -->
-			<view class="fixed-template-wrap" v-if="data.mode == 'fixed'">
-
-				<fixed-group :data="data"></fixed-group>
+				<diy-group :data="data" :pullDownRefresh="pullDownRefresh"></diy-group>
 
 			</view>
 
@@ -25,7 +17,7 @@
 
 <script setup lang="ts">
 	import { ref, reactive, computed } from 'vue';
-	import { onLoad, onShow } from '@dcloudio/uni-app';
+	import { onLoad, onShow, onPullDownRefresh } from '@dcloudio/uni-app';
 	import { getDiyInfo } from '@/api/diy';
 	import useDiyStore from '@/stores/diy';
 	import { useShare } from '@/hooks/useShare'
@@ -38,6 +30,7 @@
 
 	const loading = ref(true);
 	const diyStore = useDiyStore();
+	const pullDownRefresh = ref(0)
 
 	// 自定义页面 数据
 	const diyData = reactive({
@@ -63,6 +56,12 @@
 		// #endif
 	});
 
+	// 监听下拉刷新事件
+	onPullDownRefresh(() => {
+		pullDownRefresh.value++;
+		uni.stopPullDownRefresh();
+	})
+
 	onShow(() => {
 		// 装修模式
 		if (diyStore.mode == 'decorate') {
@@ -74,35 +73,23 @@
 				if (res.data.value) {
 					let data = res.data;
 					diyData.mode = data.mode;
-					if (data.mode == 'diy') {
-						// 自定义模板
-						let sources = JSON.parse(data.value);
-						diyData.title = sources.title;
-						diyData.global = sources.global;
-						diyData.value = sources.value;
-						diyData.value.forEach((item, index) => {
-							item.pageStyle = '';
-							if (item.pageBgColor) item.pageStyle += 'background-color:' + item.pageBgColor + ';';
-							if (item.margin) {
-								item.pageStyle += 'padding-top:' + item.margin.top * 2 + 'rpx' + ';';
-								item.pageStyle += 'padding-bottom:' + item.margin.bottom * 2 + 'rpx' + ';';
-								item.pageStyle += 'padding-right:' + item.margin.both * 2 + 'rpx' + ';';
-								item.pageStyle += 'padding-left:' + item.margin.both * 2 + 'rpx' + ';';
-							}
-						});
-						uni.setNavigationBarTitle({
-							title: diyData.global.title
-						})
-
-					} else if (data.mode == 'fixed') {
-						// 固定模板
-						let sources = JSON.parse(res.data.value);
-						diyData.title = data.title;
-						diyData.value = sources;
-						uni.setNavigationBarTitle({
-							title: diyData.title
-						})
-					}
+					let sources = JSON.parse(data.value);
+					diyData.title = sources.title;
+					diyData.global = sources.global;
+					diyData.value = sources.value;
+					diyData.value.forEach((item, index) => {
+						item.pageStyle = '';
+						if (item.pageBgColor) item.pageStyle += 'background-color:' + item.pageBgColor + ';';
+						if (item.margin) {
+							item.pageStyle += 'padding-top:' + item.margin.top * 2 + 'rpx' + ';';
+							item.pageStyle += 'padding-bottom:' + item.margin.bottom * 2 + 'rpx' + ';';
+							item.pageStyle += 'padding-right:' + item.margin.both * 2 + 'rpx' + ';';
+							item.pageStyle += 'padding-left:' + item.margin.both * 2 + 'rpx' + ';';
+						}
+					});
+					uni.setNavigationBarTitle({
+						title: diyData.global.title
+					})
 				}
 
 				loading.value = false;

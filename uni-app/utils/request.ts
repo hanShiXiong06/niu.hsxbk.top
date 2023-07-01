@@ -24,11 +24,11 @@ class Request {
 		// #ifndef H5
 		this.baseUrl = import.meta.env.VITE_APP_BASE_URL
 		// #endif
-        this.baseUrl.substr(-1) != '/' && (this.baseUrl += '/')
+		this.baseUrl.substr(-1) != '/' && (this.baseUrl += '/')
 
 		try {
 			if (process.env.NODE_ENV == 'development') {
-				this.config.header[import.meta.env.VITE_REQUEST_HEADER_SITEID_KEY] = getSiteId(uni.getStorageSync('wap_site_id') || import.meta.env.VITE_SITE_ID)
+				this.config.header[import.meta.env.VITE_REQUEST_HEADER_SITEID_KEY] = getSiteId(import.meta.env.VITE_SITE_ID || uni.getStorageSync('wap_site_id'))
 			} else {
 				this.config.header[import.meta.env.VITE_REQUEST_HEADER_SITEID_KEY] = getSiteId(import.meta.env.VITE_SITE_ID)
 			}
@@ -47,7 +47,7 @@ class Request {
 			getToken() && (this.config.header[import.meta.env.VITE_REQUEST_HEADER_TOKEN_KEY] = getToken())
 			this.config.header[import.meta.env.VITE_REQUEST_HEADER_CHANNEL_KEY] = getAppChannel()
 			if (process.env.NODE_ENV == 'development') {
-				this.config.header[import.meta.env.VITE_REQUEST_HEADER_SITEID_KEY] = getSiteId(uni.getStorageSync('wap_site_id') || import.meta.env.VITE_SITE_ID)
+				this.config.header[import.meta.env.VITE_REQUEST_HEADER_SITEID_KEY] = getSiteId(import.meta.env.VITE_SITE_ID || uni.getStorageSync('wap_site_id'))
 			} else {
 				this.config.header[import.meta.env.VITE_REQUEST_HEADER_SITEID_KEY] = getSiteId(import.meta.env.VITE_SITE_ID)
 			}
