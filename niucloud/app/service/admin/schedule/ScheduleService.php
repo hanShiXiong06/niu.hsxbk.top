@@ -67,7 +67,7 @@ class ScheduleService extends BaseAdminService
     public function add(array $data)
     {
         $res = (new CoreScheduleService())->add($data);
-        return $res->id;
+        return true;
 
     }
 
@@ -75,6 +75,7 @@ class ScheduleService extends BaseAdminService
      * 编辑
      * @param int $id
      * @param array $data
+     * @return true
      */
     public function edit(int $id, array $data)
     {
@@ -85,9 +86,19 @@ class ScheduleService extends BaseAdminService
     /**
      * 删除
      * @param int $id
+     * @return true
      */
     public function del(int $id)
     {
-        return (new CoreScheduleService())->del($id);
+        (new CoreScheduleService())->del($id);
+        return true;
+    }
+
+    /**
+     * 计划任务模板
+     * @return array|null
+     */
+    public function getTemplateList(){
+        return (new CoreScheduleService())->getTemplateList();
     }
 }

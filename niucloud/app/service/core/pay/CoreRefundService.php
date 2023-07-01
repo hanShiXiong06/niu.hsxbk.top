@@ -197,7 +197,7 @@ class CoreRefundService extends BaseCoreService
         ])->update([
             'status' => RefundDict::SUCCESS
         ]);
-        $pay = (new CorePayService())->getInfoByOutTradeNo($out_trade_no);
+        $pay = (new CorePayService())->findPayInfoByOutTradeNo($site_id, $out_trade_no);
         $result = event('RefundSuccess', ['refund_no' => $refund_no, 'trade_type' => $pay->trade_type, 'site_id' => $site_id]);
         if(!check_event_result($result)){
             return false;

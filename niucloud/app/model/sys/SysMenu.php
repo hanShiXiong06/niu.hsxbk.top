@@ -14,6 +14,7 @@ namespace app\model\sys;
 use app\dict\sys\MenuDict;
 use app\dict\sys\MenuTypeDict;
 use core\base\BaseModel;
+use think\model\concern\SoftDelete;
 
 /**
  * 菜单模型
@@ -22,6 +23,7 @@ use core\base\BaseModel;
  */
 class SysMenu extends BaseModel
 {
+    use SoftDelete;
     /**
      * 数据表主键
      * @var string

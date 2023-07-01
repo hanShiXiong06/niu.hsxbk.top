@@ -124,7 +124,7 @@ class AreaService extends BaseAdminService
     public function getAreaId($name, $level){
         $field = 'id';
         $info = $this->model->field($field)->where([['name', 'like', '%' . $name . '%' ], ['level', '=', $level]])->findOrEmpty()->toArray();
-        return $info;
+        return $info['id'];
     }
 
     /**

@@ -40,13 +40,13 @@ class CoreAddonInstallService extends CoreAddonBaseService
         'wap' => [],
         'resource' => []
     ];
-    //安装流程
+
+    // 安装流程
     private $flow_path = [
         'file',
         'sql',
         'menu',
-        'diy',
-        ''
+        'diy'
     ];
 
     /**
@@ -60,12 +60,12 @@ class CoreAddonInstallService extends CoreAddonBaseService
     ];
 
     private $addon;
-    private $install_addon_path;//待安装的插件目录
+    private $install_addon_path;// 待安装的插件目录
 
-    //对象实例
+    // 对象实例
     public static $instance;
 
-    //状态关键字
+    // 状态关键字
     const WAIT_INSTALL = 'wait_install';
 
     const DIR_INSTALLED = 'dir_installed';
@@ -73,6 +73,7 @@ class CoreAddonInstallService extends CoreAddonBaseService
     const SQL_INSTALLED = 'sql_installed';
 
     const MENU_INSTALLED = 'menu_installed';
+
     const SCHEDULE_INSTALLED = 'schedule_installed';
 
     const WAIT_DEPEND = 'wait_depend';
@@ -101,7 +102,6 @@ class CoreAddonInstallService extends CoreAddonBaseService
         return self::$instance;
     }
 
-
     public function __construct($addon)
     {
         parent::__construct();
@@ -122,11 +122,13 @@ class CoreAddonInstallService extends CoreAddonBaseService
         $from_web_dir = $this->install_addon_path . "web" . DIRECTORY_SEPARATOR;
         $from_wap_dir = $this->install_addon_path . "uni-app" . DIRECTORY_SEPARATOR;
         $from_resource_dir = $this->install_addon_path . "resource" . DIRECTORY_SEPARATOR;
+
         // 放入的文件
         $to_admin_dir = $this->root_path . "admin" . DIRECTORY_SEPARATOR;
         $to_web_dir = $this->root_path . "web" . DIRECTORY_SEPARATOR;
         $to_wap_dir = $this->root_path . "uni-app" . DIRECTORY_SEPARATOR;
         $to_resource_dir = public_path() . "addon" . DIRECTORY_SEPARATOR . $this->addon . DIRECTORY_SEPARATOR;
+
         // 配置文件
         $package_path = $this->install_addon_path . 'package' . DIRECTORY_SEPARATOR;
         $package_file = [];
@@ -172,7 +174,7 @@ class CoreAddonInstallService extends CoreAddonBaseService
             array_column($data[ 'runtime' ], 'status'),
             [ $data[ 'job_normal' ] ]
         );
-        if (count($data['conflict_files'])) array_push($check_res, false);
+        if (count($data[ 'conflict_files' ])) array_push($check_res, false);
 
         // 是否通过校验
         $data[ 'is_pass' ] = !in_array(false, $check_res);
@@ -215,7 +217,6 @@ class CoreAddonInstallService extends CoreAddonBaseService
                     $conflict_files[] = str_replace(project_path(), '', $web_file);
             }
         }
-
 
         //检测wap的uniapp文件
         if (is_dir($from_wap_dir)) {
@@ -441,6 +442,7 @@ class CoreAddonInstallService extends CoreAddonBaseService
         $from_web_dir = $this->install_addon_path . "web" . DIRECTORY_SEPARATOR;
         $from_wap_dir = $this->install_addon_path . "uni-app" . DIRECTORY_SEPARATOR;
         $from_resource_dir = $this->install_addon_path . "resource" . DIRECTORY_SEPARATOR;
+
         // 放入的文件
         $to_admin_dir = $this->root_path . "admin" . DIRECTORY_SEPARATOR;
         $to_web_dir = $this->root_path . "web" . DIRECTORY_SEPARATOR;
@@ -450,6 +452,8 @@ class CoreAddonInstallService extends CoreAddonBaseService
         // 安装admin管理端
         if (file_exists($from_admin_dir)) {
             dir_copy($from_admin_dir, $to_admin_dir, $this->files[ 'admin' ]);
+            // 编译后台图标库文件
+            $this->compileAdminIcon();
         }
 
         // 安装电脑端
@@ -466,6 +470,7 @@ class CoreAddonInstallService extends CoreAddonBaseService
         if (file_exists($from_resource_dir)) {
             dir_copy($from_resource_dir, $to_resource_dir, $this->files[ 'resource' ]);
         }
+
         $this->state = self::DIR_INSTALLED;
         return true;
     }
@@ -502,7 +507,6 @@ class CoreAddonInstallService extends CoreAddonBaseService
                         }
                     }
                     Db::commit();
-                    // 返回订单信息
                     return true;
                 } catch (PDOException $e) {
                     Db::rollback();
@@ -559,16 +563,20 @@ class CoreAddonInstallService extends CoreAddonBaseService
         if (empty($core_addon_service->getInfoByKey($this->addon))) throw new AddonException('NOT_UNINSTALL');
         if (!$this->uninstallSql()) throw new AddonException();
         if (!$this->uninstallDir()) throw new AddonException();
+
         // 卸载菜单
         $this->uninstallMenu();
+
         // 卸载计划任务
         $this->uninstallSchedule();
+
         // 卸载wap
         $this->uninstallWap();
 
         $core_addon_service = new CoreAddonService();
         $core_addon_service->delByKey($this->addon);
         Cache::set("local_install_addons", []);
+
         //清理缓存
         Cache::tag(self::$cache_tag_name)->clear();
         return true;
@@ -585,11 +593,9 @@ class CoreAddonInstallService extends CoreAddonBaseService
         $from_web_dir = $this->install_addon_path . "web" . DIRECTORY_SEPARATOR;
         $from_wap_dir = $this->install_addon_path . "uni-app" . DIRECTORY_SEPARATOR;
 
-
         search_dir($from_admin_dir, $from_admin_dirs, $from_admin_dir);
         search_dir($from_web_dir, $from_web_dirs, $from_web_dir);
         search_dir($from_wap_dir, $from_wap_dirs, $from_wap_dir);
-
 
         // 将要删除的根目录
         $to_admin_dir = $this->root_path . "admin" . DIRECTORY_SEPARATOR;
@@ -600,6 +606,8 @@ class CoreAddonInstallService extends CoreAddonBaseService
         // 卸载admin管理端
         if (file_exists($from_admin_dir)) {
             dir_remove($to_admin_dir, $from_admin_dirs ?? []);
+            // 编译后台图标库文件
+            $this->compileAdminIcon();
         }
 
         // 卸载pc端
@@ -772,7 +780,7 @@ class CoreAddonInstallService extends CoreAddonBaseService
      */
     public function installSchedule()
     {
-        ( new CoreScheduleInstallService())->installAddonSchedule($this->addon);
+        ( new CoreScheduleInstallService() )->installAddonSchedule($this->addon);
         $this->state = self::SCHEDULE_INSTALLED;
         return true;
     }
@@ -783,7 +791,32 @@ class CoreAddonInstallService extends CoreAddonBaseService
      */
     public function uninstallSchedule()
     {
-        ( new CoreScheduleInstallService())->uninstallAddonSchedule($this->addon);
+        ( new CoreScheduleInstallService() )->uninstallAddonSchedule($this->addon);
+        return true;
+    }
+
+    /**
+     * 编译后台图标库文件
+     * 图标开发注意事项，不能占用  iconfont、icon 关键词（会跟系统图标冲突），建议增加业务前缀，比如 旅游业：tourism
+     * @return bool
+     */
+    public function compileAdminIcon()
+    {
+        $compile_path = $this->root_path . str_replace('/', DIRECTORY_SEPARATOR, 'admin/src/styles/icon/');
+
+        $content = "";
+        $root_path = $compile_path . 'addon'; // 插件图标根目录
+        $file_arr = getFileMap($root_path);
+        if (!empty($file_arr)) {
+            foreach ($file_arr as $ck => $cv) {
+                if (strpos($cv, '.css') !== false) {
+                    $path = str_replace($root_path . '/', '', $ck);
+                    $path = str_replace('/.css', '', $path);
+                    $content .= "@import \"addon/{$path}\";\n";
+                }
+            }
+        }
+        $res = file_put_contents($compile_path . 'addon-iconfont.css', $content);
         return true;
     }
 

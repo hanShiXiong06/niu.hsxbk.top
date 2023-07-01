@@ -31,6 +31,7 @@ class Diy extends BaseAdminController
         $data = $this->request->params([
             [ "title", "" ],
             [ "type", "" ],
+            [ 'mode', '' ]
         ]);
         return success(( new DiyService() )->getPage($data));
     }
@@ -70,9 +71,10 @@ class Diy extends BaseAdminController
             [ "name", "" ],
             [ "type", "" ],
             [ 'template', '' ],
-            [ 'mode', 'diy' ],
+            [ 'mode', 'diy' ], // 页面展示模式，diy：自定义，fixed：固定
             [ "value", "" ],
-            [ 'is_default', 0 ]
+            [ 'is_default', 0 ],
+            [ 'is_change', '' ]
         ]);
 
         $this->validate($data, 'app\validate\diy\Diy.add');

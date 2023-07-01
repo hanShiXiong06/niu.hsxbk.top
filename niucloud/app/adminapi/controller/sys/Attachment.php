@@ -25,13 +25,13 @@ class Attachment extends BaseAdminController
     public function lists()
     {
         $data = $this->request->params([
-            ['att_type', ''],
-            ['cate_id', 0],
-            ['real_name', ''],
-            ['page', 0],
-            ['limit', 0],
+            [ 'att_type', '' ],
+            [ 'cate_id', 0 ],
+            [ 'real_name', '' ],
+            [ 'page', 0 ],
+            [ 'limit', 0 ],
         ]);
-        return success((new AttachmentService())->getPage($data));
+        return success(( new AttachmentService() )->getPage($data));
     }
 
     /**
@@ -48,11 +48,12 @@ class Attachment extends BaseAdminController
      * 批量删除
      * @return Response
      */
-    public function batchDel(){
+    public function batchDel()
+    {
         $data = $this->request->params([
-            ['att_ids', []],
+            [ 'att_ids', [] ],
         ]);
-        (new AttachmentService())->delAll($data['att_ids']);
+        ( new AttachmentService() )->delAll($data[ 'att_ids' ]);
         return success('DELETE_SUCCESS');
     }
 
@@ -63,11 +64,11 @@ class Attachment extends BaseAdminController
     public function addCategory()
     {
         $data = $this->request->params([
-            ['type', FileDict::IMAGE],
-            ['name', '']
+            [ 'type', FileDict::IMAGE ],
+            [ 'name', '' ]
         ]);
         $this->validate($data, 'app\validate\sys\AttachmentCategory.add');
-        (new AttachmentService())->addCategory($data);
+        ( new AttachmentService() )->addCategory($data);
         return success('ADD_SUCCESS');
     }
 
@@ -77,10 +78,10 @@ class Attachment extends BaseAdminController
     public function categoryLists()
     {
         $data = $this->request->params([
-            ['type', ''],
-            ['name', ''],
+            [ 'type', '' ],
+            [ 'name', '' ],
         ]);
-        return success((new AttachmentService())->getCategoryList($data));
+        return success(( new AttachmentService() )->getCategoryList($data));
     }
 
     /**
@@ -90,10 +91,10 @@ class Attachment extends BaseAdminController
     public function editCategory($id)
     {
         $data = $this->request->params([
-            ['name', '']
+            [ 'name', '' ]
         ]);
         $this->validate($data, 'app\validate\sys\AttachmentCategory.edit');
-        (new AttachmentService())->editCategory($id, $data);
+        ( new AttachmentService() )->editCategory($id, $data);
         return success('EDIT_SUCCESS');
     }
 
@@ -104,7 +105,7 @@ class Attachment extends BaseAdminController
      */
     public function deleteCategory($id)
     {
-        (new AttachmentService())->delCategory($id);
+        ( new AttachmentService() )->delCategory($id);
         return success('DELETE_SUCCESS');
     }
 
@@ -115,9 +116,9 @@ class Attachment extends BaseAdminController
     public function moveCategory($att_id)
     {
         $data = $this->request->params([
-            ['cate_id', '']
+            [ 'cate_id', '' ]
         ]);
-        (new AttachmentService())->modifyCategory($att_id, $data['cate_id']);
+        ( new AttachmentService() )->modifyCategory($att_id, $data[ 'cate_id' ]);
         return success('SUCCESS');
     }
 
@@ -129,11 +130,36 @@ class Attachment extends BaseAdminController
     public function batchMoveCategory()
     {
         $data = $this->request->params([
-            ['cate_id', ''],
-            ['att_ids', []]
+            [ 'cate_id', '' ],
+            [ 'att_ids', [] ]
         ]);
-        (new AttachmentService())->batchModifyCategory($data['att_ids'], $data['cate_id']);
+        ( new AttachmentService() )->batchModifyCategory($data[ 'att_ids' ], $data[ 'cate_id' ]);
         return success('SUCCESS');
+    }
+
+    /**
+     * 获取图标库分类列表
+     */
+    public function getIconCategoryList()
+    {
+        $data = $this->request->params([
+            [ 'name', '' ],
+        ]);
+        return success(( new AttachmentService() )->getIconCategoryList($data));
+    }
+
+    /**
+     * 获取图标库列表
+     */
+    public function getIconList()
+    {
+        $data = $this->request->params([
+            [ 'page', 0 ],
+            [ 'limit', 0 ],
+            [ 'cate_id', 0 ],
+            [ 'real_name', '' ],
+        ]);
+        return success(( new AttachmentService() )->getIconList($data));
     }
 
 }

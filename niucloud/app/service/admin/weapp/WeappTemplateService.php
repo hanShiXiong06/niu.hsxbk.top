@@ -69,15 +69,15 @@ class WeappTemplateService extends BaseAdminService
     public function syncItem($item){
         $key = $item['key'] ?? '';
         $weapp = $item['weapp'] ?? [];
-        $temp_key = $weapp['temp_key'] ?? '';
-        if(empty($temp_key)) $error = 'WECHAT_TEMPLATE_NEED_NO';
+        $tid = $weapp['tid'] ?? '';
+        if(empty($tid)) $error = 'WECHAT_TEMPLATE_NEED_NO';
         $weapp_template_id = $item['weapp_template_id'];
         //删除原来的消息模板
         $template_loader = (new TemplateLoader(NoticeTypeDict::WEAPP, ['site_id' => $this->site_id]));
         $template_loader->delete(['template_id' => $weapp_template_id ]);
 //        (new CoreWeappTemplateService())->deleteTemplate($this->site_id, $weapp_template_id);
         //新的消息模板
-        $tid = $weapp['tid'] ?? '';
+
         $kid_list = $weapp['kid_list'] ?? [];
         $scene_desc = $weapp['scene_desc'] ?? '';
 //        $res = (new CoreWeappTemplateService())->addTemplate($this->site_id, $tid, $kid_list, $scene_desc);

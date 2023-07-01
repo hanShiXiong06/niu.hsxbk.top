@@ -40,6 +40,8 @@ Route::group(function() {
     Route::post('weapp/login', 'weapp.Weapp/login');
     //小程序通过code注册
     Route::post('weapp/register', 'weapp.Weapp/register');
+    // 获取小程序订阅消息模板id
+    Route::get('weapp/subscribemsg', 'weapp.Weapp/subscribeMessage');
     //登录
     Route::get('login', 'login.Login/login');
     //第三方绑定

@@ -39,7 +39,8 @@ $system_event = [
         //退款成功
         'RefundSuccess' => [ 'app\listener\pay\RefundSuccessListener' ],
         //转账成功
-        'TransferSuccess' => [ 'app\listener\pay\TransferSuccessListener' ],        'SiteIndex' => [
+        'TransferSuccess' => [ 'app\listener\pay\TransferSuccessListener' ],
+        'SiteIndex' => [
             'app\listener\system\SiteIndexListener'
         ],
 

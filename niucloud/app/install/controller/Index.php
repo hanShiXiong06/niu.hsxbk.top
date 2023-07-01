@@ -344,7 +344,7 @@ class Index extends BaseInstall
                 ]);
             }
             //修改自增主键默认值
-            Db::execute("alter table ".env('database.prefix', '')."site auto_increment = 1");
+            Db::execute("alter table ".env('database.prefix', '')."site auto_increment = 100000");
             //获取默认套餐
             $group_id = (new SiteGroupService())->addAllMenuGroup();
 

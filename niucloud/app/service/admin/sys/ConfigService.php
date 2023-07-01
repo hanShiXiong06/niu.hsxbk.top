@@ -164,6 +164,31 @@ class ConfigService extends BaseAdminService
             $config['value'] = [
               'view_path' => 'index/site_index'
             ];
+        }else{
+            $result = event("SiteIndex");
+            $index_list = [];
+            foreach ($result as $k => $v)
+            {
+                $index_list = empty($index_list) ? $v: array_merge($index_list, $v);
+            }
+            $tag = 0;
+            $view_path = $config['value']['view_path'];
+            foreach ($index_list as $k => $v)
+            {
+                $v_view_path = $v['view_path'] ?? '';
+                if($view_path == $v_view_path)
+                {
+                    $tag = 1;
+                    break;
+                }
+            }
+            if($tag == 0)
+            {
+                $config['value'] = [
+                    'view_path' => 'index/site_index'
+                ];
+            }
+
         }
         return $config['value']['view_path'];
     }
@@ -235,9 +260,16 @@ class ConfigService extends BaseAdminService
         $menu = $config['value'] ?? [];
         if(!empty($menu)){
             $menu_service = new MenuService();
-            foreach($menu as &$v){
-                $item_router_path = $v['router_path'] ?? '';
-                if(!$item_router_path) $v['router_path'] = $menu_service->getFullRouterPath($v['menu_key']);
+            foreach($menu as $k => &$v){
+                $menu_key = $v['menu_key'] ?? '';
+                if($menu_key != ''){
+                    $item_router_path = $menu_service->getFullRouterPath($menu_key);
+                    if(empty($item_router_path)){
+                        unset($v[$k]);
+                    }else{
+                        $v['router_path'] = $item_router_path;
+                    }
+                }
             }
         }
         return $menu;

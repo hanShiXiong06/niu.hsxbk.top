@@ -48,16 +48,13 @@ class SystemService extends BaseAdminService
      */
     public function getUrl()
     {
-        $site = Site::find($this->site_id);
-        $site_tag = $site[ 'site_code' ];
-
         $wap_domain = !empty(env("system.wap_domain")) ? preg_replace('#/$#', '', env("system.wap_domain")) : request()->domain();
         $web_domain = !empty(env("system.web_domain")) ? preg_replace('#/$#', '', env("system.web_domain")) : request()->domain();
 
         $data = [
             'wap_domain' => env("system.wap_domain"),
-            'wap_url' => $wap_domain . "/wap/" . $site_tag,
-            'web_url' => $web_domain . "/web/" . $site_tag,
+            'wap_url' => $wap_domain . "/wap/" . $this->site_id,
+            'web_url' => $web_domain . "/web/" . $this->site_id,
         ];
         return $data;
     }

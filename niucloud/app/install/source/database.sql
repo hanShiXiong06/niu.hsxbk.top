@@ -28,6 +28,36 @@ CREATE TABLE `addon_log` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='插件日志表';
 
+DROP TABLE IF EXISTS `applet_site_version`;
+CREATE TABLE `applet_site_version` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `site_id` int(11) NOT NULL DEFAULT '0' COMMENT '站点id',
+  `version_id` int(11) NOT NULL DEFAULT '0' COMMENT '版本id',
+  `type` varchar(20) NOT NULL DEFAULT '' COMMENT '小程序类型',
+  `action` varchar(20) NOT NULL DEFAULT '' COMMENT '操作方式 download 下载  upgrade 更新',
+  `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='站点小程序版本表';
+
+DROP TABLE IF EXISTS `applet_version`;
+CREATE TABLE `applet_version` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `config` varchar(255) NOT NULL DEFAULT '' COMMENT '配置信息',
+  `type` varchar(20) NOT NULL DEFAULT '' COMMENT '小程序类型',
+  `desc` text COMMENT '插件描述',
+  `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态  下架  上架',
+  `uid` varchar(40) NOT NULL DEFAULT '' COMMENT '发布者',
+  `path` varchar(255) NOT NULL DEFAULT '' COMMENT '小程序包地址',
+  `version` varchar(20) NOT NULL DEFAULT '' COMMENT '版本号',
+  `version_num` varchar(20) NOT NULL DEFAULT '' COMMENT '版本号数字(用于排序)',
+  `release_version` varchar(20) NOT NULL DEFAULT '' COMMENT '发布线上版本号',
+  `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `delete_time` int(11) NOT NULL DEFAULT '0' COMMENT '删除时间',
+  `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
+  `site_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='小程序版本表';
+
 DROP TABLE IF EXISTS `article`;
 CREATE TABLE `article` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '文章id',
@@ -88,6 +118,7 @@ CREATE TABLE `diy_page` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='自定义页面';
 
+
 DROP TABLE IF EXISTS `diy_route`;
 CREATE TABLE `diy_route` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -108,13 +139,13 @@ CREATE TABLE `generate_column` (
   `column_name` varchar(100) NOT NULL DEFAULT '' COMMENT '字段名称',
   `column_comment` varchar(300) NOT NULL DEFAULT '' COMMENT '字段描述',
   `column_type` varchar(100) NOT NULL DEFAULT '' COMMENT '字段类型',
-  `is_required` tinyint(4) DEFAULT '0' COMMENT '是否必填 0-非必填 1-必填',
-  `is_pk` tinyint(4) DEFAULT '0' COMMENT '是否为主键 0-不是 1-是',
-  `is_insert` tinyint(4) DEFAULT '0' COMMENT '是否为插入字段 0-不是 1-是',
-  `is_update` tinyint(4) DEFAULT '0' COMMENT '是否为更新字段 0-不是 1-是',
-  `is_lists` tinyint(4) DEFAULT '1' COMMENT '是否为列表字段 0-不是 1-是',
-  `is_query` tinyint(4) DEFAULT '1' COMMENT '是否为查询字段 0-不是 1-是',
-  `is_search` tinyint(4) DEFAULT '1' COMMENT '是否搜索字段',
+  `is_required` tinyint(1) DEFAULT '0' COMMENT '是否必填 0-非必填 1-必填',
+  `is_pk` tinyint(1) DEFAULT '0' COMMENT '是否为主键 0-不是 1-是',
+  `is_insert` tinyint(1) DEFAULT '0' COMMENT '是否为插入字段 0-不是 1-是',
+  `is_update` tinyint(1) DEFAULT '0' COMMENT '是否为更新字段 0-不是 1-是',
+  `is_lists` tinyint(1) DEFAULT '1' COMMENT '是否为列表字段 0-不是 1-是',
+  `is_query` tinyint(1) DEFAULT '1' COMMENT '是否为查询字段 0-不是 1-是',
+  `is_search` tinyint(1) DEFAULT '1' COMMENT '是否搜索字段',
   `query_type` varchar(100) DEFAULT '=' COMMENT '查询类型',
   `view_type` varchar(100) DEFAULT 'input' COMMENT '显示类型',
   `dict_type` varchar(255) DEFAULT '' COMMENT '字典类型',
@@ -140,10 +171,10 @@ CREATE TABLE `jobs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `queue` varchar(255) NOT NULL,
   `payload` longtext NOT NULL,
-  `attempts` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `reserve_time` int(10) unsigned DEFAULT '0',
-  `available_time` int(10) unsigned NOT NULL DEFAULT '0',
-  `create_time` int(10) unsigned NOT NULL DEFAULT '0',
+  `attempts` tinyint(4) unsigned NOT NULL DEFAULT '0',
+  `reserve_time` int(11) unsigned DEFAULT '0',
+  `available_time` int(11) unsigned DEFAULT '0',
+  `create_time` int(11) unsigned DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `queue` (`queue`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息队列任务表';
@@ -350,6 +381,7 @@ CREATE TABLE `pay` (
   `main_id` int(11) NOT NULL DEFAULT '0' COMMENT '支付会员id',
   `out_trade_no` varchar(255) NOT NULL DEFAULT '' COMMENT '支付流水号',
   `trade_type` varchar(255) NOT NULL DEFAULT '' COMMENT '业务类型',
+  `trade_id` int(11) NOT NULL DEFAULT '0' COMMENT '业务id',
   `trade_no` varchar(255) NOT NULL DEFAULT '' COMMENT '交易单号',
   `body` varchar(1000) NOT NULL DEFAULT '' COMMENT '支付主体',
   `money` decimal(10,2) NOT NULL COMMENT '支付金额',
@@ -516,7 +548,6 @@ CREATE TABLE `recharge_order_log` (
 DROP TABLE IF EXISTS `site`;
 CREATE TABLE `site` (
   `site_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `site_code` varchar(32) NOT NULL DEFAULT '' COMMENT '站点code码',
   `site_name` varchar(50) NOT NULL DEFAULT '' COMMENT '站点名称',
   `group_id` int(11) NOT NULL DEFAULT '0' COMMENT '分组ID(0:不限制)',
   `keywords` varchar(255) NOT NULL DEFAULT '' COMMENT '关键字',
@@ -542,9 +573,9 @@ CREATE TABLE `site` (
   PRIMARY KEY (`site_id`),
   KEY `create_time` (`create_time`),
   KEY `group_id` (`group_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 AVG_ROW_LENGTH=1365 COMMENT='站点表';
+) ENGINE=InnoDB AUTO_INCREMENT=100000 DEFAULT CHARSET=utf8mb4 COMMENT='站点表';
 
-INSERT INTO `site` VALUES ('1', '11000001', 'niucloud-admin', '0', '', 'admin', '', '', '1', '', '', '0', '0', '0', '', '', '', '', '0', '0', '', '', '', '0');
+INSERT INTO `site` VALUES ('1', 'niucloud-admin', '0', '', 'admin', '', '', '1', '', '', '0', '0', '0', '', '', '', '', '0', '0', '', '', '', '0');
 
 DROP TABLE IF EXISTS `site_account_log`;
 CREATE TABLE `site_account_log` (
@@ -4333,7 +4364,7 @@ CREATE TABLE `sys_menu` (
   `view_path` varchar(255) NOT NULL DEFAULT '' COMMENT '菜单文件地址',
   `methods` varchar(10) NOT NULL DEFAULT '' COMMENT '提交方式POST GET PUT DELETE',
   `sort` tinyint(4) NOT NULL DEFAULT '1' COMMENT '排序',
-  `status` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '正常，禁用（禁用后不允许访问）',
+  `status` tinyint(4) unsigned NOT NULL DEFAULT '1' COMMENT '正常，禁用（禁用后不允许访问）',
   `is_show` tinyint(4) NOT NULL DEFAULT '1' COMMENT '是否显示',
   `create_time` int(11) NOT NULL DEFAULT '0',
   `delete_time` int(11) NOT NULL DEFAULT '0',
@@ -4342,7 +4373,7 @@ CREATE TABLE `sys_menu` (
   KEY `is_show` (`is_show`),
   KEY `menu_key` (`menu_key`,`app_type`),
   KEY `parent_key` (`parent_key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AVG_ROW_LENGTH=406 COMMENT='菜单表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='菜单表';
 
 DROP TABLE IF EXISTS `sys_notice`;
 CREATE TABLE `sys_notice` (
@@ -4369,15 +4400,15 @@ CREATE TABLE `sys_notice_log` (
   `site_id` int(11) NOT NULL DEFAULT '0' COMMENT '站点id',
   `key` varchar(255) DEFAULT '' COMMENT '消息key',
   `notice_type` varchar(50) DEFAULT 'sms' COMMENT '消息类型（sms,wechat.weapp）',
-  `uid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '通知的用户id',
+  `uid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '通知的用户id',
   `member_id` int(11) NOT NULL DEFAULT '0' COMMENT '消息的会员id',
   `nickname` varchar(255) NOT NULL DEFAULT '' COMMENT '接收人用户昵称或姓名',
   `receiver` varchar(255) NOT NULL DEFAULT '' COMMENT '接收人（对应手机号，openid）',
   `content` text COMMENT '消息数据',
-  `is_click` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '点击次数',
-  `is_visit` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '访问次数',
+  `is_click` tinyint(4) unsigned NOT NULL DEFAULT '0' COMMENT '点击次数',
+  `is_visit` tinyint(4) unsigned NOT NULL DEFAULT '0' COMMENT '访问次数',
   `visit_time` int(11) NOT NULL DEFAULT '0' COMMENT '访问时间',
-  `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '消息时间',
+  `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '消息时间',
   `result` varchar(1000) NOT NULL DEFAULT '' COMMENT '结果',
   `params` text,
   PRIMARY KEY (`id`),
@@ -4411,7 +4442,7 @@ CREATE TABLE `sys_role` (
   `site_id` int(11) NOT NULL DEFAULT '0' COMMENT '站点id',
   `role_name` varchar(255) NOT NULL DEFAULT '' COMMENT '角色名称',
   `rules` text COMMENT '角色权限(menus_id)',
-  `status` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '状态',
+  `status` tinyint(4) unsigned NOT NULL DEFAULT '1' COMMENT '状态',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '添加时间',
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '最后修改时间',
   PRIMARY KEY (`role_id`),
@@ -4445,11 +4476,11 @@ CREATE TABLE `sys_user` (
   `password` varchar(100) NOT NULL DEFAULT '' COMMENT '用户密码',
   `real_name` varchar(16) NOT NULL DEFAULT '' COMMENT '实际姓名',
   `last_ip` varchar(16) NOT NULL DEFAULT '' COMMENT '最后一次登录ip',
-  `last_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最后一次登录时间',
-  `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
-  `login_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录次数',
-  `status` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '后台管理员状态 1有效0无效',
-  `is_del` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `last_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '最后一次登录时间',
+  `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
+  `login_count` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '登录次数',
+  `status` tinyint(4) unsigned NOT NULL DEFAULT '1' COMMENT '后台管理员状态 1有效0无效',
+  `is_del` tinyint(4) unsigned NOT NULL DEFAULT '0',
   `delete_time` tinyint(4) NOT NULL DEFAULT '0' COMMENT '删除时间',
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`uid`),
@@ -4458,7 +4489,7 @@ CREATE TABLE `sys_user` (
   KEY `is_del` (`is_del`),
   KEY `password` (`password`),
   KEY `update_time` (`update_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 AVG_ROW_LENGTH=372 COMMENT='后台管理员表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='后台管理员表';
 
 INSERT INTO `sys_user` VALUES ('1', '', '', '', '', '', '0', '0', '0', '1', '0', '0', '0');
 
@@ -4467,12 +4498,12 @@ CREATE TABLE `sys_user_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '管理员操作记录ID',
   `ip` varchar(16) NOT NULL DEFAULT '' COMMENT '登录IP',
   `site_id` int(11) NOT NULL DEFAULT '0' COMMENT '站点id',
-  `uid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '管理员id',
+  `uid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '管理员id',
   `username` varchar(64) NOT NULL DEFAULT '' COMMENT '管理员姓名',
   `url` varchar(128) NOT NULL DEFAULT '' COMMENT '链接',
   `params` text COMMENT '参数',
   `type` varchar(32) NOT NULL DEFAULT '' COMMENT '请求方式',
-  `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '操作时间',
+  `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '操作时间',
   PRIMARY KEY (`id`),
   KEY `create_time` (`create_time`),
   KEY `site_id` (`site_id`),
@@ -4491,7 +4522,7 @@ CREATE TABLE `sys_user_role` (
   KEY `create_time` (`create_time`),
   KEY `site_id` (`site_id`),
   KEY `uid` (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 AVG_ROW_LENGTH=481 COMMENT='用户权限表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='用户权限表';
 
 INSERT INTO `sys_user_role` VALUES ('1', '1', '0', '', '0', '1');
 
@@ -4542,11 +4573,11 @@ CREATE TABLE `wechat_reply` (
   `site_id` int(11) NOT NULL DEFAULT '0' COMMENT '站点id',
   `keyword` varchar(64) NOT NULL DEFAULT '' COMMENT '关键词',
   `reply_type` tinyint(4) NOT NULL COMMENT '回复类型 subscribe-关注回复 keyword-关键字回复 default-默认回复',
-  `matching_type` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '匹配方式：1-全匹配；2-模糊匹配',
-  `content_type` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '内容类型：1-文本',
+  `matching_type` tinyint(4) unsigned NOT NULL DEFAULT '1' COMMENT '匹配方式：1-全匹配；2-模糊匹配',
+  `content_type` tinyint(4) unsigned NOT NULL DEFAULT '1' COMMENT '内容类型：1-文本',
   `content` text NOT NULL COMMENT '回复内容',
-  `status` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '启动状态：1-启动；0-关闭',
-  `sort` int(10) unsigned NOT NULL DEFAULT '50' COMMENT '排序',
+  `status` tinyint(4) unsigned NOT NULL DEFAULT '0' COMMENT '启动状态：1-启动；0-关闭',
+  `sort` int(11) unsigned NOT NULL DEFAULT '50' COMMENT '排序',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
   `delete_time` int(11) NOT NULL DEFAULT '0' COMMENT '删除时间',

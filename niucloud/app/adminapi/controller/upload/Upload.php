@@ -11,8 +11,8 @@
 
 namespace app\adminapi\controller\upload;
 
-use app\service\admin\file\UploadConfigService;
-use app\service\admin\file\UploadService;
+use app\service\admin\upload\UploadConfigService;
+use app\service\admin\upload\UploadService;
 use core\base\BaseAdminController;
 use think\Response;
 
@@ -56,7 +56,7 @@ class Upload extends BaseAdminController
             ['file', 'file'],
         ], true);
         $upload_service = new UploadService();
-        return success($upload_service->document($data['file'], $type, true));
+        return success($upload_service->document($data['file'], $type));
     }
 
     /**

@@ -171,5 +171,11 @@ return [
         'not_support_account_type' => '该账户不支持提现',
         'not_support_transfer_type' => '不支持该提现方式',
         'account_id_require' => '请选择提现账户'
-    ]
+    ],
+    //计划任务
+    'validate_schedule' => [
+        'schedule_require' => '计划任务必须选择',
+        'schedule_unique' => '当前计划任务已存在',
+        'not_exit_schedule_type' => '不是有效的任务类型',
+    ],
 ];

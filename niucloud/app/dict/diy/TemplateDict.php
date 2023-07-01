@@ -21,11 +21,6 @@ use core\dict\DictLoader;
 class TemplateDict
 {
 
-    /**
-     * 获取页面模板
-     * @param array $params
-     * @return array|string|null
-     */
     public static function getTemplate($params = [])
     {
         $system_pages = [

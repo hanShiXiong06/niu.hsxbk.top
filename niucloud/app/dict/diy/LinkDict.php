@@ -20,10 +20,6 @@ use core\dict\DictLoader;
  */
 class LinkDict
 {
-    /**
-     * 获取链接
-     * @return array
-     */
     public static function getLink()
     {
         $system_links = [

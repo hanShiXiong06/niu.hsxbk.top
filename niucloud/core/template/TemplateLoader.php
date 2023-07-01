@@ -17,10 +17,10 @@ use core\loader\Loader;
  * @see \core\template\TemplateLoader
  * @package think\facade
  * @mixin \core\template\Wechat
- * @method  string|null send(string $phone, string $templateId, array $data) 发送短信
- * @method  mixed open(null|string $name = null, mixed $default = null) 开启服务
- * @method  mixed apply(string $title, string $content, int $type) 申请模板
- * @method  mixed applys(int $tempType, int $page, int $limit) 模板记录
+ * @method  string|null send(array $data) 发送
+ * @method  mixed addTemplate(array $data) 增加
+ * @method  mixed delete(array $data) 删除
+ * @method  mixed get() 模板记录
  */
 class TemplateLoader extends Loader
 {

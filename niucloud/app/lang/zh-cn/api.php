@@ -88,7 +88,7 @@ return [
     'OSS_TYPE_NOT_EXIST' => '云存储类型不存在',
     'URL_FILE_NOT_EXIST' => '获取不到网址指向的文件',
     'PLEACE_SELECT_IMAGE' => '请选择要删除的图片',
-    'CERT_TYPE_ERROR' => '不是有效的上传类型',
+    'UPLOAD_TYPE_ERROR' => '不是有效的上传类型',
     'OSS_FILE_URL_NOT_EXIST' => '远程资源文件地址不能为空',
     'BASE_IMAGE_FILE_NOT_EXIST' => 'base图片资源不能为空',
     'UPLOAD_TYPE_NOT_SUPPORT' => '不支持的上传类型',
@@ -108,6 +108,7 @@ return [
     'NOTICE_NOT_OPEN_SMS' => '当前消息未开启短信发送',
     'NOTICE_SMS_EMPTY' => '手机号为空',
     'NOTICE_SMS_NOT_OPEN' => '短信未启用',
+    'NOTICE_TEMPLATE_IS_NOT_EXIST' => '消息不存在',
 
     //会员相关
     'MOBILE_IS_EXIST' => '当前手机号已绑定账号',
@@ -159,8 +160,6 @@ return [
     'WEAPP_EMPOWER_NOT_EXIST' => '微信小程序授信信息不存在',
     'WEAPP_EMPOWER_TEL_NOT_EXIST' => '微信小程序授信手机号不存在',
 
-    //支付相关
-
     //站点相关
     'SITE_GROUP_IS_EXIST' => '当前套餐存在站点，请调整站点对应套餐后重试',
     'SITE_EXPIRE' => '站点已过期',
@@ -185,11 +184,13 @@ return [
     'CHANNEL_MARK_INVALID' => '无效的渠道标识',
     'TEMPLATE_NOT_EXIST' => '模板不存在',
     'IS_EXIST_TEMPLATE_NOT_MODIFY' => '已存在的支付模板不支持修改支付类型',
+    'ONLY_PAYING_CAN_PAY' => '只有待支付的订单可以支付',
     //退款相关
     'REFUND_NOT_EXIST' => '退款单据不存在',
     //订单相关  8***
     'ORDER_NOT_EXIST' => '订单不存在',
     'ORDER_CLOSED' => '订单已关闭',
+    'DOCUMENT_IS_PAID' => '单据已支付',
 
     // 退款相关
     'NOT_ALLOW_APPLY_REFUND' => '该订单不允许退款',
@@ -206,5 +207,9 @@ return [
     //任务队列相关
     'JOB_NOT_EXISTS' => '任务类不存在',
     'JOB_CREATE_FAIL' => '任务创建失败',
+
+    //小程序版本
+    'APPLET_VERSION_NOT_EXISTS' => '小程序版本不存在',
+
 
 ];

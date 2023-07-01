@@ -9,7 +9,7 @@
 // | Author: Niucloud Team
 // +----------------------------------------------------------------------
 
-namespace app\service\admin\file;
+namespace app\service\admin\upload;
 
 use app\dict\sys\FileDict;
 use app\dict\sys\StorageDict;
@@ -29,8 +29,8 @@ class UploadService extends BaseAdminService
 
     /**
      * 附件库上传图片
+     * @param $file
      * @param int $cate_id
-     * @param string $dir
      * @return array
      */
     public function image($file, int $cate_id = 0){
@@ -55,14 +55,14 @@ class UploadService extends BaseAdminService
     /**
      * 文件上传
      * @param $file
-     * @param bool $is_local
+     * @param string $type
      * @return array
      */
-    public function document($file, string $type,bool $is_local = false){
+    public function document($file, string $type){
         if(!in_array($type, FileDict::getSceneType()))
-            throw new UploadFileException('CERT_TYPE_ERROR');
+            throw new UploadFileException('UPLOAD_TYPE_ERROR');
         $dir = $this->root_path.'/document/'.$type.'/'.$this->site_id.'/'.date('Ym').'/'.date('d');
         $core_upload_service = new CoreUploadService();
-        return $core_upload_service->document($file, $this->site_id, $type, $dir, StorageDict::LOCAL, true);
+        return $core_upload_service->document($file, $this->site_id, $type, $dir, StorageDict::LOCAL);
     }
 }

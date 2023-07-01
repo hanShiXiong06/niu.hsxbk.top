@@ -21,11 +21,6 @@ use core\dict\DictLoader;
 class PagesDict
 {
 
-    /**
-     * 获取页面数据
-     * @param array $params
-     * @return array|string|null
-     */
     public static function getPages($params = [])
     {
         $system_pages = [
@@ -258,14 +253,74 @@ class PagesDict
                     ]
                 ],
 //                'tourism' => [
-//                    "title" => "旅游", // 页面名称
+//                    "title" => "固定模板示例", // 页面名称
 //                    'cover' => 'static/resource/images/diy/template/tourism_cover.png', // 页面封面图
 //                    'preview' => '', // 页面预览图
-//                    'desc' => '酒店旅游住宿门票景点', // 页面描述
+//                    'desc' => '描述固定模板', // 页面描述
 //                    'mode' => 'fixed', // 页面模式：diy：自定义，fixed：固定
 //                    'data' => [
-//                        'component' => 'tourism-index', // 模板组件名称
-//                        'link' => '' // 装修链接
+//                        "global" => [
+//                            "title" => "固定模板示例",
+//                            "pageBgColor" => "#F8F8F8",
+//                            'bgUrl' => '',
+//                            'imgWidth' => '',
+//                            'imgHeight' => '',
+//                            "bottomTabBarSwitch" => true,
+//                            "template" => [
+//                                'textColor' => "#303133",
+//                                "pageBgColor" => "",
+//                                "componentBgColor" => "",
+//                                "topRounded" => 0,
+//                                "bottomRounded" => 0,
+//                                "elementBgColor" => "",
+//                                "topElementRounded" => 0,
+//                                "bottomElementRounded" => 0,
+//                                "margin" => [
+//                                    "top" => 0,
+//                                    "bottom" => 0,
+//                                    "both" => 0
+//                                ]
+//                            ],
+//                            'topStatusBar' => [
+//                                'bgColor' => "#ffffff",
+//                                'isTransparent' => false,
+//                                'isShow' => true,
+//                                'style' => 'style-1',
+//                                'textColor' => "#333333",
+//                                'textAlign' => 'center',
+//                            ],
+//                            'popWindow' => [
+//                                'imgUrl' => "",
+//                                'imgWidth' => '',
+//                                'imgHeight' => '',
+//                                'count' => -1,
+//                                'show' => 0,
+//                                'link' => [
+//                                    'name' => ""
+//                                ],
+//                            ]
+//                        ],
+//                        "value" => [
+//                            [
+//                                "id" => "524jcssmp8c0",
+//                                "componentName" => "DemoIndex",
+//                                "componentTitle" => "固定模板示例",
+//                                "uses" => 0,
+//                                "ignore" => [],
+//                                "pageBgColor" => "",
+//                                "componentBgColor" => "rgba(255, 255, 255, 1)",
+//                                "topRounded" => 0,
+//                                "bottomRounded" => 0,
+//                                "elementBgColor" => "",
+//                                "topElementRounded" => 0,
+//                                "bottomElementRounded" => 0,
+//                                "margin" => [
+//                                    "top" => 0,
+//                                    "bottom" => 0,
+//                                    "both" => 0
+//                                ]
+//                            ]
+//                        ]
 //                    ]
 //                ]
             ],
@@ -932,6 +987,7 @@ class PagesDict
 //                ]
             ]
         ];
+
         $pages = ( new DictLoader("UniappPages") )->load($system_pages);
         if (!empty($params[ 'type' ])) {
             if (!empty($pages[ $params[ 'type' ] ])) {
@@ -943,12 +999,11 @@ class PagesDict
                         }
                     }
                 }
+                return $temp;
             } else {
-
                 return [];
             }
 
-            return $temp;
         }
 
         return $pages;

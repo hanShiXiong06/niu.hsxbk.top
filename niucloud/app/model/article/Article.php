@@ -11,6 +11,7 @@
 
 namespace app\model\article;
 
+use app\dict\sys\FileDict;
 use app\model\site\Site;
 use core\base\BaseModel;
 use think\db\Query;
@@ -100,16 +101,31 @@ class Article extends BaseModel
     }
 
     public function getArticleUrlAttr($value, $data) {
-        $site = Site::find($data['site_id']);
-        $site_tag = $site['site_code'];
 
         $wap_domain = !empty(env("system.wap_domain")) ? preg_replace('#/$#', '', env("system.wap_domain")) : request()->domain();
         $web_domain = !empty(env("system.web_domain")) ? preg_replace('#/$#', '', env("system.web_domain")) : request()->domain();
 
         return  [
-            'wap_url' => $wap_domain . "/wap/" . $site_tag . "/pages/article/detail?id={$data['id']}",
-            'web_url' => $web_domain . "/web/" . $site_tag . "/article/detail?id={$data['id']}"
+            'wap_url' => $wap_domain . "/wap/" . $data['site_id'] . "/pages/article/detail?id={$data['id']}",
+            'web_url' => $web_domain . "/web/" . $data['site_id'] . "/article/detail?id={$data['id']}"
         ];
     }
 
+    public function getImageThumbBigAttr($value, $data) {
+        if($data['image'] != ''){
+            return get_thumb_images($data['site_id'], $data['image'], FileDict::BIG);
+        }
+    }
+
+    public function getImageThumbMidAttr($value, $data) {
+        if($data['image'] != ''){
+            return get_thumb_images($data['site_id'], $data['image'], FileDict::MID);
+        }
+    }
+
+    public function getImageThumbSmallAttr($value, $data) {
+        if($data['image'] != ''){
+            return get_thumb_images($data['site_id'], $data['image'], FileDict::SMALL);
+        }
+    }
 }

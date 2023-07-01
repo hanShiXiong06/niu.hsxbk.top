@@ -9,7 +9,7 @@
 // | Author: Niucloud Team
 // +----------------------------------------------------------------------
 
-namespace app\service\admin\file;
+namespace app\service\admin\upload;
 
 use app\dict\sys\StorageDict;
 use app\service\core\upload\CoreStorageService;

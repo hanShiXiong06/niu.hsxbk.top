@@ -33,6 +33,13 @@ class Schedule extends BaseAdminController
 
     }
 
+    /**
+     * 计划任务模板
+     * @return \think\Response
+     */
+    public function template(){
+        return success(data:(new ScheduleService())->getTemplateList());
+    }
 
     /**
      * 获取任务模式
@@ -62,6 +69,7 @@ class Schedule extends BaseAdminController
             [ 'time', [] ],
             [ 'status', ScheduleDict::OFF ],
         ]);
+        $this->validate($data, 'app\validate\sys\Schedule.add');
         ( new ScheduleService() )->add($data);
         return success('ADD_SUCCESS');
     }
@@ -74,7 +82,7 @@ class Schedule extends BaseAdminController
     public function edit(int $id)
     {
         $data = $this->request->params([
-            [ 'key', '' ],
+//            [ 'key', '' ],
             [ 'time', [] ],
             [ 'status', ScheduleDict::OFF ],
         ]);
@@ -100,8 +108,15 @@ class Schedule extends BaseAdminController
      */
     public function del(int $id)
     {
-
         ( new ScheduleService() )->del($id);
         return success('DELETE_SUCCESS');
+    }
+
+    /**
+     * 时间间隔类型
+     * @return \think\Response
+     */
+    public function getDateType(){
+        return success(data:ScheduleDict::getDateType());
     }
 }

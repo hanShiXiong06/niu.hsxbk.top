@@ -11,9 +11,11 @@
 
 namespace app\service\api\upload;
 
+use app\dict\sys\FileDict;
 use app\dict\sys\StorageDict;
 use app\service\core\upload\CoreUploadService;
 use core\base\BaseApiService;
+use core\exception\UploadFileException;
 
 /**
  * 用户服务层
@@ -54,13 +56,14 @@ class UploadService extends BaseApiService
     /**
      * 文件上传
      * @param $file
-     * @param bool $is_local
      * @return array
      */
-    public function document($file, bool $is_local = false)
+    public function document($file, string $type = '')
     {
-        $dir = $this->root_path . '/' . 'document' . '/' . $this->site_id . '/' . date('Ym') . '/' . date('d');
+        if(!in_array($type, FileDict::getSceneType()))
+            throw new UploadFileException('UPLOAD_TYPE_ERROR');
+        $dir = $this->root_path.'/document/'.$type.'/'.$this->site_id.'/'.date('Ym').'/'.date('d');
         $core_upload_service = new CoreUploadService();
-        return $core_upload_service->document($file, $this->site_id, '', $dir, StorageDict::LOCAL);
+        return $core_upload_service->document($file, $this->site_id, $type, $dir, StorageDict::LOCAL);
     }
 }

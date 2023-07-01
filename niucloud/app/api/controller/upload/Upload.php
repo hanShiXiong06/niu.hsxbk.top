@@ -19,6 +19,10 @@ use core\base\BaseApiController;
 class Upload extends BaseApiController
 {
 
+    /**
+     * 图片上传
+     * @return \think\Response
+     */
     public function image(){
         $data = $this->request->params([
             ['file', 'file'],
@@ -27,6 +31,10 @@ class Upload extends BaseApiController
         return success($upload_service->image($data['file']));
     }
 
+    /**
+     * 远程图片拉取
+     * @return \think\Response
+     */
     public function imageFetch(){
         $data = $this->request->params([
             ['url', ''],
@@ -36,7 +44,10 @@ class Upload extends BaseApiController
     }
 
 
-
+    /**
+     * base64图片上传
+     * @return \think\Response
+     */
     public function imageBase64(){
         $data = $this->request->params([
             ['content', ''],

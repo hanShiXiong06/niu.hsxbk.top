@@ -18,6 +18,7 @@ use app\service\admin\sys\MenuService;
 use core\dict\DictLoader;
 use core\base\BaseCoreService;
 use think\facade\Cache;
+use think\facade\Db;
 
 /**
  * 系统菜单
@@ -95,13 +96,13 @@ class CoreMenuService extends BaseCoreService
     }
 
     /**
-     * 删除插件菜单
+     * 删除插件菜单(强删除)
      * @param string $addon
      * @return true
      */
     public function deleteByAddon(string $addon){
-
-        $this->model->where([['addon', '=', $addon]])->delete();
+        Db::name("sys_menu")->where([['addon', '=', $addon]])->delete();
+        //$this->model->where([['addon', '=', $addon]])->delete();
         return true;
     }
 

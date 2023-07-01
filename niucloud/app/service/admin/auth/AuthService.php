@@ -36,12 +36,11 @@ class AuthService extends BaseAdminService
      * @param $site_id
      */
     public function checkSiteAuth(Request $request){
-        $site_code = $request->adminSiteId();
+        $site_id = $request->adminSiteId();
         //todo  将站点编号转化为站点id
-        $site_info = (new CoreSiteService())->getSiteInfoBySiteCode($site_code);
+        $site_info = (new CoreSiteService())->getSiteCache($site_id);
         //站点不存在
         if(empty($site_info)) throw new AuthException('SITE_NOT_EXIST');
-        $site_id = $site_info['site_id'];
         //没有当前站点的信息
         if(!$this->getAuthRole($site_id)) throw new AuthException('NO_SITE_PERMISSION');
 

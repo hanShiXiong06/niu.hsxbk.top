@@ -122,6 +122,10 @@ Route::group('sys', function () {
     Route::put('upload/config', 'upload.Upload/setUploadConfig');
     //获取上传设置
     Route::get('upload/config', 'upload.Upload/getUploadConfig');
+    // 获取图标库列表
+    Route::get('attachment/icon_category', 'sys.Attachment/getIconCategoryList');
+    // 获取图标库列表
+    Route::get('attachment/icon', 'sys.Attachment/getIconList');
     /***************************************************** 协议管理 ****************************************************/
     //消息列表
     Route::get('agreement', 'sys.Agreement/lists');
@@ -167,13 +171,19 @@ Route::group('sys', function () {
     Route::delete('schedule/:id', 'sys.Schedule/del');
     //任务模式
     Route::get('schedule/type', 'sys.Schedule/getType');
+    //任务模板
+    Route::get('schedule/template', 'sys.Schedule/template');
+    //任务时间间隔
+    Route::get('schedule/datetype', 'sys.Schedule/getDateType');
     /***************************************************** 应用管理 ****************************************************/
     Route::get('applist', 'sys.App/getAppList');
 
     /***************************************************** 清理缓存-刷新菜单 ****************************************************/
     Route::post('schema/clear', 'sys.System/schemaCache');
 
-
+    /***************************************************** 公共字典数据 ****************************************************/
+    Route::get('date/month', 'sys.Common/getMonth');
+    Route::get('date/week', 'sys.Common/getWeek');
 
 })->middleware([
     AdminCheckToken::class,

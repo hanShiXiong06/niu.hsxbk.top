@@ -11,6 +11,7 @@
 
 namespace app\service\api\notice;
 
+use app\model\sys\SysNotice;
 use core\base\BaseApiService;
 
 /**
@@ -35,5 +36,15 @@ class NoticeService extends BaseApiService
     public function send($key, $data)
     {
         return ( new \app\service\core\notice\NoticeService() )->send($this->site_id, $key, $data);
+    }
+
+    /**
+     * 获取微信小程序订阅消息模板id
+     * @param string $keywords
+     * @return void
+     */
+    public function getWeappNoticeTemplateId(string $keys) {
+        $column = (new SysNotice())->where([ ['site_id', '=', $this->site_id], ['key', 'in', explode(',', $keys) ], ['weapp_template_id', '<>', ''], ['is_weapp', '=', 1] ])->column('weapp_template_id');
+        return $column;
     }
 }

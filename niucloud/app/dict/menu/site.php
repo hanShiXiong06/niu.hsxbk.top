@@ -485,7 +485,7 @@ return
             'is_show' => 1,
             'children' => [
                 [
-                    'menu_name' => '账单管理',
+                    'menu_name' => '财务流水',
                     'menu_key' => 'site_account_list',
                     'menu_type' => 1,
                     'icon' => 'element-Postcard',

@@ -9,7 +9,7 @@
 // | Author: Niucloud Team
 // +----------------------------------------------------------------------
 
-namespace app\service\admin\file;
+namespace app\service\admin\upload;
 
 use app\model\sys\SysConfig;
 use app\service\core\upload\CoreUploadConfigService;

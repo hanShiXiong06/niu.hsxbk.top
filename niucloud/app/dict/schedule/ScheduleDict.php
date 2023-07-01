@@ -19,6 +19,8 @@ class ScheduleDict
 
     const ON = 1;
     const OFF = 2;
+
+
     /**
      * 任务模式
      * @return array
@@ -38,6 +40,21 @@ class ScheduleDict
         return [
             self::ON => get_lang('dict_schedule.on'),//启用
             self::OFF  => get_lang('dict_schedule.off'),//关闭
+        ];
+    }
+
+    const MIN = 'min';//每隔几分钟
+    const HOUR = 'hour';//每隔几小时
+    const DAY = 'day';//每隔几天
+    const WEEK = 'week';//每周
+    const MONTH = 'month';//每月
+    public static function getDateType(){
+        return [
+            self::MIN => get_lang('dict_schedule.min'),
+            self::HOUR  => get_lang('dict_schedule.hour'),
+            self::DAY => get_lang('dict_schedule.day'),
+            self::WEEK  => get_lang('dict_schedule.week'),
+            self::MONTH => get_lang('dict_schedule.month'),
         ];
     }
 }

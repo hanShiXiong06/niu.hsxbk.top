@@ -16,7 +16,6 @@ use app\dict\diy\LinkDict;
 use app\dict\diy\PagesDict;
 use app\dict\diy\TemplateDict;
 use app\model\diy\Diy;
-use app\model\site\Site;
 use app\service\admin\sys\SystemService;
 use core\base\BaseAdminService;
 use Exception;
@@ -45,8 +44,8 @@ class DiyService extends BaseAdminService
     {
         $where[] = [ 'site_id', '=', $this->site_id ];
         $field = 'id,site_id,title,name,template,type,mode,is_default,share,visit_count,create_time,update_time';
-        $order = "is_default desc,update_time desc";
-        $search_model = $this->model->where([ [ 'site_id', '=', $this->site_id ] ])->withSearch([ "title", "type" ], $where)->field($field)->order($order)->append([ 'type_name' ]);
+        $order = "update_time desc";
+        $search_model = $this->model->where([ [ 'site_id', '=', $this->site_id ] ])->withSearch([ "title", "type", 'mode' ], $where)->field($field)->order($order)->append([ 'type_name' ]);
         $list = $this->pageQuery($search_model);
         return $list;
     }
@@ -62,7 +61,7 @@ class DiyService extends BaseAdminService
      */
     public function getList(array $where = [], $field = 'id,site_id,title,name,template,type,mode,is_default,share,visit_count,create_time,update_time')
     {
-        $order = "is_default desc,update_time desc";
+        $order = "update_time desc";
         $list = $this->model->where([ [ [ 'site_id', '=', $this->site_id ] ] ])->withSearch([ "title", "type", 'mode' ], $where)->field($field)->select()->order($order)->toArray();
         return $list;
     }
@@ -74,14 +73,14 @@ class DiyService extends BaseAdminService
      */
     public function getInfo(int $id)
     {
-        $field = 'id,site_id,title,name,template,type,mode,value,is_default,share,visit_count';
+        $field = 'id,site_id,title,name,template,type,mode,value,is_default,is_change,share,visit_count';
         $info = $this->model->field($field)->where([ [ 'id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->findOrEmpty()->toArray();
         return $info;
     }
 
     public function getInfoByName(string $name)
     {
-        $field = 'id,site_id,title,name,template,type,mode,value,is_default,share,visit_count';
+        $field = 'id,site_id,title,name,template,type,mode,value,is_default,is_change,share,visit_count';
         $info = $this->model->field($field)->where([ [ 'name', '=', $name ], [ 'site_id', '=', $this->site_id ], [ 'is_default', '=', 1 ] ])->findOrEmpty()->toArray();
         return $info;
     }
@@ -188,7 +187,6 @@ class DiyService extends BaseAdminService
 
         if (!empty($data)) {
             // 编辑赋值
-
             if (isset($template[ $data[ 'type' ] ])) {
                 $page = $template[ $data[ 'type' ] ];
                 $data[ 'type_name' ] = $page[ 'title' ];
@@ -260,8 +258,6 @@ class DiyService extends BaseAdminService
         }
         $data[ 'component' ] = $this->getComponentList($data[ 'type' ]);
         $data[ 'domain_url' ] = ( new SystemService() )->getUrl();
-        $site = Site::find($this->site_id);
-        $data[ 'site_id' ] = $site[ 'site_code' ];
         return $data;
     }
 
@@ -408,7 +404,7 @@ class DiyService extends BaseAdminService
         foreach ($template as $k => $v) {
 
             // 查询我的微页面
-            $template[ $k ][ 'my_page' ] = $this->getList([ 'type' => $k, 'mode' => 'diy' ], 'id,title,name,template,type,is_default,mode');
+            $template[ $k ][ 'my_page' ] = $this->getList([ 'type' => $k ], 'id,title,name,template,type,is_default,mode');
             $template[ $k ][ 'domain_url' ] = ( new SystemService() )->getUrl();
 
             // 查询默认页面数据
@@ -432,28 +428,30 @@ class DiyService extends BaseAdminService
             if (!empty($info)) {
                 $use_template[ 'id' ] = $info[ 'id' ];
                 $use_template[ 'title' ] = $info[ 'title' ];
-
-                // 检测模板是否存在
-                if (!empty($info[ 'template' ])) {
-                    if (in_array($info[ 'template' ], array_keys($v[ 'template' ]))) {
-                        $use_template[ 'template' ] = $info[ 'template' ];
-                        $use_template[ 'mode' ] = $info[ 'mode' ];
-                        $use_template[ 'hope' ] = $info[ 'mode' ] == 'fixed' ? 'template' : $info[ 'mode' ];
-                    }
-                }
-
+                $use_template[ 'template' ] = $info[ 'template' ];
+                $use_template[ 'mode' ] = $info[ 'mode' ];
+                $use_template[ 'hope' ] = $info[ 'mode' ] == 'fixed' ? 'template' : $info[ 'mode' ];
                 $use_template[ 'preview' ] = ''; // 默认图
                 $use_template[ 'desc' ] = '通过自定义装修的页面';
 
                 // 查询模板页面数
                 $page_data = $this->getPageData($k, $use_template[ 'template' ]);
                 if (!empty($page_data)) {
-                    $use_template[ 'cover' ] = $page_data[ 'cover' ]; // 默认图
-                    $use_template[ 'desc' ] = $page_data[ 'desc' ];
+                    if ($info[ 'is_change' ] == 1) {
+                        // 修改过模板，预览实际内容
+                        $use_template[ 'url' ] = '/' . $v[ 'page' ] . '?id=' . $info[ 'id' ];
+                    } else {
+                        $use_template[ 'cover' ] = $page_data[ 'cover' ]; // 默认图
+                        $use_template[ 'desc' ] = $page_data[ 'desc' ];
+                    }
                 } else {
                     // 自定义页面，实时预览效果
-                    $site = Site::find($this->site_id);
-                    $use_template[ 'url' ] = '/pages/index/diy?&mode=preview&site_id=' . $site[ 'site_code' ] . '&id=' . $info[ 'id' ];
+                    $use_template[ 'url' ] = '/pages/index/diy?id=' . $info[ 'id' ];
+                    // 清空模板信息
+                    $use_template[ 'cover' ] = ''; // 默认图
+                    $use_template[ 'template' ] = '';
+                    $use_template[ 'mode' ] = 'diy';
+                    $use_template[ 'hope' ] = $use_template[ 'mode' ];
                 }
             }
             $template[ $k ][ 'use_template' ] = $use_template;

@@ -38,7 +38,7 @@ class ArticleService extends BaseApiService
         $where[] = [ 'site_id', '=', $this->site_id ];
         $field = 'id, category_id, site_id, title, intro, summary, image, author, content, visit, visit_virtual, is_show, sort, create_time, update_time';
         $order = 'create_time desc';
-        $search_model = $this->model->where([ [ 'site_id', '=', $this->site_id ] ])->withSearch([ 'title', 'category_id'], $where)->with('articleCategory')->field($field)->order($order);
+        $search_model = $this->model->where([ [ 'site_id', '=', $this->site_id ] ])->withSearch([ 'title', 'category_id'], $where)->with('articleCategory')->field($field)->order($order)->append(['image_thumb_mid']);
         return $this->pageQuery($search_model);
     }
 
@@ -54,7 +54,7 @@ class ArticleService extends BaseApiService
         $where[] = [ 'site_id', '=', $this->site_id ];
         $field = 'id, category_id, site_id, title, intro, summary, image, author, content, visit, visit_virtual, is_show, sort, create_time, update_time';
         $order = 'create_time desc';
-        return $this->model->where([ [ 'site_id', '=', $this->site_id ] , ['is_show', '=', 1]])->withSearch([ 'title', 'category_id', 'ids' ], $where)->limit($limit)->with('articleCategory')->field($field)->order($order)->select()->toArray();
+        return $this->model->where([ [ 'site_id', '=', $this->site_id ] , ['is_show', '=', 1]])->withSearch([ 'title', 'category_id', 'ids' ], $where)->limit($limit)->with('articleCategory')->field($field)->append(['image_thumb_mid'])->order($order)->select()->toArray();
     }
 
     /**
@@ -65,7 +65,7 @@ class ArticleService extends BaseApiService
     {
         $field = 'id, category_id, site_id, title, intro, summary, image, author, content, visit, visit_virtual, is_show, sort, create_time, update_time';
 
-        return $this->model->with('articleCategory')->field($field)->where([ [ 'id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->findOrEmpty()->toArray();
+        return $this->model->with('articleCategory')->field($field)->where([ [ 'id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->append(['image_thumb_big'])->findOrEmpty()->toArray();
     }
 
 }

@@ -33,15 +33,12 @@ class CoreSysConfigService extends BaseCoreService
      * @return array
      */
     public function getSceneDomain(int $site_id){
-        $site = Site::find($site_id);
-        $site_tag = $site[ 'site_code' ];
-
         $wap_domain = !empty(env("system.wap_domain")) ? preg_replace('#/$#', '', env("system.wap_domain")) : request()->domain();
         $web_domain = !empty(env("system.web_domain")) ? preg_replace('#/$#', '', env("system.web_domain")) : request()->domain();
 
         return  [
-            'wap_url' => $wap_domain . "/wap/" . $site_tag . "/",
-            'web_url' => $web_domain . "/web/" . $site_tag . "/"
+            'wap_url' => $wap_domain . "/wap/" . $site_id . "/",
+            'web_url' => $web_domain . "/web/" . $site_id . "/"
         ];
     }
 

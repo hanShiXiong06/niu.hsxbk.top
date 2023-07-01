@@ -458,6 +458,19 @@
                         'sort' => 20,
                         'status' => 1,
                         'is_show' => 1,
+                    ],
+                    [
+                        'menu_name' => '小程序平台',
+                        'menu_key' => 'setting_oplatform',
+                        'menu_type' => 1,
+                        'icon' => 'iconfont-iconweixin',
+                        'api_url' => 'sys/weapp',
+                        'router_path' => 'weapp',
+                        'view_path' => 'setting/weapp',
+                        'methods' => 'get',
+                        'sort' => 20,
+                        'status' => 1,
+                        'is_show' => 1,
                     ]
                 ]
             ],

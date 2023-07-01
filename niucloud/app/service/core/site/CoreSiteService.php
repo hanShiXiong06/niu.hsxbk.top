@@ -45,7 +45,7 @@ class CoreSiteService extends BaseCoreService
                 $where = [
                     [ 'site_id', '=', $site_id ],
                 ];
-                $site = $this->model->where($where)->field('site_id, app_type,site_name,logo,front_end_name,front_end_logo,group_id, status, expire_time, site_code')->append([ 'status_name' ])->findOrEmpty();
+                $site = $this->model->where($where)->field('site_id, app_type,site_name,logo,front_end_name,front_end_logo,group_id, status, expire_time')->append([ 'status_name' ])->findOrEmpty();
                 return $site->toArray();
             },
             self::$cache_tag_name . $site_id
@@ -92,28 +92,6 @@ class CoreSiteService extends BaseCoreService
             ]
         );
         return true;
-    }
-
-    /**
-     * 通过站点编号获取站点信息
-     * @param $site_code
-     * @return mixed|string
-     */
-    public function getSiteInfoBySiteCode($site_code){
-        $cache_name = 'site_id_cache';
-        return cache_remember(
-            $cache_name . $site_code,
-            function() use ($site_code) {
-                $site_info = $this->model->where([[
-                    'site_code', '=', $site_code
-                ]])->findOrEmpty();
-                if(!$site_info->isEmpty()){
-                    return $site_info->toArray();
-                }
-                return [];
-            }
-        );
-
     }
 
 }

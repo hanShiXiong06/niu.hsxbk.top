@@ -137,6 +137,18 @@ class Diy extends BaseModel
     }
 
     /**
+     * 搜索器:页面展示模式，diy：自定义，fixed：固定
+     * @param $value
+     * @param $data
+     */
+    public function searchModeAttr($query, $value, $data)
+    {
+        if ($value) {
+            $query->where("mode", $value);
+        }
+    }
+
+    /**
      * 搜索器:自定义页面数据，json格式
      * @param $value
      * @param $data

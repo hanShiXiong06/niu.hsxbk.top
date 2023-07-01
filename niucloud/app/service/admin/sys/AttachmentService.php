@@ -11,6 +11,8 @@
 
 namespace app\service\admin\sys;
 
+use app\dict\sys\FileDict;
+use app\dict\sys\IconDict;
 use app\model\sys\SysAttachment;
 use app\model\sys\SysAttachmentCategory;
 use app\service\core\sys\CoreAttachmentService;
@@ -39,7 +41,7 @@ class AttachmentService extends BaseAdminService
      */
     public function add(array $data)
     {
-        $data['site_id'] = $this->site_id;
+        $data[ 'site_id' ] = $this->site_id;
         return $this->core_attachment_service->add($data);
     }
 
@@ -63,11 +65,11 @@ class AttachmentService extends BaseAdminService
      */
     public function modifyCategory($att_id, $cate_id)
     {
-        $where = array(
-            ['att_id', '=', $att_id],
-            ['site_id', '=', $this->site_id],
+        $where = array (
+            [ 'att_id', '=', $att_id ],
+            [ 'site_id', '=', $this->site_id ],
         );
-        $this->model->where($where)->update(['cate_id' => $cate_id, 'update_time' => time()]);
+        $this->model->where($where)->update([ 'cate_id' => $cate_id, 'update_time' => time() ]);
         return true;
     }
 
@@ -80,11 +82,11 @@ class AttachmentService extends BaseAdminService
     public function batchModifyCategory($att_ids, $cate_id)
     {
 
-        $where = array(
-            ['att_id', 'in', is_string($att_ids) ? explode($att_ids) : $att_ids],
-            ['site_id', '=', $this->site_id],
+        $where = array (
+            [ 'att_id', 'in', is_string($att_ids) ? explode($att_ids) : $att_ids ],
+            [ 'site_id', '=', $this->site_id ],
         );
-        $this->model->where($where)->update(['cate_id' => $cate_id, 'update_time' => time()]);
+        $this->model->where($where)->update([ 'cate_id' => $cate_id, 'update_time' => time() ]);
         return true;
     }
 
@@ -115,19 +117,22 @@ class AttachmentService extends BaseAdminService
      */
     public function getPage(array $data)
     {
-        $where = array(
-            ['site_id', '=', $this->site_id]
+        $where = array (
+            [ 'site_id', '=', $this->site_id ]
         );
-        if (!empty($data['att_type'])) {
-            $where[] = ['att_type', '=', $data['att_type']];
+        if (!empty($data[ 'att_type' ])) {
+            $where[] = [ 'att_type', '=', $data[ 'att_type' ] ];
         }
-        if (!empty($data['cate_id'])) {
-            $where[] = ['cate_id', '=', $data['cate_id']];
+        if (!empty($data[ 'cate_id' ])) {
+            $where[] = [ 'cate_id', '=', $data[ 'cate_id' ] ];
         }
-        if (!empty($data['real_name'])) {
-            $where[] = ['real_name', 'like', '%' . $data['real_name'] . '%'];
+        if (!empty($data[ 'real_name' ])) {
+            $where[] = [ 'real_name', 'like', '%' . $data[ 'real_name' ] . '%' ];
         }
-        return $this->getPageList($this->model, $where, 'att_id,path,real_name,att_type,url', 'att_id desc');
+        return $this->getPageList($this->model, $where, 'att_id,path,real_name,att_type,url', 'att_id desc', each:function($item, $key)
+    {
+        $item[ 'thumb' ] = get_thumb_images($this->site_id, $item[ 'url' ], FileDict::SMALL);
+    });
     }
 
     /**
@@ -136,7 +141,7 @@ class AttachmentService extends BaseAdminService
      */
     public function addCategory(array $data)
     {
-        $data['site_id'] = $this->site_id;
+        $data[ 'site_id' ] = $this->site_id;
         $category_model = new SysAttachmentCategory();
         $attachment = $category_model->create($data);
         if (!$attachment->id)
@@ -151,9 +156,9 @@ class AttachmentService extends BaseAdminService
      */
     public function findCategory(int $site_id, int $id)
     {
-        $where = array(
-            ['site_id', '=', $site_id],
-            ['id', '=', $id]
+        $where = array (
+            [ 'site_id', '=', $site_id ],
+            [ 'id', '=', $id ]
         );
         $category_model = new SysAttachmentCategory();
         $category = $category_model->where($where)->findOrEmpty();
@@ -169,9 +174,9 @@ class AttachmentService extends BaseAdminService
      */
     public function editCategory(int $id, array $data)
     {
-        $where = array(
-            ['site_id', '=', $this->site_id],
-            ['id', '=', $id]
+        $where = array (
+            [ 'site_id', '=', $this->site_id ],
+            [ 'id', '=', $id ]
         );
         $category_model = new SysAttachmentCategory();
         return $category_model->where($where)->update($data);
@@ -186,7 +191,7 @@ class AttachmentService extends BaseAdminService
     {
         //查询是否有下级菜单或按钮
         $category = $this->findCategory($this->site_id, $id);
-        if ($this->model->where([['cate_id', '=', $id]])->count() > 0)
+        if ($this->model->where([ [ 'cate_id', '=', $id ] ])->count() > 0)
             throw new AdminException('ATTACHMENT_GROUP_HAS_IMAGE');
 
         //下级存在图片不能删除
@@ -203,16 +208,16 @@ class AttachmentService extends BaseAdminService
      */
     public function getCategoryPage(array $data)
     {
-        $where = array(
-            ['site_id', '=', $this->site_id]
+        $where = array (
+            [ 'site_id', '=', $this->site_id ]
         );
-        if (!empty($data['type'])) {
-            $where[] = ['type', '=', $data['type']];
+        if (!empty($data[ 'type' ])) {
+            $where[] = [ 'type', '=', $data[ 'type' ] ];
         }
-        if (!empty($data['name'])) {
-            $where[] = ['name', 'like', '%' . $data['name'] . '%'];
+        if (!empty($data[ 'name' ])) {
+            $where[] = [ 'name', 'like', '%' . $data[ 'name' ] . '%' ];
         }
-        return $this->getPageList((new SysAttachmentCategory()), $where, 'id,name', 'id desc');
+        return $this->getPageList(( new SysAttachmentCategory() ), $where, 'id,name', 'id desc');
     }
 
     /**
@@ -222,16 +227,90 @@ class AttachmentService extends BaseAdminService
      */
     public function getCategoryList(array $data)
     {
-        $where = array(
-            ['site_id', '=', $this->site_id]
+        $where = array (
+            [ 'site_id', '=', $this->site_id ]
         );
-        if (!empty($data['type'])) {
-            $where[] = ['type', '=', $data['type']];
+        if (!empty($data[ 'type' ])) {
+            $where[] = [ 'type', '=', $data[ 'type' ] ];
         }
-        if (!empty($data['name'])) {
-            $where[] = ['name', 'like', '%' . $data['name'] . '%'];
+        if (!empty($data[ 'name' ])) {
+            $where[] = [ 'name', 'like', '%' . $data[ 'name' ] . '%' ];
         }
         return SysAttachmentCategory::where($where)->field('id,name,type')->order('id desc')->select()->toArray();
+    }
+
+    /**
+     * 获取图标库分类列表
+     * @param array $data
+     * @return array|null
+     */
+    public function getIconCategoryList(array $data)
+    {
+        $icon_list = IconDict::getIcon();
+        foreach ($icon_list as $k => $v) {
+            unset($icon_list[ $k ][ 'glyphs' ]);
+            if (!empty($data[ 'name' ]) && strpos($v[ 'name' ], $data[ 'name' ]) === false) {
+                unset($icon_list[ $k ]);
+            }
+        }
+        $icon_list = array_values($icon_list);
+        return $icon_list;
+    }
+
+    /**
+     * 获取图标库列表
+     * @param array $data
+     * @return array|null
+     */
+    public function getIconList(array $data)
+    {
+        $icon_list = IconDict::getIcon();
+
+        $res = [
+            'current_page' => intval($data[ 'page' ]),
+            'per_page' => intval($data[ 'limit' ]),
+            'data' => [],
+            'total' => 0
+        ];
+
+        $temp_data = [];
+
+        foreach ($icon_list as $k => $v) {
+
+            $icon = $icon_list[ $k ][ 'glyphs' ]; // 图标列表
+
+            foreach ($icon as $ck => $cv) {
+                // 素材表中数据保持要一致
+                $icon[ $ck ][ 'att_id' ] = $cv[ 'icon_id' ];
+                $icon[ $ck ][ 'url' ] = $icon_list[ $k ][ 'font_family' ] . '-' . $icon_list[ $k ][ 'css_prefix_text' ] . $cv[ 'font_class' ];
+                $icon[ $ck ][ 'real_name' ] = $cv[ 'name' ];
+
+                // 查询名称
+                if (!empty($data[ 'real_name' ]) && strpos($cv[ 'name' ], $data[ 'real_name' ]) === false) {
+                    unset($icon[ $ck ]);
+                }
+            }
+
+            $icon = array_values($icon);
+
+            if (!empty($data[ 'cate_id' ]) && $data[ 'cate_id' ] == $v[ 'id' ]) {
+                // 查询指定分类下的图标
+                $temp_data = $icon;
+                break;
+            } else {
+                // 查询全部图标
+                $temp_data = array_merge($temp_data, $icon);
+            }
+        }
+
+        // 手动分页
+        $res[ 'total' ] = count($temp_data); // 总数量
+        $start = ( $res[ 'current_page' ] - 1 ) * $res[ 'per_page' ]; // 数组下标从0 开始
+        $icon_list = array_slice($temp_data, $start, $res[ 'per_page' ]);
+
+        $res[ 'data' ] = $icon_list;
+
+        return $res;
     }
 
 }

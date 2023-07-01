@@ -202,6 +202,7 @@ class CorePayEventService extends BaseCoreService
             $total = $total * 100;
         }
         return $this->app('refund')->refund([
+            'site_id' => $this->site_id,
             'out_trade_no' => $out_trade_no,
             'money' => $money,
             'total' => $total,

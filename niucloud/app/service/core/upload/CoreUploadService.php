@@ -17,8 +17,6 @@ use app\service\core\sys\CoreAttachmentService;
 
 /**
  * 上传服务层
- * Class CoreUploadService
- * @package app\service\core\file
  */
 class CoreUploadService extends CoreFileService
 {
@@ -70,19 +68,18 @@ class CoreUploadService extends CoreFileService
      * 上传文件
      * @param string $file
      * @param int $site_id
+     * @param string $type
      * @param string $file_dir
-     * @param bool $is_local 是否强制本地化
-     * @param bool $is_rename  是否重命名
+     * @param string $storage_type
      * @return array
+     * @throws \Exception
      */
-    public function document(string $file, int $site_id, string $type, string $file_dir, bool $storage_type, bool $is_rename = true)
+    public function document(string $file, int $site_id, string $type, string $file_dir, string $storage_type)
     {
         //实例化上传引擎
         $this->upload_driver = $this->driver($site_id, $storage_type);
-
         //读取上传附件的信息用于后续得校验和数据写入
-        $this->upload_driver->read($file, $is_rename);
-
+        $this->upload_driver->read($file);
         return $this->after($site_id, $file_dir, $type);
     }
 
@@ -92,11 +89,11 @@ class CoreUploadService extends CoreFileService
      * 上传
      * @param int $site_id
      * @param string $file_dir
-     * @param $type
-     * @param $cate_id
+     * @param string $type
+     * @param int $cate_id
      * @return array
      */
-    public function after(int $site_id, string $file_dir, string $type, $cate_id = 0){
+    public function after(int $site_id, string $file_dir, string $type, int $cate_id = 0){
 
         $file_info = $this->upload_driver->getFileInfo();
 
@@ -122,7 +119,6 @@ class CoreUploadService extends CoreFileService
                 'cate_id' => $cate_id,
             );
             $att_id = $core_attachment_service->add($site_id, $data);
-
         }
         $return_array = [
             'url' => $url

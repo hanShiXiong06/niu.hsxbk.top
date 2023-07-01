@@ -40,7 +40,7 @@ class CoreFileService extends BaseCoreService
     /**
      * 实例化上传引擎
      * @param int $site_id
-     * @param bool $is_local
+     * @param string $storage_type
      * @return UploadLoader
      * @throws \Exception
      */
@@ -54,6 +54,8 @@ class CoreFileService extends BaseCoreService
             $storage_config = $core_storage_service->getDefaultStorage($this->request->defaultSiteId());
             self::$storage_type = $storage_config['storage_type'];
         }
+        $storage_config = $storage_config ?? [];
+        $storage_config['storage_type'] = self::$storage_type;
         //查询启用的上传方式
         return new UploadLoader(self::$storage_type, $storage_config ?? []);
     }

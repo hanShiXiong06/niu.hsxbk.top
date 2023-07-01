@@ -6,6 +6,7 @@ use think\facade\Lang;
 use think\facade\Queue;
 use think\facade\Cache;
 use core\util\Snowflake;
+use app\service\core\upload\CoreImageService;
 // 应用公共文件
 
 /**
@@ -369,11 +370,11 @@ function filter($string)
  */
 function create_no(string $prefix = '', string $tag = '')
 {
-    $dataCenterId = 1;
-    $machineId = 2;
-    $snowflake = new Snowflake($dataCenterId, $machineId);
+    $data_center_id = 1;
+    $machine_id = 2;
+    $snowflake = new Snowflake($data_center_id, $machine_id);
     $id = $snowflake->generateId();
-    return $prefix.$tag.$id;
+    return $prefix.date('YmdHi').$tag.$id;
 }
 
 /**
@@ -706,4 +707,74 @@ function cache_remember(string $name = null, $value = '', $tag = null, $options 
  */
 function project_path() {
     return dirname(root_path()) . DIRECTORY_SEPARATOR;
+}
+
+/**
+ * 图片转base64
+ * @param string $path
+ * @param $is_delete 转换后是否删除原图
+ * @return void
+ */
+function image_to_base64(string $path, $is_delete = false) {
+    if (!file_exists($path)) return 'image not exist';
+
+    $mime = getimagesize($path)['mime'];
+    $image_data = file_get_contents($path);
+    // 将图片转换为 base64
+    $base64_data = base64_encode($image_data);
+
+    if ($is_delete) @unlink($path);
+
+    return "data:{$mime};base64,{$base64_data}";
+}
+/**
+ * 获取缩略图
+ * @param $site_id
+ * @param $image
+ * @param $thumb_type
+ * @return mixed
+ * @throws Exception
+ */
+function get_thumb_images($site_id, $image, $thumb_type = 'all', bool $is_throw_exception = false){
+
+    return (new CoreImageService())->thumb($site_id, $image, $thumb_type, $is_throw_exception);
+}
+/**
+ * 版本号转整数 例如1.0.0=001.000.000=001000000=1000000
+ * @param string $ver
+ * @return int
+ */
+function version_to_int($version) {
+    $version_array = explode(".", $version);
+
+    $v1 = sprintf('%03s', (int) $version_array[0] ?? 0);
+    $v2 = sprintf('%03s', (int) $version_array[1] ?? 0);
+    $v3 = sprintf('%03s', (int) $version_array[2] ?? 0);
+    return (int) "{$v1}{$v2}{$v3}";
+}
+
+/**
+ * 整数版本号转字符串例如 1000000=001000000=001.000.000=1.0.0
+ * @param int $ver
+ * @return string
+ */
+function version_to_string($ver) {
+    if($ver > 999) {
+        if($ver > 999999) {
+            $ver = $ver . "";
+            $v3 = (int) substr($ver, -3);
+            $v2 = (int) substr($ver, -6, 3);
+            $v1 = (int) substr($ver, 0, strlen($ver) - 6);
+        } else {
+            $ver = $ver . "";
+            $v3 = (int) substr($ver, -3);
+            $v2 = (int) substr($ver, 0, strlen($ver) - 3);
+            $v1 = 0;
+        }
+    } else {
+        $v3 = $ver;
+        $v2 = 0;
+        $v1 = 0;
+    }
+    return "{$v1}.{$v2}.{$v3}";
 }

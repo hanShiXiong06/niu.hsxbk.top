@@ -46,7 +46,7 @@ class SiteService extends BaseAdminService
     {
 
         $field = 'site_id, site_name, front_end_name, front_end_logo, app_type, keywords, logo, icon, `desc`, status, latitude, longitude, province_id, city_id, 
-        district_id, address, full_address, phone, business_hours, create_time, expire_time, group_id, site_code';
+        district_id, address, full_address, phone, business_hours, create_time, expire_time, group_id';
         $search_model = $this->model->where([ [ 'app_type', '<>', 'admin' ] ])->withSearch([ 'create_time', 'expire_time', 'keywords', 'status', 'group_id' ], $where)->with('groupName')->field($field)->append([ 'status_name' ])->order('create_time desc');
         $list = $this->pageQuery($search_model);
         return $list;
@@ -60,7 +60,7 @@ class SiteService extends BaseAdminService
     public function getInfo(int $site_id)
     {
         $field = 'site_id, site_name, front_end_name, front_end_logo, app_type, keywords, logo, icon, `desc`, status, latitude, longitude, province_id, city_id, 
-        district_id, address, full_address, phone, business_hours, create_time, expire_time, group_id, site_code';
+        district_id, address, full_address, phone, business_hours, create_time, expire_time, group_id';
         return $this->model->where([ [ 'site_id', '=', $site_id ] ])->with('groupName')->field($field)->append([ 'status_name' ])->findOrEmpty()->toArray();
 
     }
@@ -88,7 +88,6 @@ class SiteService extends BaseAdminService
         try {
             $site = $this->model->create($data_site);
             $site_id = $site->site_id;
-            $this->model->where([ [ 'site_id', '=', $site_id ] ])->update([ 'site_code' => $this->createSiteCodeBySiteId($site_id) ]);
             //添加用户
             $data_user = [
                 'username' => $data[ 'username' ],
@@ -110,24 +109,6 @@ class SiteService extends BaseAdminService
             Db::rollback();
             throw new Exception($e->getMessage());
         }
-    }
-
-    /**
-     * 通过站点id生成站点code
-     * @param int $site_id
-     */
-    public function createSiteCodeBySiteId(int $site_id)
-    {
-        return ( $site_id + 1000000 ) * 11 + 1;
-    }
-
-    /**
-     * 通过站点code获取站点id
-     * @param $site_code
-     */
-    public function getSiteIdBySiteCode($site_code)
-    {
-        return ( $site_code - 1 ) / 11 - 1000000;
     }
 
     /**
@@ -168,7 +149,7 @@ class SiteService extends BaseAdminService
                 $where = [
                     [ 'site_id', '=', $site_id ],
                 ];
-                $site = $this->model->where($where)->field('site_id, app_type,site_name,front_end_name,front_end_logo,logo,icon,group_id, status, expire_time, site_code')->append([ 'status_name' ])->findOrEmpty();
+                $site = $this->model->where($where)->field('site_id, app_type,site_name,front_end_name,front_end_logo,logo,icon,group_id, status, expire_time')->append([ 'status_name' ])->findOrEmpty();
                 return $site->toArray();
             },
             self::$cache_tag_name . $site_id

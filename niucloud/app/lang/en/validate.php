@@ -131,5 +131,10 @@ return [
         'appid_require' => 'appid is require',
         'appsecret_require' => 'appsecret is require',
     ],
-
+    //计划任务
+    'validate_schedule' => [
+        'schedule_require' => 'schedule is require',
+        'schedule_unique' => 'schedule is exist',
+        'not_exit_schedule_type' => 'not exit schedule type',
+    ],
 ];

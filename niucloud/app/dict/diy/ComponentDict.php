@@ -21,10 +21,6 @@ use core\dict\DictLoader;
 class ComponentDict
 {
 
-    /**
-     * 获取组件
-     * @return array|null
-     */
     public static function getComponent()
     {
         $system_components = [

@@ -102,7 +102,13 @@ return [
         'type_cron' => 'time work',
         'type_crond' => 'period work',
         'on' => 'on',
-        'off' => 'off'
+        'off' => 'off',
+        //时间间隔
+        'min' => 'every few minutes',
+        'hour' => 'every few hours',
+        'day' => 'every few day',
+        'week' => 'weekly',
+        'month' => 'monthly',
     ],
     //支付相关
     'dict_pay' => [

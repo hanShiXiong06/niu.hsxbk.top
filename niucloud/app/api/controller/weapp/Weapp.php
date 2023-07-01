@@ -11,6 +11,7 @@
 
 namespace app\api\controller\weapp;
 
+use app\service\api\notice\NoticeService;
 use app\service\api\weapp\WeappAuthService;
 use core\base\BaseApiController;
 use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
@@ -43,5 +44,11 @@ class Weapp extends BaseApiController
 
         $weapp_auth_service = new WeappAuthService();
         return success($weapp_auth_service->register($data['openid'], $data['mobile'], $data['mobile_code']));
+    }
+
+
+    public function subscribeMessage(){
+        $data = $this->request->params([ ['keys', ''] ]);
+        return success((new NoticeService())->getWeappNoticeTemplateId($data['keys']));
     }
 }

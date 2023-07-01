@@ -39,11 +39,7 @@ class Weapp
                     }
                     $weapp_data[$v[2]]['value'] = $search_content;
                 }
-                $url = '';
-                if(!empty($url)){
-                    //todo 拼装h5端的链接
-                    $url = $vars['__weapp_page'];
-                }
+                $url = $vars['__weapp_page'] ?? '';
                 $log_data = array(
                     'key' => $key,
                     'message_type' => NoticeTypeDict::WEAPP,

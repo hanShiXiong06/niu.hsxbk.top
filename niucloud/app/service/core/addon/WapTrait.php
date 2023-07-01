@@ -35,6 +35,7 @@ trait WapTrait
         $content .= "        <view v-for=\"(component, index) in data.value\" :key=\"component.id\"\n";
         $content .= "        @click=\"diyStore.changeCurrentIndex(index, component)\" class=\"draggable-element relative cursor-move\"\n";
         $content .= "        :class=\"{ selected: diyStore.currentIndex == index,decorate : diyStore.mode == 'decorate' }\" :style=\"component.pageStyle\">\n";
+        $content .= "            <fixed-group :component=\"component\" :index=\"index\" :pullDownRefresh=\"props.pullDownRefresh\"></fixed-group>\n";
 
         $root_path = $compile_path . str_replace('/', DIRECTORY_SEPARATOR, 'components/diy'); // 扩展组件根目录
         $file_arr = getFileMap($root_path);
@@ -58,9 +59,9 @@ trait WapTrait
                     $name = implode('', $name_arr);
                     $file_name = 'diy-' . $path;
 
-                    $content .= "        <template v-if=\"component.componentName == '{$name}'\">\n";
-                    $content .= "            <$file_name :component=\"component\" :index=\"index\"></$file_name>\n";
-                    $content .= "        </template>\n";
+                    $content .= "            <template v-if=\"component.componentName == '{$name}'\">\n";
+                    $content .= "                <$file_name :component=\"component\" :index=\"index\" :pullDownRefresh=\"props.pullDownRefresh\"></$file_name>\n";
+                    $content .= "            </template>\n";
                 }
             }
         }
@@ -75,11 +76,11 @@ trait WapTrait
 
         $content .= "<script lang=\"ts\" setup>\n";
         $content .= "   import useDiyStore from '@/stores/diy';\n";
-        $content .= "   import { onMounted, nextTick, computed, ref } from 'vue';\n";
+        $content .= "   import { onMounted, nextTick, computed, ref,watch } from 'vue';\n";
         $content .= "   import Sortable from 'sortablejs';\n";
         $content .= "   import { range } from 'lodash-es';\n";
 
-        $content .= "   const props = defineProps(['data']);\n";
+        $content .= "   const props = defineProps(['data','pullDownRefresh']);\n";
         $content .= "   const diyStore = useDiyStore();\n\n";
 
         $content .= "   const data = computed(() => {\n";
@@ -161,8 +162,8 @@ trait WapTrait
                     $name = implode('', $name_arr);
                     $file_name = 'fixed-' . $path;
 
-                    $content .= "        <template v-if=\"data.component == '{$name}'\">\n";
-                    $content .= "            <$file_name :data=\"data\"></$file_name>\n";
+                    $content .= "        <template v-if=\"props.component.componentName == '{$name}'\">\n";
+                    $content .= "            <$file_name :component=\"props.component\" :index=\"props.index\" :pullDownRefresh=\"props.pullDownRefresh\"></$file_name>\n";
                     $content .= "        </template>\n";
                 }
             }
@@ -172,12 +173,8 @@ trait WapTrait
         $content .= "</template>\n";
 
         $content .= "<script lang=\"ts\" setup>\n";
-        $content .= "   import { computed } from 'vue';\n";
-        $content .= "   const props = defineProps(['data']);\n";
-        $content .= "   const data = computed(() => {\n";
-        $content .= "       return props.data.value;\n";
-        $content .= "   })\n\n";
-
+        $content .= "   import { computed,watch } from 'vue';\n";
+        $content .= "   const props = defineProps(['component','index','pullDownRefresh']);\n";
         $content .= "</script>\n";
 
         $content .= "<style lang=\"scss\" scoped>\n";
@@ -189,7 +186,7 @@ trait WapTrait
     }
 
     /**
-     * 编译 pages.json 页面路由代码文件
+     * 编译 pages.json 页面路由代码文件，// {{PAGE}}
      * @param $compile_path
      * @return bool|int|void
      */

@@ -50,7 +50,7 @@ class FileDict
 
 
     const WECHAT = 'wechat';//微信支付
-
+    const APPLET = 'applet';//小程序上传
 
     /**
      * 获取上传的场景
@@ -62,6 +62,23 @@ class FileDict
             self::ALIYUN,//阿里云相关上传
             self::IMAGE,//图片上传
             self::VIDEO,//视频上传
+            self::APPLET,//小程序包上传
+        ];
+    }
+
+    const BIG = 'big';
+    const MID = 'mid';
+    const SMALL = 'small';
+
+    /**
+     * 缩略图规格
+     * @return string[]
+     */
+    public static function getThumbType(){
+        return [
+            self::BIG,//微信相关上传
+            self::MID,//阿里云相关上传
+            self::SMALL,//图片上传
         ];
     }
 }

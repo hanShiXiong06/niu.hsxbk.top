@@ -102,7 +102,8 @@ class CoreScheduleService extends BaseCoreService
     protected function getCrontabContent($data): string
     {
         $content = '';
-        switch ($data['type']) {
+        $type = $data['type'] ?? '';
+        switch ($type) {
             case 'min':// 每隔几分
                 $content = '每隔'.$data['min'].'分钟执行一次';
                 break;

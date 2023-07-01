@@ -29,7 +29,7 @@ abstract class BaseUpload extends Storage
 
     protected $config = null;
     //可能还需要一个完整路径
-
+    protected $storage_type;
     /**
      * 初始化
      * @param array $config
@@ -38,6 +38,7 @@ abstract class BaseUpload extends Storage
     protected function initialize(array $config = [])
     {
         $this->config = $config;
+        $this->storage_type = $config['storage_type'];
     }
 
     /**
@@ -57,7 +58,7 @@ abstract class BaseUpload extends Storage
 
     /**
      * 附件删除
-     * @param $fileName
+     * @param $file_name
      * @return mixed
      */
     abstract protected function delete(string $file_name);
@@ -116,10 +117,11 @@ abstract class BaseUpload extends Storage
      */
     public function createFileName(string $key = '', string $ext = ''){
         //DIRECTORY_SEPARATOR  常量
+        $storage_tag = '_'.$this->storage_type;
         if(empty($key)){
-            return time().md5($this->file_info['real_path']).'.'.$this->file_info['ext'];
+            return time().md5($this->file_info['real_path']).$storage_tag.'.'.$this->file_info['ext'];
         }else{
-            return time().md5($key).'.'.$ext;
+            return time().md5($key).$storage_tag.'.'.$ext;
         }
 
     }
@@ -149,6 +151,8 @@ abstract class BaseUpload extends Storage
 
     /**
      * 合并路径和文件名
+     * @param string $dir
+     * @return string
      */
     public function concatFullPath(string $dir = ''){
         $this->full_path = implode('/', array_filter([$dir, $this->getFileName()]));
@@ -170,7 +174,11 @@ abstract class BaseUpload extends Storage
         return $domain.$path;
     }
 
-
+    /**
+     * 验证
+     * @param array $validate
+     * @return $this
+     */
     public function setValidate(array $validate = []){
         $this->validate = $validate ?: config('upload.rules')[$this->type] ?? [];
         return $this;
@@ -187,7 +195,6 @@ abstract class BaseUpload extends Storage
     {
         if (empty($this->file))
             throw new UploadFileException('UPLOAD_FAIL');
-
         $config['file_ext'] = $this->validate['ext'] ?? [];
         $config['file_mime'] = $this->validate['mime'] ?? [];
         $config['file_size'] = $this->validate['size'] ?? 0;
@@ -202,27 +209,6 @@ abstract class BaseUpload extends Storage
         if (!empty($file_ext)) {
             $rule[] = 'fileExt:' . implode(',', $file_ext);
         }
-//        $image_config = $config['image'] ?? [];
-//        if (!empty($image_config)) {
-//            $image_width = $image_config['width'] ?? 0;
-//            $image_height = $image_config['height'] ?? 0;
-//            $image_type = $image_config['type'] ?? [];
-//            $image_rule = '';
-//            if ($image_width > 0 && $image_height > 0) {
-//                $image_rule = 'image:' . $image_width . ',' . $image_height;
-//            }
-//            if (!empty($image_type)) {
-//                if (empty($image_rule)) {
-//                    $image_rule = 'image:';
-//                } else {
-//                    $image_rule .= ',';
-//                }
-//                $image_rule .= implode(',', $image_type);
-//            }
-//            if (!empty($image_type)) {
-//                $rule[] = $image_rule;
-//            }
-//        }
         if (!empty($rule)) {
             if (!in_array($this->file->getOriginalMime(), $file_mime)) {
                 throw new UploadFileException('UPLOAD_TYPE_NOT_SUPPORT');

@@ -50,14 +50,13 @@ class AuthService extends BaseApiService
      * @return true
      */
     public function checkSite(Request $request){
-        $site_code = $request->apiSiteId();//todo  可以是依赖传值,也可以通过domain域名来获取site_id
-        $site_info = (new CoreSiteService())->getSiteInfoBySiteCode($site_code);
+        $site_id = $request->apiSiteId();//todo  可以是依赖传值,也可以通过domain域名来获取site_id
+        $site_info = (new CoreSiteService())->getSiteCache($site_id);
         if(empty($site_info)) throw new AuthException('SITE_NOT_EXIST');
         if($site_info['status'] == SiteDict::CLOSE){
             $rule = trim(strtolower($request->rule()->getRule()));
             if($rule != 'site') throw new AuthException('SITE_CLOSE_NOT_ALLOW');
         }
-        $site_id = $site_info['site_id'];
         $request->siteId($site_id);
         return true;
     }

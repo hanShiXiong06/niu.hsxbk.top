@@ -57,7 +57,7 @@ class Weapp extends BaseTemplate
      * @return mixed|void
      */
     public function addTemplate(array $data){
-        return $this->template()->addTemplate($data['tid'], $data['kidList'], $data['sceneDesc']);
+        return $this->template()->addTemplate($data['tid'], $data['kid_list'], $data['scene_desc']);
     }
 
     /**

@@ -98,7 +98,7 @@ class Aliyun extends BaseUpload
                 $height = $v['height'];
                 //拼装缩略路径
                 $item_thumb = $file_path. '?x-oss-process=image/resize,h_' . $height . ',w_' . $width;
-                $thumb_data[] = $item_thumb;
+                $thumb_data[$k] = $item_thumb;
             }
         }
 

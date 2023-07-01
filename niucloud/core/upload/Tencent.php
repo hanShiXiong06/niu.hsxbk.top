@@ -115,7 +115,7 @@ class Tencent extends BaseUpload
                 $height = $v['height'];
                 //拼装缩略路径
                 $item_thumb = $file_path.'?imageMogr2/thumbnail/' . $width . 'x' . $height;
-                $thumb_data[] = $item_thumb;
+                $thumb_data[$k] = $item_thumb;
             }
         }
 

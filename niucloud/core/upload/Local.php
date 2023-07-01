@@ -106,18 +106,19 @@ class Local extends BaseUpload
         $thumb_config = config('upload.thumb.thumb_type');
         //  ……
         //获取文件原名  获取
-        $file_arr = explode(DIRECTORY_SEPARATOR, $file_path);
+        $file_arr = explode('/', $file_path);
+
         $file_name = end($file_arr);
         $thumb_list = [];
         //获取文件后缀
         foreach($thumb_config as $k => $v){
-            if($thumb_type == 'all' || $thumb_type == $k){
-                $new_thumb_path = str_replace($file_name, $k.'_'.$file_name, $file_path);
+            if($thumb_type == 'all' || $thumb_type == $k || (is_array($thumb_type) && in_array($k, $thumb_type))){
+                $new_width = $v['width'];
+                $new_height = $v['height'];
+                $new_thumb_path = str_replace($file_name, $new_width.'x'.$new_height.'_'.$file_name, $file_path);
                 if(!file_exists($new_thumb_path)){
                     $editor = Grafika::createEditor();
                     $editor->open( $image, $file_path);
-                    $new_width = $v['width'];
-                    $new_height = $v['height'];
                     $editor->resizeFit( $image, $new_width,$new_height );
                     //新缩略图文件名称
                     $editor->save($image, $new_thumb_path, null, null, false, 0777);

@@ -380,7 +380,8 @@ class MenuService extends BaseAdminService
      * @return string
      */
     public function getFullRouterPath($menu_key){
-        $menu = $this->find($menu_key);
+        $menu = $this->model->where([['menu_key', '=', $menu_key]])->findOrEmpty($menu_key);
+        if($menu->isEmpty()) return '';
         $parents = [];
         $this->getParentDirectory($menu, $parents);
         $parents = array_reverse($parents);
