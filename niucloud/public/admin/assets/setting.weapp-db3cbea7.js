@@ -1,0 +1,1 @@
+const e="上传版本",s="版本号",o="请添加版本号",t="创建时间",n="状态",c="添加/编辑版本",i="文件",r="请上传版本文件",a="版本说明",d={addVersion:e,version:s,versionPlaceholder:o,createTime:t,status:n,editVersion:c,file:i,filePlaceholder:r,desc:a};export{e as addVersion,t as createTime,d as default,a as desc,c as editVersion,i as file,r as filePlaceholder,n as status,s as version,o as versionPlaceholder};
