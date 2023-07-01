@@ -67,7 +67,7 @@
 					<el-table-column :show-overflow-tooltip="true" :label="t('memberInfo')" align="left" min-width="140">
 						<template #default="{ row }">
 							<div class="flex items-center cursor-pointer " @click="toMember(row.member.member_id)">
-								<img class="w-[50px] h-[50px] mr-[10px]" v-if="row.headimg" :src="img(row.member.headimg)" alt="">
+								<img class="w-[50px] h-[50px] mr-[10px]" v-if="row.member.headimg" :src="img(row.member.headimg)" alt="">
 								<img class="w-[50px] h-[50px] mr-[10px]" v-else src="@/assets/images/default_headimg.png" alt="">
 								<div class="flex flex flex-col">
 									<span class="">{{ row.member.nickname || '' }}</span>

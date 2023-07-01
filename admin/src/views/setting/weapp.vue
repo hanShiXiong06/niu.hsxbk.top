@@ -23,7 +23,7 @@
 					</el-table-column>
                 </el-table>
                 <div class="mt-[16px] flex justify-end">
-                    <el-pagination v-model:current-page="weappTableData.page" v-model:page-size="weappTableData.limit" layout="total, sizes, prev, pager, next, jumper" :total="cronTableData.total" @size-change="loadCronList()" @current-change="loadCronList" />
+                    <el-pagination v-model:current-page="weappTableData.page" v-model:page-size="weappTableData.limit" layout="total, sizes, prev, pager, next, jumper" :total="weappTableData.total" @size-change="loadWeappTemplateList()" @current-change="loadWeappTemplateList" />
                 </div>
             </div>
 
@@ -82,17 +82,7 @@ const weappTableData = reactive({
         last_time:''
     }
 })
-const templateList = ref([])
-const date_type = ref([])
-const week_list = ref([])
 const searchFormRef = ref<FormInstance>()
-
-const setTypeList = async () => {
-    templateList.value = await (await getCronTemplate()).data
-	date_type.value = await (await getCronDateType()).data
-	week_list.value = await (await getWeek()).data
-}
-setTypeList()
 
 /**
  * 获取任务列表
