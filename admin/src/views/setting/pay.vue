@@ -2,7 +2,7 @@
     <el-card class="box-card !border-none" shadow="never"  v-loading="payLoading">
 		<!-- 设置支付配置 -->
 		<div class="flex justify-between items-center" v-if="!payLoading">
-			<span class="text-[24px]">{{pageName}}</span>
+			<span class="text-[20px]">{{pageName}}</span>
 			<el-button type="primary" @click="isEdit = true" ref="setConfigBtn">{{ t('setConfig') }}</el-button>
 		</div>
         <el-card class="box-card box-pay-card !border-none mt-[20px]" shadow="never" v-for="(payItems, payKey) in payConfigData" :key="payKey">
@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive,defineComponent, ref, watch, onMounted, nextTick } from 'vue'
+import { ref, watch, nextTick } from 'vue'
 import { t } from '@/lang'
 import { getPayConfig,getPayList,getPayConfigList,setPatConfig } from '@/api/sys'
 import Wechatpay from '@/views/setting/components/pay-wechatpay.vue'
@@ -64,9 +64,6 @@ import Offlinepay from '@/views/setting/components/pay-offlinepay.vue'
 import { img } from '@/utils/common'
 import { ElMessage, ElNotification } from 'element-plus'
 import Sortable, { SortableEvent } from 'sortablejs'
-import { cloneDeep, range, isEmpty } from 'lodash-es'
-import { set } from '@vueuse/core'
-import { CollectionTag } from '@element-plus/icons-vue'
 import { useRoute } from 'vue-router'
 const route = useRoute()
 const pageName = route.meta.title;

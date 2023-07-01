@@ -1,7 +1,7 @@
 <template>
     <div class="main-container" v-loading="noticeTableData.loading">
         <div class="flex ml-[18px] justify-between items-center mt-[20px]">
-			<span class="text-[24px]">{{pageName}}</span>
+			<span class="text-[20px]">{{pageName}}</span>
 		</div>
         <el-card class="box-card !border-none" shadow="never">
             <h3 class="panel-title !text-base">{{ t('buyerNotice') }}</h3>
@@ -65,15 +65,13 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref } from 'vue'
 import { t } from '@/lang'
 import { getNoticeList } from '@/api/notice'
-
 import Sms from '@/views/setting/components/notice-sms.vue'
-
 import Wechat from '@/views/setting/components/notice-wechat.vue'
-
 import Weapp from '@/views/setting/components/notice-weapp.vue'
+
 import { useRoute } from 'vue-router'
 const route = useRoute()
 const pageName = route.meta.title

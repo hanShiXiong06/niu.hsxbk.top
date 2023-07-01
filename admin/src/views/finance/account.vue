@@ -3,7 +3,7 @@
         <el-card class="box-card !border-none" shadow="never">
 
             <div class="flex justify-between items-center">
-                <span class="text-[24px]">{{pageName}}</span>
+                <span class="text-[20px]">{{pageName}}</span>
             </div>
             <el-card class="box-card !border-none base-bg !px-[35px]" shadow="never">
 			    <el-row class="flex">
@@ -203,12 +203,13 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref } from 'vue'
 import { t } from '@/lang'
 import { getAccountList, getAccountStat, getAccountType } from '@/api/site'
 import { img } from '@/utils/common'
-import { ElMessageBox } from 'element-plus'
+import type { FormInstance } from 'element-plus'
 import { useRoute } from 'vue-router'
+
 const route = useRoute()
 const pageName = route.meta.title;
 
@@ -262,7 +263,6 @@ const accountType = ref([])
 const checkAccountType = () => {
 	getAccountType().then(res=>{
 		accountType.value = res.data
-		console.log(accountType.value)
 	})
 }
 checkAccountType()

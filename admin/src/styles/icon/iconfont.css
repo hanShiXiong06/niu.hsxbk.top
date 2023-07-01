@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3883393 */
-  src: url('//at.alicdn.com/t/c/font_3883393_pgas1v4bw2a.woff2?t=1686965237342') format('woff2'),
-       url('//at.alicdn.com/t/c/font_3883393_pgas1v4bw2a.woff?t=1686965237342') format('woff'),
-       url('//at.alicdn.com/t/c/font_3883393_pgas1v4bw2a.ttf?t=1686965237342') format('truetype');
+  src: url('//at.alicdn.com/t/c/font_3883393_0wpbzuop0spi.woff2?t=1688032173237') format('woff2'),
+       url('//at.alicdn.com/t/c/font_3883393_0wpbzuop0spi.woff?t=1688032173237') format('woff'),
+       url('//at.alicdn.com/t/c/font_3883393_0wpbzuop0spi.ttf?t=1688032173237') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,30 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icona-02_luxian:before {
+  content: "\e687";
+}
+
+.iconhuiyuanxinxi:before {
+  content: "\e688";
+}
+
+.iconjingdian:before {
+  content: "\e689";
+}
+
+.iconhuiyuandingdan:before {
+  content: "\e68a";
+}
+
+.iconjiudian:before {
+  content: "\e68b";
+}
+
+.iconhellowenbenanli:before {
+  content: "\e68c";
 }
 
 .iconqiehuan:before {

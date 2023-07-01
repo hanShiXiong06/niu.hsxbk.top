@@ -1,7 +1,6 @@
 <template>
     <el-dialog v-model="showDialog" :title="t('updateWechat')" width="500px" :destroy-on-close="true">
-        <el-form :model="formData" label-width="90px" ref="formRef" :rules="formRules" class="page-form"
-            v-loading="loading">
+        <el-form :model="formData" label-width="90px" ref="formRef" :rules="formRules" class="page-form" v-loading="loading">
 
             <el-form-item :label="t('mchId')" prop="config.mch_id">
                 <el-input v-model="formData.config.mch_id" :placeholder="t('mchIdPlaceholder')" class="input-width" maxlength="32" show-word-limit clearable />

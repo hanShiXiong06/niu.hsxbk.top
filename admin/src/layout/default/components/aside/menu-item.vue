@@ -16,8 +16,8 @@
             <template #title>
 				<div class="relative">
 					<span :class="['ml-[10px]', {'text-[15px]': routes.meta.class == 1}, {'text-[14px]': routes.meta.class != 1}]">{{ meta.title }}</span>
-					<div class="absolute  top-[50%] -translate-y-[50%] right-[-288%]" @click="checkIndexList">
-						<img v-if="routes.path == '/site/siteindex'" class="w-[12px] h-[12px]" src="@/assets/images/index/model_tag.png"/>
+					<div v-if="routes.path == '/site/siteindex'" class="absolute  top-[50%] -translate-y-[50%] right-[-180%]" @click="checkIndexList">
+						<img class="w-[12px] h-[12px]" src="@/assets/images/index/model_tag.png"/>
 					</div>
 				</div>
             </template>
@@ -31,12 +31,12 @@
 	<el-dialog v-model="showDialog" :title="t('indexTemplate')" width="550px" :destroy-on-close="true" >
 		<div class="flex flex-wrap">
 			<div v-for="(items, index) in indexList" :key="index" v-if="index_path == ''">
-				<div @click="index_path = items.view_path" class="index-item py-[5px] px-[10px] mr-[10px] rounded-[3px] cursor-pointer" :class="items.is_use == 1 ? 'selected' : '' ">
+				<div @click="index_path = items.view_path" class="index-item py-[5px] px-[10px] mr-[10px] rounded-[3px] cursor-pointer" :class="items.is_use == 1 ? 'bg-primary text-[#fff]' : '' ">
 					<span >{{ items.name }}</span>
 				</div>
 			</div>
 			<div v-for="(itemTo, indexTo) in indexList" :key="indexTo" v-else>
-				<div @click="index_path = itemTo.view_path" class="index-item py-[5px] px-[10px] mr-[10px] rounded-[3px] cursor-pointer" :class="index_path == itemTo.view_path ? 'selected' : '' ">
+				<div @click="index_path = itemTo.view_path" class="index-item py-[5px] px-[10px] mr-[10px] rounded-[3px] cursor-pointer" :class="index_path == itemTo.view_path ? 'bg-primary text-[#fff]' : '' ">
 					<span >{{ itemTo.name }}</span>
 				</div>
 			</div>
@@ -53,7 +53,6 @@
 import { t } from '@/lang'
 import { getIndexList, setIndexList } from '@/api/sys'
 import { useRoute, useRouter } from 'vue-router'
-import { CollectionTag } from '@element-plus/icons-vue'
 import { ref, computed } from 'vue'
 import menuItem from './menu-item.vue'
 const router = useRouter()
@@ -79,6 +78,11 @@ const checkIndexList = () => {
 	getIndexList().then(res => {
 		showDialog.value = true
 		indexList.value = res.data
+		for(let i = 0 ; i < indexList.value.length; i ++){
+			if(indexList.value[i].is_use == 1){
+				index_path.value = indexList.value[i].view_path
+			}
+		}
 	})
 }
 
@@ -106,8 +110,13 @@ const submitIndex = () => {
 .el-alert .el-alert__description{
     margin-top: 0;
 }
-.selected {
-	color: #fff;
-	background-color: #2C3EEF;
+.index-item {
+	border: 1px solid;
+	border-color: var(--el-color-primary);
+    &:hover {
+		color: #fff;
+        background-color: var(--el-color-primary);
+    }
 }
+
 </style>

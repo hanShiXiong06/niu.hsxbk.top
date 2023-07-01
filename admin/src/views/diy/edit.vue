@@ -89,7 +89,7 @@
                         <template #header>
                             <div class="card-header flex justify-between items-center">
                                 <span class="title flex-1">{{ diyStore.currentIndex == -99 ? t('pageSet') : diyStore.editComponent.componentTitle }}</span>
-                                <div class="tab-wrap flex rounded-[50px] bg-gray-100 text-[14px]">
+                                <div class="tab-wrap flex rounded-[50px] bg-gray-100 text-[14px]" v-if="diyStore.currentComponent">
                                     <span class="cursor-pointer rounded-[50px] py-[5px] px-[15px]" :class="{ 'bg-primary text-white': diyStore.editTab == 'content'}" @click="diyStore.editTab = 'content'">{{ t('tabEditContent') }}</span>
                                     <span class="cursor-pointer rounded-[50px] py-[5px] px-[15px]" :class="{ 'bg-primary text-white': diyStore.editTab == 'style'}" @click="diyStore.editTab = 'style'">{{ t('tabEditStyle') }}</span>
                                 </div>
@@ -98,7 +98,7 @@
 
                         <div class="edit-component-wrap">
 
-                            <component :is="modules[diyStore.currentComponent]" :value="diyStore.value[diyStore.currentIndex]">
+                            <component v-if="diyStore.currentComponent" :is="modules[diyStore.currentComponent]" :value="diyStore.value[diyStore.currentIndex]">
                                 <template #style>
                                     <div class="edit-attr-item-wrap">
                                         <h3 class="mb-[10px]">{{ t('componentStyleTitle') }}</h3>
@@ -129,6 +129,33 @@
                                     </div>
                                 </template>
                             </component>
+                            <div class="edit-attr-item-wrap" v-else>
+                                <h3 class="mb-[10px]">{{ t('componentStyleTitle') }}</h3>
+                                <el-form label-width="80px" class="px-[10px]">
+                                    <el-form-item :label="t('bottomBgColor')" class="display-block" v-if="diyStore.editComponent.ignore.indexOf('pageBgColor') == -1">
+                                        <el-color-picker v-model="diyStore.editComponent.pageBgColor" show-alpha :predefine="diyStore.predefineColors"/>
+                                        <div class="text-sm text-gray-400">{{ t('bottomBgTips') }}</div>
+                                    </el-form-item>
+                                    <el-form-item :label="t('componentBgColor')" v-if="diyStore.editComponent.ignore.indexOf('componentBgColor') == -1">
+                                        <el-color-picker v-model="diyStore.editComponent.componentBgColor" show-alpha :predefine="diyStore.predefineColors"/>
+                                    </el-form-item>
+                                    <el-form-item :label="t('marginTop')" v-if="diyStore.editComponent.ignore.indexOf('marginTop') == -1">
+                                        <el-slider v-model="diyStore.editComponent.margin.top" show-input size="small" :min="0" class="ml-[10px] horz-blank-slider"/>
+                                    </el-form-item>
+                                    <el-form-item :label="t('marginBottom')" v-if="diyStore.editComponent.ignore.indexOf('marginBottom') == -1">
+                                        <el-slider v-model="diyStore.editComponent.margin.bottom" show-input size="small" class="ml-[10px] horz-blank-slider"/>
+                                    </el-form-item>
+                                    <el-form-item :label="t('marginBoth')" v-if="diyStore.editComponent.ignore.indexOf('marginBoth') == -1">
+                                        <el-slider v-model="diyStore.editComponent.margin.both" show-input size="small" class="ml-[10px] horz-blank-slider"/>
+                                    </el-form-item>
+                                    <el-form-item :label="t('topRounded')" v-if="diyStore.editComponent.ignore.indexOf('topRounded') == -1">
+                                        <el-slider v-model="diyStore.editComponent.topRounded" show-input size="small" class="ml-[10px] horz-blank-slider" :max="50"/>
+                                    </el-form-item>
+                                    <el-form-item :label="t('bottomRounded')" v-if="diyStore.editComponent.ignore.indexOf('bottomRounded') == -1">
+                                        <el-slider v-model="diyStore.editComponent.bottomRounded" show-input size="small" class="ml-[10px] horz-blank-slider" :max="50"/>
+                                    </el-form-item>
+                                </el-form>
+                            </div>
 
                         </div>
 
@@ -146,7 +173,7 @@ import { ref, reactive, toRaw, watch } from 'vue'
 import { t } from '@/lang'
 import { addDiyPage, editDiyPage, initPage } from '@/api/diy';
 import { useRoute, useRouter } from 'vue-router'
-import { cloneDeep, range, isEmpty } from 'lodash-es'
+import { cloneDeep } from 'lodash-es'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import useDiyStore from '@/stores/modules/diy'
 import storage from '@/utils/storage'
@@ -174,7 +201,6 @@ const backPath = route.query.back
 const component = ref([])
 const componentType: string[] = reactive([])
 const page = ref('')
-const siteId = ref(0)
 
 const activeNames = ref(componentType)
 const handleChange = (val: string[]) => { }
@@ -299,7 +325,6 @@ initPage({
     wapDomain.value = data.domain_url.wap_domain;
     wapUrl.value = data.domain_url.wap_url;
     page.value = data.page;
-    siteId.value = data.site_id;
     setDomain();
 
     // 生产模式禁止
@@ -348,15 +373,27 @@ window.addEventListener('message', (event) => {
 }, false);
 
 const saveWapDomain = ()=> {
+    if (wapDomain.value.trim().length == 0) {
+        ElMessage({
+            type: 'warning',
+            message: `${t('wapDomainPlaceholder')}`,
+        });
+        return;
+    }
     wapUrl.value = wapDomain.value + '/wap'
     setDomain();
-    storage.set({ key : 'wap_domain', data :wapUrl.value });
+    storage.set({key: 'wap_domain', data: wapUrl.value});
     loadingIframe.value = true;
     loadingDev.value = false;
 }
 
 const setDomain = ()=>{
-    wapPreview.value = `${wapUrl.value}/${page.value}?mode=decorate&site_id=${siteId.value}`; // 模式：decorate 装修 访问预览页面
+    wapPreview.value = `${wapUrl.value}/${page.value}?mode=decorate`; // 模式：decorate 装修 访问预览页面
+    // 开发模式增加站点id
+    if (import.meta.env.MODE == 'development') {
+        let siteId = storage.get('siteId') || 0;
+        wapPreview.value += `&site_id=${siteId}`;
+    }
 }
 
 // 监听iframe加载事件

@@ -49,7 +49,6 @@
     import Sortable from 'sortablejs'
     import {img} from '@/utils/common'
     import {range} from 'lodash-es'
-
     import useDiyStore from '@/stores/modules/diy'
 
     const diyStore = useDiyStore()

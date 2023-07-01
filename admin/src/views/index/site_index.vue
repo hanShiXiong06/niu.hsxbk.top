@@ -4,22 +4,26 @@
             <el-card class="box-card !border-none" shadow="never" >
                 <div class="flex justify-between items-center">
 					<div class="flex">
-						<div><img class="w-[44px] h-[44px]" src="@/assets/images/index/site_img.png"/></div>
+						<div>
+							<img v-if="statInfo.site_info.icon" class="w-[50px] h-[50px]" :src="img(statInfo.site_info.icon)"/>
+							<img v-else class="w-[50px] h-[50px]" src="@/assets/images/index/site_img.png"/>
+						</div>
 						<div class="ml-[12px]">
 							<div>
 								<span class="font-bold text-[18px]">{{ statInfo.site_info.site_name }}</span>
-								<span class="text-[12px] ml-[12px]">ID:{{ statInfo.site_info.site_code }}</span>
+								<span class="text-[12px] ml-[12px]">ID:{{ statInfo.site_info.site_id }}</span>
 							</div>
 							<div>
 								<span class="text-[14px] text-[#666] mr-[12px]">{{ t('siteType') }}：{{ statInfo.site_info.group_name }}</span>
-								<span class="text-[10px] py-[3px] px-[10px] bg-[#E6EFFF] text-[#2D5FFF] rounded-[3px]">{{ statInfo.site_info.status_name }}</span>
+								<span v-if="statInfo.site_info.status == 1" class="text-[10px] py-[3px] px-[10px] bg-[#E6EFFF] text-[#2D5FFF] rounded-[3px]">{{ statInfo.site_info.status_name }}</span>
+								<span v-else class="text-[10px] py-[3px] px-[10px] bg-[#FFE6E9] text-[#FF2D2D] rounded-[3px]">{{ statInfo.site_info.status_name }}</span>
 							</div>
 						</div>
 					</div>
 					<div class="flex">
 						<div>
 							<div><span class="text-[14px] text-[#666]">{{ t('periodTime') }}：{{ statInfo.site_info.create_time ? statInfo.site_info.create_time.split(' ')[0] : '' }} / {{ statInfo.site_info.expire_time ? statInfo.site_info.expire_time.split(' ')[0] : '' }}</span></div>
-							<div class="w-[300px] h-[12px] bg-[#E6EFFF] rounded-[999px] mt-1">
+							<div class="w-[225px] h-[12px] bg-[#E6EFFF] rounded-[999px] mt-1">
 								<div class="bg-primary site-date rounded-[999px] h-[12px]" :style="{width: statInfo.site_info.mix}"></div>
 							</div>
 						</div>
@@ -29,7 +33,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="mt-[60px]">
+				<div class="mt-[60px]"  v-if="!loading">
 					<div class="card-header flex justify-between border-b-[1px] border-[#EBEBEC] pb-[15px]">
 					    <span class="text-[18px]">{{t('appTemplate')}}</span>
 						<div @click="optionModel" v-if="!edit_menu" class="cursor-pointer">
@@ -39,25 +43,31 @@
 							<el-button type="primary" @click="primary">{{ t('complete') }}</el-button>
 						</div>
 					</div>
-					<div class="flex flex-wrap" >
+					<div class="flex flex-wrap">
 						<div class="flex flex-wrap" ref="shortcutModel" v-if="edit_menu">
-							<div v-for="(items, index) in shortcut_menu" :style="{backgroundColor : items.bg_color}" :id="items.id" class="design-field w-[180px] h-[120px] relative mt-[30px] rounded-[5px] mr-[30px] cursor-pointer">
+							<div v-for="(items, index) in shortcut_menu" :style="{backgroundColor : items.bg_color}" :key="items.id" class="design-field w-[180px] h-[120px] relative mt-[30px] rounded-[5px] mr-[30px] cursor-pointer">
 								<div class="flex items-center h-[88px]" @click="editModel(items)">
-									<img class="ml-[24px] w-[40px]" :src="img(items.img)"/>
+									<!-- <img class="ml-[24px] w-[40px]" :src="img(items.img)"/> -->
+									<div class="ml-[24px] w-[40px]">
+										<icon :name="items.img" size="40px" color="#fff"></icon>
+									</div>
 									<span class="text-item text-[16px] text-[#fff] ml-[12px] max-w-[120px]">{{ items.name }}</span>
 								</div>
 								<div class="item-bottom h-[32px] leading-[32px] text-center" @click="editModel(items)">
 									<span class="text-item text-[12px] text-[#fff] max-w-[150px]">{{ items.desc }}</span>
 								</div>
-								<div class="delete-item absolute w-[20px] h-[20px] rounded-[999px] overflow-hidden" v-if="edit_menu" @click="remowMenu(items)">
+								<div class="delete-item absolute w-[20px] h-[20px] rounded-[999px] overflow-hidden" v-if="edit_menu" @click="removeMenu(items)">
 									<img class="w-[20px] h-[20px]" src="@/assets/images/index/del_model.png"/>
 								</div>
 							</div>
 						</div>
 						<div v-else class="flex flex-wrap">
-							<div v-for="(items, index) in shortcut_menu" :style="{backgroundColor : items.bg_color}" class="design-field w-[180px] h-[120px] relative mt-[30px] rounded-[5px] overflow-hidden mr-[30px] cursor-pointer">
+							<div v-for="(items, index) in shortcut_menu" :style="{backgroundColor : items.bg_color}" class="w-[180px] h-[120px] relative mt-[30px] rounded-[5px] overflow-hidden mr-[30px] cursor-pointer">
 								<div class="flex items-center h-[88px]" @click="toLink(items.router_path)">
-									<img class="ml-[24px] w-[40px]" :src="img(items.img)"/>
+									<!-- <img class="" :src="img(items.img)"/> -->
+									<div class="ml-[24px] w-[40px]">
+										<icon :name="items.img" size="40px" color="#fff"></icon>
+									</div>
 									<span class="text-item text-[16px] text-[#fff] ml-[12px] max-w-[120px]">{{ items.name }}</span>
 								</div>
 								<div class="item-bottom h-[32px] leading-[32px] text-center"  @click="toLink(items.router_path)">
@@ -65,12 +75,12 @@
 								</div>
 							</div>
 						</div>
-						<div v-if="edit_menu" class="w-[180px] h-[120px] mt-[30px] rounded-[5px] overflow-hidden border-dashed border-[1px] border-[#D0D7D9] cursor-pointer" @click="showFromMunu">
+						<div v-if="edit_menu" class="w-[180px] h-[120px] mt-[30px] rounded-[5px] overflow-hidden border-dashed border-[1px] border-[#D0D7D9] cursor-pointer" @click="showFromMenu">
 							<div class="w-[40px] mx-auto mt-[20px]"><img class="w-[40px]" src="@/assets/images/index/add_menu.png" /></div>
 							<p class="text-center mt-[5px] text-[20px]">{{ t('addMenu') }}</p>
 						</div>
 						<div v-if="shortcut_menu.length <= 0 && !edit_menu" class="flex w-full justify-center items-center min-w-[1000px] min-h-[400px]">
-							<div>
+							<div v-if="!loading">
 								<img src="@/assets/images/empty.png"/>
 								<p class="text-center text-gray-400">{{ t('emptyMenu') }}</p>
 							</div>
@@ -80,17 +90,26 @@
             </el-card>
         </div>
 		<el-dialog v-model="shortcutMenu" :title="t('addShortcutMenu')" width="500px" :destroy-on-close="true">
-			<el-form :model="formData" label-width="90px" ref="formRef" :rules="formRules" class="page-form"
-			    v-loading="loading">
+			<el-form :model="formData" label-width="90px" ref="formRef" :rules="formRules" class="page-form" v-loading="loading">
 				
-				<el-form-item :label="t('path')" prop="router_path">
-				    <el-input v-model="formData.router_path" clearable class="w-[245px]" placeholder="https://"/>
-					<el-button class="model-btn ml-[10px] text-[14px]" type="primary" plain @click="showMenu = true">{{ t('selectModel') }}</el-button>
+				<el-form-item :label="t('menuName')" prop="name">
+				    <el-input v-model="formData.name" clearable class="w-[245px]" :placeholder="t('menuNamePlaceholder')" />
 				</el-form-item>
 				
-			    <el-form-item :label="t('menuName')" prop="name">
-			        <el-input v-model="formData.name" clearable class="w-[245px]" :placeholder="t('menuNamePlaceholder')" />
-			    </el-form-item>
+				<el-form-item :label="t('path')" prop="router_path">
+					<div class="w-[245px]">
+						<el-input v-if="!model_show" v-model="formData.router_path" clearable class="w-[245px]" placeholder="https://"/>
+						<div v-else>
+							<span class="bg-primary py-[5px] px-[10px] text-[#fff] relative rounded-[3px]">
+								{{ formData.link_name }}
+								<span class="absolute top-[-5px] right-[-5px] cursor-pointer" @click="deleteMenu">
+									<img class="w-[15px] h-[15px]" src="@/assets/images/index/del_model.png"/>
+								</span>
+							</span>
+						</div>
+					</div>
+					<el-button class="model-btn ml-[10px] text-[14px]" type="primary" @click="showMenu = true">{{ t('selectModel') }}</el-button>
+				</el-form-item>
 			
 			    <el-form-item :label="t('menuBgColor')" prop="bg_color">
 					<div class="flex items-center">
@@ -118,21 +137,13 @@
 						<el-color-picker v-model="formData.bg_color" show-alpha />
 					</div>
 			    </el-form-item>
-				
-				<!-- <el-form-item :label="t('shortcutLink')" prop="path">
-					<div>
-						<span v-if='formData.router_path' class="py-[8px] px-[15px] bg-[#E6EFFF] text-[12px] max-w-[200px] overflow-hidden">{{ formData.link_name ? formData.link_name : formData.router_path }}</span>
-						<el-button text type="primary" @click="showMenu = true" >{{ t('select') }}</el-button>
-						<el-button text type="primary" @click="customPath = true">{{ t('custom') }}</el-button>
-					</div>
-				</el-form-item> -->
 			
 			    <el-form-item :label="t('menuImg')" prop="icon">
-					<upload-image v-model="formData.img" :limit="1" />
+					<select-icon v-model="formData.img" />
 			    </el-form-item>
 			    
 			    <el-form-item :label="t('menuDesc')">
-			        <el-input v-model="formData.desc" :placeholder="t('descPlaceholder')" clearable class="w-[245px] bg-[#F2F4F6]" />
+			        <el-input v-model="formData.desc" :placeholder="t('descPlaceholder')" clearable class="w-[245px]" />
 			    </el-form-item>
 			
 			</el-form>
@@ -179,10 +190,11 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, computed, onMounted } from 'vue'
+import { reactive, ref, computed, nextTick } from 'vue'
 import { t } from '@/lang'
 import { getSiteStatInfo } from '@/api/stat'
 import { getService, getShortcutMenu, setShortcutMenu, getAuthMenu } from '@/api/sys'
+import { range } from 'lodash-es'
 import { img } from '@/utils/common'
 import Sortable, { SortableEvent } from 'sortablejs'
 import { useRouter } from 'vue-router'
@@ -198,7 +210,6 @@ const loading = ref(true)
 let statInfo = ref({'today_data':{},system:{},version:{},about:[],visit_stat:{},member_stat:{},site_info:{},total_data:{}})
 const getStatInfoFn = async (id: number = 0) => {
     statInfo.value = await (await getSiteStatInfo()).data
-    loading.value = false;
 }
 getStatInfoFn()
 
@@ -236,7 +247,7 @@ const formRules = computed(() => {
         icon: [
             { required: true, validator: iconPass, trigger: 'blur' }
         ],
-        path: [
+        router_path: [
             { required: true, validator: pathPass, trigger: 'blur' },
         ]
     }
@@ -262,11 +273,11 @@ const showMenu = ref(false)
 const shortcut_menu = ref([]);
 const menu_list = ref()
 const is_remove = ref(false)
+const model_show = ref(false)
 const checkMenu = () => {
 	getShortcutMenu().then(res=>{
-		if(res.data){
-			shortcut_menu.value = res.data
-		}
+		shortcut_menu.value = res.data
+		loading.value = false;
 	})
 }
 checkMenu()
@@ -282,25 +293,32 @@ const addShortcut = async (formEl: FormInstance | undefined) => {
 			let time = parseInt(new Date().getTime() / 1000) + '';
 			let num = Math.floor(Math.random() * (999 - 1) ) + 1;
 			
-			//如果是编辑，找到原数据，删除原数据
+			//如果是编辑，匹配原数据修改
 			if(formData.id > 0){
 				for(let i in data){
 					if(data[i].id == formData.id){
-						data.splice(i, 1)
+						data[i].name = formData.name,
+						data[i].bg_color = formData.bg_color,
+						data[i].img = formData.img,
+						data[i].desc = formData.desc,
+						data[i].link_name = formData.link_name,
+						data[i].router_path = formData.router_path,
+						data[i].menu_key = formData.menu_key
 					}
 				}
+			}else{
+				data.push({
+					id: formData.id > 0 ? formData.id : time+num,
+					name: formData.name,
+					bg_color: formData.bg_color,
+					img: formData.img,
+					desc: formData.desc,
+					link_name: formData.link_name,
+					router_path: formData.router_path,
+					menu_key: formData.menu_key
+				})
 			}
 
-			data.push({
-				id: formData.id > 0 ? formData.id : time+num,
-				name: formData.name,
-				bg_color: formData.bg_color,
-				img: formData.img,
-				desc: formData.desc,
-				link_name: formData.link_name,
-				router_path: formData.path,
-				menu_key: formData.menu_key
-			})
 			setShortcutMenu({
 				menu: data
 			}).then(() =>{
@@ -321,9 +339,12 @@ const editModel = (item) => {
 	formData.link_name = item.link_name,
 	formData.router_path = item.router_path,
 	formData.menu_key = item.menu_key
+	if(item.menu_key){
+		model_show.value = true
+	}
 }
 
-const remowMenu = (item) => {
+const removeMenu = (item) => {
 	is_remove.value = true
 	let menu_arr = shortcut_menu.value;
 	for(let i in menu_arr){
@@ -337,13 +358,13 @@ const remowMenu = (item) => {
 const primary = () => {
 	edit_menu.value = false;
 	if(!is_remove.value) return
-	if(new_model_arr.value.length > 0) shortcut_menu.value = new_model_arr.value;
 	setShortcutMenu({
 		menu: shortcut_menu.value
 	}).then(() =>{})
 }
-const showFromMunu = () =>{
+const showFromMenu = () =>{
 	shortcutMenu.value = true
+	model_show.value = false
 	formData.name = ''
 	formData.bg_color = ''
 	formData.img = ''
@@ -363,73 +384,35 @@ const selectMenu = (item) => {
 	formData.router_path = item.router_path
 	formData.menu_key = item.menu_key
 	showMenu.value = false
+	model_show.value = true
 }
 const shortcutModel = ref()
-const new_model_arr = ref([])
+interface SortableEvt extends SortableEvent {
+    originalEvent?: DragEvent
+}
+
+const deleteMenu = () => {
+	model_show.value = false
+	formData.link_name = ''
+	formData.router_path = ''
+	formData.menu_key = ''
+}
+
 const optionModel = () =>{
 	edit_menu.value = true
 	setTimeout(() => {
 		const sortable = Sortable.create(shortcutModel.value, {
-			group: {
-				name: 'design-field',
-				pull: 'clone',
-				put: false
-			},
+			ghostClass: '.design-field',
 			animation: 200,
-			onAdd: (evt) => {
-				console.log("1111")
-				console.log(evt)
-			},
 			onEnd: (evt) => {
-				let new_data = [];
-				// evt.oldIndex  原位置下标 
-				// evt.newIndex  当前位置下标
-				// console.log(evt.oldIndex+"原位置下标")
-				// console.log(evt.newIndex+"当前位置下标")
-				if(new_model_arr.value.length > 0){
-					let k = 0;
-					let newIndex = evt.newIndex;
-					if(evt.oldIndex < evt.newIndex) newIndex = evt.newIndex + 1; //向后
-					for(k; k < newIndex; k ++){
-						if(k != evt.oldIndex){
-							new_data.push(new_model_arr.value[k])
-						}
-					}
-					
-					new_data.push(new_model_arr.value[evt.oldIndex])
-					
-					let i = 0;
-					if(evt.newIndex > 0 && evt.oldIndex > evt.newIndex) i = i+1
-					if(evt.oldIndex < evt.newIndex) i = evt.newIndex + 1; //向后
-					
-					for(i; i < new_model_arr.value.length; i ++){
-						if(i != evt.oldIndex){
-							new_data.push(new_model_arr.value[i])
-						}
-					}
-				}else{
-					let k2 = 0;
-					let newIndex = evt.newIndex;
-					if(evt.oldIndex < evt.newIndex) newIndex = evt.newIndex + 1; //向后
-					for(k2; k2 < newIndex; k2 ++){
-						if(k2 != evt.oldIndex){
-							new_data.push(shortcut_menu.value[k2])
-						}
-					}
-					new_data.push(shortcut_menu.value[evt.oldIndex])
-					let i2 = 0;
-					if(evt.newIndex > 0 && evt.oldIndex > evt.newIndex) i2 = i2+1
-					if(evt.oldIndex < evt.newIndex) i2 = evt.newIndex + 1; //向后
-
-					for( i2; i2 < shortcut_menu.value.length; i2 ++){
-						if(i2 != evt.oldIndex){
-							new_data.push(shortcut_menu.value[i2])
-						}
-					}
-				}
-
-				new_model_arr.value = new_data;
-				is_remove.value = true;
+				let arr = shortcut_menu.value[evt.oldIndex!];
+				shortcut_menu.value.splice(evt.oldIndex!, 1)
+				shortcut_menu.value.splice(evt.newIndex!, 0, arr)
+				
+				nextTick(() => {
+				    sortable.sort(range(shortcut_menu.value.length).map((value) => value.toString()))
+                    is_remove.value = true;
+				})
 			}
 		})
 	}, 500)
@@ -450,7 +433,10 @@ const optionModel = () =>{
 	background-color: rgba(0, 0, 0, 0.10);
 }
 .bottom-back {
-	background-color:rgba(255, 255, 255, 0)
+	background-color:rgba(255, 255, 255, 0);
+	&:hover {
+	    background-color: var(--el-color-primary);
+	}
 }
 .delete-item {
 	top: -8px;

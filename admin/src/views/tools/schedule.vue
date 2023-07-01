@@ -2,9 +2,10 @@
     <div class="main-container">
         <el-card class="box-card !border-none" shadow="never">
             <div class="flex justify-between items-center">
-                <span class="text-[24px]">{{pageName}}</span>
+                <span class="text-[20px]">{{pageName}}</span>
+                <el-button type="primary" @click="showEvent">{{ t('addCron') }}</el-button>
             </div>
-            <div>
+            <div class="mt-[10px]">
                 <el-table :data="cronTableData.data" size="large" v-loading="cronTableData.loading">
 
                     <template #empty>
@@ -18,27 +19,99 @@
 							{{ row.crontab_content }}
 						</template>
 					</el-table-column>
+					<el-table-column prop="status_name" :label="t('openStatus')" min-width="100" />
+					<el-table-column :label="t('operation')" fixed="right" width="130">
+					    <template #default="{ row }">
+					        <el-button type="primary" link @click="editEvent(row)">{{ t('edit') }}</el-button>
+					        <el-button type="danger" link @click="deleteEvent(row.id)">{{ t('delete') }}</el-button>
+					    </template>
+					</el-table-column>
                 </el-table>
                 <div class="mt-[16px] flex justify-end">
-                    <el-pagination v-model:current-page="cronTableData.page" v-model:page-size="cronTableData.limit"
-                        layout="total, sizes, prev, pager, next, jumper" :total="cronTableData.total"
-                        @size-change="loadCronList()" @current-change="loadCronList" />
+                    <el-pagination v-model:current-page="cronTableData.page" v-model:page-size="cronTableData.limit" layout="total, sizes, prev, pager, next, jumper" :total="cronTableData.total" @size-change="loadCronList()" @current-change="loadCronList" />
                 </div>
             </div>
 
         </el-card>
         <cron-info ref="cronDialog" @complete="loadCronList" />
+		<el-dialog v-model="showDialog" :title="t('editCron')" width="750px" :destroy-on-close="true">
+		    <el-form :model="formData" label-width="110px" ref="formRef" :rules="formRules" class="page-form"
+		        v-loading="loading">
+				<el-form-item :label="t('cronTemplate')" class="items-center" prop="key">
+					<el-select v-model="formData.key">
+					    <el-option
+					      v-for="item in templateList"
+					      :key="item.key"
+					      :label="item.name"
+					      :value="item.key"
+					    />
+					</el-select>
+				</el-form-item>
+				<el-form-item :label="t('cronTime')" prop="timeDate">
+					<el-select v-model="formData.time.type" class="w-[150px]">
+					    <el-option
+					      v-for="(item, index) in date_type"
+					      :key="index"
+					      :label="item"
+					      :value="index"
+					    />
+					</el-select>
+					<div class="flex">
+						<el-select v-model="formData.time.week" class="ml-2 w-[120px]" v-if="formData.time.type == 'week'">
+						    <el-option
+						      v-for="(item, index) in week_list"
+						      :key="index"
+						      :label="item"
+						      :value="index"
+						    />
+						</el-select>
+						<el-input v-model="formData.time.day" class="ml-2 w-[120px]" v-if="['month','day'].indexOf(formData.time.type) != -1">
+						    <template #append>{{ t('day') }}</template>
+						</el-input>
+						<el-input v-model="formData.time.hour" class="ml-2 w-[120px]" v-if="['month','day','hour','week'].indexOf(formData.time.type) != -1" >
+						    <template #append>{{ t('hour') }}</template>
+						</el-input>	
+						<el-input v-model="formData.time.min" class="ml-2 w-[120px]" v-if="['month','day','hour','week','min'].indexOf(formData.time.type) != -1">
+						    <template #append>{{ t('min') }}</template>
+						</el-input>
+					</div>
+				</el-form-item>
+				<el-form-item :label="t('openStatus')" >
+				    <div class="input-width flex items-center text-sm">
+				        <el-radio-group v-model="formData.status">
+				          <el-radio :label="1">{{ t('yes') }}</el-radio>
+				          <el-radio :label="2">{{ t('no') }}</el-radio>
+				        </el-radio-group>
+				    </div>
+				</el-form-item>
+		    </el-form>
+		
+		    <template #footer>
+		        <span class="dialog-footer">
+		            <el-button type="primary" @click="addEvent(formRef)">{{ t('confirm') }}</el-button>
+		        </span>
+		    </template>
+		</el-dialog>	
     </div>
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref, watch, computed } from 'vue'
 import { t } from '@/lang'
-import { getCronList,getCronType } from '@/api/sys'
+import { 
+	getCronList,
+	getCronTemplate, 
+	getCronDateType,
+	getWeek,
+	addCron,
+	editCron,
+	deleteCron
+} from '@/api/sys'
 import { ElMessageBox, FormInstance } from 'element-plus'
 import { useRouter } from 'vue-router'
 import CronInfo from '@/views/setting/components/cron-info.vue'
 import { useRoute } from 'vue-router'
+
 const route = useRoute()
 const pageName = route.meta.title;
 
@@ -54,12 +127,15 @@ const cronTableData = reactive({
         last_time:''
     }
 })
-const typeList = ref([])
-
+const templateList = ref([])
+const date_type = ref([])
+const week_list = ref([])
 const searchFormRef = ref<FormInstance>()
 
 const setTypeList = async () => {
-    typeList.value = await (await getCronType()).data
+    templateList.value = await (await getCronTemplate()).data
+	date_type.value = await (await getCronDateType()).data
+	week_list.value = await (await getWeek()).data
 }
 setTypeList()
 
@@ -86,6 +162,106 @@ loadCronList()
 
 const router = useRouter()
 
+const showDialog = ref(false)
+const initialFormData = {
+	id: 0,
+	key: '',
+	status: 2,
+	time: {
+		type: 'min',
+		week: '',
+		day: '',
+		hour: '',
+		min: ''
+	}
+}
+const formData: Record<string, any> = reactive({ ...initialFormData })
+const formRef = ref<FormInstance>()
+
+const showEvent = () => {
+	formData.id = 0,
+	formData.key = '',
+	formData.status = 2,
+	formData.time.type = 'min',
+	formData.time.week = '',
+	formData.time.day = '',
+	formData.time.hour = '',
+	formData.time.min = '',
+	showDialog.value = true
+}
+
+// 表单验证规则
+const formRules = computed(() => {
+    return {
+        key: [
+            { required: true, message: t('titlePlaceholder'), trigger: 'blur' }
+        ],
+        timeDate: [
+            { required: true, validator: validatePass, trigger: 'blur' }
+        ],
+    }
+})
+
+const validatePass = (rule: any, value: any, callback: any) => {
+	if(formData.time.type == 'min' && formData.time.min == ''){
+		return callback(new Error(t('cronTimeTips')))
+	}
+	if(formData.time.type == 'week' && formData.time.week == '' && formData.time.hour == '' && formData.time.min == ''){
+		return callback(new Error(t('cronTimeTips')))
+	}
+	if(formData.time.type == 'month' && formData.time.day == '' && formData.time.hour == '' && formData.time.min == ''){
+		return callback(new Error(t('cronTimeTips')))
+	}
+	if(formData.time.type == 'day' && formData.time.day == '' && formData.time.hour == '' && formData.time.min == ''){
+		return callback(new Error(t('cronTimeTips')))
+	}
+	if(formData.time.type == 'hour' && formData.time.hour == '' && formData.time.min == ''){
+		return callback(new Error(t('cronTimeTips')))
+	}
+	return callback()
+}
+const save_type = ref(false)
+const addEvent = async (formEl: FormInstance | undefined) => {
+    if (save_type.value || !formEl) return
+    await formEl.validate(async (valid) => {
+        if (valid) {
+            save_type.value = true
+            const data = formData
+            const save = formData.id > 0 ? editCron : addCron
+            save(data).then(res => {
+                save_type.value = false
+				showDialog.value = false
+				loadCronList()
+            }).catch(() => {
+                save_type.value = false
+            })
+        }
+    })
+}
+
+const editEvent = (item) => {
+	formData.id = item.id,
+	formData.key = item.key,
+	formData.status = item.status
+	formData.time = item.time
+	showDialog.value = true
+}
+
+const deleteEvent = (id: number) => {
+    ElMessageBox.confirm(t('cronDeleteTips'), t('warning'),
+        {
+            confirmButtonText: t('confirm'),
+            cancelButtonText: t('cancel'),
+            type: 'warning'
+        }
+    ).then(() => {
+        deleteCron(id).then(() => {
+            loadCronList()
+        }).catch(() => {
+        })
+    })
+}
+
 const cronDialog: Record<string, any> | null = ref(null)
 /**
  * 查看任务
@@ -98,4 +274,8 @@ const infoEvent = (data: any) => {
  
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+	.el-input-number.is-controls-right .el-input-number__increase {
+		left: 20px !important
+	}
+</style>

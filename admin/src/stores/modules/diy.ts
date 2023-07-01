@@ -1,8 +1,8 @@
 import {defineStore} from 'pinia'
 import {t} from '@/lang'
-import {toRaw, watch} from 'vue'
+import {toRaw} from 'vue'
 import {ElMessage, ElMessageBox} from 'element-plus'
-import {cloneDeep, range, isEmpty} from 'lodash-es'
+import {cloneDeep } from 'lodash-es'
 
 const useDiyStore = defineStore('diy', {
     state: () => {

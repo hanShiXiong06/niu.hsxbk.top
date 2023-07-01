@@ -2,7 +2,7 @@
     <div class="main-container">
         <el-card class="box-card !border-none" shadow="never">
             <div class="flex justify-between items-center">
-                <span class="text-[24px]">{{pageName}}</span>
+                <span class="text-[20px]">{{pageName}}</span>
                 <el-button type="primary" class="w-[100px]" @click="dialogVisible = true">
                     {{ t('addDiyPage') }}
                 </el-button>
@@ -123,12 +123,11 @@
 </template>
 
 <script lang="ts" setup>
-    import { reactive, ref, watch, computed } from 'vue'
+    import { reactive, ref, computed } from 'vue'
     import { t } from '@/lang'
     import { getDiyPageList, deleteDiyPage, getDiyTemplate, editDiyPageShare } from '@/api/diy'
-    import {  ElMessage, ElMessageBox, FormInstance } from 'element-plus'
+    import {  ElMessageBox, FormInstance } from 'element-plus'
     import { useRoute, useRouter } from 'vue-router'
-    import QRCode from "qrcode";
     import { getUrl } from '@/api/sys'
 
     const router = useRouter()
@@ -186,7 +185,7 @@
     getDomain();
 
     // 获取自定义页面模板
-    getDiyTemplate({ mode : 'diy' }).then(res => {
+    getDiyTemplate({ mode : '' }).then(res => {
         for (let key in res.data) {
             pageType[key] = res.data[key]
         }
@@ -200,7 +199,8 @@
         data: [],
         searchParam: {
             "title": "",
-            "template": '',
+            "type": '',
+            'mode':''
         }
     })
 

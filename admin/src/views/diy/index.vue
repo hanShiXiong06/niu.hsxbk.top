@@ -1,18 +1,11 @@
 <template>
 	<div class="flex flex-wrap">
-		<div class="page-item relative bg-no-repeat mr-[40px] mt-[20px] bg-[#f7f7f7] w-[300px] pt-[80px] pb-[20px]"
-		     :class="{ 'cursor-pointer' : !item.isDisabledPop }"
-		     v-for="(item,key) in page"
-		     :key="key">
-			<p class="absolute top-[46px] left-[50%] translate-x-[-50%] text-[14px] truncate w-[130px] text-center">
-				{{item.use_template.title}}</p>
+		<div class="page-item relative bg-no-repeat ml-[20px] mr-[40px] mt-[20px] bg-[#f7f7f7] w-[300px] pt-[80px] pb-[20px]" :class="{ 'cursor-pointer' : !item.isDisabledPop }" v-for="(item,key) in page" :key="key">
+			<p class="absolute top-[46px] left-[50%] translate-x-[-50%] text-[14px] truncate w-[130px] text-center">{{item.use_template.title}}</p>
 
-			<div v-show="item.use_template.url" class="w-[282px] h-[500px] mx-auto">
-				<iframe v-show="item.loadingIframe" class="w-[282px] h-[500px] mx-auto"
-				        :src="item.use_template.wapPreview"
-				        frameborder="0" @load="loadIframe(key)"></iframe>
-				<div v-show="item.loadingDev"
-				     class="w-[282px] h-[500px] mx-auto bg-body pt-[20px] px-[20px]">
+			<div v-show="item.use_template.url" class="w-[282px] h-[493px] mx-auto">
+				<iframe v-show="item.loadingIframe" class="w-[282px] h-[493px] mx-auto" :src="item.use_template.wapPreview" frameborder="0" @load="loadIframe(key)"></iframe>
+				<div v-show="item.loadingDev" class="w-[282px] h-[493px] mx-auto bg-body pt-[20px] px-[20px]">
 					<div class="font-bold text-xl mb-[40px]">{{t('developTitle')}}</div>
 					<div class="mb-[20px] flex flex-col">
 						<text class="mb-[10px]">{{ t('wapDomain') }}</text>
@@ -22,20 +15,17 @@
 				</div>
 			</div>
 
-			<div v-show="!item.use_template.wapPreview" class="overflow-hidden w-[282px] h-[500px] mx-auto">
-				<img class="max-w-full" v-if="item.use_template.cover"
-				     :src="img(item.use_template.cover)"/>
+			<div v-show="!item.use_template.wapPreview" class="overflow-hidden w-[282px] h-[493px] mx-auto">
+				<img class="max-w-full" v-if="item.use_template.cover" :src="img(item.use_template.cover)"/>
 			</div>
 
-			<p class="text-[12px] text-[#999] mt-[10px] mx-auto truncate text-center w-[250px]">
-				{{item.use_template.desc}}</p>
+			<p class="text-[12px] text-[#999] mt-[10px] mx-auto truncate text-center w-[250px]">{{item.use_template.desc}}</p>
 
-			<div class="item-hide absolute inset-x-0 inset-y-0 bg-black bg-opacity-50 text-center rounded-[40px]"
-			     :class="{ 'disabled' : item.isDisabledPop }">
+			<div class="item-hide absolute inset-x-0 inset-y-0 bg-black bg-opacity-50 text-center" :class="{ 'disabled' : item.isDisabledPop }">
 				<div class="item-btn-box absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] flex flex-col flex-wrap">
 					<el-button @click="show(key,item)">切换</el-button>
-					<el-button v-show="item.use_template.mode == 'diy'" @click="toDecorate(item.use_template)">装修
-					</el-button>
+<!--					v-show="item.use_template.mode == 'diy'"-->
+					<el-button @click="toDecorate(item.use_template)">装修</el-button>
 					<el-button @click="toPreview(item.use_template)">预览</el-button>
 				</div>
 			</div>
@@ -43,19 +33,16 @@
 		</div>
 	</div>
 
-	<el-dialog v-model="showDialog" :title="t('changeTemplate')" width="400px" :close-on-press-escape="false"
-	           :destroy-on-close="true" :close-on-click-modal="false">
+	<el-dialog v-model="showDialog" :title="t('changeTemplate')" width="400px" :close-on-press-escape="false" :destroy-on-close="true" :close-on-click-modal="false">
 
 		<el-form :model="form" label-width="0px" v-if="formData.type">
 			<el-form-item label="">
-				<div>{{t('hopeBeforeTip')}}<span class="text-primary px-[5px]">{{ page[formData.type].title }}</span>{{t('hopeAfterTip')}}
-				</div>
+				<div>{{t('hopeBeforeTip')}}<span class="text-primary px-[5px]">{{ page[formData.type].title }}</span>{{t('hopeAfterTip')}}</div>
 			</el-form-item>
 
 			<el-form-item label="">
 				<el-select v-model="hope" class="w-full">
-					<el-option :label="t('changeTemplateTip') + ' ' + page[formData.type].title + ' ' + t('template')"
-					           value="template"/>
+					<el-option :label="t('changeTemplateTip') + ' ' + page[formData.type].title + ' ' + t('template')" value="template"/>
 					<el-option :label="t('changeMyPageTip') + ' ' + page[formData.type].title" value="diy"/>
 				</el-select>
 			</el-form-item>
@@ -68,8 +55,7 @@
 
 			<el-form-item label="" v-show="hope == 'diy'">
 				<el-select v-model="formData.id" class="w-full">
-					<el-option v-for="(item, index) in page[formData.type].my_page" :label="item.title"
-					           :value="item.id"/>
+					<el-option v-for="(item, index) in page[formData.type].my_page" :label="item.title" :value="item.id"/>
 				</el-select>
 				<div class="mt-[10px]">
 					<span class="cursor-pointer text-primary mr-[10px]" @click="toDiyList">{{ t('createPage') }}</span>
@@ -90,11 +76,11 @@
 </template>
 
 <script lang="ts" setup>
-    import {reactive, ref, watch, computed} from 'vue'
+    import {reactive, ref, watch} from 'vue'
     import {t} from '@/lang'
     import {img} from '@/utils/common'
-    import {useRoute, useRouter} from 'vue-router'
-    import {TabsPaneContext, ElMessage, ElMessageBox} from 'element-plus'
+    import { useRouter } from 'vue-router'
+    import { ElMessage } from 'element-plus'
     import {getDecoratePage, getDiyList, changeTemplate} from '@/api/diy'
     import storage from '@/utils/storage'
 
@@ -124,23 +110,31 @@
 
             for (let key in page) {
                 if (page[key].use_template.url) {
+
                     page[key].loadingIframe = false; // 加载iframe
                     page[key].loadingDev = false; // 加载开发环境配置
                     page[key].isDisabledPop = false; // 是否禁止打开遮罩层
+                    page[key].timeFrame = 0;
 
                     wapDomain.value = page[key].domain_url.wap_domain;
                     page[key].wapUrl = page[key].domain_url.wap_url;
 
-                    // 开发模式情况下，并且未配置wap域名，则获取缓存域名
-                    if (import.meta.env.MODE == 'development' && !wapDomain.value && storage.get('wap_domain')) {
-                        page[key].wapUrl = storage.get('wap_domain')
-                        page[key].loadingIframe = true; // 加载iframe
-                        page[key].loadingDev = false; // 加载开发环境配置
-                        page[key].isDisabledPop = false; // 是否禁止打开遮罩层
+                    // 开发模式增加站点id
+                    if (import.meta.env.MODE == 'development') {
+                        let siteId = storage.get('siteId') || 0;
+                        page[key].use_template.url += `&site_id=${siteId}`;
+
+                        // 开发模式情况下，并且未配置wap域名，则获取缓存域名
+                        if (!wapDomain.value && storage.get('wap_domain')) {
+                            page[key].wapUrl = storage.get('wap_domain')
+                            page[key].loadingIframe = true; // 加载iframe
+                            page[key].loadingDev = false; // 加载开发环境配置
+                            page[key].isDisabledPop = false; // 是否禁止打开遮罩层
+                        }
+                        page[key].timeFrame = new Date().getTime();
                     }
 
                     setDomain(key);
-                    page[key].timeFrame = new Date().getTime();
                 }
             }
 
@@ -151,7 +145,6 @@
 
     // 监听iframe加载事件
     const loadIframe = (key: string) => {
-        if (storage.get('wap_domain')) return;
         if (!page[key].use_template.wapPreview) return;
 
         var loadTime = new Date().getTime();
@@ -169,6 +162,13 @@
     }
 
     const saveDomain = () => {
+        if (wapDomain.value.trim().length == 0) {
+            ElMessage({
+                type: 'warning',
+                message: `${t('wapDomainPlaceholder')}`,
+            });
+            return;
+        }
         let wapUrl = wapDomain.value + '/wap';
         storage.set({key: 'wap_domain', data: wapUrl});
 
@@ -250,7 +250,7 @@
 
     // 刷新我的微页面
     const refreshMyPage = () => {
-        getDiyList({type: formData.type, mode: 'diy'}).then((res) => {
+        getDiyList({type: formData.type}).then((res) => {
             let isExist = true; // 检测选择的微页面是否存在，不存在则清空
             for (let i = 0; i < res.data.length; i++) {
                 if (formData.id == res.data[i].id) {

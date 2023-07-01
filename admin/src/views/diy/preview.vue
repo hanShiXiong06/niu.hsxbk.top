@@ -15,33 +15,32 @@
 			<div class="w-[400px] absolute bg-body top-[10%] -right-[450px]" v-if="loadingIframe">
 
 				<div class="info-wrap mt-[20px]">
+
+					<div class="px-[20px] pb-[10px] font-bold">{{t('h5')}}</div>
 					<el-form label-width="40px" class="px-[20px]">
-						<el-form-item :label="t('preview')">
-							<el-radio-group v-model="previewMode">
-								<el-radio :label="'weapp'">{{t('weapp')}}</el-radio>
-								<el-radio :label="'wechat'">{{t('wechat')}}</el-radio>
-							</el-radio-group>
+
+						<el-form-item :label="t('link')" v-show="wapPreview">
+							<el-input readonly :value="wapPreview">
+								<template #append>
+									<el-button @click="copyEvent(wapPreview)" class="bg-primary copy">{{ t('copy') }}</el-button>
+								</template>
+							</el-input>
 						</el-form-item>
-						<template v-if="previewMode == 'wechat'">
-							<el-form-item :label="t('link')" v-show="wapPreview">
-								<el-input readonly :value="wapPreview">
-									<template #append>
-										<el-button @click="copyEvent(wapPreview)" class="bg-primary copy">{{ t('copy') }}</el-button>
-									</template>
-								</el-input>
-							</el-form-item>
-							<el-form-item label=" " v-show="wapImage">
-								<el-image :src="wapImage"/>
-							</el-form-item>
-						</template>
-						<template v-if="previewMode == 'weapp'">
-							<el-form-item label=" " v-if="weappConfig.qr_code">
-								<el-image class="w-[100px] h-[100px]" :src="img(weappConfig.qr_code)"/>
-							</el-form-item>
-							<el-form-item label=" " v-else>
-								<span class="text-gray-400">{{t('weappNotSet')}}</span>
-							</el-form-item>
-						</template>
+
+						<el-form-item label=" " v-show="wapImage">
+							<el-image :src="wapImage"/>
+						</el-form-item>
+
+					</el-form>
+
+					<div class="px-[20px] pb-[10px] font-bold mt-[40px]">{{t('weapp')}}</div>
+					<el-form label-width="40px" class="px-[20px]">
+						<el-form-item label=" " v-if="weappConfig.qr_code">
+							<el-image class="w-[100px] h-[100px]" :src="img(weappConfig.qr_code)"/>
+						</el-form-item>
+						<el-form-item label=" " v-else>
+							<span class="text-gray-400">{{t('weappNotSet')}}</span>
+						</el-form-item>
 					</el-form>
 
 				</div>
@@ -56,7 +55,7 @@
 <script lang="ts" setup>
     import {ref, reactive, watch} from 'vue'
     import {t} from '@/lang'
-    import {useRoute, useRouter} from 'vue-router'
+    import {useRoute} from 'vue-router'
     import {getWeappConfig} from '@/api/weapp'
     import {getUrl} from '@/api/sys'
     import {useClipboard} from '@vueuse/core'
@@ -103,6 +102,13 @@
     });
 
     const save = () => {
+        if (wapDomain.value.trim().length == 0) {
+            ElMessage({
+                type: 'warning',
+                message: `${t('wapDomainPlaceholder')}`,
+            });
+            return;
+        }
         wapUrl.value = wapDomain.value + '/wap';
         setDomain();
         storage.set({key: 'wap_domain', data: wapUrl.value});
@@ -111,16 +117,18 @@
     }
 
     const setDomain = () => {
-        let siteInfo = storage.get('siteInfo');
-        let siteCode = '';
-        if (siteInfo) siteCode = siteInfo.site_code;
-
         getPreviewData({
             id: route.query.id,
             name: route.query.name,
         }).then((res: any) => {
             let data = res.data;
-            wapPreview.value = `${wapUrl.value}/${data.page}&mode=preview&site_id=${siteCode}`;
+            wapPreview.value = `${wapUrl.value}/${data.page}`;
+
+            // 开发模式增加站点id
+            if (import.meta.env.MODE == 'development') {
+                let siteId = storage.get('siteId') || 0;
+                wapPreview.value += `&site_id=${siteId}`;
+            }
             QRCode.toDataURL(wapPreview.value, {errorCorrectionLevel: 'L', margin: 0, width: 100}).then(url => {
                 wapImage.value = url
             })

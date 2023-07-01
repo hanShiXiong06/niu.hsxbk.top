@@ -62,9 +62,7 @@
 						<div class="statistic-footer">
 						    <div class="footer-item text-[14px] text-[#333333]">
 						        <span>{{t('accumulative')}}</span>
-						        <span class="green ml-1">
-						            {{ statInfo.total_data.total_order_count }}
-						        </span>
+						        <span class="green ml-1">{{ statInfo.total_data.total_order_count }}</span>
 						    </div>
 						</div>
 					</el-col>
@@ -226,11 +224,11 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref,onMounted } from 'vue'
+import { reactive, ref } from 'vue'
 import { t } from '@/lang'
 import { getSiteStatInfo } from '@/api/stat'
 import { getService } from '@/api/sys'
-import { ElMessage, FormRules, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import * as echarts from 'echarts'
 import { img } from '@/utils/common'
 import { useRouter } from 'vue-router'

@@ -2,7 +2,7 @@
     <div class="main-container">
         <el-card class="box-card !border-none" shadow="never">
             <div class="flex justify-between items-center">
-                <span class="text-[24px]">{{pageName}}</span>
+                <span class="text-[20px]">{{pageName}}</span>
             </div>
 
             <el-card class="box-card !border-none my-[10px] table-search-wrap" shadow="never">
@@ -80,10 +80,9 @@
 import { reactive, ref, watch, computed } from 'vue'
 import { t } from '@/lang'
 import { getDiyTemplate, getDiyRouteList, getDiyRouteInfo, editDiyRouteShare } from '@/api/diy'
-import {  ElMessage, ElMessageBox, FormInstance } from 'element-plus'
+import {  ElMessage, FormInstance } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
 import { useClipboard } from '@vueuse/core'
-import QRCode from "qrcode";
 import { getUrl } from '@/api/sys'
 
 const pageTemplate: any = reactive({})
@@ -108,6 +107,7 @@ const wapDomain = ref('')
 const getDomain = async () => {
     wapDomain.value = (await getUrl()).data.wap_url;
 };
+
 getDomain();
 
 /**
@@ -133,7 +133,6 @@ getDiyTemplate({}).then(res => {
         pageTemplate[key] = res.data[key]
     }
 })
-
 
 const searchFormDiyRouteRef = ref<FormInstance>()
 

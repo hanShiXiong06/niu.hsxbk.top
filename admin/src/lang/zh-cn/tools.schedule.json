@@ -6,7 +6,7 @@
       "startDate":"开始时间",
       "cron":"定时执行",
       "endDate":"结束时间",
-      "titlePlaceholder": "请输入任务名称",
+      "titlePlaceholder": "请选择任务模版",
       "typeName":"任务类型",
       "crondType":"任务周期",
       "count":"已执行次数",
@@ -16,5 +16,15 @@
       "statusDesc":"最后执行结果",
 	  "key": "key",
 	  "timeClass": "时间类型",
-	  "executeTime": "执行时间"
+	  "executeTime": "执行时间",
+	  "editCron": "编辑任务",
+	  "cronTemplate": "任务模版",
+	  "cronTime": "任务周期",
+	  "openStatus": "任务状态",
+	  "day": "日",
+	  "hour": "时",
+	  "min": "分",
+	  "cronDeleteTips": "你确定要删除任务吗",
+	  "addCron": "添加任务",
+	  "cronTimeTips": "任务周期时间不能为空"
 }
