@@ -370,7 +370,11 @@ function filter($string)
  */
 function create_no(string $prefix = '', string $tag = '')
 {
-    return $prefix.date('YmdHis').$tag;
+    $data_center_id = 1;
+    $machine_id = 2;
+    $snowflake = new Snowflake($data_center_id, $machine_id);
+    $id = $snowflake->generateId();
+    return $prefix.date('Ymd').$tag.(string)$id;
 }
 
 /**

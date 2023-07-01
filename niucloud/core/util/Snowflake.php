@@ -7,8 +7,8 @@ class Snowflake
 
     // 各部分所占位数
     const SEQUENCE_BITS = 12;
-    const MACHINE_ID_BITS = 5;
-    const DATA_CENTER_ID_BITS = 5;
+    const MACHINE_ID_BITS = 0;
+    const DATA_CENTER_ID_BITS = 0;
 
     // 最大值
     const MAX_SEQUENCE = 4095;
@@ -60,11 +60,10 @@ class Snowflake
 
         $this->last_timestamp = $timestamp;
 
-        $id = (($timestamp - self::START_EPOCH) << (self::SEQUENCE_BITS + self::MACHINE_ID_BITS + self::DATA_CENTER_ID_BITS))
-            | ($this->data_center_id << (self::SEQUENCE_BITS + self::MACHINE_ID_BITS))
-            | ($this->machine_id << self::SEQUENCE_BITS)
+        $id = (($timestamp - self::START_EPOCH) << (self::SEQUENCE_BITS))
+//            | ($this->data_center_id << (self::SEQUENCE_BITS + self::MACHINE_ID_BITS))
+//            | ($this->machine_id << self::SEQUENCE_BITS)
             | $this->sequence;
-
         return $id;
     }
 
