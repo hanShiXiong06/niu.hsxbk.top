@@ -89,3 +89,12 @@ export function editVersion(params: Record<string, any>) {
 export function deleteVersion(id: string) {
     return request.delete(`applet/version/${id}`)
 }
+
+/**
+ * 版本下载
+ * @param params
+ * @returns
+ */
+export function versionDown(id: string) {
+    return request.post(`applet/version/download/${id}`)
+}
