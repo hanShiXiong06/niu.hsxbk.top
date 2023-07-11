@@ -16,7 +16,9 @@ use app\model\member\Member;
 use app\Request;
 use app\service\api\member\MemberService;
 use app\service\core\site\CoreSiteService;
+use app\service\core\weapp\CoreWeappAuthService;
 use core\base\BaseApiService;
+use core\exception\ApiException;
 use core\exception\AuthException;
 
 /**
@@ -54,16 +56,18 @@ class AuthService extends BaseApiService
         $site_info = (new CoreSiteService())->getSiteCache($site_id);
         if(empty($site_info)) throw new AuthException('SITE_NOT_EXIST');
         if($site_info['status'] == SiteDict::CLOSE){
-            $rule = trim(strtolower($request->rule()->getRule()));
+            $rule = strtolower(trim($request->rule()->getRule()));
             if($rule != 'site') throw new AuthException('SITE_CLOSE_NOT_ALLOW');
         }
         $request->siteId($site_id);
         return true;
     }
+
     /**
      * 绑定手机号
      * @param string $mobile
-     * @return void
+     * @param string $mobile_code
+     * @return true
      */
         public function bindMobile(string $mobile, string $mobile_code){
 
