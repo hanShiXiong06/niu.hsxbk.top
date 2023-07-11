@@ -77,6 +77,9 @@ class AuthService extends BaseApiService
             $phone_info = $result['phone_info'];
             $mobile = $phone_info['purePhoneNumber'];
             if(empty($mobile)) throw new ApiException('WECHAT_EMPOWER_NOT_EXIST');
+        }else{
+            //todo  校验手机号验证码
+            (new LoginService())->checkMobileCode($mobile);
         }
         $member_service = new MemberService();
         $member = $member_service->findMemberInfo(['member_id' => $this->member_id, 'site_id' => $this->site_id]);
@@ -88,9 +91,7 @@ class AuthService extends BaseApiService
         $mobile_member = $member_service->findMemberInfo(['mobile' => $mobile, 'site_id' => $this->site_id]);
         if(!$mobile_member->isEmpty()) throw new AuthException('MOBILE_IS_EXIST');
 
-        if(empty($mobile)) throw new AuthException('MOBILE_NEEDED');//必须填写
-        //todo  校验手机号验证码
-        (new LoginService())->checkMobileCode($mobile);
+//        if(empty($mobile)) throw new AuthException('MOBILE_NEEDED');//必须填写
         $member->save([
             'mobile' => $mobile
         ]);
