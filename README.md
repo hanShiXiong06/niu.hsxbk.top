@@ -14,7 +14,7 @@
 ### niucloud-admin是什么？
 niucloud-admin是一款快速开发SaaS通用管理系统后台框架，前端采用最新的技术栈Vite+TypeScript+Vue3+ElementPlus最流行技术架构，后台结合PHP8、Java SDK、Python等主流后端语言搭建，内置集成Saas多站点、多租户套餐、用户权限、代码生成器、表单设计、云存储、短信发送、素材中心、微信及公众号、支付宝小程序、Api模块一系列开箱即用功能，是一款快速可以开发企业级应用的软件系统。
 
-### niucloud-admin产品特性说明
+### 产品特性说明
 
 1.niucloud-admin 软件开发框架内置各种基础功能，可大量节省SaaS系统开发周期，快速完成交付。
 
@@ -29,7 +29,7 @@ niucloud-admin是一款快速开发SaaS通用管理系统后台框架，前端�
 6.niucloud-admin是一款真正的二次开发神器！
 
 
-### niucloud-admin技术说明
+### 技术说明
 
 - 后台php采用thinkphp6+php8+mysql,支持composer快速安装扩展，支持redis缓存以及消息队列，支持多语言设计开发，同时开发采用严格的restful的api设计开发。
 
@@ -88,7 +88,7 @@ php 8.0  <br/>    mysql5.6及以上  <br/>      启用redis   <br/>      Nignx/A
 
 
 ![输入图片说明](https://www.niucloud.com/img/readme/%E6%B7%BB%E5%8A%A0%E5%AE%A2%E6%9C%8D-old.png)
-#### 扫描下方二维码加入niucloud-admin开发者交流群
+扫描下方二维码加入niucloud-admin开发者交流群
 ![输入图片说明](https://www.niucloud.com/img/readme/%E5%BC%80%E5%8F%91%E8%80%85%E4%BA%A4%E6%B5%81%E7%BE%A4.png)
 
 
