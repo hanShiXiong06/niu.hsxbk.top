@@ -77,6 +77,7 @@ https://www.niucloud.com/bbs
 - 平台后台演示网址：[<a href='https://demo.niucloud.com/admin/login' target="_blank"> 查看 </a>]       
 <a href='https://demo.niucloud.com/admin/login' target="_blank">https://demo.niucloud.com/admin/login</a>  账号：admin  密码：123456
 
+
 - 前端演示二维码
 
 ![输入图片说明](https://www.niucloud.com/img/readme/%E6%BC%94%E7%A4%BA%E5%89%8D%E7%AB%AF-new.png)
