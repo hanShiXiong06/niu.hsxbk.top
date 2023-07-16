@@ -58,7 +58,7 @@ niucloud-admin是一款快速开发SaaS通用管理系统后台框架，前端�
 
 ### 官网地址
 https://www.niucloud.com
-### 服务市场
+### 应用市场
 https://www.niucloud.com
 ### 使用手册
 https://www.kancloud.cn/niucloud/niucloud-admin-develop/3153336
