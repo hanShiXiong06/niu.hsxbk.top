@@ -51,7 +51,7 @@ class Wechat
                 //消息日志
                 $log_data = array(
                     'key' => $key,
-                    'message_type' => NoticeTypeDict::WECHAT,
+                    'notice_type' => NoticeTypeDict::WECHAT,
                     'uid' => $data['uid'] ?? 0,
                     'member_id' => $member_id,
                     'nickname' => $nickname ?? '',

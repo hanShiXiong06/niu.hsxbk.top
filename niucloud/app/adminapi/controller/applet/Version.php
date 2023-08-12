@@ -13,6 +13,7 @@ namespace app\adminapi\controller\applet;
 
 use app\service\admin\applet\AppletVersionService;
 use core\base\BaseAdminController;
+use Exception;
 use think\Response;
 
 /**
@@ -29,16 +30,17 @@ class Version extends BaseAdminController
         $data = $this->request->params([
 
         ]);
-        return success(( new AppletVersionService() )->getPage($data));
+        return success((new AppletVersionService())->getPage($data));
     }
 
     /**
      * 详情
      * @param int $id
+     * @return Response
      */
     public function info(int $id)
     {
-        return success(( new AppletVersionService() )->getInfo($id));
+        return success((new AppletVersionService())->getInfo($id));
     }
 
     /**
@@ -48,13 +50,13 @@ class Version extends BaseAdminController
     public function add()
     {
         $data = $this->request->params([
-            [ 'type', '' ],
-            [ 'desc', '' ],
-            [ 'status', '' ],
-            [ 'path', '' ],
-            [ 'version', '' ],
+            ['type', ''],
+            ['desc', ''],
+            ['status', ''],
+            ['path', ''],
+            ['version', ''],
         ]);
-        $id = ( new AppletVersionService() )->add($data);
+        $id = (new AppletVersionService())->add($data);
         return success('ADD_SUCCESS');
     }
 
@@ -66,45 +68,49 @@ class Version extends BaseAdminController
     public function edit(int $id)
     {
         $data = $this->request->params([
-            [ 'desc', '' ],
-            [ 'status', '' ],
-            [ 'path', '' ],
-            [ 'version', '' ],
+            ['desc', ''],
+            ['status', ''],
+            ['path', ''],
+            ['version', ''],
         ]);
 
-        ( new AppletVersionService() )->edit($id, $data);
+        (new AppletVersionService())->edit($id, $data);
         return success('EDIT_SUCCESS');
     }
 
     /**
      * 删除
      * @param int $id
+     * @return Response
      */
     public function del(int $id)
     {
-        ( new AppletVersionService() )->del($id);
+        (new AppletVersionService())->del($id);
         return success('DELETE_SUCCESS');
     }
 
     /**
      * 设置状态
      * @param int $id
-     * @param $type
+     * @param $status
      * @return Response
      */
-    public function setStatus(int $id, $status){
-        ( new AppletVersionService() )->setStatus($id, $status);
+    public function setStatus(int $id, $status)
+    {
+        (new AppletVersionService())->setStatus($id, $status);
         return success('EDIT_SUCCESS');
     }
+
     /**
      * 小程序包上传
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
-    public function upload(){
+    public function upload()
+    {
         $data = $this->request->params([
             ['file', 'file'],
-        ], true);
-        return success(data:( new AppletVersionService() )->upload($data['file']));
+        ]);
+        return success(data: (new AppletVersionService())->upload($data['file']));
     }
 }

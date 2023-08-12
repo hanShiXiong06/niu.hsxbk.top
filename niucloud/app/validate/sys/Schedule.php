@@ -10,7 +10,9 @@
 // +----------------------------------------------------------------------
 
 namespace app\validate\sys;
+
 use app\service\core\schedule\CoreScheduleService;
+use think\facade\Lang;
 use think\Validate;
 
 /**
@@ -20,17 +22,17 @@ class Schedule extends Validate
 {
 
     //用户名或密码的规范可能是从数据库中获取的
-    protected $rule =   [
-        'key'  => 'require|unique:sys_schedule|checkKeyType',
+    protected $rule = [
+        'key' => 'require|unique:sys_schedule|checkKeyType',
     ];
 
-    protected $message  =   [
+    protected $message = [
         'key.require' => 'validate_schedule.schedule_require',
         'key.unique' => 'validate_schedule.schedule_unique',
     ];
 
     protected $scene = [
-        'add'  =>  ['key'],
+        'add' => ['key'],
         'edit' => [],
     ];
 
@@ -39,7 +41,7 @@ class Schedule extends Validate
      * @param $value
      * @param $rule
      * @param array $data
-     * @return bool|string
+     * @return Lang|true
      */
     protected function checkKeyType($value, $rule, $data = [])
     {

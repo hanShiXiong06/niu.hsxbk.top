@@ -11,15 +11,11 @@
 
 namespace app\service\core\site;
 
-use app\model\member\Member;
-use app\model\member\MemberAccountLog;
 use app\model\pay\Pay;
 use app\model\pay\Refund;
 use app\model\pay\Transfer;
 use app\model\site\SiteAccountLog;
 use core\base\BaseCoreService;
-use core\exception\CommonException;
-use think\facade\Db;
 
 /**
  * 站点账单记录服务层
@@ -49,6 +45,7 @@ class CoreSiteAccountService extends BaseCoreService
 
     /**
      * 添加退款账单记录
+     * @param int $site_id
      * @param string $refund_no
      * @return mixed
      */
@@ -67,7 +64,8 @@ class CoreSiteAccountService extends BaseCoreService
 
     /**
      * 添加转账账单记录
-     * @param string $refund_no
+     * @param int $site_id
+     * @param string $transfer_no
      * @return mixed
      */
     public function addTransferLog(int $site_id, string $transfer_no)

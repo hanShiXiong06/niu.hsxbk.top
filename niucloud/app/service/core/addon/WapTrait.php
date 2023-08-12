@@ -25,8 +25,7 @@ trait WapTrait
     /**
      * 编译 diy-group 自定义组件代码文件
      * @param $compile_path
-     * @param $addon_name
-     * @return string
+     * @return false|int
      */
     public function compileDiyComponentsCode($compile_path)
     {
@@ -35,14 +34,13 @@ trait WapTrait
         $content .= "        <view v-for=\"(component, index) in data.value\" :key=\"component.id\"\n";
         $content .= "        @click=\"diyStore.changeCurrentIndex(index, component)\" class=\"draggable-element relative cursor-move\"\n";
         $content .= "        :class=\"{ selected: diyStore.currentIndex == index,decorate : diyStore.mode == 'decorate' }\" :style=\"component.pageStyle\">\n";
-        $content .= "            <fixed-group :component=\"component\" :index=\"index\" :pullDownRefresh=\"props.pullDownRefresh\"></fixed-group>\n";
 
         $root_path = $compile_path . str_replace('/', DIRECTORY_SEPARATOR, 'components/diy'); // 扩展组件根目录
         $file_arr = getFileMap($root_path);
 
         if (!empty($file_arr)) {
             foreach ($file_arr as $ck => $cv) {
-                if (strpos($cv, 'index.vue') !== false) {
+                if (str_contains($cv, 'index.vue')) {
 
                     $path = str_replace($root_path . '/', '', $ck);
                     $path = str_replace('/index.vue', '', $path);
@@ -54,7 +52,7 @@ trait WapTrait
                     $name_arr = explode('-', $path);
                     foreach ($name_arr as $k => $v) {
                         // 首字母大写
-                        $name_arr[ $k ] = strtoupper(substr($v, 0, 1)) . substr($v, 1);
+                        $name_arr[$k] = strtoupper($v[0] ?? '') . substr($v, 1);
                     }
                     $name = implode('', $name_arr);
                     $file_name = 'diy-' . $path;
@@ -125,15 +123,13 @@ trait WapTrait
         $content .= "   @import './index.scss';\n";
         $content .= "</style>\n";
 
-        $res = file_put_contents($compile_path . str_replace('/', DIRECTORY_SEPARATOR, 'components/diy/group/index.vue'), $content);
-        return $res;
+        return file_put_contents($compile_path . str_replace('/', DIRECTORY_SEPARATOR, 'components/diy/group/index.vue'), $content);
     }
 
     /**
      * 编译 fixed-group 固定模板组件代码文件
      * @param $compile_path
-     * @param $addon_name
-     * @return string
+     * @return false|int
      */
     public function compileFixedComponentsCode($compile_path)
     {
@@ -145,7 +141,7 @@ trait WapTrait
 
         if (!empty($file_arr)) {
             foreach ($file_arr as $ck => $cv) {
-                if (strpos($cv, 'index.vue') !== false) {
+                if (str_contains($cv, 'index.vue')) {
 
                     $path = str_replace($root_path . '/', '', $ck);
                     $path = str_replace('/index.vue', '', $path);
@@ -153,17 +149,10 @@ trait WapTrait
                         continue;
                     }
 
-                    // 获取自定义组件 key 关键词
-                    $name_arr = explode('-', $path);
-                    foreach ($name_arr as $k => $v) {
-                        // 首字母大写
-                        $name_arr[ $k ] = strtoupper(substr($v, 0, 1)) . substr($v, 1);
-                    }
-                    $name = implode('', $name_arr);
                     $file_name = 'fixed-' . $path;
 
-                    $content .= "        <template v-if=\"props.component.componentName == '{$name}'\">\n";
-                    $content .= "            <$file_name :component=\"props.component\" :index=\"props.index\" :pullDownRefresh=\"props.pullDownRefresh\"></$file_name>\n";
+                    $content .= "        <template v-if=\"props.data.global.component == '{$path}'\">\n";
+                    $content .= "            <$file_name :data=\"props.data\" :pullDownRefresh=\"props.pullDownRefresh\"></$file_name>\n";
                     $content .= "        </template>\n";
                 }
             }
@@ -173,16 +162,14 @@ trait WapTrait
         $content .= "</template>\n";
 
         $content .= "<script lang=\"ts\" setup>\n";
-        $content .= "   import { computed,watch } from 'vue';\n";
-        $content .= "   const props = defineProps(['component','index','pullDownRefresh']);\n";
+        $content .= "   const props = defineProps(['data','pullDownRefresh']);\n";
         $content .= "</script>\n";
 
         $content .= "<style lang=\"scss\" scoped>\n";
         $content .= "   @import './index.scss';\n";
         $content .= "</style>\n";
 
-        $res = file_put_contents($compile_path . str_replace('/', DIRECTORY_SEPARATOR, 'components/fixed/group/index.vue'), $content);
-        return $res;
+        return file_put_contents($compile_path . str_replace('/', DIRECTORY_SEPARATOR, 'components/fixed/group/index.vue'), $content);
     }
 
     /**
@@ -196,7 +183,7 @@ trait WapTrait
 
         $uniapp_pages = require $this->geAddonPackagePath($this->addon) . 'uni-app-pages.php';
 
-        if (empty($uniapp_pages[ 'pages' ])) {
+        if (empty($uniapp_pages['pages'])) {
             return;
         }
 
@@ -212,11 +199,11 @@ trait WapTrait
         $pattern = "/\s+\/\/ {$page_begin}[\S\s]+\/\/ {$page_end}(\n,)?/";
         $content = preg_replace($pattern, '', $content);
 
-        $uniapp_pages[ 'pages' ] = str_replace('PAGE_BEGIN', $page_begin, $uniapp_pages[ 'pages' ]);
-        $uniapp_pages[ 'pages' ] = str_replace('PAGE_END', $page_end, $uniapp_pages[ 'pages' ]);
+        $uniapp_pages['pages'] = str_replace('PAGE_BEGIN', $page_begin, $uniapp_pages['pages']);
+        $uniapp_pages['pages'] = str_replace('PAGE_END', $page_end, $uniapp_pages['pages']);
 
         $replacement = ",// {{PAGE}}\n";
-        $replacement .= $uniapp_pages[ 'pages' ] . "\n,";
+        $replacement .= $uniapp_pages['pages'] . "\n,";
 
         $page_begin_matches_count = preg_match_all('/PAGE_BEGIN/', $content . $replacement, $page_begin_matches);
 
@@ -231,8 +218,7 @@ trait WapTrait
         $content = preg_replace('/PAGE_END\n,\s+\],/', "PAGE_END\n],", $content);
 
         // 找到页面路由文件 pages.json，写入内容
-        $res = file_put_contents($compile_path . "pages.json", $content);
-        return $res;
+        return file_put_contents($compile_path . "pages.json", $content);
     }
 
     /**
@@ -246,7 +232,7 @@ trait WapTrait
 
         $uniapp_pages = require $this->geAddonPackagePath($this->addon) . 'uni-app-pages.php';
 
-        if (empty($uniapp_pages[ 'pages' ])) {
+        if (empty($uniapp_pages['pages'])) {
             return;
         }
 
@@ -257,8 +243,8 @@ trait WapTrait
         $page_begin = $addon . '_PAGE_BEGIN';
         $page_end = $addon . '_PAGE_END';
 
-        $uniapp_pages[ 'pages' ] = str_replace('PAGE_BEGIN', $page_begin, $uniapp_pages[ 'pages' ]);
-        $uniapp_pages[ 'pages' ] = str_replace('PAGE_END', $page_end, $uniapp_pages[ 'pages' ]);
+        $uniapp_pages['pages'] = str_replace('PAGE_BEGIN', $page_begin, $uniapp_pages['pages']);
+        $uniapp_pages['pages'] = str_replace('PAGE_END', $page_end, $uniapp_pages['pages']);
 
         // 清除插件页面路由代码块
         $pattern = "/\s+\/\/ {$page_begin}[\S\s]+\/\/ {$page_end}(\n,)?/";
@@ -274,8 +260,7 @@ trait WapTrait
         // 清除最后一个逗号
         $content = preg_replace('/PAGE_END\n,\s+\],/', "PAGE_END\n],", $content);
 
-        $res = file_put_contents($compile_path . "pages.json", $content);
-        return $res;
+        return file_put_contents($compile_path . "pages.json", $content);
 
     }
 

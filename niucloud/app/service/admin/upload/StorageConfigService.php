@@ -11,6 +11,7 @@
 
 namespace app\service\admin\upload;
 
+use app\dict\sys\FileDict;
 use app\dict\sys\StorageDict;
 use app\service\core\upload\CoreStorageService;
 use app\service\core\sys\CoreConfigService;
@@ -41,8 +42,8 @@ class StorageConfigService extends BaseAdminService
 
     /**
      * 获取存储配置
-     * @param $storage_type
-     * @return array|Response
+     * @param string $storage_type
+     * @return array
      */
     public function getStorageConfig(string $storage_type)
     {
@@ -73,7 +74,7 @@ class StorageConfigService extends BaseAdminService
 
     /**
      * 云存储配置
-     * @param $storage_type
+     * @param string $storage_type
      * @param array $data
      * @return bool
      */
@@ -81,6 +82,12 @@ class StorageConfigService extends BaseAdminService
     {
         $storage_type_list = StorageDict::getType();
         if(!array_key_exists($storage_type, $storage_type_list)) throw new AdminException('OSS_TYPE_NOT_EXIST');
+        if($storage_type != FileDict::LOCAL){
+            $domain = $data['domain'];
+            if (!str_contains($domain, 'http://') && !str_contains($domain, 'https://')){
+                throw new AdminException('STORAGE_NOT_HAS_HTTP_OR_HTTPS');
+            }
+        }
         $info = (new CoreConfigService())->getConfig($this->site_id, 'STORAGE');
         if(empty($info))
         {
@@ -101,8 +108,7 @@ class StorageConfigService extends BaseAdminService
             $config[$storage_type][$k_param] = $data[$k_param] ?? '';
         }
 
-        $res = (new CoreConfigService())->setConfig($this->site_id, 'STORAGE', $config);
-        return $res;
+        return (new CoreConfigService())->setConfig($this->site_id, 'STORAGE', $config);
     }
 
 

@@ -11,8 +11,6 @@
 
 namespace app\adminapi\controller\applet;
 
-use app\model\applet\AppletSiteVersion;
-use app\service\admin\applet\AppletVersionService;
 use app\service\admin\applet\AppletVersionSiteService;
 use core\base\BaseAdminController;
 use think\Response;
@@ -31,16 +29,17 @@ class SiteVersion extends BaseAdminController
         $data = $this->request->params([
 
         ]);
-        return success(( new AppletVersionSiteService())->getPage($data));
+        return success((new AppletVersionSiteService())->getPage($data));
     }
 
     /**
      * 详情
      * @param int $id
+     * @return Response
      */
     public function info(int $id)
     {
-        return success(( new AppletVersionSiteService() )->getInfo($id));
+        return success((new AppletVersionSiteService())->getInfo($id));
     }
 
     /**
@@ -48,9 +47,19 @@ class SiteVersion extends BaseAdminController
      * @param string $type
      * @return Response
      */
-    public function getLastVersion(string $type){
-        return success(( new AppletVersionSiteService() )->getLastVersion($type));
+    public function getLastVersion(string $type)
+    {
+        return success((new AppletVersionSiteService())->getLastVersion($type));
     }
 
+    /**
+     * 查看可升级的最高版本
+     * @param string $type
+     * @return Response
+     */
+    public function getUpgradeVersion(string $type)
+    {
+        return success((new AppletVersionSiteService())->getUpgradeVersion($type));
+    }
 
 }

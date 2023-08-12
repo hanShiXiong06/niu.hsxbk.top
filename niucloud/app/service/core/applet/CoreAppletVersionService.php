@@ -11,12 +11,8 @@
 
 namespace app\service\core\applet;
 
-use app\dict\applet\AppletlDict;
-use app\dict\sys\FileDict;
 use app\model\applet\AppletVersion;
-use app\service\core\upload\CoreUploadService;
 use core\base\BaseCoreService;
-use core\exception\CommonException;
 
 /**
  * 小程序包发布版本
@@ -33,7 +29,7 @@ class CoreAppletVersionService extends BaseCoreService
     /**
      * 获取版本列表
      * @param array $where
-     * @param string $order
+     * @return array
      */
     public function getPage(array $where = [])
     {
@@ -45,6 +41,7 @@ class CoreAppletVersionService extends BaseCoreService
     /**
      * 获取版本信息
      * @param int $id
+     * @return array
      */
     public function getInfo(int $id)
     {
@@ -56,6 +53,7 @@ class CoreAppletVersionService extends BaseCoreService
     /**
      * 通过版本号查询版本内容
      * @param string $version
+     * @param string $type
      * @return array
      */
     public function getInfoByVersion(string $version, string $type){

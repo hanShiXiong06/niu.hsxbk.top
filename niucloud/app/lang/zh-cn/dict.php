@@ -52,6 +52,11 @@ return [
         //站点类型
         'system' => '框架首页',
     ],
+    // 平台首页
+    'dict_admin_index' => [
+        //站点类型
+        'system' => '框架首页',
+    ],
     'dict_notice' => [
         'type_sms' => '短信',
         'type_wechat' => '微信公众号',
@@ -93,15 +98,15 @@ return [
         'login_mobile' => '手机验证码登录',
         'login_wechat' => '微信公众号授权登录',
         'login_weapp' => '微信小程序授权登录',
-        'account_point_adjust' => '积分调整',
+        'account_point_adjust' => '账户调整',
         'account_point_recharge_give' => '充值赠送',
-        'account_balance_adjust' => '余额调整',
-        'account_balance_recharge' => '余额充值',
+        'account_balance_adjust' => '账户调整',
+        'account_balance_recharge' => '账户充值',
         'account_money_award' => '活动奖励',
-        'account_money_cash_out' => '余额提现',
-        'account_money_adjust' => '零钱调整',
+        'account_money_cash_out' => '账户提现',
+        'account_money_adjust' => '账户调整',
         'account_commission_award' => '活动奖励',
-        'account_commission_cash_out' => '佣金提现',
+        'account_commission_cash_out' => '账户提现',
         'status_on' => '正常',
         'status_off' => '锁定',
         'account_balance_recharge_refund' => '充值订单退款',
@@ -158,6 +163,7 @@ return [
         'status_ing' => '支付中',
         'status_ed' => '已支付',
         'status_cancle' => '已取消',
+        'status_audit' => '待审核'
     ],
     //转账相关
     'dict_transfer' => [
@@ -301,5 +307,7 @@ return [
         'dec' => '12月',
 
     ],
-
+    'dict_site_layout' => [
+        'default' => '默认'
+    ]
 ];

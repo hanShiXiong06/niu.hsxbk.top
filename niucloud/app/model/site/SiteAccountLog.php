@@ -12,7 +12,6 @@
 namespace app\model\site;
 
 use app\dict\site\SiteAccountLogDict;
-use app\dict\site\SiteDict;
 use app\model\pay\Pay;
 use app\model\pay\Refund;
 use app\model\pay\Transfer;
@@ -43,6 +42,7 @@ class SiteAccountLog extends BaseModel
     /**
      * 状态字段转化
      * @param $value
+     * @param $data
      * @return mixed
      */
     public function getTypeNameAttr($value, $data)
@@ -54,63 +54,63 @@ class SiteAccountLog extends BaseModel
      * 获取相关支付单据信息
      * @param $value
      * @param $data
+     * @return array
      */
     public function getPayInfoAttr($value, $data)
     {
-        switch ($data['type']){
-            case 'pay' :
-                return (new Pay())->where([['out_trade_no', '=', $data['trade_no']]])->append(['type_name'])->findOrEmpty()->toArray();
-                break;
-            case 'refund' :
-                return (new Refund())->where([['refund_no', '=', $data['trade_no']]])->findOrEmpty()->toArray();
-                break;
-            case 'transfer':
-                return (new Transfer())->where([['transfer_no', '=', $data['trade_no']]])->findOrEmpty()->toArray();
-                break;
-            default:
-                return [];
-        }
+        return match ($data['type']) {
+            'pay' => (new Pay())->where([['out_trade_no', '=', $data['trade_no']]])->append(['type_name'])->findOrEmpty()->toArray(),
+            'refund' => (new Refund())->where([['refund_no', '=', $data['trade_no']]])->findOrEmpty()->toArray(),
+            'transfer' => (new Transfer())->where([['transfer_no', '=', $data['trade_no']]])->findOrEmpty()->toArray(),
+            default => [],
+        };
     }
+
     /**
      * 状态字段转化
+     * @param $query
      * @param $value
-     * @return mixed
+     * @param $data
+     * @return void
      */
     public function searchTypeAttr($query, $value, $data)
     {
         if ($value) {
-            $query->where('type', '=', $value );
+            $query->where('type', '=', $value);
         }
     }
 
     /**
      * 金额转化
      * @param $value
+     * @param $data
      * @return mixed
      */
     public function getMoneyAttr($value, $data)
     {
-        if(strpos($data['money'], "-") !== false){
+        if (str_contains($data['money'], "-")) {
             return $data['money'];
-        }else{
-            return "+".$data['money'];
+        } else {
+            return "+" . $data['money'];
         }
     }
 
     /**
      * 创建时间搜索器
+     * @param Query $query
      * @param $value
+     * @param $data
      */
     public function searchCreateTimeAttr(Query $query, $value, $data)
     {
-        $start_time = empty($value[ 0 ]) ? 0 : strtotime($value[ 0 ]);
-        $end_time = empty($value[ 1 ]) ? 0 : strtotime($value[ 1 ]);
+        $start_time = empty($value[0]) ? 0 : strtotime($value[0]);
+        $end_time = empty($value[1]) ? 0 : strtotime($value[1]);
         if ($start_time > 0 && $end_time > 0) {
             $query->whereBetweenTime('create_time', $start_time, $end_time);
         } else if ($start_time > 0 && $end_time == 0) {
-            $query->where([ [ 'create_time', '>=', $start_time ] ]);
+            $query->where([['create_time', '>=', $start_time]]);
         } else if ($start_time == 0 && $end_time > 0) {
-            $query->where([ [ 'create_time', '<=', $end_time ] ]);
+            $query->where([['create_time', '<=', $end_time]]);
         }
     }
 

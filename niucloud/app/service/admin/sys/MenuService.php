@@ -15,8 +15,11 @@ use app\dict\sys\MenuTypeDict;
 use app\model\sys\SysMenu;
 use core\base\BaseAdminService;
 use core\exception\AdminException;
-use think\Exception;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\facade\Cache;
+use think\Model;
 
 /**
  * 用户服务层
@@ -35,7 +38,8 @@ class MenuService extends BaseAdminService
 
     /**
      * 新增菜单接口
-     * @param $params
+     * @param array $data
+     * @return SysMenu|Model
      */
     public function add(array $data)
     {
@@ -52,7 +56,7 @@ class MenuService extends BaseAdminService
 
     /**
      * 更新菜单
-     * @param int $menu_key
+     * @param string $menu_key
      * @param array $data
      * @return SysMenu
      */
@@ -68,7 +72,7 @@ class MenuService extends BaseAdminService
 
     /**
      * 获取信息
-     * @param int $menu_key
+     * @param string $menu_key
      * @return array
      */
     public function get(string $menu_key){
@@ -76,8 +80,9 @@ class MenuService extends BaseAdminService
     }
 
     /**
-     * @param int $menu_key
-     * @return SysMenu|array|mixed|\think\Model
+     * @param string $menu_key
+     * @param string $app_type
+     * @return SysMenu|array|mixed|Model
      */
     public function find(string $menu_key, string $app_type = ''){
         $where = array(
@@ -91,15 +96,17 @@ class MenuService extends BaseAdminService
             throw new AdminException('MENU_NOT_EXIST');
         return $menu;
     }
+
     /**
      * 菜单删除
-     * @param int $menu_key
-     * @throws Exception
+     * @param string $menu_key
+     * @return bool
+     * @throws DbException
      */
     public function del(string $menu_key){
         //查询是否有下级菜单或按钮
         $menu = $this->find($menu_key);
-        if($this->model::where([['parent_key', '=', $menu_key]])->count() > 0)
+        if($this->model->where([['parent_key', '=', $menu_key]])->count() > 0)
             throw new AdminException('MENU_NOT_ALLOW_DELETE');
 
         $res = $menu->delete();
@@ -110,8 +117,12 @@ class MenuService extends BaseAdminService
     /**
      * 通过菜单menu_key获取
      * @param array $menu_keys
+     * @param string $app_type
      * @param int $is_tree
      * @return mixed
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getMenuListByMenuKeys(array $menu_keys, string $app_type, int $is_tree = 0)
     {
@@ -127,26 +138,31 @@ class MenuService extends BaseAdminService
                 if(!empty($app_type)){
                     $where[] = ['app_type', '=', $app_type];
                 }
-                $menu_list = $this->model->where($where)->order('sort', 'desc')->select()->toArray();
-                return $menu_list;
+                return $this->model->where($where)->order('sort', 'desc')->select()->toArray();
 
             },
             self::$cache_tag_name
         );
-        foreach ($menu_list as $k => $v)
+        foreach ($menu_list as &$v)
         {
             $lang_menu_key = "dict_menu_". $v['app_type']. '.'. $v['menu_key'];
             $lang_menu_name = get_lang("dict_menu_". $v['app_type']. '.'. $v['menu_key']);
             //语言已定义
             if($lang_menu_key != $lang_menu_name)
             {
-                $menu_list[$k]['menu_name'] = $lang_menu_name;
+                $v['menu_name'] = $lang_menu_name;
             }
             //首页加载
             if($v['menu_key'] == 'overview' && $v['app_type'] == 'site')
             {
                 $view_path = (new ConfigService())->getSiteIndexConfig();
-                $menu_list[$k]['view_path'] = $view_path;
+                $v['view_path'] = $view_path;
+            }
+
+            if($v['menu_key'] == 'overview' && $v['app_type'] == 'admin')
+            {
+                $view_path = (new ConfigService())->getAdminIndexConfig();
+                $v['view_path'] = $view_path;
             }
 
         }
@@ -171,25 +187,30 @@ class MenuService extends BaseAdminService
                 if ($status != 'all') {
                     $where[] = ['status', '=', $status];
                 }
-                $menu_list = $this->model->where($where)->order('sort desc')->select()->toArray();
-                return $menu_list;
+                return $this->model->where($where)->order('sort desc')->select()->toArray();
             },
             self::$cache_tag_name
         );
-        foreach ($menu_list as $k => $v)
+        foreach ($menu_list as &$v)
         {
             $lang_menu_key = "dict_menu_". $v['app_type']. '.'. $v['menu_key'];
             $lang_menu_name = get_lang("dict_menu_". $v['app_type']. '.'. $v['menu_key']);
             //语言已定义
             if($lang_menu_key != $lang_menu_name)
             {
-                $menu_list[$k]['menu_name'] = $lang_menu_name;
+                $v['menu_name'] = $lang_menu_name;
             }
             //首页加载
             if($v['menu_key'] == 'overview' && $v['app_type'] == 'site')
             {
                 $view_path = (new ConfigService())->getSiteIndexConfig();
-                $menu_list[$k]['view_path'] = $view_path;
+                $v['view_path'] = $view_path;
+            }
+
+            if($v['menu_key'] == 'overview' && $v['app_type'] == 'admin')
+            {
+                $view_path = (new ConfigService())->getAdminIndexConfig();
+                $v['view_path'] = $view_path;
             }
 
         }
@@ -202,6 +223,8 @@ class MenuService extends BaseAdminService
     /**
      * 通过菜单menu_key组获取接口数组
      * @param array $menu_keys
+     * @param string $app_type
+     * @return mixed|string
      */
     public function getApiListByMenuKeys(array $menu_keys, string $app_type = '')
     {
@@ -227,10 +250,10 @@ class MenuService extends BaseAdminService
     }
 
 
-
     /**
      * 通过菜单menu_key组获取按钮数组
      * @param array $menu_keys
+     * @param string $app_type
      * @return mixed
      */
     public function getButtonListBuMenuKeys(array $menu_keys, string $app_type = '')
@@ -247,8 +270,7 @@ class MenuService extends BaseAdminService
                 if(!empty($app_type)){
                     $where[] = ['app_type', '=', $app_type];
                 }
-                $menu_list = $this->model->where($where)->order('sort', 'desc')->column('menu_key');
-                return $menu_list;
+                return $this->model->where($where)->order('sort', 'desc')->column('menu_key');
             },
             self::$cache_tag_name
         );
@@ -326,8 +348,7 @@ class MenuService extends BaseAdminService
                 if ($status != 'all') {
                     $where[] = ['status', '=', $status];
                 }
-                $menu_list = $this->model->where($where)->order('sort', 'desc')->column('menu_key');
-                return $menu_list;
+                return $this->model->where($where)->order('sort', 'desc')->column('menu_key');
             },
             self::$cache_tag_name
         );
@@ -376,7 +397,7 @@ class MenuService extends BaseAdminService
 
     /**
      * 获取完整的路由地址
-     * @param $menu
+     * @param $menu_key
      * @return string
      */
     public function getFullRouterPath($menu_key){

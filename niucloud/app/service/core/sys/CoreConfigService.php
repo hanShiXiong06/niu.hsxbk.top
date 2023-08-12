@@ -13,6 +13,7 @@ namespace app\service\core\sys;
 
 use app\model\sys\SysConfig;
 use core\base\BaseCoreService;
+use think\Model;
 
 /**
  * 配置服务层
@@ -30,7 +31,7 @@ class CoreConfigService extends BaseCoreService
      * 获取配置信息
      * @param int $site_id
      * @param string $key
-     * @return mixed
+     * @return array
      */
     public function getConfig(int $site_id, string $key)
     {
@@ -45,7 +46,8 @@ class CoreConfigService extends BaseCoreService
      * 设置配置
      * @param int $site_id
      * @param string $key
-     * @param string $value
+     * @param array $value
+     * @return SysConfig|bool|Model
      */
     public function setConfig(int $site_id, string $key, array $value)
     {
@@ -75,6 +77,7 @@ class CoreConfigService extends BaseCoreService
      * @param int $site_id
      * @param int $status
      * @param string $key
+     * @return bool
      */
     public function modifyStatus(int $site_id, int $status, string $key)
     {

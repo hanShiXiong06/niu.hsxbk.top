@@ -22,35 +22,28 @@ class Schedule extends BaseDict
     {
         $addon = $data['addon'] ?? '';
         $schedule_files = [];
-        if(empty($addon))
-        {
-            $system_path = $this->getDictPath(). 'schedule'. DIRECTORY_SEPARATOR. 'schedule.php';
-            if(is_file($system_path))
-            {
+        if (empty($addon)) {
+            $system_path = $this->getDictPath() . 'schedule' . DIRECTORY_SEPARATOR . 'schedule.php';
+            if (is_file($system_path)) {
                 $schedule_files[] = $system_path;
             }
-            $addons  = $this->getLocalAddons();
-            foreach ($addons as $k => $v)
-            {
-                $addon_path = $this->getAddonDictPath($v). 'schedule'. DIRECTORY_SEPARATOR. 'schedule.php';
-                if(is_file($addon_path))
-                {
+            $addons = $this->getLocalAddons();
+            foreach ($addons as $v) {
+                $addon_path = $this->getAddonDictPath($v) . 'schedule' . DIRECTORY_SEPARATOR . 'schedule.php';
+                if (is_file($addon_path)) {
                     $schedule_files[] = $addon_path;
                 }
             }
-        }else{
+        } else {
             $schedule_files = [];
-            if($addon == 'system'){
-                $schedule_files = [];
-                $system_path = $this->getDictPath(). 'schedule'. DIRECTORY_SEPARATOR. 'schedule.php';
-                if(is_file($system_path))
-                {
+            if ($addon == 'system') {
+                $system_path = $this->getDictPath() . 'schedule' . DIRECTORY_SEPARATOR . 'schedule.php';
+                if (is_file($system_path)) {
                     $schedule_files[] = $system_path;
                 }
-            }else{
-                $addon_path = $this->getAddonDictPath($addon). 'schedule'. DIRECTORY_SEPARATOR. 'schedule.php';
-                if(is_file($addon_path))
-                {
+            } else {
+                $addon_path = $this->getAddonDictPath($addon) . 'schedule' . DIRECTORY_SEPARATOR . 'schedule.php';
+                if (is_file($addon_path)) {
                     $schedule_files[] = $addon_path;
                 }
             }
@@ -58,8 +51,7 @@ class Schedule extends BaseDict
         }
         $schedule_files_data = $this->loadFiles($schedule_files);
         $schedule_data_array = [];
-        foreach ($schedule_files_data as $file_data)
-        {
+        foreach ($schedule_files_data as $file_data) {
             $schedule_data_array = empty($schedule_data_array) ? $file_data : array_merge($schedule_data_array, $file_data);
         }
         return $schedule_data_array;

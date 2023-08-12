@@ -28,7 +28,8 @@ class CoreMemberConfigService extends BaseCoreService
 {
     /**
      * 获取注册与登录设置
-     * @param $site_id
+     * @param int $site_id
+     * @return array
      */
     public function getLoginConfig(int $site_id){
         $info = (new CoreConfigService())->getConfig($site_id, 'LOGIN')['value'] ?? [];
@@ -43,9 +44,9 @@ class CoreMemberConfigService extends BaseCoreService
 
     /**
      * 注册与登录设置
-     * @param $site_id
-     * @param $data
-     * @return SysConfig|bool|Model
+     * @param int $site_id
+     * @param array $data
+     * @return true
      */
     public function setLoginConfig(int $site_id, array $data){
         $config = [
@@ -61,7 +62,8 @@ class CoreMemberConfigService extends BaseCoreService
 
     /**
      * 获取会员设置
-     * @param $site_id
+     * @param int $site_id
+     * @return array
      */
     public function getMemberConfig(int $site_id){
         $info = (new CoreConfigService())->getConfig($site_id, 'MEMBER')['value'] ?? [];
@@ -73,9 +75,9 @@ class CoreMemberConfigService extends BaseCoreService
 
     /**
      * 会员设置
-     * @param $site_id
-     * @param $data
-     * @return SysConfig|bool|Model
+     * @param int $site_id
+     * @param array $data
+     * @return true
      */
     public function setMemberConfig(int $site_id, array $data){
         $config = [
@@ -107,9 +109,9 @@ class CoreMemberConfigService extends BaseCoreService
 
     /**
      * 会员提现配置
-     * @param $site_id
-     * @param $data
-     * @return SysConfig|bool|Model
+     * @param int $site_id
+     * @param array $data
+     * @return true
      */
     public function setCashOutConfig(int $site_id, array $data){
         //校验转账方式是否合法

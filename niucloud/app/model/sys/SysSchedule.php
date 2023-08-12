@@ -34,9 +34,9 @@ class SysSchedule extends BaseModel
     protected $name = 'sys_schedule';
 
     protected $type = [
-        'last_time'  =>  'timestamp',
-        'next_time'  =>  'timestamp',
-        'update_time'  =>  'timestamp',
+        'last_time' => 'timestamp',
+        'next_time' => 'timestamp',
+        'update_time' => 'timestamp',
     ];
 
     // 设置json类型字段
@@ -48,16 +48,20 @@ class SysSchedule extends BaseModel
     /**
      * 启用状态
      * @param $value
+     * @param $data
      * @return mixed
      */
     public function getStatusNameAttr($value, $data)
     {
-        if(empty($data['status'])) return '';
+        if (empty($data['status'])) return '';
         return ScheduleDict::getStatus()[$data['status']] ?? '';
     }
+
     /**
      * 任务类型搜索器
+     * @param Query $query
      * @param $value
+     * @param $data
      */
     public function searchKeyAttr(Query $query, $value, $data)
     {
@@ -83,17 +87,19 @@ class SysSchedule extends BaseModel
 
     /**
      * 执行时间搜索器
+     * @param $query
      * @param $value
+     * @param $data
      */
     public function searchLastTimeAttr($query, $value, $data)
     {
-        $start_time = empty($value[0]) ? 0 : strtotime($value[0]) ;
-        $end_time = empty($value[1]) ? 0 : strtotime($value[1]) ;
-        if($start_time > 0 && $end_time > 0){
+        $start_time = empty($value[0]) ? 0 : strtotime($value[0]);
+        $end_time = empty($value[1]) ? 0 : strtotime($value[1]);
+        if ($start_time > 0 && $end_time > 0) {
             $query->whereBetweenTime('last_time', $start_time, $end_time);
-        }else if($start_time > 0 && $end_time == 0){
+        } else if ($start_time > 0 && $end_time == 0) {
             $query->where([['last_time', '>=', $start_time]]);
-        }else if($start_time == 0 && $end_time > 0){
+        } else if ($start_time == 0 && $end_time > 0) {
             $query->where([['last_time', '<=', $end_time]]);
         }
     }

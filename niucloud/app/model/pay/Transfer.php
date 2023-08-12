@@ -37,18 +37,19 @@ class Transfer extends BaseModel
 
     //类型
     protected $type = [
-        'transfer_time'     =>  'timestamp',
+        'transfer_time' => 'timestamp',
         'finish_time' => 'timestamp',
     ];
 
     /**
      * 状态字段转化
      * @param $value
+     * @param $data
      * @return mixed
      */
     public function getTransferStatusNameAttr($value, $data)
     {
-        if(empty($data['transfer_status'])) return '';
+        if (empty($data['transfer_status'])) return '';
         return TransferDict::getStatus()[$data['transfer_status']] ?? '';
     }
 
@@ -56,11 +57,12 @@ class Transfer extends BaseModel
     /**
      * 转账方式字段转化
      * @param $value
+     * @param $data
      * @return mixed
      */
     public function getTransferTypeNameAttr($value, $data)
     {
-        if(empty($data['transfer_type'])) return '';
+        if (empty($data['transfer_type'])) return '';
         $temp = TransferDict::getTransferType()[$data['transfer_type']] ?? [];
         return $temp['name'] ?? '';
     }

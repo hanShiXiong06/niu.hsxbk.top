@@ -31,7 +31,7 @@ class CoreNoticeSmsLogService extends BaseCoreService
      * 获取短信发送记录列表
      * @param int $site_id
      * @param array $where
-     * @return mixed
+     * @return array
      */
     public function getPage(int $site_id, array $where = [])
     {
@@ -44,7 +44,9 @@ class CoreNoticeSmsLogService extends BaseCoreService
 
     /**
      * 获取短信发送记录信息
+     * @param int $site_id
      * @param int $id
+     * @return array
      */
     public function getInfo(int $site_id, int $id)
     {
@@ -56,6 +58,7 @@ class CoreNoticeSmsLogService extends BaseCoreService
      * 添加短信发送记录
      * @param int $site_id
      * @param array $data
+     * @return mixed|null
      */
     public function add(int $site_id, array $data)
     {
@@ -70,6 +73,7 @@ class CoreNoticeSmsLogService extends BaseCoreService
      * @param int $site_id
      * @param int $id
      * @param array $data
+     * @return true
      */
     public function edit(int $site_id, int $id, array $data)
     {
@@ -80,7 +84,9 @@ class CoreNoticeSmsLogService extends BaseCoreService
 
     /**
      * 删除短信发送记录
+     * @param int $site_id
      * @param int $id
+     * @return bool
      */
     public function del(int $site_id, int $id)
     {

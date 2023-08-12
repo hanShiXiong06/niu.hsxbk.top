@@ -100,15 +100,16 @@ class SysNoticeSmsLog extends BaseModel
      */
     public function getSmsTypesNameAttr($value, $data)
     {
-        if(empty($data['sms_type'])) return '';
+        if (empty($data['sms_type'])) return '';
         $temp = SmsDict::getType()[$data['sms_type']] ?? [];
         return $temp['name'] ?? '';
     }
 
     /**
      * 消息标识
+     * @param $query
      * @param $value
-     * @return mixed
+     * @return void
      */
     public function searchKeyAttr($query, $value)
     {
@@ -119,8 +120,9 @@ class SysNoticeSmsLog extends BaseModel
 
     /**
      * 短信方式
+     * @param $query
      * @param $value
-     * @return mixed
+     * @return void
      */
     public function searchSmsTypeAttr($query, $value)
     {
@@ -131,8 +133,9 @@ class SysNoticeSmsLog extends BaseModel
 
     /**
      * 手机号
+     * @param $query
      * @param $value
-     * @return mixed
+     * @return void
      */
     public function searchMobileAttr($query, $value)
     {

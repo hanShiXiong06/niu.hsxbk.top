@@ -11,10 +11,9 @@
 
 namespace app\service\admin\applet;
 
-use app\model\article\Article;
 use app\service\core\applet\CoreAppletDownloadService;
-use app\service\core\applet\CoreAppletVersionService;
 use core\base\BaseAdminService;
+use think\response\File;
 
 /**
  * 小程序下载服务层
@@ -32,7 +31,7 @@ class AppletDownloadService extends BaseAdminService
     /**
      * 小程序下载
      * @param int $id
-     * @return \think\response\File
+     * @return File
      */
     public function download(int $id)
     {

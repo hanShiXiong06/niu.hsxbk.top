@@ -11,8 +11,10 @@
 
 namespace app\service\admin\aliapp;
 
+use app\model\sys\SysConfig;
 use app\service\core\aliapp\CoreAliappConfigService;
 use core\base\BaseAdminService;
+use think\Model;
 
 /**
  * 支付宝小程序设置
@@ -33,7 +35,7 @@ class AliappConfigService extends BaseAdminService
     /**
      * 设置配置
      * @param array $data
-     * @return \app\model\sys\SysConfig|bool|\think\Model
+     * @return SysConfig|bool|Model
      */
     public function setAliappConfig(array $data){
         return (new CoreAliappConfigService())->setAliappConfig($this->site_id, $data);

@@ -11,7 +11,6 @@
 
 namespace app\model\applet;
 
-use app\model\article\Article;
 use core\base\BaseModel;
 
 /**
@@ -31,8 +30,6 @@ class AppletVersion extends BaseModel
      * @var string
      */
     protected $name = 'applet_version';
-
-
 
 
 }

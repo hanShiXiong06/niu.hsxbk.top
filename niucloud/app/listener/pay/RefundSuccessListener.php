@@ -11,8 +11,6 @@
 
 namespace app\listener\pay;
 
-use app\model\site\SiteAccountLog;
-use app\service\core\order\recharge\CoreRechargeOrderService;
 use app\service\core\order\recharge\CoreRechargeRefundService;
 use app\service\core\site\CoreSiteAccountService;
 
@@ -27,8 +25,7 @@ class RefundSuccessListener
         (new CoreSiteAccountService())->addRefundLog($refund_info['site_id'], $refund_info['refund_no']);
         //交易单据处理
         $trade_type = $refund_info['trade_type'] ?? '';
-        if($trade_type == 'recharge')
-        {
+        if ($trade_type == 'recharge') {
             (new CoreRechargeRefundService())->refundComplete($refund_info['refund_no']);
         }
 

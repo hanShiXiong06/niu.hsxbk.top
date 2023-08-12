@@ -12,11 +12,8 @@
 namespace app\api\middleware;
 
 use app\Request;
-use app\service\core\site\CoreSiteService;
 use Closure;
-use core\exception\AuthException;
 use Exception;
-use think\facade\Log;
 
 
 /**
@@ -40,7 +37,7 @@ class ApiChannel
         if (in_array($request->rule()->getRule(), $channel_rules)) {
             $site_id = $request->param('site_id', -1);
             if ($site_id != -1) {
-                $request->pushHeader([ system_name('api_site_id_name') => $site_id ]);
+                $request->pushHeader([system_name('api_site_id_name') => $site_id]);
             }
         }
         return $next($request);

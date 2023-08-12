@@ -43,12 +43,13 @@ class Diy extends BaseModel
     /**
      * 状态字段转化
      * @param $value
+     * @param $data
      * @return mixed
      */
     public function getTypeNameAttr($value, $data)
     {
-        if (!empty($data[ 'type' ])) {
-            return TemplateDict::getTemplate([ 'type' => $data[ 'type' ] ])[ $data[ 'type' ] ][ 'title' ] ?? '';
+        if (!empty($data['type'])) {
+            return TemplateDict::getTemplate(['type' => $data['type']])[$data['type']]['title'] ?? '';
         }
         return '';
     }
@@ -56,28 +57,30 @@ class Diy extends BaseModel
     /**
      * 状态字段转化
      * @param $value
+     * @param $data
      * @return mixed
      */
     public function getShareAttr($value, $data)
     {
-        if (empty($data[ 'share' ])) {
-            $data[ 'share' ] = json_encode([
+        if (empty($data['share'])) {
+            $data['share'] = json_encode([
                 'wechat' => [
-                    'title' => $data[ 'title' ],
+                    'title' => $data['title'],
                     'desc' => '',
                     'url' => ''
                 ],
                 'weapp' => [
-                    'title' => $data[ 'title' ],
+                    'title' => $data['title'],
                     'url' => ''
                 ]
             ]);
         }
-        return $data[ 'share' ] ?? '';
+        return $data['share'] ?? '';
     }
 
     /**
      * 搜索器:自定义页面
+     * @param $query
      * @param $value
      * @param $data
      */
@@ -90,6 +93,7 @@ class Diy extends BaseModel
 
     /**
      * 搜索器:自定义页面站点id
+     * @param $query
      * @param $value
      * @param $data
      */
@@ -102,6 +106,7 @@ class Diy extends BaseModel
 
     /**
      * 搜索器:自定义页面名称
+     * @param $query
      * @param $value
      * @param $data
      */
@@ -114,6 +119,7 @@ class Diy extends BaseModel
 
     /**
      * 搜索器:自定义页面标识
+     * @param $query
      * @param $value
      * @param $data
      */
@@ -126,6 +132,7 @@ class Diy extends BaseModel
 
     /**
      * 搜索器:自定义页面模板
+     * @param $query
      * @param $value
      * @param $data
      */
@@ -138,6 +145,7 @@ class Diy extends BaseModel
 
     /**
      * 搜索器:页面展示模式，diy：自定义，fixed：固定
+     * @param $query
      * @param $value
      * @param $data
      */
@@ -150,6 +158,7 @@ class Diy extends BaseModel
 
     /**
      * 搜索器:自定义页面数据，json格式
+     * @param $query
      * @param $value
      * @param $data
      */
@@ -162,6 +171,7 @@ class Diy extends BaseModel
 
     /**
      * 搜索器:自定义页面是否默认页面，1：是，0：否
+     * @param $query
      * @param $value
      * @param $data
      */
@@ -174,6 +184,7 @@ class Diy extends BaseModel
 
     /**
      * 搜索器:自定义页面访问量
+     * @param $query
      * @param $value
      * @param $data
      */
@@ -186,6 +197,7 @@ class Diy extends BaseModel
 
     /**
      * 搜索器:自定义页面访问量
+     * @param $query
      * @param $value
      * @param $data
      */
@@ -198,6 +210,7 @@ class Diy extends BaseModel
 
     /**
      * 搜索器:自定义页面创建时间
+     * @param $query
      * @param $value
      * @param $data
      */
@@ -210,6 +223,7 @@ class Diy extends BaseModel
 
     /**
      * 搜索器:自定义页面更新时间
+     * @param $query
      * @param $value
      * @param $data
      */

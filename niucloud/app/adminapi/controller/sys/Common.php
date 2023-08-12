@@ -13,6 +13,7 @@ namespace app\adminapi\controller\sys;
 
 use app\dict\sys\DateDict;
 use core\base\BaseAdminController;
+use think\Response;
 
 /**
  * 公共数据字典
@@ -21,17 +22,19 @@ class Common extends BaseAdminController
 {
     /**
      * 月份
-     * @return \think\Response
+     * @return Response
      */
-    public function getMonth(){
+    public function getMonth()
+    {
         return success((new DateDict())->getMonth());
     }
 
     /**
      * 星期
-     * @return \think\Response
+     * @return Response
      */
-    public function getWeek(){
+    public function getWeek()
+    {
         return success((new DateDict())->getWeek());
     }
 

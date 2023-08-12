@@ -24,7 +24,7 @@ class ServiceGenerator extends BaseGenerator
 
     /**
      * 替换模板中的变量
-     * @return mixed|void
+     * @return void
      */
     public function replaceText()
     {

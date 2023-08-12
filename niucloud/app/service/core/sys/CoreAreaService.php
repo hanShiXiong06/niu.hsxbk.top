@@ -46,7 +46,7 @@ class CoreAreaService extends BaseCoreService
 
     /**
      * 获取地址列表
-     * @param $pid
+     * @param int $pid
      * @return array
      * @throws DataNotFoundException
      * @throws DbException
@@ -68,15 +68,17 @@ class CoreAreaService extends BaseCoreService
     public function getTree(int $level = 3)
     {
         $list = $this->model->where('level', '<=', $level)->field('id, pid, name, shortname, longitude, latitude, level, sort, status')->select()->toArray();
-        return list_to_tree($list, 'id', 'pid', 'child', 0);
+        return list_to_tree($list);
     }
+
     /**
      * 通过对应省市区县，地址，返回完整地址
      * @param $province_id
      * @param $city_id
      * @param $district_id
      * @param $address
-     * @param string $tag  分隔符
+     * @param string $tag 分隔符
+     * @return string
      */
     public function getFullAddress($province_id, $city_id, $district_id, $address, $tag = ' ')
     {

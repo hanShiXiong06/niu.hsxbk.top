@@ -22,5 +22,8 @@ return [
         'balancepay' => [
             'driver' => 'app\service\core\paytype\CoreBalanceService',  //反射类的名字
         ],
+        'offlinepay' => [
+            'driver' => 'app\service\core\paytype\CoreOfflineService'
+        ]
     ]
 ];

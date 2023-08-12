@@ -192,7 +192,7 @@ CREATE TABLE `jobs_failed` (
 
 DROP TABLE IF EXISTS `member`;
 CREATE TABLE `member` (
-  `member_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `member_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `member_no` varchar(255) NOT NULL DEFAULT '' COMMENT '会员编码',
   `pid` int(11) NOT NULL DEFAULT '0' COMMENT '推广会员id',
   `site_id` int(11) NOT NULL DEFAULT '0' COMMENT '站点id',
@@ -255,14 +255,14 @@ CREATE TABLE `member` (
 
 DROP TABLE IF EXISTS `member_account_log`;
 CREATE TABLE `member_account_log` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `member_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
   `site_id` int(11) NOT NULL DEFAULT '0' COMMENT '站点id',
   `account_type` varchar(255) NOT NULL DEFAULT 'point' COMMENT '账户类型',
   `account_data` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '账户数据',
   `account_sum` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '变动后的账户余额',
   `from_type` varchar(255) NOT NULL DEFAULT '' COMMENT '来源类型',
-  `related_id` int(11) NOT NULL DEFAULT '0' COMMENT '关联Id',
+  `related_id` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '关联Id',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `memo` varchar(255) NOT NULL DEFAULT '' COMMENT '备注信息',
   PRIMARY KEY (`id`),
@@ -274,7 +274,7 @@ CREATE TABLE `member_account_log` (
 
 DROP TABLE IF EXISTS `member_address`;
 CREATE TABLE `member_address` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `member_id` int(11) NOT NULL DEFAULT '0' COMMENT '会员id',
   `site_id` int(11) NOT NULL DEFAULT '0' COMMENT '站点id',
   `name` varchar(255) NOT NULL DEFAULT '' COMMENT '用户姓名',
@@ -346,7 +346,7 @@ CREATE TABLE `member_cash_out_account` (
 
 DROP TABLE IF EXISTS `member_label`;
 CREATE TABLE `member_label` (
-  `label_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '标签id',
+  `label_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '标签id',
   `site_id` int(11) NOT NULL DEFAULT '0' COMMENT '站点id',
   `label_name` varchar(50) NOT NULL DEFAULT '' COMMENT '标签名称',
   `memo` varchar(1000) NOT NULL DEFAULT '' COMMENT '备注',
@@ -361,7 +361,7 @@ CREATE TABLE `member_label` (
 
 DROP TABLE IF EXISTS `member_level`;
 CREATE TABLE `member_level` (
-  `level_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '会员等级',
+  `level_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '会员等级',
   `site_id` int(11) NOT NULL DEFAULT '0' COMMENT '站点id',
   `level_name` varchar(50) NOT NULL DEFAULT '' COMMENT '等级名称',
   `growth` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '所需成长值',
@@ -376,7 +376,7 @@ CREATE TABLE `member_level` (
 
 DROP TABLE IF EXISTS `pay`;
 CREATE TABLE `pay` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `site_id` int(11) NOT NULL DEFAULT '0' COMMENT '站点id',
   `main_id` int(11) NOT NULL DEFAULT '0' COMMENT '支付会员id',
   `out_trade_no` varchar(255) NOT NULL DEFAULT '' COMMENT '支付流水号',
@@ -395,13 +395,14 @@ CREATE TABLE `pay` (
   `mch_id` varchar(50) NOT NULL DEFAULT '' COMMENT '商户收款账号',
   `main_type` varchar(255) NOT NULL DEFAULT '',
   `channel` varchar(50) NOT NULL DEFAULT '' COMMENT '支付渠道',
+  `fail_reason` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '失败原因',
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_ns_pay_out_trade_no` (`out_trade_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付记录表';
 
 DROP TABLE IF EXISTS `pay_channel`;
 CREATE TABLE `pay_channel` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `site_id` int(11) NOT NULL DEFAULT '1' COMMENT '站点id',
   `type` varchar(255) NOT NULL DEFAULT '' COMMENT '支付类型',
   `channel` varchar(255) NOT NULL DEFAULT '' COMMENT '支付渠道',
@@ -415,7 +416,7 @@ CREATE TABLE `pay_channel` (
 
 DROP TABLE IF EXISTS `pay_refund`;
 CREATE TABLE `pay_refund` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `site_id` int(11) NOT NULL DEFAULT '0' COMMENT '站点id',
   `refund_no` varchar(255) NOT NULL DEFAULT '' COMMENT '退款单号',
   `out_trade_no` varchar(255) NOT NULL DEFAULT '' COMMENT '支付流水号',
@@ -428,6 +429,7 @@ CREATE TABLE `pay_refund` (
   `refund_time` int(11) NOT NULL DEFAULT '0' COMMENT '支付时间',
   `close_time` int(11) NOT NULL DEFAULT '0' COMMENT '关闭时间',
   `fail_reason` varchar(255) NOT NULL COMMENT '失败原因',
+  `voucher` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '支付凭证',
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_ns_pay_refund_refund_no` (`refund_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付记录表';
@@ -602,7 +604,7 @@ CREATE TABLE `site_group` (
 
 DROP TABLE IF EXISTS `sys_agreement`;
 CREATE TABLE `sys_agreement` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `site_id` int(11) NOT NULL DEFAULT '0' COMMENT '站点id',
   `agreement_key` varchar(255) NOT NULL DEFAULT '' COMMENT '协议关键字',
   `title` varchar(255) NOT NULL DEFAULT '' COMMENT '协议标题',
@@ -616,7 +618,7 @@ CREATE TABLE `sys_agreement` (
 
 DROP TABLE IF EXISTS `sys_area`;
 CREATE TABLE `sys_area` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `pid` int(11) NOT NULL DEFAULT '0' COMMENT '父级',
   `name` varchar(50) NOT NULL DEFAULT '' COMMENT '名称',
   `shortname` varchar(30) NOT NULL DEFAULT '' COMMENT '简称',
@@ -4317,7 +4319,7 @@ CREATE TABLE `sys_attachment_category` (
 
 DROP TABLE IF EXISTS `sys_config`;
 CREATE TABLE `sys_config` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `site_id` int(11) NOT NULL DEFAULT '0' COMMENT '站点id',
   `config_key` varchar(255) NOT NULL DEFAULT '' COMMENT '配置项关键字',
   `value` text COMMENT '配置值json',
@@ -4353,7 +4355,7 @@ CREATE TABLE `sys_cron_task` (
 
 DROP TABLE IF EXISTS `sys_menu`;
 CREATE TABLE `sys_menu` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '菜单ID',
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '菜单ID',
   `app_type` varchar(255) NOT NULL DEFAULT 'admin' COMMENT '应用类型',
   `menu_name` varchar(32) NOT NULL DEFAULT '' COMMENT '菜单名称',
   `menu_key` varchar(255) NOT NULL DEFAULT '' COMMENT '菜单标识（菜单输入，接口自动生成）',
@@ -4397,7 +4399,7 @@ CREATE TABLE `sys_notice` (
 
 DROP TABLE IF EXISTS `sys_notice_log`;
 CREATE TABLE `sys_notice_log` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '通知记录ID',
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '通知记录ID',
   `site_id` int(11) NOT NULL DEFAULT '0' COMMENT '站点id',
   `key` varchar(255) DEFAULT '' COMMENT '消息key',
   `notice_type` varchar(50) DEFAULT 'sms' COMMENT '消息类型（sms,wechat.weapp）',
@@ -4439,7 +4441,7 @@ CREATE TABLE `sys_notice_sms_log` (
 
 DROP TABLE IF EXISTS `sys_role`;
 CREATE TABLE `sys_role` (
-  `role_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '角色id',
+  `role_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '角色id',
   `site_id` int(11) NOT NULL DEFAULT '0' COMMENT '站点id',
   `role_name` varchar(255) NOT NULL DEFAULT '' COMMENT '角色名称',
   `rules` text COMMENT '角色权限(menus_id)',
@@ -4471,7 +4473,7 @@ CREATE TABLE `sys_schedule` (
 
 DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user` (
-  `uid` smallint(5) unsigned NOT NULL AUTO_INCREMENT COMMENT '系统用户ID',
+  `uid` smallint(6) unsigned NOT NULL AUTO_INCREMENT COMMENT '系统用户ID',
   `username` varchar(255) NOT NULL DEFAULT '' COMMENT '用户账号',
   `head_img` varchar(255) NOT NULL DEFAULT '',
   `password` varchar(100) NOT NULL DEFAULT '' COMMENT '用户密码',
@@ -4496,7 +4498,7 @@ INSERT INTO `sys_user` VALUES ('1', '', '', '', '', '', '0', '0', '0', '1', '0',
 
 DROP TABLE IF EXISTS `sys_user_log`;
 CREATE TABLE `sys_user_log` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '管理员操作记录ID',
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '管理员操作记录ID',
   `ip` varchar(16) NOT NULL DEFAULT '' COMMENT '登录IP',
   `site_id` int(11) NOT NULL DEFAULT '0' COMMENT '站点id',
   `uid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '管理员id',
@@ -4569,7 +4571,7 @@ CREATE TABLE `wechat_media` (
 
 DROP TABLE IF EXISTS `wechat_reply`;
 CREATE TABLE `wechat_reply` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(64) NOT NULL DEFAULT '' COMMENT '规则名称',
   `site_id` int(11) NOT NULL DEFAULT '0' COMMENT '站点id',
   `keyword` varchar(64) NOT NULL DEFAULT '' COMMENT '关键词',

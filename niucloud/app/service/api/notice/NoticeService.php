@@ -40,11 +40,10 @@ class NoticeService extends BaseApiService
 
     /**
      * 获取微信小程序订阅消息模板id
-     * @param string $keywords
-     * @return void
+     * @param string $keys
+     * @return array
      */
     public function getWeappNoticeTemplateId(string $keys) {
-        $column = (new SysNotice())->where([ ['site_id', '=', $this->site_id], ['key', 'in', explode(',', $keys) ], ['weapp_template_id', '<>', ''], ['is_weapp', '=', 1] ])->column('weapp_template_id');
-        return $column;
+        return (new SysNotice())->where([ ['site_id', '=', $this->site_id], ['key', 'in', explode(',', $keys) ], ['weapp_template_id', '<>', ''], ['is_weapp', '=', 1] ])->column('weapp_template_id');
     }
 }

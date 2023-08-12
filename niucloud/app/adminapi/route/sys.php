@@ -77,6 +77,11 @@ Route::group('sys', function () {
     //获取首页加载
     Route::get('config/site_index', 'sys.Config/getSiteIndexList');
 
+    //平台首页加载设置
+    Route::put('config/admin_index', 'sys.Config/setAdminIndex');
+    //获取平台首页加载
+    Route::get('config/admin_index', 'sys.Config/getAdminIndexList');
+
     //快捷菜单设置
     Route::put('config/shortcut_menu', 'sys.Config/setShortcutMenu');
     //获取快捷菜单
@@ -185,6 +190,9 @@ Route::group('sys', function () {
     Route::get('date/month', 'sys.Common/getMonth');
     Route::get('date/week', 'sys.Common/getWeek');
 
+    /***************************************************** 获取布局 ****************************************************/
+    Route::get('layout', 'sys.System/layout');
+    Route::put('layout', 'sys.System/setLayout');
 })->middleware([
     AdminCheckToken::class,
     AdminCheckRole::class,

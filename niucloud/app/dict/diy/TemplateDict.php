@@ -41,17 +41,17 @@ class TemplateDict
             ]
         ];
 
-        $pages = ( new DictLoader("UniappTemplate") )->load($system_pages);
+        $pages = (new DictLoader("UniappTemplate"))->load($system_pages);
 
-        if (!empty($params[ 'type' ]) && !empty($pages[ $params[ 'type' ] ])) {
-            return [ $params[ 'type' ] => $pages[ $params[ 'type' ] ] ];
+        if (!empty($params['type']) && !empty($pages[$params['type']])) {
+            return [$params['type'] => $pages[$params['type']]];
         }
 
-        if (!empty($params[ 'action' ])) {
+        if (!empty($params['action'])) {
             $temp = [];
             foreach ($pages as $k => $v) {
-                if (isset($v[ 'action' ]) && $params[ 'action' ] == $v[ 'action' ]) {
-                    $temp[ $k ] = $v;
+                if (isset($v['action']) && $params['action'] == $v['action']) {
+                    $temp[$k] = $v;
                 }
 
             }

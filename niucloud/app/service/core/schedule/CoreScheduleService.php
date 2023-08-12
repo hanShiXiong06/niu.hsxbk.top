@@ -17,8 +17,13 @@ use core\base\BaseCoreService;
 use core\dict\DictLoader;
 use core\exception\CommonException;
 use think\Container;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\facade\Log;
 use think\helper\Str;
+use think\Model;
+use Throwable;
 
 /**
  * 计划任务服务层
@@ -37,6 +42,9 @@ class CoreScheduleService extends BaseCoreService
      * 获取自动任务列表
      * @param array $where
      * @return mixed
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getList(array $where = [])
     {
@@ -52,7 +60,7 @@ class CoreScheduleService extends BaseCoreService
     /**
      * 任务分页列表
      * @param array $where
-     * @return mixed
+     * @return array
      */
     public function getPage(array $where = [])
     {
@@ -72,6 +80,7 @@ class CoreScheduleService extends BaseCoreService
     /**
      * 获取信息
      * @param int $id
+     * @return array
      */
     public function getInfo(int $id)
     {
@@ -127,7 +136,7 @@ class CoreScheduleService extends BaseCoreService
     /**
      * 查询对象实例
      * @param int $id
-     * @return SysSchedule|array|mixed|\think\Model
+     * @return SysSchedule|array|mixed|Model
      */
     public function find(int $id){
         return $this->model->findOrEmpty($id);
@@ -141,7 +150,7 @@ class CoreScheduleService extends BaseCoreService
      */
     public function modifyStatus(int $id, $status){
         $schedule = $this->find($id);
-        if($schedule->isEmpty()) throw new CommonException();
+        if($schedule->isEmpty()) throw new CommonException('SCHEDULE_NOT_EXISTS');
         $schedule->save([
             'status' => $status
         ]);
@@ -152,6 +161,7 @@ class CoreScheduleService extends BaseCoreService
     /**
      * 添加任务
      * @param array $data
+     * @return true
      */
     public function add(array $data)
     {
@@ -165,6 +175,7 @@ class CoreScheduleService extends BaseCoreService
      * 任务编辑
      * @param int $id
      * @param array $data
+     * @return true
      */
     public function edit(int $id, array $data)
     {
@@ -176,6 +187,7 @@ class CoreScheduleService extends BaseCoreService
     /**
      * 删除任务
      * @param int $id
+     * @return bool
      */
     public function del(int $id)
     {
@@ -192,7 +204,7 @@ class CoreScheduleService extends BaseCoreService
         $function = $schedule['function'] ?: 'doJob';
         try {
             $result = Container::getInstance()->invoke([$class, $function ?? 'doJob']);
-        }catch(\Throwable $e){
+        }catch( Throwable $e){
             Log::write('计划任务:'.$schedule['name'].'发生错误, 错误原因:'.$e->getMessage());
         }
         $schedule = $this->find($schedule['id']);

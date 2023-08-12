@@ -16,6 +16,7 @@ use app\dict\sys\StorageDict;
 use app\service\core\upload\CoreUploadService;
 use core\base\BaseApiService;
 use core\exception\UploadFileException;
+use Exception;
 
 /**
  * 用户服务层
@@ -29,9 +30,9 @@ class UploadService extends BaseApiService
 
     /**
      * 附件库上传图片
-     * @param int $cate_id
-     * @param string $dir
+     * @param $file
      * @return array
+     * @throws Exception
      */
     public function image($file)
     {
@@ -43,8 +44,8 @@ class UploadService extends BaseApiService
     /**
      * 附件库上传视频
      * @param $file
-     * @param int $cate_id
      * @return array
+     * @throws Exception
      */
     public function video($file)
     {
@@ -56,7 +57,9 @@ class UploadService extends BaseApiService
     /**
      * 文件上传
      * @param $file
+     * @param string $type
      * @return array
+     * @throws Exception
      */
     public function document($file, string $type = '')
     {

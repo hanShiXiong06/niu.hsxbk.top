@@ -21,11 +21,12 @@ class SiteAccountLogDict
      * 站点状态
      * @return array
      */
-    public static function getType(){
+    public static function getType()
+    {
         return [
             self::PAY => get_lang('dict_site.pay'),//支付
-            self::REFUND  => get_lang('dict_site.refund'),//退款
-            self::TRANSFER  => get_lang('dict_site.transfer'),//转账
+            self::REFUND => get_lang('dict_site.refund'),//退款
+            self::TRANSFER => get_lang('dict_site.transfer'),//转账
         ];
     }
 

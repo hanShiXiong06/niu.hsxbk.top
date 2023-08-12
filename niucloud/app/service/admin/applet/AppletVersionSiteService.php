@@ -11,13 +11,11 @@
 
 namespace app\service\admin\applet;
 
-use app\dict\applet\AppletlDict;
-use app\dict\sys\FileDict;
-use app\model\article\Article;
 use app\service\core\applet\CoreAppletSiteVersionService;
-use app\service\core\applet\CoreAppletVersionService;
-use app\service\core\upload\CoreUploadService;
 use core\base\BaseAdminService;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 
 /**
  * 文章服务层
@@ -36,7 +34,7 @@ class AppletVersionSiteService extends BaseAdminService
     /**
      * 获取列表
      * @param array $where
-     * @return mixed
+     * @return array
      */
     public function getPage(array $where = [])
     {
@@ -57,6 +55,9 @@ class AppletVersionSiteService extends BaseAdminService
      * 查询最后一个下载或升级的版本
      * @param string $type
      * @return mixed|string
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getLastVersion(string $type){
         return $this->core_applet_site_version_service->getLastVersion($this->site_id, $type);

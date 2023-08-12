@@ -26,7 +26,7 @@ class ModelGenerator extends BaseGenerator
 
     /**
      * 替换模板中的变量
-     * @return mixed|void
+     * @return void
      */
     public function replaceText()
     {
@@ -132,7 +132,7 @@ class ModelGenerator extends BaseGenerator
     public function getSearchContent(array $column_info){
 
         $type = $column_info['query_type'];
-        $result = match ($type) {
+        return match ($type) {
             '<>' => '"' . $column_info['column_name'] . '", "<>", $value',
             '!=' => '"' . $column_info['column_name'] . '", "<>", $value',
             '>' => '"' . $column_info['column_name'] . '", ">", $value',
@@ -143,8 +143,6 @@ class ModelGenerator extends BaseGenerator
             'BETWEEN' => '"' . $column_info['column_name'] . '", $value[0], $value[1] ',
             default => '"' . $column_info['column_name'] . '", $value',
         };
-
-        return $result;
     }
 
     /**

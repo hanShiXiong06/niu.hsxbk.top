@@ -11,16 +11,9 @@
 
 namespace app\service\admin\site;
 
-use app\dict\sys\AppTypeDict;
-use app\model\site\Site;
 use app\model\site\SiteAccountLog;
-use app\service\admin\sys\MenuService;
-use app\service\admin\user\UserService;
 use core\base\BaseAdminService;
-use core\exception\AdminException;
-use Exception;
-use think\facade\Cache;
-use think\facade\Db;
+use think\db\exception\DbException;
 
 /**
  * 站点账单服务层
@@ -39,16 +32,15 @@ class SiteAccountLogService extends BaseAdminService
     /**
      * 获取账单列表
      * @param array $where
-     * @param string $order
-     * @return mixed
+     * @return array
+     * @throws DbException
      */
     public function getPage(array $where = [])
     {
 
         $field = 'id, site_id, type, money, trade_no, create_time';
         $search_model = $this->model->where([ [ 'site_id', '=', $this->site_id ] ])->withSearch([ 'create_time', 'type' ], $where)->field($field)->append([ 'type_name', 'pay_info', 'money' ])->order('create_time desc');
-        $list = $this->pageQuery($search_model);
-        return $list;
+        return $this->pageQuery($search_model);
     }
 
     /**

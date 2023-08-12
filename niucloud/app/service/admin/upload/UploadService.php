@@ -16,6 +16,7 @@ use app\dict\sys\StorageDict;
 use app\service\core\upload\CoreUploadService;
 use core\base\BaseAdminService;
 use core\exception\UploadFileException;
+use Exception;
 
 /**
  * 用户服务层
@@ -33,9 +34,9 @@ class UploadService extends BaseAdminService
      * @param int $cate_id
      * @return array
      */
-    public function image($file, int $cate_id = 0){
+    public function image($file, int $cate_id = 0, $is_attachment = true){
         $dir = $this->root_path.'/'.'image'.'/'.$this->site_id.'/'.date('Ym').'/'.date('d');
-        $core_upload_service = new CoreUploadService(true);
+        $core_upload_service = new CoreUploadService($is_attachment);
         //如果没有选择相册分组的话,就选择第一个相册分组
         return $core_upload_service->image($file, $this->site_id, $dir, $cate_id);
     }
@@ -57,6 +58,7 @@ class UploadService extends BaseAdminService
      * @param $file
      * @param string $type
      * @return array
+     * @throws Exception
      */
     public function document($file, string $type){
         if(!in_array($type, FileDict::getSceneType()))

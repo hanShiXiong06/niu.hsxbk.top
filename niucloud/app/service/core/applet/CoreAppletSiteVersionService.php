@@ -11,13 +11,13 @@
 
 namespace app\service\core\applet;
 
-use app\dict\applet\AppletlDict;
-use app\dict\sys\FileDict;
 use app\model\applet\AppletSiteVersion;
 use app\model\applet\AppletVersion;
-use app\service\core\upload\CoreUploadService;
 use core\base\BaseCoreService;
 use core\exception\CommonException;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 
 /**
  * 小程序包 站点
@@ -36,7 +36,7 @@ class CoreAppletSiteVersionService extends BaseCoreService
      * 版本升级列表
      * @param int $site_id
      * @param array $where
-     * @return mixed
+     * @return array
      */
     public function getPage(int $site_id, array $where = [])
     {
@@ -50,7 +50,9 @@ class CoreAppletSiteVersionService extends BaseCoreService
 
     /**
      * 获取版本升级信息
+     * @param int $site_id
      * @param int $id
+     * @return array
      */
     public function getInfo(int $site_id, int $id)
     {
@@ -61,14 +63,14 @@ class CoreAppletSiteVersionService extends BaseCoreService
     /**
      * 添加版本升级记录
      * @param int $site_id
+     * @param int $version_id
      * @param string $action
-     * @param array $data
      * @return true
      */
     public function add(int $site_id, int $version_id, string $action)
     {
         $version_info = (new CoreAppletVersionService())->getInfo($version_id);
-        if ($version_info) throw new CommonException('APPLET_VERSION_NOT_EXISTS');
+        if (empty($version_info)) throw new CommonException('APPLET_VERSION_NOT_EXISTS');
         $data['site_id'] = $site_id;
         $data['type'] = $version_info['type'];
         $data['create_time'] = time();
@@ -86,6 +88,9 @@ class CoreAppletSiteVersionService extends BaseCoreService
      * @param string $type
      * @param string $action
      * @return mixed|string
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getLastVersion(int $site_id, string $type, string $action = '')
     {

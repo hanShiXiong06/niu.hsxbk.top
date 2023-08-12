@@ -28,7 +28,8 @@ class CoreWechatConfigService extends BaseCoreService
 {
     /**
      * 获取微信公众号配置
-     * @param $site_id
+     * @param int $site_id
+     * @return array
      */
     public function getWechatConfig(int $site_id){
         $info = (new CoreConfigService())->getConfig($site_id, ConfigKeyDict::WECHAT)['value'] ?? [];
@@ -46,8 +47,8 @@ class CoreWechatConfigService extends BaseCoreService
 
     /**
      * 设置微信公众号配置
-     * @param $site_id
-     * @param $data
+     * @param int $site_id
+     * @param array $data
      * @return SysConfig|bool|Model
      */
     public function setWechatConfig(int $site_id, array $data){

@@ -260,6 +260,7 @@ class PagesDict
 //                    'mode' => 'fixed', // 页面模式：diy：自定义，fixed：固定
 //                    'data' => [
 //                        "global" => [
+//                            'component' => 'demo-index', // 模板组件名称 DemoIndex
 //                            "title" => "固定模板示例",
 //                            "pageBgColor" => "#F8F8F8",
 //                            'bgUrl' => '',
@@ -300,27 +301,7 @@ class PagesDict
 //                                ],
 //                            ]
 //                        ],
-//                        "value" => [
-//                            [
-//                                "id" => "524jcssmp8c0",
-//                                "componentName" => "DemoIndex",
-//                                "componentTitle" => "固定模板示例",
-//                                "uses" => 0,
-//                                "ignore" => [],
-//                                "pageBgColor" => "",
-//                                "componentBgColor" => "rgba(255, 255, 255, 1)",
-//                                "topRounded" => 0,
-//                                "bottomRounded" => 0,
-//                                "elementBgColor" => "",
-//                                "topElementRounded" => 0,
-//                                "bottomElementRounded" => 0,
-//                                "margin" => [
-//                                    "top" => 0,
-//                                    "bottom" => 0,
-//                                    "both" => 0
-//                                ]
-//                            ]
-//                        ]
+//                        "value" => []
 //                    ]
 //                ]
             ],
@@ -988,14 +969,14 @@ class PagesDict
             ]
         ];
 
-        $pages = ( new DictLoader("UniappPages") )->load($system_pages);
-        if (!empty($params[ 'type' ])) {
-            if (!empty($pages[ $params[ 'type' ] ])) {
-                $temp = $pages[ $params[ 'type' ] ];
-                if (isset($params[ 'mode' ]) && !empty($params[ 'mode' ])) {
+        $pages = (new DictLoader("UniappPages"))->load($system_pages);
+        if (!empty($params['type'])) {
+            if (!empty($pages[$params['type']])) {
+                $temp = $pages[$params['type']];
+                if (isset($params['mode']) && !empty($params['mode'])) {
                     foreach ($temp as $k => $v) {
-                        if ($params[ 'mode' ] != $v[ 'mode' ]) {
-                            unset($temp[ $k ]);
+                        if ($params['mode'] != $v['mode']) {
+                            unset($temp[$k]);
                         }
                     }
                 }

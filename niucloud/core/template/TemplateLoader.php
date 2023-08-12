@@ -14,9 +14,9 @@ namespace core\template;
 use core\loader\Loader;
 
 /**
- * @see \core\template\TemplateLoader
+ * @see TemplateLoader
  * @package think\facade
- * @mixin \core\template\Wechat
+ * @mixin Wechat
  * @method  string|null send(array $data) 发送
  * @method  mixed addTemplate(array $data) 增加
  * @method  mixed delete(array $data) 删除
@@ -33,6 +33,7 @@ class TemplateLoader extends Loader
     protected $namespace = '\\core\\template\\';
 
     protected $config_name = 'template';
+
     /**
      * 默认驱动
      * @return mixed

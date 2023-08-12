@@ -17,39 +17,41 @@ namespace app\dict\sys;
 class DateDict
 {
 
-    const MON = 1;
-    const TUE = 2;
-    const WED = 3;
-    const THUR = 4;
-    const FRI = 5;
-    const SAT = 6;
-    const SUN = 0;
+    public const MON = 1;
+    public const TUE = 2;
+    public const WED = 3;
+    public const THUR = 4;
+    public const FRI = 5;
+    public const SAT = 6;
+    public const SUN = 0;
 
 
-    CONST JAN = 1;
-    CONST FEB = 2;
-    CONST MAR = 3;
-    CONST APR = 4;
-    CONST MAY = 5;
-    CONST JUN = 6;
-    CONST JUL = 7;
-    CONST AUG = 8;
-    CONST SEPT = 9;
-    CONST OCT = 10;
-    CONST NOV = 11;
-    CONST DEC = 12;
+    public const JAN = 1;
+    public const FEB = 2;
+    public const MAR = 3;
+    public const APR = 4;
+    public const MAY = 5;
+    public const JUN = 6;
+    public const JUL = 7;
+    public const AUG = 8;
+    public const SEPT = 9;
+    public const OCT = 10;
+    public const NOV = 11;
+    public const DEC = 12;
+
     /**
      * 星期
      * @return array
      */
-    public static function getWeek(){
+    public static function getWeek()
+    {
         return [
             self::MON => get_lang('dict_date.mon'),//周一
-            self::TUE  => get_lang('dict_date.tue'),//周二
+            self::TUE => get_lang('dict_date.tue'),//周二
             self::WED => get_lang('dict_date.wed'),//周三
-            self::THUR  => get_lang('dict_date.thur'),//周四
+            self::THUR => get_lang('dict_date.thur'),//周四
             self::FRI => get_lang('dict_date.fri'),//周五
-            self::SAT  => get_lang('dict_date.sat'),//周六
+            self::SAT => get_lang('dict_date.sat'),//周六
             self::SUN => get_lang('dict_date.sun'),//周日
         ];
     }
@@ -58,14 +60,15 @@ class DateDict
      * 月份
      * @return array
      */
-    public function getMonth(){
+    public function getMonth()
+    {
         return [
             self::JAN => get_lang('dict_date.jan'),//1月
-            self::FEB  => get_lang('dict_date.feb'),//2月
+            self::FEB => get_lang('dict_date.feb'),//2月
             self::MAR => get_lang('dict_date.mar'),//3月
-            self::APR  => get_lang('dict_date.apr'),//4月
+            self::APR => get_lang('dict_date.apr'),//4月
             self::MAY => get_lang('dict_date.may'),//5月
-            self::JUN  => get_lang('dict_date.jun'),//6月
+            self::JUN => get_lang('dict_date.jun'),//6月
             self::JUL => get_lang('dict_date.jul'),//7月
             self::AUG => get_lang('dict_date.aug'),//8月
             self::SEPT => get_lang('dict_date.sept'),//9月

@@ -12,10 +12,7 @@
 namespace app\adminapi\controller\site;
 
 use app\dict\site\SiteAccountLogDict;
-use app\dict\site\SiteDict;
-use app\service\admin\auth\AuthSiteService;
 use app\service\admin\site\SiteAccountLogService;
-use app\service\admin\site\SiteService;
 use core\base\BaseAdminController;
 use think\Response;
 
@@ -37,11 +34,13 @@ class SiteAccount extends BaseAdminController
     /**
      * 账单详情
      * @param int $id
+     * @return Response
      */
     public function info(int $id)
     {
         return success((new SiteAccountLogService())->getInfo($id));
     }
+
     /**
      * 累计账单
      */

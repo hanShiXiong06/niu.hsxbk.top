@@ -11,8 +11,6 @@
 
 namespace app\service\admin\weapp;
 
-use app\model\sys\SysMenu;
-use app\service\core\weapp\CoreWeappConfigService;
 use core\base\BaseAdminService;
 
 /**

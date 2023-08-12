@@ -15,6 +15,7 @@ use app\model\member\Member;
 use app\model\member\MemberAccountLog;
 use core\base\BaseCoreService;
 use core\exception\CommonException;
+use Exception;
 use think\facade\Db;
 
 /**
@@ -80,7 +81,7 @@ class CoreMemberAccountService extends BaseCoreService
             event("memberAccount", $data);
             Db::commit();
             return $res->id;
-        } catch ( \Exception $e) {
+        } catch ( Exception $e) {
             Db::rollback();
             throw new CommonException($e->getMessage());
         }

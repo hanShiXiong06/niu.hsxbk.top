@@ -1,5 +1,9 @@
 <?php
+
 namespace core\util;
+
+use Exception;
+
 class Snowflake
 {
     // 起始的时间戳
@@ -16,7 +20,7 @@ class Snowflake
     const MAX_DATA_CENTER_ID = 31;
 
     private $data_center_id;
-    private $machineId;
+    private $machine_id;
     private $last_timestamp;
     private $sequence;
 
@@ -30,12 +34,15 @@ class Snowflake
 //            throw new Exception('Machine ID can not be greater than ' . self::MAX_MACHINE_ID . ' or less than 0');
 //        }
 
-        $this->data_center_id = $data_center_id;
-        $this->machine_id = $machine_id;
+//        $this->data_center_id = $data_center_id;
+//        $this->machine_id = $machine_id;
         $this->last_timestamp = 0;
         $this->sequence = 0;
     }
 
+    /**
+     * @throws Exception
+     */
     public function generateId()
     {
         $timestamp = $this->getTimestamp();
@@ -60,11 +67,10 @@ class Snowflake
 
         $this->last_timestamp = $timestamp;
 
-        $id = (($timestamp - self::START_EPOCH) << (self::SEQUENCE_BITS))
+        return (($timestamp - self::START_EPOCH) << (self::SEQUENCE_BITS))
 //            | ($this->data_center_id << (self::SEQUENCE_BITS + self::MACHINE_ID_BITS))
 //            | ($this->machine_id << self::SEQUENCE_BITS)
             | $this->sequence;
-        return $id;
     }
 
     private function getTimestamp()

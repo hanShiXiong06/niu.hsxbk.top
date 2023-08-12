@@ -25,8 +25,7 @@ class TransferSuccessListener
         //添加账单记录
         (new CoreSiteAccountService())->addTransferLog($info['site_id'], $info['transfer_no']);
         //会员零钱提现
-        if($info['trade_type'] == CashOutTypeDict::MEMBER_CASH_OUT)
-        {
+        if ($info['trade_type'] == CashOutTypeDict::MEMBER_CASH_OUT) {
             return (new CoreMemberCashOutService())->transferFinish($info['site_id'], $info['transfer_no']);
         }
     }

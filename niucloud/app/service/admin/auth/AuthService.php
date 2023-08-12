@@ -13,7 +13,6 @@ namespace app\service\admin\auth;
 
 use app\dict\site\SiteDict;
 use app\Request;
-use app\service\admin\site\SiteService;
 use app\service\admin\site\SiteUserService;
 use app\service\admin\sys\MenuService;
 use app\service\admin\sys\RoleService;
@@ -33,7 +32,8 @@ class AuthService extends BaseAdminService
 {
     /**
      * 校验用户和传入站点是否存在从属关系
-     * @param $site_id
+     * @param Request $request
+     * @return true
      */
     public function checkSiteAuth(Request $request){
         $site_id = $request->adminSiteId();
@@ -59,8 +59,8 @@ class AuthService extends BaseAdminService
      */
     public function checkRole(Request $request){
 
-        $rule = trim(strtolower($request->rule()->getRule()));
-        $method = trim(strtolower($request->method()));
+        $rule = strtolower(trim($request->rule()->getRule()));
+        $method = strtolower(trim($request->method()));
         $site_info = (new AuthSiteService())->getSiteInfo();
         if($method != 'get'){
             if($site_info['status'] == SiteDict::EXPIRE) throw new AuthException('SITE_EXPIRE_NOT_ALLOW');
@@ -78,7 +78,7 @@ class AuthService extends BaseAdminService
         if(!empty($auth_role_list[$method]) && in_array($rule, $auth_role_list[$method]))
             return true;
 
-        throw new Exception('NO_PERMISSION');
+        throw new AuthException('NO_PERMISSION');
 
     }
 
@@ -147,6 +147,7 @@ class AuthService extends BaseAdminService
      * 修改用户权限
      * @param string $field
      * @param $data
+     * @return bool
      */
     public function modifyAuth(string $field, $data){
         return (new SiteUserService())->modify($this->uid, $field, $data);

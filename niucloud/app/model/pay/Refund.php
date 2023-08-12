@@ -35,30 +35,31 @@ class Refund extends BaseModel
 
     //类型
     protected $type = [
-        'create_time'     =>  'timestamp',
-        'refund_time'  =>  'timestamp',
-        'close_time'  =>  'timestamp',
+        'refund_time' => 'timestamp',
+        'close_time' => 'timestamp',
     ];
 
     /**
      * 状态字段转化
      * @param $value
+     * @param $data
      * @return mixed
      */
     public function getStatusNameAttr($value, $data)
     {
-        if(empty($data['status'])) return '';
+        if (empty($data['status'])) return '';
         return RefundDict::getStatus()[$data['status']] ?? '';
     }
 
     /**
      * 支付方式字段转化
      * @param $value
+     * @param $data
      * @return mixed
      */
     public function getTypeNameAttr($value, $data)
     {
-        if(empty($data['type'])) return '';
+        if (empty($data['type'])) return '';
         return RefundDict::getType()[$data['type']] ?? '';
     }
 

@@ -18,6 +18,9 @@ use core\base\BaseAdminService;
 use core\exception\NoticeException;
 use core\template\TemplateLoader;
 use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 
 /**
  * easywechat主体提供
@@ -42,10 +45,14 @@ class WeappTemplateService extends BaseAdminService
         }
         return $template;
     }
+
     /**
      * 同步微信公众号消息模板
      * @param array $keys
      * @return true
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function syncAll(array $keys = []){
         $site_id = $this->site_id;
@@ -62,9 +69,6 @@ class WeappTemplateService extends BaseAdminService
     /**
      * @param $item
      * @return true
-     * @throws InvalidArgumentException
-     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function syncItem($item){
         $key = $item['key'] ?? '';

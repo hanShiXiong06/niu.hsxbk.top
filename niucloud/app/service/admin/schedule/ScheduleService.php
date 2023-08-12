@@ -33,8 +33,8 @@ class ScheduleService extends BaseAdminService
 
     /**
      * 获取自动任务列表
-     * @param array $where
-     * @return mixed
+     * @param array $data
+     * @return array
      */
     public function getPage(array $data = [])
     {
@@ -63,6 +63,7 @@ class ScheduleService extends BaseAdminService
     /**
      * 添加
      * @param array $data
+     * @return true
      */
     public function add(array $data)
     {

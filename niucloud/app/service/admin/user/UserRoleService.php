@@ -18,6 +18,7 @@ use app\service\admin\sys\RoleService;
 use core\base\BaseAdminService;
 use core\exception\AdminException;
 use think\facade\Cache;
+use think\Model;
 
 /**
  * 用户服务层
@@ -98,7 +99,7 @@ class UserRoleService extends BaseAdminService
                     ['uid', '=', $uid],
                     ['site_id', '=', $site_id]
                 );
-                return $user_role_model::where($where)->findOrEmpty()->toArray();
+                return $user_role_model->where($where)->findOrEmpty()->toArray();
             },
             [self::$role_cache_name, RoleService::$cache_tag_name.$this->site_id]
         );
@@ -107,7 +108,7 @@ class UserRoleService extends BaseAdminService
     /**
      * 获取用户默认站点(切勿用于平台管理端)
      * @param int $uid
-     * @return SysUserRole|array|mixed|\think\Model
+     * @return SysUserRole|array|mixed|Model
      */
     public function getUserDefaultSiteId(int $uid){
         $user_role_model = new SysUserRole();
@@ -117,8 +118,8 @@ class UserRoleService extends BaseAdminService
 
     /**
      * 通过角色id组获取角色
-     * @param $role_ids
-     * @param $site_id
+     * @param array $role_ids
+     * @param int $site_id
      * @return mixed
      */
     public function getRoleByUserRoleIds(array $role_ids, int $site_id){

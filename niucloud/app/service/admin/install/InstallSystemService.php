@@ -101,11 +101,11 @@ class InstallSystemService extends BaseAdminService
                 $refer = $value;
                 if (isset($refer[ 'children' ])) {
                     unset($refer[ 'children' ]);
-                    array_push($this->menu_list, $item);
+                    $this->menu_list[] = $item;
                     $p_key = $refer[ 'menu_key' ];
                     $this->menuTreeToList($value[ 'children' ], $p_key, $app_type);
                 } else {
-                    array_push($this->menu_list, $item);
+                    $this->menu_list[] = $item;
                 }
             }
         }

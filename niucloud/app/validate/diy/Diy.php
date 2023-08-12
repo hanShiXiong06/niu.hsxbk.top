@@ -11,14 +11,14 @@
 
 namespace app\validate\diy;
 
-use app\dict\diy\TemplateDict;
+use think\Validate;
 
 /**
  * 自定义页面验证器
  * Class Diy
  * @package app\validate\diy
  */
-class Diy extends \think\Validate
+class Diy extends Validate
 {
 
     protected $rule = [
@@ -32,8 +32,8 @@ class Diy extends \think\Validate
     protected $message = [];
 
     protected $scene = [
-        "add" => [ 'title', 'name', 'type', 'value', 'is_default' ],
-        "edit" => [ 'title', 'name', 'value', 'is_default' ],
+        "add" => ['title', 'name', 'type', 'value', 'is_default'],
+        "edit" => ['title', 'name', 'value', 'is_default'],
     ];
 
 }

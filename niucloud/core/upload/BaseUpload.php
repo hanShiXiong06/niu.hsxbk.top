@@ -12,6 +12,7 @@ namespace core\upload;
 
 use core\exception\UploadFileException;
 use core\loader\Storage;
+
 /**
  * Class BaseUpload
  */
@@ -27,13 +28,14 @@ abstract class BaseUpload extends Storage
     protected $validate;
     protected $type;
 
-    protected $config = null;
+    protected $config;
     //可能还需要一个完整路径
     protected $storage_type;
+
     /**
      * 初始化
      * @param array $config
-     * @return mixed|void
+     * @return void
      */
     protected function initialize(array $config = [])
     {
@@ -43,22 +45,29 @@ abstract class BaseUpload extends Storage
 
     /**
      * 附件上传
-     * @param $save_dir
+     * @param string $dir
      * @return mixed
      */
     abstract protected function upload(string $dir);
 
     /**
      * 抓取远程附件
-     * @param $url
-     * @param $key
+     * @param string $url
+     * @param string|null $key
      * @return mixed
      */
     abstract protected function fetch(string $url, ?string $key);
 
     /**
+     * base64文件上云
+     * @param string $base64_data
+     * @param string|null $key
+     * @return mixed
+     */
+    abstract protected function base64(string $base64_data, ?string $key = null);
+    /**
      * 附件删除
-     * @param $file_name
+     * @param string $file_name
      * @return mixed
      */
     abstract protected function delete(string $file_name);
@@ -66,29 +75,32 @@ abstract class BaseUpload extends Storage
     /**
      * 缩略图
      * @param string $file_path
-     * @param $type
+     * @param $thumb_type
      * @return mixed
      */
     abstract protected function thumb(string $file_path, $thumb_type);
+
     /**
      * 读取文件
-     * @param $name
+     * @param string $name
+     * @param bool $is_rename
      */
-    public function read(string $name, bool $is_rename = true){
+    public function read(string $name, bool $is_rename = true)
+    {
         $this->name = $name;
         $this->file = request()->file($name);
-        if(empty($this->file))
+        if (empty($this->file))
             throw new UploadFileException(100012);
         $this->file_info = [
-            'name'     => $this->file->getOriginalName(),//文件原始名称
-            'mime'     => $this->file->getOriginalMime(),//上传文件类型信息
+            'name' => $this->file->getOriginalName(),//文件原始名称
+            'mime' => $this->file->getOriginalMime(),//上传文件类型信息
             'real_path' => $this->file->getRealPath(),//上传文件真实路径
-            'ext'      => $this->file->getOriginalExtension(),//上传文件后缀
-            'size'     => $this->file->getSize(),//上传文件大小
+            'ext' => $this->file->getOriginalExtension(),//上传文件后缀
+            'size' => $this->file->getSize(),//上传文件大小
         ];
-        if($is_rename){
+        if ($is_rename) {
             $this->file_name = $this->createFileName();
-        }else{
+        } else {
             $this->file_name = $this->file_info['name'];
         }
 
@@ -99,7 +111,8 @@ abstract class BaseUpload extends Storage
      * @param string $type
      * @return $this
      */
-    public function setType(string $type){
+    public function setType(string $type)
+    {
         $this->type = $type;
         return $this;
     }
@@ -107,7 +120,8 @@ abstract class BaseUpload extends Storage
     /**
      * 校验文件是否合法
      */
-    public function check(){
+    public function check()
+    {
 
     }
 
@@ -115,13 +129,14 @@ abstract class BaseUpload extends Storage
      * 生成新的文件名
      * @return string
      */
-    public function createFileName(string $key = '', string $ext = ''){
+    public function createFileName(string $key = '', string $ext = '')
+    {
         //DIRECTORY_SEPARATOR  常量
-        $storage_tag = '_'.$this->storage_type;
-        if(empty($key)){
-            return time().md5($this->file_info['real_path']).$storage_tag.'.'.$this->file_info['ext'];
-        }else{
-            return time().md5($key).$storage_tag.'.'.$ext;
+        $storage_tag = '_' . $this->storage_type;
+        if (empty($key)) {
+            return time() . md5($this->file_info['real_path']) . $storage_tag . '.' . $this->file_info['ext'];
+        } else {
+            return time() . md5($key) . $storage_tag . '.' . $ext;
         }
 
     }
@@ -130,7 +145,8 @@ abstract class BaseUpload extends Storage
      * 获取原始附件信息
      * @return mixed
      */
-    public function getFileInfo(){
+    public function getFileInfo()
+    {
         return $this->file_info;
     }
 
@@ -138,14 +154,17 @@ abstract class BaseUpload extends Storage
      * 获取上传文件的真实完整路径
      * @return mixed
      */
-    public function getRealPath(){
+    public function getRealPath()
+    {
         return $this->file_info['real_path'];
     }
+
     /**
      * 获取生成的文件完整地址
-     * @return mixed
+     * @return string
      */
-    public function getFullPath(string $dir = ''){
+    public function getFullPath(string $dir = '')
+    {
         return $this->full_path ?: $this->concatFullPath($dir);
     }
 
@@ -154,7 +173,8 @@ abstract class BaseUpload extends Storage
      * @param string $dir
      * @return string
      */
-    public function concatFullPath(string $dir = ''){
+    public function concatFullPath(string $dir = '')
+    {
         $this->full_path = implode('/', array_filter([$dir, $this->getFileName()]));
         return $this->full_path;
     }
@@ -167,11 +187,13 @@ abstract class BaseUpload extends Storage
     {
         return $this->file_name;
     }
-    public function getUrl(string $path = ''){
+
+    public function getUrl(string $path = '')
+    {
         $path = !empty($path) ? $path : $this->getFullPath();
         $domain = $this->config['domain'] ?? '';
-        $domain = empty($domain) ? '' : $domain.'/';
-        return $domain.$path;
+        $domain = empty($domain) ? '' : $domain . '/';
+        return $domain . $path;
     }
 
     /**
@@ -179,16 +201,14 @@ abstract class BaseUpload extends Storage
      * @param array $validate
      * @return $this
      */
-    public function setValidate(array $validate = []){
+    public function setValidate(array $validate = [])
+    {
         $this->validate = $validate ?: config('upload.rules')[$this->type] ?? [];
         return $this;
     }
 
     /**
      * 根据上传文件的类型来校验文件是否符合配置
-     * @param int $site_id
-     * @param string $file
-     * @param string $att_type
      * @return void
      */
     public function validate()

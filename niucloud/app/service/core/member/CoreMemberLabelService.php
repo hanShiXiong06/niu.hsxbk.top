@@ -13,6 +13,9 @@ namespace app\service\core\member;
 
 use app\model\member\MemberLabel;
 use core\base\BaseCoreService;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\facade\Cache;
 
 /**
@@ -34,9 +37,9 @@ class CoreMemberLabelService extends BaseCoreService
      * @param int $site_id
      * @param array $label_ids
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getMemberLabelListByLabelIds(int $site_id, array $label_ids){
         sort($label_ids);
@@ -52,11 +55,11 @@ class CoreMemberLabelService extends BaseCoreService
 
     /**
      * 获取全部会员标签
-     * @param $site_id
+     * @param int $site_id
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getAll(int $site_id){
         $cache_name = __METHOD__ . $site_id;

@@ -45,8 +45,8 @@ class  CoreWeappConfigService extends BaseCoreService
 
     /**
      * 微信小程序配置
-     * @param $site_id
-     * @param $data
+     * @param int $site_id
+     * @param array $data
      * @return SysConfig|bool|Model
      */
     public function setWeappConfig(int $site_id, array $data){

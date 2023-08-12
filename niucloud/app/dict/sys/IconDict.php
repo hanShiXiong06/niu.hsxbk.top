@@ -24,8 +24,7 @@ class IconDict
     public static function getIcon($params = [])
     {
         $system_pages = [];
-        $pages = ( new DictLoader("Icon") )->load($system_pages);
-        return $pages;
+        return (new DictLoader("Icon"))->load($system_pages);
     }
 
 }

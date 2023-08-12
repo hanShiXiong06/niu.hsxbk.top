@@ -39,7 +39,12 @@ return [
     'ADDON_INSTALL_EXECUTED' => '插件安装任务已执行',
     'INSTALL_CHECK_NOT_PASS' => '安装校验未通过',
     'SITE_INDEX_VIEW_PATH_NOT_EXIST' => '当前首页路径不存在',
-
+    'ADMIN_INDEX_VIEW_PATH_NOT_EXIST' => '当前首页路径不存在',
+    'ADDON_SQL_FAIL' => '插件sql执行失败',
+    'ADDON_DIR_FAIL' => '插件文件操作失败',
+    'LAYOUT_NOT_EXIST' => '该布局不存在',
+    'ZIP_FILE_NOT_FOUND' => '找不到可用的压缩文件',
+    'DOWNLOAD_SUCCESS' => '下载成功',
     //登录注册重置账号....
 
     'LOGIN_SUCCESS' => '登录成功',
@@ -92,6 +97,9 @@ return [
     'OSS_FILE_URL_NOT_EXIST' => '远程资源文件地址不能为空',
     'BASE_IMAGE_FILE_NOT_EXIST' => 'base图片资源不能为空',
     'UPLOAD_TYPE_NOT_SUPPORT' => '不支持的上传类型',
+    'FILE_ERROE' => '无效的资源',
+    'UPLOAD_STORAGE_TYPE_ALL_CLOSE' => '至少要有一个启用的存储方式',
+    'STORAGE_NOT_HAS_HTTP_OR_HTTPS' => '空间域名请补全http://或https://',
 
 
     //消息管理
@@ -185,12 +193,17 @@ return [
     'TEMPLATE_NOT_EXIST' => '模板不存在',
     'IS_EXIST_TEMPLATE_NOT_MODIFY' => '已存在的支付模板不支持修改支付类型',
     'ONLY_PAYING_CAN_PAY' => '只有待支付的订单可以支付',
+    'VOUCHER_NOT_EMPTY' => '支付单据不能为空',
+    'ONLY_PAYING_CAN_AUDIT' => '只有待支付的订单才可以操作',
+    'ONLY_OFFLINEPAY_CAN_AUDIT' => '只有线下支付的单据才可以审核',
     //退款相关
     'REFUND_NOT_EXIST' => '退款单据不存在',
     //订单相关  8***
     'ORDER_NOT_EXIST' => '订单不存在',
     'ORDER_CLOSED' => '订单已关闭',
     'DOCUMENT_IS_PAID' => '单据已支付',
+    'REFUND_IS_CHANGE' => '退款状态已发生变化',
+    'TRANFER_IS_CHANGE' => '转账状态已发生变化',
 
     // 退款相关
     'NOT_ALLOW_APPLY_REFUND' => '该订单不允许退款',
@@ -207,9 +220,11 @@ return [
     //任务队列相关
     'JOB_NOT_EXISTS' => '任务类不存在',
     'JOB_CREATE_FAIL' => '任务创建失败',
-
+    'SCHEDULE_NOT_EXISTS' => '人物不存在',
     //小程序版本
     'APPLET_VERSION_NOT_EXISTS' => '小程序版本不存在',
-
+    'APPLET_VERSION_PACKAGE_NOT_EXIST' => '小程序版本包不存在',
+    //验证码
+    'CAPTCHA_INVALID' => '无效的验证码',
 
 ];

@@ -14,10 +14,10 @@ namespace app\service\admin\applet;
 use app\dict\applet\AppletlDict;
 use app\dict\sys\FileDict;
 use app\model\applet\AppletVersion;
-use app\model\article\Article;
 use app\service\core\applet\CoreAppletVersionService;
 use app\service\core\upload\CoreUploadService;
 use core\base\BaseAdminService;
+use Exception;
 
 /**
  * 文章服务层
@@ -39,7 +39,7 @@ class AppletVersionService extends BaseAdminService
     /**
      * 获取列表
      * @param array $where
-     * @param string $order
+     * @return array
      */
     public function getPage(array $where = [])
     {
@@ -49,6 +49,7 @@ class AppletVersionService extends BaseAdminService
     /**
      * 获取信息
      * @param int $id
+     * @return array
      */
     public function getInfo(int $id)
     {
@@ -71,8 +72,8 @@ class AppletVersionService extends BaseAdminService
     /**
      * 上传小程序包
      * @param $file
-     * @return true
-     * @throws \Exception
+     * @return array
+     * @throws Exception
      */
     public function upload($file){
         $core_upload_service = new CoreUploadService();
@@ -83,7 +84,7 @@ class AppletVersionService extends BaseAdminService
 
     /**
      * 设置版本状态
-     * @param $id
+     * @param int $id
      * @param $status
      * @return true
      */
@@ -97,10 +98,12 @@ class AppletVersionService extends BaseAdminService
         $this->model->where($where)->update($data);
         return true;
     }
+
     /**
      * 编辑
      * @param int $id
      * @param array $data
+     * @return true
      */
     public function edit(int $id, array $data)
     {

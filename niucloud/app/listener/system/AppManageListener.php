@@ -21,7 +21,7 @@ class AppManageListener
     public function handle()
     {
         return [
-            "category" =>[
+            "category" => [
 
                 [
                     "key" => "basic",

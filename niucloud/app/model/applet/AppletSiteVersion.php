@@ -11,8 +11,8 @@
 
 namespace app\model\applet;
 
-use app\model\article\Article;
 use core\base\BaseModel;
+use think\model\relation\HasOne;
 
 /**
  * 小程序包 站点版本模型
@@ -34,12 +34,12 @@ class AppletSiteVersion extends BaseModel
 
     /**
      * 版本主表
-     * @return \think\model\relation\HasOne
+     * @return HasOne
      */
     public function appletVersion()
     {
-        return $this->hasOne( AppletVersion::class, 'id', 'version_id')->joinType('left')
+        return $this->hasOne(AppletVersion::class, 'id', 'version_id')->joinType('left')
             ->withField('desc, status, version, version_num, release_version')
-            ->bind([ 'desc', 'status', 'version', 'version_num', 'release_version']);
+            ->bind(['desc', 'status', 'version', 'version_num', 'release_version']);
     }
 }

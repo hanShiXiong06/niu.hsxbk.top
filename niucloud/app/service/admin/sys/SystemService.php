@@ -12,9 +12,11 @@
 namespace app\service\admin\sys;
 
 use app\job\sys\CheckJob;
-use app\model\site\Site;
+use app\service\core\sys\CoreConfigService;
 use core\base\BaseAdminService;
+use core\exception\CommonException;
 use think\facade\Db;
+use Throwable;
 
 /**
  * 系统信息服务层
@@ -30,17 +32,16 @@ class SystemService extends BaseAdminService
 
     /**
      * 获取版权信息(网站整体，不按照站点设置)
-     * @return array|mixed
+     * @return array
      */
     public function getInfo()
     {
-        $data = [
+        return [
             'os' => PHP_OS,
             'environment' => $_SERVER[ 'SERVER_SOFTWARE' ],
             'php_v' => PHP_VERSION,
             'version' => config('version')
         ];
-        return $data;
     }
 
     /**
@@ -51,24 +52,23 @@ class SystemService extends BaseAdminService
         $wap_domain = !empty(env("system.wap_domain")) ? preg_replace('#/$#', '', env("system.wap_domain")) : request()->domain();
         $web_domain = !empty(env("system.web_domain")) ? preg_replace('#/$#', '', env("system.web_domain")) : request()->domain();
 
-        $data = [
+        return [
             'wap_domain' => env("system.wap_domain"),
             'wap_url' => $wap_domain . "/wap/" . $this->site_id,
             'web_url' => $web_domain . "/web/" . $this->site_id,
         ];
-        return $data;
     }
 
     /**
      * 获取系统信息
-     * @return void
+     * @return array
      */
     public function getSystemInfo()
     {
         $server = [];
         $server[] = [ "name" => get_lang('dict_setting.server_system'), "server" => PHP_OS ];
         $server[] = [ "name" => get_lang('dict_setting.server_setting'), "server" => PHP_SAPI ];
-        $server[] = [ "name" => get_lang('dict_setting.php_version'), "server" => phpversion() ];
+        $server[] = [ "name" => get_lang('dict_setting.php_version'), "server" => PHP_VERSION];
 
         //环境权限
         $system_variables = [];
@@ -88,7 +88,7 @@ class SystemService extends BaseAdminService
         $fileinfo = extension_loaded('fileinfo');
         $system_variables[] = [ "name" => "fileinfo", "need" => get_lang('dict_setting.php_authority_ask'), "status" => $fileinfo ];
         //目录权限
-        $root_path = str_replace("\\", DIRECTORY_SEPARATOR, dirname(dirname(dirname(dirname(dirname(__FILE__))))));
+        $root_path = str_replace("\\", DIRECTORY_SEPARATOR, dirname(__FILE__, 5));
         $root_path = str_replace("../", DIRECTORY_SEPARATOR, $root_path);
 
 
@@ -111,14 +111,13 @@ class SystemService extends BaseAdminService
         //获取环境版本
         $server_version = [];
         $row = (array) Db::query("select VERSION() as verson");
-        $server_version[] = [ "name" => get_lang('dict_setting.php_version'), "demand" => get_lang('dict_setting.php_ask'), "server" => phpversion() ];
+        $server_version[] = [ "name" => get_lang('dict_setting.php_version'), "demand" => get_lang('dict_setting.php_ask'), "server" => PHP_VERSION];
         $server_version[] = [ "name" => get_lang('dict_setting.mysql_version'), "demand" => get_lang('dict_setting.mysql_ask'), "server" => $row[ 0 ][ 'verson' ] ];
 
         // 进程
         $process[] = [ "name" => "php think queue:listen", "need" => get_lang('dict_setting.php_authority_ask'), "status" => ( new SystemService() )->checkJob() ];
 
-        $data = [ "server" => $server, "dirs_list" => $dirs_list, 'system_variables' => $system_variables, 'server_version' => $server_version, 'process' => $process ];
-        return $data;
+        return [ "server" => $server, "dirs_list" => $dirs_list, 'system_variables' => $system_variables, 'server_version' => $server_version, 'process' => $process ];
     }
 
     /**
@@ -135,15 +134,15 @@ class SystemService extends BaseAdminService
 
     /**
      *校验消息队列是否正常运行
-     * @return void
+     * @return bool
      */
     public function checkJob()
     {
-        $secret = uniqid();
+        $secret = uniqid('', true);
         $file = root_path('runtime') . $secret . '.job';
         try {
             CheckJob::invoke([ 'file' => $file ]);
-        } catch (\Throwable $e) {
+        } catch ( Throwable $e) {
             return false;
         }
         sleep(3);
@@ -168,5 +167,17 @@ class SystemService extends BaseAdminService
             }
         }
         return false;
+    }
+
+    /**
+     * 设置布局
+     * @param string $key
+     * @return void
+     */
+    public function setLayout(string $key) {
+        $layouts = array_column(event('SiteLayout'), 'key');
+        if (!in_array($key, $layouts)) throw new CommonException('LAYOUT_NOT_EXIST');
+        (new CoreConfigService())->setConfig($this->site_id, 'SITE_LAYOUT', [ 'key' => $key ]);
+        return true;
     }
 }

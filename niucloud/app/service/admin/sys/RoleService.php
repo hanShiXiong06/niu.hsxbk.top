@@ -17,6 +17,9 @@ use app\model\sys\SysUserRole;
 use app\service\admin\site\SiteService;
 use core\base\BaseAdminService;
 use core\exception\AdminException;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\facade\Cache;
 
 /**
@@ -36,7 +39,7 @@ class RoleService extends BaseAdminService
     /**
      * 管理端获取角色列表
      * @param array $data
-     * @return mixed
+     * @return array
      */
     public function getPage(array $data)
     {
@@ -46,13 +49,12 @@ class RoleService extends BaseAdminService
         }
         $field = 'role_id,role_name,status,create_time';
         $search_model = $this->model->where($where)->field($field)->order('create_time desc')->append(['status_name']);
-        $list = $this->pageQuery($search_model);
-        return $list;
+        return $this->pageQuery($search_model);
     }
     /**
      * 获取权限信息
      * @param int $role_id
-     * @return mixed
+     * @return array
      */
     public function getInfo(int $role_id){
         return $this->model->append(['status_name'])->findOrEmpty($role_id)->toArray();
@@ -60,7 +62,10 @@ class RoleService extends BaseAdminService
 
     /**
      * 获取站点下的所有权限
-     * @return mixed
+     * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getAll()
     {
@@ -70,9 +75,11 @@ class RoleService extends BaseAdminService
         );
         return $this->model->where($where)->field('role_id,role_name,status,create_time')->select()->toArray();
     }
+
     /**
      * 新增权限
      * @param array $data
+     * @return true
      */
     public function add(array $data){
         $data['create_time'] = time();
@@ -87,6 +94,7 @@ class RoleService extends BaseAdminService
      * 更新权限
      * @param int $role_id
      * @param array $data
+     * @return true
      */
     public function edit(int $role_id, array $data){
         $where = array(
@@ -99,8 +107,10 @@ class RoleService extends BaseAdminService
         return true;
 
     }
+
     /**
      * 获取模型对象
+     * @param int $site_id
      * @param int $role_id
      * @return mixed
      */
@@ -119,7 +129,7 @@ class RoleService extends BaseAdminService
      * 删除权限(saas应该不允许删除)
      * @param int $role_id
      * @return mixed
-     * @throws \think\db\exception\DbException
+     * @throws DbException
      */
     public function del(int $role_id){
         $role = $this->find($this->site_id, $role_id);
@@ -134,7 +144,7 @@ class RoleService extends BaseAdminService
     /**
      * 获取角色id为健名,角色名为键值的数据
      * @param int $site_id
-     * @param string $app_type
+     * @return mixed|string
      */
     public function getColumn(int $site_id){
         $cache_name = 'role_column_'.$site_id;
@@ -152,8 +162,12 @@ class RoleService extends BaseAdminService
 
     /**
      * 通过权限组id获取菜单id
+     * @param int $site_id
      * @param array $role_ids
      * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getMenuIdsByRoleIds(int $site_id, array $role_ids){
         $menu_keys = (new SiteService())->getMenuIdsBySiteId($site_id, 1);
@@ -163,7 +177,7 @@ class RoleService extends BaseAdminService
         return cache_remember(
             $cache_name,
             function() use($role_ids, $menu_keys) {
-                $rules = $this->model::where([['role_id', 'IN', $role_ids], ['status', '=', RoleStatusDict::ON]])->field('rules')->select()->toArray();
+                $rules = $this->model->where([['role_id', 'IN', $role_ids], ['status', '=', RoleStatusDict::ON]])->field('rules')->select()->toArray();
                 if(!empty($rules)){
                     $temp = [];
                     foreach($rules as $k => $v){
@@ -172,8 +186,7 @@ class RoleService extends BaseAdminService
                     $temp = array_unique($temp);
                     if(empty($menu_keys)) return [];
                     if(empty($temp)) return [];
-                    $allow_menu_ids = array_intersect($temp, $menu_keys);
-                    return $allow_menu_ids;
+                    return array_intersect($temp, $menu_keys);
                 }
                 return [];
             },

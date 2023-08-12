@@ -31,7 +31,7 @@ class ArticleService extends BaseAdminService
     /**
      * 获取文章列表
      * @param array $where
-     * @param string $order
+     * @return array
      */
     public function getPage(array $where = [])
     {
@@ -45,6 +45,7 @@ class ArticleService extends BaseAdminService
     /**
      * 获取文章信息
      * @param int $id
+     * @return array
      */
     public function getInfo(int $id)
     {
@@ -56,6 +57,7 @@ class ArticleService extends BaseAdminService
     /**
      * 添加文章
      * @param array $data
+     * @return mixed
      */
     public function add(array $data)
     {
@@ -70,6 +72,7 @@ class ArticleService extends BaseAdminService
      * 文章编辑
      * @param int $id
      * @param array $data
+     * @return true
      */
     public function edit(int $id, array $data)
     {
@@ -81,6 +84,7 @@ class ArticleService extends BaseAdminService
     /**
      * 删除文章
      * @param int $id
+     * @return bool
      */
     public function del(int $id)
     {

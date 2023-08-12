@@ -19,6 +19,7 @@ use app\model\pay\Refund;
 use app\service\core\member\CoreMemberAccountService;
 use app\service\core\pay\CorePayService;
 use core\base\BaseCoreService;
+use think\Model;
 
 /**
  * 支付服务层
@@ -83,7 +84,7 @@ class CoreBalanceService extends BaseCoreService
     /**
      * 订单退款
      * @param array $params
-     * @return true
+     * @return array
      */
     public function refund(array $params){
         $out_trade_no = $params['out_trade_no'];
@@ -120,7 +121,7 @@ class CoreBalanceService extends BaseCoreService
      * 获取退款信息
      * @param string|null $out_trade_no
      * @param string|null $refund_no
-     * @return Refund|array|mixed|\think\Model
+     * @return Refund|array|mixed|Model
      */
     public function getRefund(?string $out_trade_no, ?string $refund_no = '') {
         return (new Refund())->where([

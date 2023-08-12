@@ -12,9 +12,11 @@
 namespace app\service\core\applet;
 
 use app\dict\applet\AppletlDict;
-use app\service\core\applet\CoreAppletVersionService;
 use core\base\BaseCoreService;
 use core\exception\CommonException;
+use RuntimeException;
+use think\response\File;
+use ZipArchive;
 
 /**
  * 小程序包下载
@@ -32,7 +34,7 @@ class CoreAppletDownloadService extends BaseCoreService
         parent::__construct();
         //查询这个版本的信息
         $version_info = (new CoreAppletVersionService())->getInfo($version_id);
-        if(empty($version_info)) throw new CommonException();//不存在的版本
+        if(empty($version_info)) throw new CommonException('APPLET_VERSION_NOT_EXISTS');//不存在的版本
         $this->version_id = $version_id;
         $this->version = $version_info['version'];
         $this->type = $version_info['type'];
@@ -42,38 +44,34 @@ class CoreAppletDownloadService extends BaseCoreService
     public function setReplace($replace)
     {
         $this->replace = $replace;
-//        [
-//            [
-//                'path' => '',
-//                'variable' => [
-//                    'site_name' => '牛'
-//                ]
-//            ]
-//        ];
         return $this;
     }
 
     /**
      * 下载小程序包
      * @param int $site_id
-     * @return \think\response\File
+     * @return File
      */
     public function download(int $site_id)
     {
-        $zip = new \ZipArchive;
+        $zip = new ZipArchive;
+        $this->replace = event('AppletReplace', ['site_id' => $site_id, 'type' => $this->type])[0] ?? [];
         $file_name = $site_id.'.zip';
         $dir = $this->root_path .'/applet/'.  $this->type.'/'.$this->version.'/';
         //新生成一个当前站点这个版本的压缩包,如果已存在就直接下载
         $file = $dir.$file_name;
         if(!file_exists($file)){
-            if(!copy($this->path, $file)) throw new CommonException();//文件拷贝失败
+            if (! is_dir($dir) && ! mkdir($dir, 0777, true) && ! is_dir($dir)) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $dir));
+            }
+            if(!copy($this->path, $file)) throw new CommonException('APPLET_VERSION_PACKAGE_NOT_EXIST');//文件拷贝失败
             if ($zip->open($file) === true) {
                 //编译
                 $this->compile($zip);
                 //关闭
                 $zip->close();
             } else {
-                throw new CommonException();
+                throw new CommonException('APPLET_VERSION_PACKAGE_NOT_EXIST');
             }
         }
         //新增下载记录
@@ -88,19 +86,20 @@ class CoreAppletDownloadService extends BaseCoreService
      */
     public function compile($zip)
     {
-        foreach ($this->replace as $k => $v) {
+        foreach ($this->replace as $v) {
             $item_path = $v['path'];
             $item_variable = $v['variable'];
             //Read contents into memory
             $old_contents = $zip->getFromName($item_path);
             //Modify contents:
+            $temp_content = $old_contents;
             foreach($item_variable as $variable_k => $variable_v){
-                $new_contents = str_replace($variable_k, $variable_v, $old_contents);
+                $temp_content = str_replace($variable_k, $variable_v, $temp_content);
             }
             //Delete the old...
             $zip->deleteName($item_path);
             //Write the new...
-            $zip->addFromString($item_path, $new_contents);
+            $zip->addFromString($item_path, $temp_content);
         }
     }
 }

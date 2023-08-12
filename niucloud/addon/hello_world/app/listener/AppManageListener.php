@@ -21,7 +21,7 @@ class AppManageListener
 {
     /**
      * 应用管理
-     * @param $data
+     * @return array
      */
     public function handle()
     {

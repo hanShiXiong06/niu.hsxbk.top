@@ -64,7 +64,7 @@ class ConfigService extends BaseAdminService
 
     /**
      * 获取网站信息
-     * @return mixed
+     * @return array
      */
     public function getWebSite()
     {
@@ -167,13 +167,13 @@ class ConfigService extends BaseAdminService
         }else{
             $result = event("SiteIndex");
             $index_list = [];
-            foreach ($result as $k => $v)
+            foreach ($result as $v)
             {
                 $index_list = empty($index_list) ? $v: array_merge($index_list, $v);
             }
             $tag = 0;
             $view_path = $config['value']['view_path'];
-            foreach ($index_list as $k => $v)
+            foreach ($index_list as $v)
             {
                 $v_view_path = $v['view_path'] ?? '';
                 if($view_path == $v_view_path)
@@ -196,7 +196,7 @@ class ConfigService extends BaseAdminService
     /**
      * 站点主页配置
      * @param $data
-     * @return \app\model\sys\SysConfig|bool|\think\Model
+     * @return true
      */
     public function setSiteIndexConfig($data)
     {
@@ -206,7 +206,7 @@ class ConfigService extends BaseAdminService
         //检测是否路劲一个异常
         $index_list = $this->getSiteIndexList();
         $check_tag = 0;
-        foreach($index_list as $k => $v)
+        foreach($index_list as $v)
         {
             if($v['view_path'] == $data['view_path'])
             {
@@ -226,7 +226,7 @@ class ConfigService extends BaseAdminService
     {
         $result = event("SiteIndex");
         $index_list = [];
-        foreach ($result as $k => $v)
+        foreach ($result as $v)
         {
             $index_list = empty($index_list) ? $v: array_merge($index_list, $v);
         }
@@ -273,5 +273,91 @@ class ConfigService extends BaseAdminService
             }
         }
         return $menu;
+    }
+    /**
+     * 获取平台主页配置
+     * @return mixed|string[]
+     */
+    public function getAdminIndexConfig()
+    {
+        $config = (new CoreConfigService())->getConfig($this->site_id, "admin_index");
+        if(empty($config))
+        {
+            $config['value'] = [
+                'view_path' => 'index/index'
+            ];
+        }else{
+            $result = event("AdminIndex");
+            $index_list = [];
+            foreach ($result as $v)
+            {
+                $index_list = empty($index_list) ? $v: array_merge($index_list, $v);
+            }
+            $tag = 0;
+            $view_path = $config['value']['view_path'];
+            foreach ($index_list as $v)
+            {
+                $v_view_path = $v['view_path'] ?? '';
+                if($view_path == $v_view_path)
+                {
+                    $tag = 1;
+                    break;
+                }
+            }
+            if($tag == 0)
+            {
+                $config['value'] = [
+                    'view_path' => 'index/index'
+                ];
+            }
+
+        }
+        return $config['value']['view_path'];
+    }
+
+    /**
+     * 站点主页配置
+     * @param $data
+     * @return true
+     */
+    public function setAdminIndexConfig($data)
+    {
+        $config = [
+            'view_path' => $data['view_path'] ,
+        ];
+        //检测是否路劲一个异常
+        $index_list = $this->getAdminIndexList();
+        $check_tag = 0;
+        foreach($index_list as $v)
+        {
+            if($v['view_path'] == $data['view_path'])
+            {
+                $check_tag = 1;
+            }
+        }
+        if($check_tag == 0) throw new AdminException('ADMIN_INDEX_VIEW_PATH_NOT_EXIST');
+        (new CoreConfigService())->setConfig($this->site_id, "admin_index", $config);
+        return true;
+    }
+
+    /**
+     * 获取站点配置的首页列表
+     * @return array
+     */
+    public function getAdminIndexList()
+    {
+        $result = event("AdminIndex");
+        $index_list = [];
+        foreach ($result as $v)
+        {
+            $index_list = empty($index_list) ? $v: array_merge($index_list, $v);
+        }
+        $view_path = $this->getAdminIndexConfig();
+        foreach ($index_list as $k => $v)
+        {
+            $v_view_path = $v['view_path'] ?? '';
+            $index_list[$k]['is_use'] = ($v_view_path == $view_path) ? 1: 0;
+        }
+        return $index_list;
     }
 }

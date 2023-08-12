@@ -15,6 +15,7 @@ use app\model\member\Member;
 use app\service\core\member\CoreMemberService;
 use core\base\BaseApiService;
 use core\exception\ApiException;
+use core\util\Barcode;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use think\db\exception\ModelNotFoundException;
@@ -44,7 +45,6 @@ class MemberService extends BaseApiService
 
     /**
      * 更新会员
-     * @param int $member_id
      * @param array $data
      * @return true
      */
@@ -60,9 +60,6 @@ class MemberService extends BaseApiService
     /**
      * 获取会员信息
      * @return array
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
      */
     public function getInfo()
     {
@@ -101,13 +98,14 @@ class MemberService extends BaseApiService
         if(!empty($data['weapp_openid']))
             $where[] = ['weapp_openid', '=', $data['weapp_openid']];
 
+        if(!empty($data['username|mobile']))
+            $where[] = ['username|mobile', '=', $data['username|mobile']];
         if(empty($where)){
             $where[] = ['member_id', '=', -1];
         }
         if(isset($data['site_id']) )
             $where[] = ['site_id', '=', $data['site_id']];
-        $member = $this->model->where($where)->findOrEmpty();
-        return $member;
+        return $this->model->where($where)->findOrEmpty();
     }
 
     /**
@@ -119,9 +117,9 @@ class MemberService extends BaseApiService
     public function editByFind($member, $data){
         return $member->save($data);
     }
+
     /**
      * 修改字段
-     * @param int $member_id
      * @param string $field
      * @param $data
      * @return null
@@ -131,4 +129,19 @@ class MemberService extends BaseApiService
         return (new CoreMemberService())->modify($this->site_id, $this->member_id, $field, $data);
     }
 
+    public function getQrcode(){
+        // 生成会员二维码
+        $qrcode_dir = 'upload/member/temp';
+        if (!is_dir($qrcode_dir)) mkdir($qrcode_dir, intval('0755', 8), true);
+        $id = "member-".$this->member_id;
+        $qrcode_path = "{$qrcode_dir}/order_qrcode_{$this->member_id}.png";
+        \core\util\QRcode::png($id, $qrcode_path, 'L', 16, 1);
+
+        // 生成会员条形码
+        $barcode_path = (new Barcode(14, $id))->generateBarcode($qrcode_dir, 2);
+        $detail = [];
+        $detail['verify_code_qrcode'] = image_to_base64($qrcode_path, true);
+        $detail['verify_code_barcode'] = image_to_base64($barcode_path);
+        return $detail;
+    }
 }

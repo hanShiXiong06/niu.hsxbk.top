@@ -18,6 +18,9 @@ use app\model\sys\SysAttachmentCategory;
 use app\service\core\sys\CoreAttachmentService;
 use core\base\BaseAdminService;
 use core\exception\AdminException;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 
 /**
  * 附件服务层
@@ -37,7 +40,8 @@ class AttachmentService extends BaseAdminService
 
     /**
      * 新增素材
-     * @param $params
+     * @param array $data
+     * @return mixed
      */
     public function add(array $data)
     {
@@ -49,8 +53,9 @@ class AttachmentService extends BaseAdminService
      *
      * /**
      * 编辑素材
+     * @param int $att_id
      * @param array $data
-     * @param $where
+     * @return SysAttachment
      */
     public function edit(int $att_id, array $data)
     {
@@ -75,7 +80,7 @@ class AttachmentService extends BaseAdminService
 
     /**
      * 批量更新附件分组
-     * @param $att_id
+     * @param $att_ids
      * @param $cate_id
      * @return bool
      */
@@ -92,7 +97,7 @@ class AttachmentService extends BaseAdminService
 
     /**
      * 删除素材
-     * @param int $uid
+     * @param int $att_id
      * @return mixed
      */
     public function del(int $att_id)
@@ -113,7 +118,7 @@ class AttachmentService extends BaseAdminService
     /**
      * 管理端获取附件列表
      * @param array $data
-     * @return mixed
+     * @return array
      */
     public function getPage(array $data)
     {
@@ -137,7 +142,8 @@ class AttachmentService extends BaseAdminService
 
     /**
      * 新增素材组
-     * @param $params
+     * @param array $data
+     * @return mixed
      */
     public function addCategory(array $data)
     {
@@ -151,7 +157,8 @@ class AttachmentService extends BaseAdminService
 
     /**
      * 素材组模型对象
-     * @param int $uid
+     * @param int $site_id
+     * @param int $id
      * @return mixed
      */
     public function findCategory(int $site_id, int $id)
@@ -169,8 +176,9 @@ class AttachmentService extends BaseAdminService
 
     /**
      * 编辑素材组
+     * @param int $id
      * @param array $data
-     * @param $where
+     * @return SysAttachmentCategory
      */
     public function editCategory(int $id, array $data)
     {
@@ -184,8 +192,9 @@ class AttachmentService extends BaseAdminService
 
     /**
      * 删除素材组
-     * @param int $uid
+     * @param int $id
      * @return mixed
+     * @throws DbException
      */
     public function delCategory(int $id)
     {
@@ -201,10 +210,9 @@ class AttachmentService extends BaseAdminService
 
     /**
      * 管理端获取附件组列表
-     * @param array $where
-     * @param string $order
-     * @param int $limit
-     * @return mixed
+     * @param array $data
+     * @return array
+     * @throws DbException
      */
     public function getCategoryPage(array $data)
     {
@@ -223,7 +231,10 @@ class AttachmentService extends BaseAdminService
     /**
      * 获取分组列表
      * @param array $data
-     * @return mixed
+     * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getCategoryList(array $data)
     {
@@ -249,12 +260,11 @@ class AttachmentService extends BaseAdminService
         $icon_list = IconDict::getIcon();
         foreach ($icon_list as $k => $v) {
             unset($icon_list[ $k ][ 'glyphs' ]);
-            if (!empty($data[ 'name' ]) && strpos($v[ 'name' ], $data[ 'name' ]) === false) {
+            if (!empty($data[ 'name' ]) && !str_contains($v['name'], $data['name'])) {
                 unset($icon_list[ $k ]);
             }
         }
-        $icon_list = array_values($icon_list);
-        return $icon_list;
+        return array_values($icon_list);
     }
 
     /**
@@ -275,18 +285,18 @@ class AttachmentService extends BaseAdminService
 
         $temp_data = [];
 
-        foreach ($icon_list as $k => $v) {
+        foreach ($icon_list as $v) {
 
-            $icon = $icon_list[ $k ][ 'glyphs' ]; // 图标列表
+            $icon = $v[ 'glyphs' ]; // 图标列表
 
             foreach ($icon as $ck => $cv) {
                 // 素材表中数据保持要一致
                 $icon[ $ck ][ 'att_id' ] = $cv[ 'icon_id' ];
-                $icon[ $ck ][ 'url' ] = $icon_list[ $k ][ 'font_family' ] . '-' . $icon_list[ $k ][ 'css_prefix_text' ] . $cv[ 'font_class' ];
+                $icon[ $ck ][ 'url' ] = $v[ 'font_family' ] . '-' . $v[ 'css_prefix_text' ] . $cv[ 'font_class' ];
                 $icon[ $ck ][ 'real_name' ] = $cv[ 'name' ];
 
                 // 查询名称
-                if (!empty($data[ 'real_name' ]) && strpos($cv[ 'name' ], $data[ 'real_name' ]) === false) {
+                if (!empty($data[ 'real_name' ]) && !str_contains($cv['name'], $data['real_name'])) {
                     unset($icon[ $ck ]);
                 }
             }

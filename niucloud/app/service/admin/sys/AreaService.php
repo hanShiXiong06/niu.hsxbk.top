@@ -13,7 +13,9 @@ namespace app\service\admin\sys;
 
 use app\model\sys\SysArea;
 use core\base\BaseAdminService;
-use think\facade\Cache;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 
 /**
  * 地区服务层
@@ -33,6 +35,9 @@ class AreaService extends BaseAdminService
      * 获取地区信息
      * @param int $pid //上级pid
      * @return mixed
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getListByPid(int $pid = 0)
     {
@@ -51,6 +56,9 @@ class AreaService extends BaseAdminService
      * 查询地区树列表
      * @param int $level //层级1,2,3
      * @return mixed
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getAreaTree(int $level = 3)
     {
@@ -59,7 +67,7 @@ class AreaService extends BaseAdminService
             $cache_name,
             function() use($level) {
                 $list = $this->model->where([['level', '<=', $level]])->field('id, pid, name, shortname, longitude, latitude, level, sort, status')->select()->toArray();
-                return list_to_tree($list, 'id', 'pid');
+                return list_to_tree($list);
             },
             [self::$cache_tag_name]
         );

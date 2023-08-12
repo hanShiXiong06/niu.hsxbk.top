@@ -11,10 +11,10 @@
 
 namespace app\service\core\upload;
 
-use app\dict\sys\FileDict;
 use app\dict\sys\StorageDict;
-use app\service\core\sys\CoreAttachmentService;
 use core\exception\UploadFileException;
+use Exception;
+use Throwable;
 
 /**
  * 图片处理层
@@ -29,10 +29,12 @@ class CoreImageService extends CoreFileService
      * @param $thumb_type  裁剪的图片规格
      * @param bool $is_throw_exception  是否要抛出错误
      * @return mixed
-     * @throws \Exception
+     * @throws Exception
      */
     public function thumb(int $site_id, string $file_path,  $thumb_type = 'all', bool $is_throw_exception = false)
     {
+        //文件转url
+        $file_path = path_to_url($file_path);
         $file_parse = parse_url($file_path);
         $scheme = $file_parse['scheme'] ?? '';
         $host = $file_parse['host'] ?? '';
@@ -43,7 +45,7 @@ class CoreImageService extends CoreFileService
             $item_params = $v['params'] ?? [];
             $item_domain = $item_params['domain'] ?? '';
             $item_storage_type = $v['storage_type'];
-            if(str_contains($file_path, $item_storage_type.'_')){
+            if(str_contains($file_path, '_'.$item_storage_type)){
                 $this->upload_driver = $this->driver($site_id, $item_storage_type);
             }else{
                 if($item_domain == $file_domain){
@@ -60,7 +62,7 @@ class CoreImageService extends CoreFileService
         try {
             $thumb_list = $this->upload_driver->thumb($file_path, $thumb_type);
             return count($thumb_list) > 1 ? $thumb_list : $thumb_list[$thumb_type] ?? '';
-        } catch (\Throwable $e) {
+        } catch ( Throwable $e) {
             if($is_throw_exception){
                 throw new UploadFileException($e->getMessage());
             }else{

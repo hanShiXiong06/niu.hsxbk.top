@@ -12,13 +12,9 @@
 namespace app\service\admin\stat;
 
 use app\model\order\RechargeOrder;
-use app\service\admin\member\MemberService;
 use app\service\admin\site\SiteService;
-use app\service\admin\sys\SystemService;
-use app\service\core\member\CoreMemberService;
-use Carbon\Carbon;
 use core\base\BaseAdminService;
-use think\facade\Db;
+use think\db\exception\DbException;
 
 
 /**
@@ -46,7 +42,7 @@ class SiteStatService extends BaseAdminService
         $data['site_info'] = (new SiteService())->getInfo($this->site_id);
         $site_create_time = strtotime($data['site_info']['create_time']);
         $site_expire_time = strtotime($data['site_info']['expire_time']);
-        $data['site_info']['mix'] = (number_format((time() - $site_create_time) / ($site_expire_time - $site_create_time), 2) * 100).'%';  ;
+        $data['site_info']['mix'] = (number_format((time() - $site_create_time) / ($site_expire_time - $site_create_time), 2) * 100).'%';
         $data['site_info']['over_date'] = $site_expire_time - time() > 0 ? number_format(($site_expire_time - time())/ 86400, 2) : 0;
 
         return $data;
@@ -56,6 +52,7 @@ class SiteStatService extends BaseAdminService
      * 订单金额
      * @param $start_time
      * @param $end_time
+     * @return float
      */
     public function orderMoney($start_time, $end_time)
     {
@@ -64,14 +61,15 @@ class SiteStatService extends BaseAdminService
             ['order_status', '>', 0],
             ['create_time', 'between', [$start_time, $end_time]]
         ];
-        $money = (new RechargeOrder())->where($where)->sum('order_money');
-        return $money;
+        return (new RechargeOrder())->where($where)->sum('order_money');
     }
 
-      /**
+    /**
      * 订单数量
      * @param $start_time
      * @param $end_time
+     * @return int
+     * @throws DbException
      */
     public function orderCount($start_time, $end_time)
     {
@@ -80,8 +78,7 @@ class SiteStatService extends BaseAdminService
             ['order_status', '>', 0],
             ['create_time', 'between', [$start_time, $end_time]]
         ];
-        $money = (new RechargeOrder())->where($where)->count('order_id');
-        return $money;
+        return (new RechargeOrder())->where($where)->count('order_id');
     }
 
 

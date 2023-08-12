@@ -42,11 +42,12 @@ Route::group('applet', function () {
     //详情
     Route::get('site/version/:id', 'applet.SiteVersion/info');
     //最后一个升级的版本
-    Route::post('site/version/last', 'applet.SiteVersion/getLastVersion');
-
+    Route::get('site/version/last', 'applet.SiteVersion/getLastVersion');
+    //查看最新的版本
+    Route::get('site/version/upgrade', 'applet.SiteVersion/getUpgradeVersion');
 
     //下载
-    Route::post('version/download/:id', 'applet.VersionDownload/download');
+    Route::get('version/download/:id', 'applet.VersionDownload/download');
 })->middleware([
     AdminCheckToken::class,
     AdminCheckRole::class,

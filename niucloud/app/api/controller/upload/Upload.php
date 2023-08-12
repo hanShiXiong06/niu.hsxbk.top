@@ -15,13 +15,14 @@ use app\service\api\upload\Base64Service;
 use app\service\api\upload\FetchService;
 use app\service\api\upload\UploadService;
 use core\base\BaseApiController;
+use think\Response;
 
 class Upload extends BaseApiController
 {
 
     /**
      * 图片上传
-     * @return \think\Response
+     * @return Response
      */
     public function image(){
         $data = $this->request->params([
@@ -33,7 +34,7 @@ class Upload extends BaseApiController
 
     /**
      * 远程图片拉取
-     * @return \think\Response
+     * @return Response
      */
     public function imageFetch(){
         $data = $this->request->params([
@@ -46,7 +47,7 @@ class Upload extends BaseApiController
 
     /**
      * base64图片上传
-     * @return \think\Response
+     * @return Response
      */
     public function imageBase64(){
         $data = $this->request->params([

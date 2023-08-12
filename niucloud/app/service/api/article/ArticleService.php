@@ -13,6 +13,9 @@ namespace app\service\api\article;
 
 use app\model\article\Article;
 use core\base\BaseApiService;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 
 /**
  * 文章服务层
@@ -31,7 +34,7 @@ class ArticleService extends BaseApiService
     /**
      * 获取文章列表
      * @param array $where
-     * @param string $order
+     * @return array
      */
     public function getPage(array $where = [])
     {
@@ -45,10 +48,11 @@ class ArticleService extends BaseApiService
     /**
      * 文章列表
      * @param array $where
-     * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @param int $limit
+     * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getAll(array $where = [], int $limit = 0){
         $where[] = [ 'site_id', '=', $this->site_id ];
@@ -60,6 +64,7 @@ class ArticleService extends BaseApiService
     /**
      * 获取文章信息
      * @param int $id
+     * @return array
      */
     public function getInfo(int $id)
     {

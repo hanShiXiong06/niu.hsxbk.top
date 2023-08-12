@@ -99,13 +99,13 @@ class ExceptionHandle extends Handle
                 'previous' => $e->getPrevious(),
             ]);
         } elseif ($e instanceof ValidateException) {
-            return fail($e->getMessage(), []);
+            return fail($e->getMessage());
         } else if($e instanceof UnexpectedValueException){
             return fail($e->getMessage(), [], 401);
         }else if($e instanceof AuthException || $e instanceof AdminException){
             return fail($e->getMessage(), [], $e->getCode() ?: 400);
         }else if($e instanceof ServerException){
-            return fail($e->getMessage(), [], http_code:$e->getCode());
+            return fail($e->getMessage(), http_code:$e->getCode());
         }else {
             return fail($e->getMessage(), $massageData);
         }

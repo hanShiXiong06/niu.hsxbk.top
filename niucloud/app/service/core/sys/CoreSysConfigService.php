@@ -11,7 +11,6 @@
 
 namespace app\service\core\sys;
 
-use app\model\site\Site;
 use core\base\BaseCoreService;
 
 /**

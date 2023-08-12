@@ -11,18 +11,18 @@
 
 namespace app\adminapi\controller\weapp;
 
-use app\service\admin\weapp\WeappConfigService;
 use core\base\BaseAdminController;
-use think\Response;
 
 class Package extends BaseAdminController
 {
 
-    public function lists(){
+    public function lists()
+    {
         return success();
     }
 
-    public function add(){
+    public function add()
+    {
         $data = $this->request->params([
             ['version', ''],
             ['path', ''],

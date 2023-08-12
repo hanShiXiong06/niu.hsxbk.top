@@ -5,7 +5,7 @@
             <div class="flex justify-between items-center">
                 <span class="text-[20px]">{{pageName}}</span>
                 <el-button type="primary" class="w-[100px]" @click="addEvent">
-                    {{ t('addArticle') }}
+                    {{ t('add{UCASE_NAME}') }}
                 </el-button>
             </div>
 

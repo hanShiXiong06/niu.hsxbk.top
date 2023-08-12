@@ -13,13 +13,15 @@ namespace app\service\admin\auth;
 
 
 use app\dict\sys\AppTypeDict;
-use app\dict\sys\MenuDict;
 use app\dict\sys\MenuTypeDict;
 use app\model\site\Site;
 use app\model\sys\SysMenu;
 use app\service\admin\site\SiteService;
 use core\base\BaseAdminService;
-use think\facade\Cache;
+use think\Collection;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 
 /**
  * 用户服务层
@@ -63,7 +65,8 @@ class AuthSiteService extends BaseAdminService
 
     /**
      * 通过站点id获取菜单列表
-     * @param int $site_id
+     * @param int $is_tree
+     * @param int|string $status
      * @return mixed
      */
     public function getMenuList(int $is_tree, int|string $status){
@@ -72,7 +75,7 @@ class AuthSiteService extends BaseAdminService
 
     /**
      * 通过站点id获取菜单列表
-     * @param int $site_id
+     * @param int|string $status
      * @return mixed
      */
     public function getApiList(int|string $status){
@@ -81,10 +84,10 @@ class AuthSiteService extends BaseAdminService
 
     /**
      * 查询当前站点可以单独显示的菜单(仅支持站点端调用)
-     * @return SysMenu[]|array|\think\Collection
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @return array|SysMenu[]
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getShowMenuList(){
         $menu_keys = (new SiteService())->getMenuIdsBySiteId($this->site_id, 1);

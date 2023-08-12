@@ -44,8 +44,9 @@ class SysRole extends BaseModel
      * @param $data
      * @return string
      */
-    public function getStatusNameAttr($value, $data){
-        if(empty($data['status'])) return '';
+    public function getStatusNameAttr($value, $data)
+    {
+        if (empty($data['status'])) return '';
         return RoleStatusDict::getStatus()[$data['status']] ?? '';
     }
 

@@ -30,6 +30,7 @@ class ArticleCategoryService extends BaseApiService
     /**
      * 获取文章分类列表
      * @param array $where
+     * @return array
      */
     public function getPage(array $where = [])
     {
@@ -42,6 +43,7 @@ class ArticleCategoryService extends BaseApiService
     /**
      * 获取文章分类信息
      * @param int $id
+     * @return array
      */
     public function getInfo(int $id)
     {

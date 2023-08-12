@@ -9,9 +9,11 @@ use app\service\admin\install\InstallSystemService;
 use app\service\admin\site\SiteGroupService;
 use app\service\admin\site\SiteService;
 use app\service\core\schedule\CoreScheduleInstallService;
+use Exception;
 use think\facade\Cache;
 use think\facade\Db;
 use think\facade\View;
+use think\Response;
 
 
 class Index extends BaseInstall
@@ -30,14 +32,14 @@ class Index extends BaseInstall
         } elseif ($step == 2) {
             //系统变量
             $system_variables = [];
-            $phpv = phpversion();
+            $phpv = PHP_VERSION;
             $os = PHP_OS;
             $server = $_SERVER[ 'SERVER_SOFTWARE' ];
 
             $host = ( empty($_SERVER[ 'REMOTE_ADDR' ]) ? $_SERVER[ 'REMOTE_HOST' ] : $_SERVER[ 'REMOTE_ADDR' ] );
             $name = $_SERVER[ 'SERVER_NAME' ];
 
-            $verison = version_compare(PHP_VERSION, '8.0.0') == -1 ? false : true;
+            $verison = !(version_compare(PHP_VERSION, '8.0.0') == -1);
             //pdo
             $pdo = extension_loaded('pdo') && extension_loaded('pdo_mysql');
             $system_variables[] = [ "name" => "pdo", "need" => "开启", "status" => $pdo ];
@@ -54,7 +56,7 @@ class Index extends BaseInstall
             $fileinfo = extension_loaded('fileinfo');
             $system_variables[] = [ "name" => "fileinfo", "need" => "开启", "status" => $fileinfo ];
 
-            $root_path = str_replace("\\", DIRECTORY_SEPARATOR, dirname(dirname(dirname(dirname(__FILE__)))));
+            $root_path = str_replace("\\", DIRECTORY_SEPARATOR, dirname(__FILE__, 4));
             $root_path = str_replace("../", DIRECTORY_SEPARATOR, $root_path);
             $dirs_list = [
                 [ "path" => $root_path . DIRECTORY_SEPARATOR, "path_name" => "niucloud/", "name" => "网站目录" ],
@@ -72,7 +74,7 @@ class Index extends BaseInstall
                 $is_write = is_write($v[ "path" ]);
                 $dirs_list[ $k ][ "is_readable" ] = $is_readable;
                 $dirs_list[ $k ][ "is_write" ] = $is_write;
-                if ($is_readable == false || $is_write == false) {
+                if (!$is_readable || !$is_write) {
                     $is_dir = false;
                 }
             }
@@ -103,7 +105,7 @@ class Index extends BaseInstall
     {
         Cache::delete('install_data');
         Cache::delete('install_status');
-        return $this->fetch('index/step-4', [], $this->replace);
+        return $this->fetch('index/step-4');
     }
 
     /**
@@ -169,7 +171,7 @@ class Index extends BaseInstall
             }
 
             return success($result);
-        } catch (\Exception $e) {
+        } catch ( Exception $e) {
             $result = [
                 "status" => -1,
                 "message" => $e->getMessage()
@@ -197,7 +199,7 @@ class Index extends BaseInstall
             $sqls = explode("\n", trim($sql));
             $sqls = array_filter($sqls);
             foreach ($sqls as $query) {
-                $str1 = substr($query, 0, 1);
+                $str1 = $query[0] ?? '';
                 if ($str1 != '#' && $str1 != '-')
                     $sql_query[ $num ] .= $query;
             }
@@ -276,7 +278,7 @@ class Index extends BaseInstall
 
             Cache::set('install_status', 1);//成功
             return success();
-        } catch (\Exception $e) {
+        } catch ( Exception $e) {
             $this->setSuccessLog([ '安装失败' . $e->getMessage(), 'error' ]);
             return fail('安装失败' . $e->getMessage());
         }
@@ -357,10 +359,10 @@ class Index extends BaseInstall
                 'password' => $site_password,
             ];
             (new SiteService())->add($data);
-            $fp = fopen($this->lock_file, "w");
-            if ($fp == false) {
-                $this->setSuccessLog([ "写入失败，请检查目录" . dirname(dirname(__FILE__)) . "是否可写入！'", 'error' ]);
-                return fail("写入失败，请检查目录" . dirname(dirname(__FILE__)) . "是否可写入！'");
+            $fp = fopen($this->lock_file, 'wb');
+            if (!$fp) {
+                $this->setSuccessLog([ "写入失败，请检查目录" . dirname(__FILE__, 2) . "是否可写入！'", 'error' ]);
+                return fail("写入失败，请检查目录" . dirname(__FILE__, 2) . "是否可写入！'");
             }
             $this->setSuccessLog([ '初始化成功', 'success' ]);
             fwrite($fp, '已安装');
@@ -368,7 +370,7 @@ class Index extends BaseInstall
             Cache::set('install_status', 2);//成功
 //            Cache::tag(MenuService::$cache_tag_name)->clear();
             return success();
-        } catch (\Exception $e) {
+        } catch ( Exception $e) {
             $this->setSuccessLog([ '安装失败' . $e->getMessage(), 'error' ]);
             return fail('安装失败' . $e->getMessage());
         }
@@ -376,8 +378,8 @@ class Index extends BaseInstall
 
     /**
      * 安装sql
-     * @param $data
-     * @return \think\Response
+     * @param array $data
+     * @return Response
      */
     public function installSql(array $data)
     {
@@ -428,13 +430,13 @@ class Index extends BaseInstall
         for ($i = 0; $i < $query_count; $i++) {
             $sql = trim($sql_query[ $i ]);
             $is_write = false;
-            if (strstr($sql, 'CREATE TABLE')) {
+            if (str_contains($sql, 'CREATE TABLE')) {
                 $match_item = preg_match('/CREATE TABLE [`]?(\\w+)[`]?/is', $sql, $match_data);
                 $is_write = true;
-            } elseif (strstr($sql, 'ALTER TABLE')) {
+            } elseif (str_contains($sql, 'ALTER TABLE')) {
                 $match_item = preg_match('/ALTER TABLE [`]?(\\w+)[`]?/is', $sql, $match_data);
 
-            } elseif (strstr($sql, 'INSERT INTO')) {
+            } elseif (str_contains($sql, 'INSERT INTO')) {
                 $match_item = preg_match('/INSERT INTO [`]?(\\w+)[`]?/is', $sql, $match_data);
             } else {
                 $match_item = 0;
@@ -446,7 +448,7 @@ class Index extends BaseInstall
                     $sql_item = $this->str_replace_first($table_name, $new_table_name, $sql);
                     @mysqli_query($conn, $sql_item);
                     if ($is_write) $this->setSuccessLog([ '创建表' . $table_name, 'success' ]);
-                } catch (\Exception $e) {
+                } catch ( Exception $e) {
                     $this->setSuccessLog([ $e->getMessage(), 'error' ]);
                     return fail('数据库解析失败' . $e->getMessage());
                 }
@@ -459,14 +461,13 @@ class Index extends BaseInstall
 
     /**
      * 配置设置
-     * @param $path
-     * @param $data
-     * @return \think\Response
+     * @param array $data
+     * @return Response
      */
     public function installConfig(array $data)
     {
         $this->checkLock();
-        $root_path = str_replace("\\", DIRECTORY_SEPARATOR, dirname(dirname(dirname(dirname(__FILE__)))));
+        $root_path = str_replace("\\", DIRECTORY_SEPARATOR, dirname(__FILE__, 4));
         $root_path = str_replace("../", DIRECTORY_SEPARATOR, $root_path);
         $env_dir = $root_path . DIRECTORY_SEPARATOR . ".env";
         $example_env = $root_path . DIRECTORY_SEPARATOR . ".example.env";

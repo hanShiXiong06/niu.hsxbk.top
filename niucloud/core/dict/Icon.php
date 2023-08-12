@@ -22,16 +22,16 @@ class Icon extends BaseDict
      * @param array $data
      * @return array
      */
-    public function load(array $data) : array
+    public function load(array $data): array
     {
         $sys_path = dirname(app()->getRootPath()) . str_replace('/', DIRECTORY_SEPARATOR, '/admin/src/styles/icon');
         $file_arr = getFileMap($sys_path);
         $icon_arr = [];
         if (!empty($file_arr)) {
             foreach ($file_arr as $ck => $cv) {
-                if (strpos($cv, '.json') !== false) {
+                if (str_contains($cv, '.json')) {
                     $json_string = file_get_contents($ck);
-                    $icon = json_decode($json_string, true);
+                    $icon = json_decode($json_string, true, 512, JSON_THROW_ON_ERROR);
                     $icon_arr[] = $icon;
                 }
             }

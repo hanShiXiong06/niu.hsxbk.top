@@ -18,7 +18,11 @@ use app\dict\diy\TemplateDict;
 use app\model\diy\Diy;
 use app\service\admin\sys\SystemService;
 use core\base\BaseAdminService;
+use core\exception\AdminException;
 use Exception;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\facade\Db;
 
 /**
@@ -46,8 +50,7 @@ class DiyService extends BaseAdminService
         $field = 'id,site_id,title,name,template,type,mode,is_default,share,visit_count,create_time,update_time';
         $order = "update_time desc";
         $search_model = $this->model->where([ [ 'site_id', '=', $this->site_id ] ])->withSearch([ "title", "type", 'mode' ], $where)->field($field)->order($order)->append([ 'type_name' ]);
-        $list = $this->pageQuery($search_model);
-        return $list;
+        return $this->pageQuery($search_model);
     }
 
     /**
@@ -55,15 +58,14 @@ class DiyService extends BaseAdminService
      * @param array $where
      * @param string $field
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getList(array $where = [], $field = 'id,site_id,title,name,template,type,mode,is_default,share,visit_count,create_time,update_time')
     {
         $order = "update_time desc";
-        $list = $this->model->where([ [ [ 'site_id', '=', $this->site_id ] ] ])->withSearch([ "title", "type", 'mode' ], $where)->field($field)->select()->order($order)->toArray();
-        return $list;
+        return $this->model->where([ [ [ 'site_id', '=', $this->site_id ] ] ])->withSearch([ "title", "type", 'mode' ], $where)->field($field)->select()->order($order)->toArray();
     }
 
     /**
@@ -74,22 +76,20 @@ class DiyService extends BaseAdminService
     public function getInfo(int $id)
     {
         $field = 'id,site_id,title,name,template,type,mode,value,is_default,is_change,share,visit_count';
-        $info = $this->model->field($field)->where([ [ 'id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->findOrEmpty()->toArray();
-        return $info;
+        return $this->model->field($field)->where([ [ 'id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->findOrEmpty()->toArray();
     }
 
     public function getInfoByName(string $name)
     {
         $field = 'id,site_id,title,name,template,type,mode,value,is_default,is_change,share,visit_count';
-        $info = $this->model->field($field)->where([ [ 'name', '=', $name ], [ 'site_id', '=', $this->site_id ], [ 'is_default', '=', 1 ] ])->findOrEmpty()->toArray();
-        return $info;
+        return $this->model->field($field)->where([ [ 'name', '=', $name ], [ 'site_id', '=', $this->site_id ], [ 'is_default', '=', 1 ] ])->findOrEmpty()->toArray();
     }
 
     /**
      * 查询数量
      * @param array $where
      * @return int
-     * @throws \think\db\exception\DbException
+     * @throws DbException
      */
     public function getCount(array $where = [])
     {
@@ -140,8 +140,7 @@ class DiyService extends BaseAdminService
      */
     public function del(int $id)
     {
-        $res = $this->model->where([ [ 'id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->delete();
-        return $res;
+        return $this->model->where([ [ 'id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->delete();
     }
 
     /**
@@ -162,9 +161,9 @@ class DiyService extends BaseAdminService
             $this->model->where([ [ 'id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->update([ 'is_default' => 1, 'update_time' => time() ]);
             Db::commit();
             return true;
-        } catch (\Exception $e) {
+        } catch ( Exception $e) {
             Db::rollback();
-            throw new Exception($e->getMessage());
+            throw new AdminException($e->getMessage());
         }
     }
 
@@ -172,6 +171,7 @@ class DiyService extends BaseAdminService
      * 页面加载初始化
      * @param array $params
      * @return array
+     * @throws DbException
      */
     public function getInit(array $params = [])
     {
@@ -195,8 +195,8 @@ class DiyService extends BaseAdminService
         } else {
 
             // 新页面赋值
-            $title = $params[ 'title' ] ? $params[ 'title' ] : '页面' . $time;
-            $type = $params[ 'type' ] ? $params[ 'type' ] : 'DIY_PAGE';
+            $title = $params[ 'title' ] ?: '页面' . $time;
+            $type = $params[ 'type' ] ?: 'DIY_PAGE';
             $name = $type == 'DIY_PAGE' ? 'DIY_PAGE_RANDOM_' . $time : $type;
             $type_name = '';
             $template_name = $params[ 'template' ] ?? ''; // 页面模板名称
@@ -280,8 +280,7 @@ class DiyService extends BaseAdminService
                 }
 
                 $sort_arr [] = $cv[ 'sort' ];
-                unset($data[ $k ][ 'list' ][ $ck ][ 'sort' ]);
-                unset($data[ $k ][ 'list' ][ $ck ][ 'support_page' ]);
+                unset($data[$k]['list'][$ck]['sort'], $data[$k]['list'][$ck]['support_page']);
             }
             array_multisort($sort_arr, SORT_ASC, $data[ $k ][ 'list' ]); //排序，根据 sort 排序
         }
@@ -292,6 +291,9 @@ class DiyService extends BaseAdminService
     /**
      * 获取自定义链接
      * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getLink()
     {
@@ -341,7 +343,7 @@ class DiyService extends BaseAdminService
     /**
      * 获取页面模板
      * @param array $params
-     * @return array|string
+     * @return array
      */
     public function getTemplate($params = [])
     {
@@ -366,10 +368,7 @@ class DiyService extends BaseAdminService
     public function getPageData($type, $name)
     {
         $pages = PagesDict::getPages([ 'type' => $type ]);
-        if (isset($pages[ $name ])) {
-            return $pages[ $name ];
-        }
-        return [];
+        return $pages[$name] ?? [];
     }
 
     /**
@@ -392,7 +391,10 @@ class DiyService extends BaseAdminService
 
     /**
      * 获取页面装修列表
-     * @return array|string|null
+     * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getDecoratePage()
     {
@@ -463,7 +465,7 @@ class DiyService extends BaseAdminService
     /**
      * 切换模板
      * @param array $params
-     * @return array|mixed
+     * @return array
      * @throws Exception
      */
     public function changeTemplate(array $params = [])

@@ -84,7 +84,7 @@ class LinkDict
                 'child_list' => []
             ]
         ];
-        return ( new DictLoader("UniappLink") )->load($system_links);
+        return (new DictLoader("UniappLink"))->load($system_links);
     }
 
 }

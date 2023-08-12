@@ -15,6 +15,10 @@ use app\dict\site\SiteDict;
 use app\model\site\Site;
 use core\base\BaseCoreService;
 use core\exception\CommonException;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
+use think\Model;
 
 /**
  * 站点服务层
@@ -55,7 +59,7 @@ class CoreSiteService extends BaseCoreService
     /**
      * 模型实例
      * @param $site_id
-     * @return Site|array|mixed|\think\Model
+     * @return Site|array|mixed|Model
      */
     public function find($site_id)
     {
@@ -64,7 +68,10 @@ class CoreSiteService extends BaseCoreService
 
     /**
      * 获取过期的站点
-     * @return void
+     * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getExpireSiteList()
     {
@@ -76,7 +83,7 @@ class CoreSiteService extends BaseCoreService
 
     /**
      * 站点到期(计划任务专用,切勿调用)
-     * @param $site_id
+     * @param int $site_id
      * @return bool
      */
     public function expire(int $site_id)

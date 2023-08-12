@@ -58,7 +58,8 @@ return [
             'ext' => ['zip', 'rar'],
             'mime' => [
                 'application/zip',
-                'application/vnd.rar'
+                'application/vnd.rar',
+                'application/x-zip-compressed'
             ],
             'size' => 2097152
         ]

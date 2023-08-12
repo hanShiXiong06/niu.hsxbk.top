@@ -27,7 +27,7 @@ class WebIndexGenerator extends BaseGenerator
 
     /**
      * 替换模板中的变量
-     * @return mixed|void
+     * @return void
      */
     public function replaceText()
     {
@@ -195,8 +195,7 @@ class WebIndexGenerator extends BaseGenerator
             $content = substr($content, 0, -1);
         }
 
-        $content = $this->setBlankSpace($content, '                    ');
-        return $content;
+        return $this->setBlankSpace($content, '                    ');
     }
 
     /**
@@ -295,7 +294,7 @@ class WebIndexGenerator extends BaseGenerator
 
     /**
      * 获取文件生成到模块的文件夹路径
-     * @return mixed|void
+     * @return string
      */
     public function getModuleOutDir()
     {
@@ -325,8 +324,8 @@ class WebIndexGenerator extends BaseGenerator
      */
     public function getFileName()
     {
-        if($this->className) return Str::lower($this->className).'.vue';
-        return Str::lower($this->getTableName()).'.vue';
+        if($this->className) return Str::lower($this->className).'_list.vue';
+        return 'list.vue';
     }
 
 

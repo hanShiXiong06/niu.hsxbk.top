@@ -22,7 +22,7 @@ class Weapp extends BaseApiController
 
     /**
      * 授权登录
-     * @return void
+     * @return Response
      */
     public function login(){
         $data = $this->request->params([['code', '']]);
@@ -33,7 +33,6 @@ class Weapp extends BaseApiController
     /**
      * 注册
      * @return Response
-     * @throws InvalidArgumentException
      */
     public function register(){
         $data = $this->request->params([

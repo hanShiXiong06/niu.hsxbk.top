@@ -32,7 +32,7 @@ class ConfigService extends BaseAdminService
 
     /**
      * 获取注册与登录设置
-     * @param $site_id
+     * @return array
      */
     public function getConfig()
     {
@@ -47,9 +47,8 @@ class ConfigService extends BaseAdminService
 
     /**
      * 注册与登录设置
-     * @param $site_id
-     * @param $data
-     * @return SysConfig|bool|Model
+     * @param array $data
+     * @return true
      */
     public function setConfig(array $data)
     {

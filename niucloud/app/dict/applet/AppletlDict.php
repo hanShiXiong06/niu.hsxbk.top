@@ -20,24 +20,23 @@ namespace app\dict\applet;
 class AppletlDict
 {
 
-    const ON   = '1';//草稿
-    //微信公众号
-    const OFF  = '2';
+    public const ON = '1';
 
-    const PUBLISHED = '3';
+    public const OFF = '2';
 
 
-    const DOWNLOAD = 'download';//下载
-    const UPGRADE = 'upgrade';//升级
+    public const DOWNLOAD = 'download';//下载
+    public const UPGRADE = 'upgrade';//升级
+
     /**
      * 小程序版本状态
      * @return array
      */
-    public static function getStatus(){
-        $data = [
-            self::ON    => get_lang('dict_applet.channel_weapp'),//启用
-            self::OFF     => get_lang('dict_applet.channel_wechat'),//下架
+    public static function getStatus()
+    {
+        return [
+            self::ON => get_lang('dict_applet.channel_weapp'),//启用
+            self::OFF => get_lang('dict_applet.channel_wechat'),//下架
         ];
-        return $data;
     }
 }
