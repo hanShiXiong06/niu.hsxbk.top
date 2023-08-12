@@ -6,8 +6,6 @@
 			:class="{ selected: diyStore.currentIndex == index,decorate : diyStore.mode == 'decorate' }"
 			:style="component.pageStyle">
 
-			<fixed-group :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></fixed-group>
-
 			<template v-if="component.componentName == 'Article'">
 				<diy-article :component="component" :index="index"
 					:pullDownRefresh="props.pullDownRefresh"></diy-article>
@@ -30,6 +28,12 @@
 			</template>
 			<template v-if="component.componentName == 'Text'">
 				<diy-text :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-text>
+			</template>
+			<template v-if="component.componentName == 'RubikCube'">
+				<diy-rubik-cube :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-rubik-cube>
+			</template>
+			<template v-if="component.componentName == 'HotArea'">
+				<diy-hot-area :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-hot-area>
 			</template>
 		</view>
 		<template v-if="diyStore.mode != 'decorate' && data.global.bottomTabBarSwitch">

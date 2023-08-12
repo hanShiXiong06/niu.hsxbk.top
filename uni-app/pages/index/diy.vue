@@ -4,10 +4,18 @@
 
 		<view v-show="!loading">
 
-			<view class="diy-template-wrap bg-index"
+			<!-- 自定义模板渲染 -->
+			<view class="diy-template-wrap bg-index" v-if="data.pageMode != 'fixed'"
 				:style="{ backgroundColor: data.global.pageBgColor,minHeight: 'calc(100vh - 50px)',backgroundImage : data.global.bgUrl ? 'url(' +  img(data.global.bgUrl) + ')' : '' }">
 
 				<diy-group :data="data" :pullDownRefresh="pullDownRefresh"></diy-group>
+
+			</view>
+
+			<!-- 固定模板渲染 -->
+			<view class="fixed-template-wrap" v-if="data.pageMode == 'fixed'">
+
+				<fixed-group :data="data" :pullDownRefresh="pullDownRefresh"></fixed-group>
 
 			</view>
 
@@ -32,6 +40,8 @@
 	const pullDownRefresh = ref(0)
 
 	const diyData = reactive({
+		pageMode: 'diy',
+		title: '',
 		global: {},
 		value: []
 	})
@@ -76,9 +86,10 @@
 			}).then((res : any) => {
 				if (res.data.value) {
 					let data = res.data;
-					diyData.mode = data.mode;
+					diyData.pageMode = data.mode;
+					diyData.title = data.title;
 
-					let sources = JSON.parse(res.data.value);
+					let sources = JSON.parse(data.value);
 					diyData.global = sources.global;
 					diyData.value = sources.value;
 					diyData.value.forEach((item, index) => {
@@ -92,7 +103,7 @@
 						}
 					});
 					uni.setNavigationBarTitle({
-						title: diyData.global.title
+						title: diyData.title
 					})
 				}
 

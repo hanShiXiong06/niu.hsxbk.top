@@ -2,7 +2,7 @@
 	<view class="image-ads" :style="warpCss">
 		<view v-if="diyComponent.list.length == 1" class="leading-0 overflow-hidden" :style="swiperWarpCss">
 			<app-link :data="diyComponent.list[0].link">
-				<image :src="img(diyComponent.list[0].imageUrl)" :style="{height: imgHeight}" mode="scaleToFill"
+				<image :src="img(diyComponent.list[0].imageUrl)" :style="{height: imgHeight}" mode="heightFix"
 					class="w-full" :show-menu-by-longpress="true"></image>
 			</app-link>
 		</view>
@@ -71,9 +71,6 @@
 		swiperIndex.value = e.detail.current;
 	};
 
-	const handleData = () => {
-	};
-
 	onMounted(() => {
 		refresh();
 		// 装修模式下刷新
@@ -100,7 +97,6 @@
 				}
 			});
 		}
-		handleData()
 	}
 </script>
 

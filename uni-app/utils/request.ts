@@ -95,8 +95,11 @@ class Request {
 						this.config.showSuccessMessage && uni.showToast({ title: data.msg, icon: 'none' })
 						resolve(data)
 					} else {
-						this.handleAuthError(data.code)
-						this.config.showErrorMessage && uni.showToast({ title: data.msg, icon: 'none' })
+						if (data.code == 0) {
+						    uni.showToast({ title: data.msg, icon: 'none' })
+						} else {
+						    this.handleAuthError(data.code)
+						}
 						reject(data)
 					}
 				},
@@ -128,8 +131,11 @@ class Request {
 						this.config.showSuccessMessage && uni.showToast({ title: data.msg, icon: 'none' })
 						resolve(data)
 					} else {
-						this.handleAuthError(data.code)
-						this.config.showErrorMessage && uni.showToast({ title: data.msg, icon: 'none' })
+                        if (data.code == 0) {
+                            uni.showToast({ title: data.msg, icon: 'none' })
+                        } else {
+                            this.handleAuthError(data.code)
+                        }
 						reject(data)
 					}
 				},
