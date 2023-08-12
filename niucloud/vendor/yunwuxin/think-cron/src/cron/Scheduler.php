@@ -2,7 +2,6 @@
 
 namespace yunwuxin\cron;
 
-use app\service\core\schedule\CoreScheduleService;
 use Carbon\Carbon;
 use Exception;
 use think\App;
@@ -27,23 +26,19 @@ class Scheduler
     public function __construct(App $app)
     {
         $this->app   = $app;
-//        $this->tasks = $app->config->get('cron.tasks', []);
-        $this->tasks = (new CoreScheduleService())->getList();
-
-        $this->cache = $app->cache->store();
+        $this->tasks = $app->config->get('cron.tasks', []);
+        $this->cache = $app->cache->store($app->config->get('cron.store', null));
     }
 
     public function run()
     {
         $this->startedAt = Carbon::now();
-        $file = root_path('runtime').'.schedule';
-        file_put_contents($file, time());
-        $taskClass = 'app\command\schedule\Schedule';
-        foreach ($this->tasks as $task_value) {
+        foreach ($this->tasks as $taskClass) {
 
             if (is_subclass_of($taskClass, Task::class)) {
+
                 /** @var Task $task */
-                $task = $this->app->invokeClass($taskClass, [$task_value]);
+                $task = $this->app->invokeClass($taskClass, [$this->cache]);
                 if ($task->isDue()) {
 
                     if (!$task->filtersPass()) {

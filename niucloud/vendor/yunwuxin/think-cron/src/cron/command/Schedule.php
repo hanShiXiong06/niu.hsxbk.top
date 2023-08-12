@@ -17,8 +17,9 @@ class Schedule extends Command
 
     protected function execute(Input $input, Output $output)
     {
+
         if ('\\' == DIRECTORY_SEPARATOR) {
-            $command = 'start /B "Niucloud Schedule" "' . PHP_BINARY . '" think cron:run';
+            $command = 'start /B "' . PHP_BINARY . '" think cron:run';
         } else {
             $command = 'nohup "' . PHP_BINARY . '" think cron:run >> /dev/null 2>&1 &';
         }
