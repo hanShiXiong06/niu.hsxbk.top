@@ -34,7 +34,6 @@
                         </template>
                     </el-table-column>
                     <el-table-column prop="sort" :label="t('sort')" min-width="100" />
-                    <el-table-column prop="create_time" :label="t('createTime')" width="180" />
                     <el-table-column :label="t('operation')" fixed="right" width="130">
                         <template #default="{ row }">
                             <!-- <el-button type="primary" link @click="editEvent(row)">{{ t('edit') }}</el-button>

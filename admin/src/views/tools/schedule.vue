@@ -1,11 +1,25 @@
 <template>
     <div class="main-container">
         <el-card class="box-card !border-none" shadow="never">
-            <div class="flex justify-between items-center">
+            <div class="flex justify-between items-center mb-[20px]">
                 <span class="text-[20px]">{{pageName}}</span>
                 <el-button type="primary" @click="showEvent">{{ t('addCron') }}</el-button>
             </div>
-            <div class="mt-[10px]">
+			<el-alert class="warm-prompt " type="info">
+			    <template #default>
+			        <div class="flex items-center">
+						<div>
+							<p>
+								{{ t('cronTipsOne') }}
+							</p>
+							<p class="mt-2">
+								{{ t('cronTipsTwo') }}
+							</p>
+						</div>
+			        </div>
+			    </template>
+			</el-alert>
+            <div class="mt-[20px]">
                 <el-table :data="cronTableData.data" size="large" v-loading="cronTableData.loading">
 
                     <template #empty>
@@ -76,7 +90,7 @@
 						</el-input>
 					</div>
 				</el-form-item>
-				<el-form-item :label="t('openStatus')" >
+				<el-form-item :label="t('isopen')" >
 				    <div class="input-width flex items-center text-sm">
 				        <el-radio-group v-model="formData.status">
 				          <el-radio :label="1">{{ t('yes') }}</el-radio>
@@ -203,22 +217,23 @@ const formRules = computed(() => {
 })
 
 const validatePass = (rule: any, value: any, callback: any) => {
-	if(formData.time.type == 'min' && formData.time.min == ''){
-		return callback(new Error(t('cronTimeTips')))
+	if(formData.time.type == 'min' && formData.time.min != ''){
+		return callback()
 	}
-	if(formData.time.type == 'week' && formData.time.week == '' && formData.time.hour == '' && formData.time.min == ''){
-		return callback(new Error(t('cronTimeTips')))
+	if(formData.time.type == 'week' && formData.time.week != '' && formData.time.hour != '' && formData.time.min != ''){
+		return callback()
 	}
-	if(formData.time.type == 'month' && formData.time.day == '' && formData.time.hour == '' && formData.time.min == ''){
-		return callback(new Error(t('cronTimeTips')))
+	if(formData.time.type == 'month' && formData.time.day != '' && formData.time.hour != '' && formData.time.min != ''){
+		return callback()
 	}
-	if(formData.time.type == 'day' && formData.time.day == '' && formData.time.hour == '' && formData.time.min == ''){
-		return callback(new Error(t('cronTimeTips')))
+	if(formData.time.type == 'day' && formData.time.day != '' && formData.time.hour != '' && formData.time.min != ''){
+		return callback()
 	}
-	if(formData.time.type == 'hour' && formData.time.hour == '' && formData.time.min == ''){
-		return callback(new Error(t('cronTimeTips')))
+	if(formData.time.type == 'hour' && formData.time.hour != '' && formData.time.min != ''){
+		return callback()
 	}
-	return callback()
+	return callback(new Error(t('cronTimeTips')))
+	
 }
 const save_type = ref(false)
 const addEvent = async (formEl: FormInstance | undefined) => {

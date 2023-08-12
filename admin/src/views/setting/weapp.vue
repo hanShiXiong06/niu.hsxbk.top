@@ -14,7 +14,7 @@
                     
                     <el-table-column prop="version" :label="t('version')" min-width="150" />
 					<el-table-column prop="create_time" :label="t('createTime')" min-width="150" />
-					<el-table-column prop="status_name" :label="t('status')" min-width="100" />
+					<!-- <el-table-column prop="status_name" :label="t('status')" min-width="100" /> -->
 					<el-table-column :label="t('operation')" fixed="right" width="130">
 					    <template #default="{ row }">
 					        <el-button type="primary" link @click="editEvent(row)">{{ t('edit') }}</el-button>
@@ -33,7 +33,7 @@
 		    <el-form :model="formData" label-width="110px" ref="formRef" :rules="formRules" class="page-form"
 		        v-loading="loading">
 				<el-form-item :label="t('version')" prop="version">
-					<el-input v-model="formData.version" :placeholder="t('keywordsPlaceholder')" class="input-width"/>
+					<el-input v-model="formData.version" :placeholder="t('versionPlaceholder')" class="input-width"/>
 				</el-form-item>	
 				<el-form-item :label="t('file')" prop="path">
 					<upload-file v-model="formData.path" class="input-width" api="applet/upload" />
@@ -112,7 +112,8 @@ const initialFormData = {
 	id: 0,
 	desc: '',
 	path: '',
-	verison: ''
+	version: '',
+	type: 'weapp'
 }
 const formData: Record<string, any> = reactive({ ...initialFormData })
 const formRef = ref<FormInstance>()
@@ -121,7 +122,7 @@ const showEvent = () => {
 	formData.id = 0,
 	formData.desc = '',
 	formData.path = '',
-	formData.verison = '',
+	formData.version = '',
 	showDialog.value = true
 }
 
@@ -171,7 +172,7 @@ const editEvent = (item) => {
 }
 
 const deleteEvent = (id: number) => {
-    ElMessageBox.confirm(t('cronDeleteTips'), t('warning'),
+    ElMessageBox.confirm(t('weappVersionDeleteTips'), t('warning'),
         {
             confirmButtonText: t('confirm'),
             cancelButtonText: t('cancel'),

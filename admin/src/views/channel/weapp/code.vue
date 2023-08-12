@@ -90,13 +90,13 @@
 				</el-col>
 			</el-row>
 		</el-card>
-		<el-dialog v-model="showDialog" :title="t('versionCode')" width="550px" :destroy-on-close="true">
+		<el-dialog v-model="showDialog" :title="t('versionCode')" width="650px" :destroy-on-close="true">
 			<el-table :data="weappTableData.data" size="large" v-loading="weappTableData.loading">
 			    <el-table-column prop="version" :label="t('version')" min-width="100" />
 				<el-table-column prop="create_time" :label="t('createTime')" min-width="150" />
 				<el-table-column :label="t('operation')" fixed="right" width="100">
 				    <template #default="{ row }">
-				        <el-button type="danger" link @click="down(row.id)">{{ t('down') }}</el-button>
+				        <el-button type="danger" link @click="down(row)" >{{ t('down') }}</el-button>
 				    </template>
 				</el-table-column>
 			</el-table>
@@ -119,6 +119,7 @@ import { getWeappConfig, getVersionList, versionDown } from '@/api/weapp'
 import { t } from '@/lang'
 import { useClipboard } from '@vueuse/core'
 import { ElMessage, FormInstance, FormRules } from 'element-plus'
+import axios, { HttpStatusCode } from 'axios'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -145,7 +146,7 @@ const checkWeappConfig = () =>{
 		}else{
 			ElMessage(t('weappTips'))
 			setTimeout(function() {
-				history.back()
+				history.back('/channel/weapp/config')
 			}, 500);
 		}
 	})
@@ -162,6 +163,7 @@ const loadWeappTemplateList = (page: number = 1) => {
     getVersionList({
         page: weappTableData.page,
         limit: weappTableData.limit,
+		type: 'weapp'
     }).then(res => {
         weappTableData.loading = false
         weappTableData.data = res.data.data
@@ -172,8 +174,16 @@ const loadWeappTemplateList = (page: number = 1) => {
 }
 loadWeappTemplateList()
 
-const down = (id) => {
-	versionDown(id).then(()=>{})
+const down = (item) => {
+	versionDown(item.id).then(res=>{
+		let blob = new Blob([res]);
+		let url = window.URL.createObjectURL(blob); // 创建 url 并指向 blob
+		let a = document.createElement('a');
+		a.href = url;
+		a.download = t('weappVersion') + item.version + '.zip';
+		a.click();
+		window.URL.revokeObjectURL(url); // 释放该 url
+	})
 }
 
 </script>

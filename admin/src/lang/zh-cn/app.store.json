@@ -28,5 +28,10 @@
 	"jobError": "任务队列未启动 请在服务端源码部署目录打开终端执行 php think queue:listen",
 	"conflictFiles": "冲突文件",
 	"process": "启动进程",
-	"open": "开启"
+	"open": "开启",
+	"down": "下载",
+	"addonVersion": "插件版本",
+	"versionCode": "版本号",
+	"createTime": "发布时间",
+	"buyLabel": "已购买"
 }

@@ -284,6 +284,7 @@ initPage({
     diyStore.typeName = data.type_name;
     diyStore.templateName = data.template;
     diyStore.isDefault = data.is_default;
+    diyStore.pageMode = data.mode;
     if (data.value) {
         let sources = JSON.parse(data.value);
         diyStore.global = sources.global;

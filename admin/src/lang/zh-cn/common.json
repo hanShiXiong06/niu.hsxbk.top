@@ -76,7 +76,8 @@
     "themeColor": "主题颜色",
     "detectionLoginOperation": "确定",
     "detectionLoginContent": "已检测到有其他账号登录，需要刷新后才能继续操作。",
-    "detectionLoginTip": "提示"
+    "detectionLoginTip": "提示",
+    "layoutStyle": "布局风格"
   },
   "axios": {
     "unknownError": "未知错误",

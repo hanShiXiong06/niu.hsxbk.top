@@ -1,5 +1,5 @@
 import { RouteRecordRaw, RouterView } from 'vue-router'
-import Default from '@/layout/default/index.vue'
+import Default from '@/layout/index.vue'
 import Decorate from '@/layout/decorate/index.vue'
 
 // 静态路由

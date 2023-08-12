@@ -2,7 +2,7 @@ import {defineStore} from 'pinia'
 import {t} from '@/lang'
 import {toRaw} from 'vue'
 import {ElMessage, ElMessageBox} from 'element-plus'
-import {cloneDeep } from 'lodash-es'
+import {cloneDeep} from 'lodash-es'
 
 const useDiyStore = defineStore('diy', {
     state: () => {
@@ -11,11 +11,12 @@ const useDiyStore = defineStore('diy', {
             load: false, // 加载状态
             currentIndex: -99, // 当前正在编辑的组件下标
             currentComponent: 'edit-page', // 当前正在编辑的组件名称
+            pageMode: 'diy',
             editTab: 'content',// 编辑页面
             name: '', // 页面标识
             type: '', // 页面模板
             typeName: '',  // 页面模板名称
-            templateName : '', // 页面模板标识
+            templateName: '', // 页面模板标识
             isDefault: 0, // 是否默认页面
             predefineColors: [
                 '#F4391c',
@@ -204,6 +205,7 @@ const useDiyStore = defineStore('diy', {
         // 将数据发送到uniapp
         postMessage() {
             var diyData = JSON.stringify({
+                pageMode: this.pageMode,
                 currentIndex: this.currentIndex,
                 global: toRaw(this.global),
                 value: toRaw(this.value)

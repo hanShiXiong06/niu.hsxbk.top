@@ -6,6 +6,83 @@
   "description": "系统图标",
   "glyphs": [
     {
+      "icon_id": "9924690",
+      "name": "魔方-两左两右",
+      "font_class": "mofang-liangzuoliangyou",
+      "unicode": "e6c5",
+      "unicode_decimal": 59077
+    },
+    {
+      "icon_id": "9924691",
+      "name": "魔方-一上两下",
+      "font_class": "mofang-yishangliangxia",
+      "unicode": "e6c6",
+      "unicode_decimal": 59078
+    },
+    {
+      "icon_id": "9924700",
+      "name": "魔方-一左两右",
+      "font_class": "mofang-yizuoliangyou",
+      "unicode": "e6c7",
+      "unicode_decimal": 59079
+    },
+    {
+      "icon_id": "18287302",
+      "name": "选择模板-一左三右",
+      "font_class": "xuanzemoban-yizuosanyou",
+      "unicode": "e6e9",
+      "unicode_decimal": 59113
+    },
+    {
+      "icon_id": "33490811",
+      "name": "热区",
+      "font_class": "requ",
+      "unicode": "e68d",
+      "unicode_decimal": 59021
+    },
+    {
+      "icon_id": "30454135",
+      "name": "魔方",
+      "font_class": "mofang1",
+      "unicode": "e64d",
+      "unicode_decimal": 58957
+    },
+    {
+      "icon_id": "579624",
+      "name": "信用卡",
+      "font_class": "xinyongqia",
+      "unicode": "e785",
+      "unicode_decimal": 59269
+    },
+    {
+      "icon_id": "2681698",
+      "name": "门店",
+      "font_class": "mendian",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "6607852",
+      "name": "ico_预约管理_预约变更",
+      "font_class": "ico_yuyueguanli_yuyuebiangeng",
+      "unicode": "e94a",
+      "unicode_decimal": 59722
+    },
+    {
+      "icon_id": "11372706",
+      "name": "搜索",
+      "font_class": "sousuo",
+      "unicode": "e8b9",
+      "unicode_decimal": 59577
+    },
+    {
+      "icon_id": "1703513",
+      "name": "更多",
+      "font_class": "gengduo",
+      "unicode": "e63b",
+      "unicode_decimal": 58939
+    },
+    {
       "icon_id": "36212724",
       "name": "02_路线",
       "font_class": "a-02_luxian",

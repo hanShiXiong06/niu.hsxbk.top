@@ -51,7 +51,7 @@ export function uploadVersion(params: Record<string, any>) {
  * @returns
  */
 export function addVersion(params: Record<string, any>) {
-    return request.put('applet/version/add', params, {showSuccessMessage: true})
+    return request.post('applet/version', params, {showSuccessMessage: true})
 }
 
 /**
@@ -78,7 +78,7 @@ export function getVersionInfo(id: string) {
  * @returns
  */
 export function editVersion(params: Record<string, any>) {
-    return request.get(`applet/version/${params.id}`, params, {showSuccessMessage: true})
+    return request.put(`applet/version/${params.id}`, params, {showSuccessMessage: true})
 }
 
 /**
@@ -96,5 +96,5 @@ export function deleteVersion(id: string) {
  * @returns
  */
 export function versionDown(id: string) {
-    return request.post(`applet/version/download/${id}`)
+    return request.get(`applet/version/download/${id}`, { "responseType": "blob" })
 }

@@ -117,7 +117,7 @@
                     var ratio = item.imgHeight / item.imgWidth;
                     item.width = 375;
                     item.height = item.width * ratio;
-                    diyStore.editComponent.imageHeight = item.height;
+                    diyStore.editComponent.imageHeight = parseInt(item.height);
                 }
             };
         });

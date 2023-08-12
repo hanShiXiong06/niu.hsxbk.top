@@ -109,5 +109,15 @@
   "more": "文字",
   "morePlaceholder": "请输入文字",
   "moreIsShow": "是否显示",
-  "memberStyle": "会员样式"
+  "memberStyle": "会员样式",
+  "template": "模板",
+  "imageGap": "图片间隙",
+  "rubikCubeStyle": "魔方样式",
+  "hotArea": "热区",
+  "hotAreaSet": "热区设置",
+  "addHotArea": "添加热区",
+  "selectedAfterHotArea": "个热区",
+  "hotAreaManage": "热区管理",
+  "selectedHotArea": "请选择热区",
+  "hotAreaLink": "的链接地址"
 }

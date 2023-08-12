@@ -16,5 +16,7 @@
 	"codeDownTwoDesc": "上传代码",
 	"codeDownTwoTips": "下载完成之后，使用微信开发工具进行上传",
 	"codeDownThreeDesc": "发布小程序",
-	"codeDownThreeTips": "上传之后提交审核，审核通过发布小程序"
+	"codeDownThreeTips": "上传之后提交审核，审核通过发布小程序",
+	"weappVersion": "小程序版本",
+	"close": "关闭"
 }

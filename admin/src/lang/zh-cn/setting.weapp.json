@@ -7,5 +7,6 @@
 	"editVersion": "添加/编辑版本",
 	"file": "文件",
 	"filePlaceholder":"请上传版本文件",
-	"desc": "版本说明"
+	"desc": "版本说明",
+	"weappVersionDeleteTips": "确定要删除小程序版本吗"
 }
