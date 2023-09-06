@@ -1,6 +1,5 @@
 <template>
-    <div style="position: relative"
-        >
+    <div style="position: relative">
         <div class="verify-img-out">
             <div class="verify-img-panel" :style="{'width': setSize.imgWidth,
                                                    'height': setSize.imgHeight,
@@ -110,9 +109,6 @@
                 barAreaBorderColor = ref(undefined),
                 showRefresh = ref(true),
                 bindingClick = ref(true)
-
-                
-               
 
                 const init = ()=>{
                     //加载页面

@@ -12,9 +12,7 @@
                     <el-scrollbar>
                         <div class="p-[10px]">
                             <router-view v-slot="{ Component, route }" v-if="appStore.routeRefreshTag">
-                                <keep-alive :include="tabbarStore.tabNames">
-                                    <component :is="Component" :key="route.fullPath" />
-                                </keep-alive>
+                                <component :is="Component" :key="route.fullPath" />
                             </router-view>
                         </div>
                     </el-scrollbar>
@@ -30,11 +28,9 @@ import { computed } from 'vue'
 import layoutHeader from './components/header/index.vue'
 import layoutAside from './components/aside/index.vue'
 import useAppStore from '@/stores/modules/app'
-import useTabbarStore from '@/stores/modules/tabbar'
 import useSystemStore from '@/stores/modules/system'
 
 const appStore = useAppStore()
-const tabbarStore = useTabbarStore()
 const systemStore = useSystemStore()
 const dark = computed(()=>{
     return systemStore.dark

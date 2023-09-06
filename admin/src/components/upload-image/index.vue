@@ -1,10 +1,11 @@
 <template>
     <div class="flex flex-wrap">
         <template v-if="limit == 1">
-            <div class="rounded cursor-pointer overflow-hidden relative border border-dashed border-color image-wrap mr-[10px]" :style="style">
+            <div class="cursor-pointer overflow-hidden relative border border-solid border-color image-wrap mr-[10px]"
+                :style="style">
                 <div class="w-full h-full relative" v-if="images.data.length">
                     <div class="w-full h-full flex items-center justify-center">
-                        <el-image :src="img(images.data[0])" fit="contain"></el-image>
+                        <el-image :src="images.data[0].indexOf('data:image') != -1 ? images.data[0] : img(images.data[0])" fit="contain"></el-image>
                     </div>
                     <div class="absolute z-[1] flex items-center justify-center w-full h-full inset-0 bg-black bg-opacity-60 operation">
                         <icon name="element-ZoomIn" color="#fff" size="18px" class="mr-[10px]" @click="previewImage()" />
@@ -20,12 +21,13 @@
             </div>
         </template>
         <template v-else>
-            <div class="rounded cursor-pointer overflow-hidden relative border border-dashed border-color image-wrap mr-[10px]" :style="style" v-for="(item, index) in images.data" :key="index">
+            <div class="cursor-pointer overflow-hidden relative border border-solid border-color image-wrap mr-[10px]" :style="style" v-for="(item, index) in images.data" :key="index">
                 <div class="w-full h-full relative">
                     <div class="w-full h-full flex items-center justify-center">
                         <el-image :src="img(item)" fit="contain"></el-image>
                     </div>
-                    <div class="absolute z-[1] flex items-center justify-center w-full h-full inset-0 bg-black bg-opacity-60 operation">
+                    <div
+                        class="absolute z-[1] flex items-center justify-center w-full h-full inset-0 bg-black bg-opacity-60 operation">
                         <icon name="element-ZoomIn" color="#fff" size="18px" class="mr-[10px]" @click="previewImage(index)" />
                         <icon name="element-Delete" color="#fff" size="18px" @click="removeImage(index)" />
                     </div>
@@ -72,7 +74,7 @@ const prop = defineProps({
     }
 })
 
-const emit = defineEmits(['update:modelValue','change'])
+const emit = defineEmits(['update:modelValue', 'change'])
 
 const value = computed({
     get() {
@@ -95,9 +97,13 @@ const setValue = () => {
 }
 
 watch(() => value.value, () => {
-    images.data = [
-        ...value.value.split(',').filter((item: string) => { return item })
-    ]
+    if (value.value.indexOf('data:image') != -1) {
+        images.data[0] = value.value + ''
+    } else {
+        images.data = [
+            ...value.value.split(',').filter((item: string) => { return item })
+        ]
+    }
     setValue()
 }, { immediate: true })
 
@@ -157,5 +163,4 @@ const previewImage = (index: number = 0) => {
             display: flex;
         }
     }
-}
-</style>
+}</style>

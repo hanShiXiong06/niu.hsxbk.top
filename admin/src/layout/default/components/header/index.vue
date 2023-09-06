@@ -1,13 +1,8 @@
 <template>
-    <el-container :class="['h-full px-[10px]',{'layout-header border-b border-color': !dark}]" >
+    <el-container :class="['h-full px-[10px]', { 'layout-header border-b border-color': !dark }]">
         <el-row class="w-100 h-full w-full">
             <el-col :span="12">
                 <div class="left-panel h-full flex items-center">
-                    <!-- 左侧菜单折叠 -->
-                    <div class="navbar-item flex items-center h-full cursor-pointer" @click="toggleMenuCollapse">
-                        <icon name="element-Expand" v-if="systemStore.menuIsCollapse" />
-                        <icon name="element-Fold" v-else />
-                    </div>
                     <!-- 刷新当前页 -->
                     <div class="navbar-item flex items-center h-full cursor-pointer" @click="refreshRouter">
                         <icon name="element-Refresh" />
@@ -15,7 +10,7 @@
                     <!-- 面包屑导航 -->
                     <div class="flex items-center h-full pl-[10px] hidden-xs-only">
                         <el-breadcrumb separator="/">
-                            <el-breadcrumb-item v-for="(route, index) in breadcrumb" :key="index">{{route.meta.title }}</el-breadcrumb-item>
+                            <el-breadcrumb-item v-for="(route, index) in breadcrumb" :key="index">{{ route.meta.title }}</el-breadcrumb-item>
                         </el-breadcrumb>
                     </div>
                 </div>
@@ -23,12 +18,12 @@
             <el-col :span="12">
                 <div class="right-panel h-full flex items-center justify-end">
                     <!-- 预览 只有站点时展示-->
-					
+
                     <i class="iconfont iconlingdang-xianxing cursor-pointer px-[8px]" :title="t('newInfo')" v-if="appType == 'site'"></i>
-					<!-- 切换首页 -->
-					<div class="navbar-item flex items-center h-full cursor-pointer"  v-if="appType == 'site'" @click="checkIndexList">
-						<icon name="iconfont-iconqiehuan" :title="t('indexSwitch')"/>
-					</div>
+                    <!-- 切换首页 -->
+                    <div class="navbar-item flex items-center h-full cursor-pointer" v-if="appType == 'site'" @click="checkIndexList">
+                        <icon name="iconfont-iconqiehuan" :title="t('indexSwitch')" />
+                    </div>
                     <!-- 切换语言 -->
                     <div class="navbar-item flex items-center h-full cursor-pointer">
                         <switch-lang />
@@ -50,7 +45,6 @@
             </el-col>
         </el-row>
         <input type="hidden" v-model="comparisonToken">
-        <input type="hidden" v-model="comparisonSiteId">
 
         <el-dialog v-model="detectionLoginDialog" :title="t('layout.detectionLoginTip')" width="30%" :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
             <span>{{ t('layout.detectionLoginContent') }}</span>
@@ -60,26 +54,26 @@
                 </span>
             </template>
         </el-dialog>
-		
-		<el-dialog v-model="showDialog" :title="t('indexTemplate')" width="550px" :destroy-on-close="true" >
-			<div class="flex flex-wrap">
-				<div v-for="(items, index) in indexList" :key="index" v-if="index_path == ''">
-					<div @click="index_path = items.view_path" class="index-item py-[5px] px-[10px] mr-[10px] rounded-[3px] cursor-pointer" :class="items.is_use == 1 ? 'bg-primary text-[#fff]' : '' ">
-						<span >{{ items.name }}</span>
-					</div>
-				</div>
-				<div v-for="(itemTo, indexTo) in indexList" :key="indexTo" v-else>
-					<div @click="index_path = itemTo.view_path" class="index-item py-[5px] px-[10px] mr-[10px] rounded-[3px] cursor-pointer" :class="index_path == itemTo.view_path ? 'bg-primary text-[#fff]' : '' ">
-						<span >{{ itemTo.name }}</span>
-					</div>
-				</div>
-			</div>
-		    <template #footer>
-		        <span class="dialog-footer">
-		            <el-button type="primary" @click="submitIndex">{{ t('confirm') }}</el-button>
-		        </span>
-		    </template>
-		</el-dialog>
+
+        <el-dialog v-model="showDialog" :title="t('indexTemplate')" width="550px" :destroy-on-close="true">
+            <div class="flex flex-wrap">
+                <div v-for="(items, index) in indexList" :key="index" v-if="index_path == ''">
+                    <div @click="index_path = items.view_path" class="index-item py-[5px] px-[10px] mr-[10px] rounded-[3px] cursor-pointer" :class="items.is_use == 1 ? 'bg-primary text-[#fff]' : ''">
+                        <span>{{ items.name }}</span>
+                    </div>
+                </div>
+                <div v-for="(itemTo, indexTo) in indexList" :key="indexTo" v-else>
+                    <div @click="index_path = itemTo.view_path" class="index-item py-[5px] px-[10px] mr-[10px] rounded-[3px] cursor-pointer" :class="index_path == itemTo.view_path ? 'bg-primary text-[#fff]' : ''">
+                        <span>{{ itemTo.name }}</span>
+                    </div>
+                </div>
+            </div>
+            <template #footer>
+                <span class="dialog-footer">
+                    <el-button type="primary" @click="submitIndex">{{ t('confirm') }}</el-button>
+                </span>
+            </template>
+        </el-dialog>
     </el-container>
 </template>
 
@@ -94,7 +88,7 @@ import useAppStore from '@/stores/modules/app'
 import { useRoute, useRouter } from 'vue-router'
 import { t } from '@/lang'
 import storage from '@/utils/storage'
-import { getIndexList, setIndexList } from '@/api/sys'
+import { getIndexList, setIndexList } from '@/app/api/sys'
 
 const router = useRouter()
 const appType = storage.get('app_type')
@@ -104,34 +98,9 @@ const appStore = useAppStore()
 const route = useRoute()
 const screenWidth = ref(window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth)
 
-const dark = computed(()=>{
+const dark = computed(() => {
     return systemStore.dark
 })
-
-// 检测登录 start
-const detectionLoginDialog = ref(false)
-const comparisonToken = ref('')
-const comparisonSiteId = ref('')
-if (storage.get('comparisonTokenStorage')) {
-    comparisonToken.value = storage.get('comparisonTokenStorage')
-    // storage.remove(['comparisonTokenStorage']);
-}
-if (storage.get('comparisonSiteIdStorage')) {
-    comparisonSiteId.value = storage.get('comparisonSiteIdStorage')
-    // storage.remove(['comparisonSiteIdStorage']);
-}
-// 监听标签页面切换
-document.addEventListener('visibilitychange', e => {
-    if (document.visibilityState === 'visible' && (comparisonSiteId.value != storage.get('siteId') || comparisonToken.value != storage.get('token'))) {
-        detectionLoginDialog.value = true
-    }
-})
-
-const detectionLoginFn = () => {
-    detectionLoginDialog.value = false
-    location.reload();
-}
-// 检测登录 end
 
 onMounted(() => {
     // 监听窗体宽度变化
@@ -180,50 +149,52 @@ const backFn = () => {
     router.go(-1)
 }
 
-const indexList = ref();
+const indexList = ref()
 const showDialog = ref(false)
 const checkIndexList = () => {
-	getIndexList().then(res => {
-		showDialog.value = true
-		indexList.value = res.data
-		for(let i = 0 ; i < indexList.value.length; i ++){
-			if(indexList.value[i].is_use == 1){
-				index_path.value = indexList.value[i].view_path
-			}
-		}
-	})
+    getIndexList().then(res => {
+        showDialog.value = true
+        indexList.value = res.data
+        for (let i = 0; i < indexList.value.length; i++) {
+            if (indexList.value[i].is_use == 1) {
+                index_path.value = indexList.value[i].view_path
+            }
+        }
+    })
 }
 
-const index_path = ref('');
+const index_path = ref('')
 const submitIndex = () => {
-	setIndexList({
-		view_path: index_path.value
-	}).then(() => {
-	    showDialog.value = false
-	    router.go(0)
-	})
+    setIndexList({
+        view_path: index_path.value
+    }).then(() => {
+        showDialog.value = false
+        router.go(0)
+    })
 }
 </script>
 
 <style lang="scss" scoped>
-.layout-header{
+.layout-header {
     position: relative;
     z-index: 5;
-    box-shadow: 0px 0px 4px 0px rgba(0,145,255,0.1);
+    box-shadow: 0px 0px 4px 0px rgba(0, 145, 255, 0.1);
 }
+
 .navbar-item {
     padding: 0 8px;
+
     &:hover {
         background-color: var(--el-bg-color-page);
     }
 }
+
 .index-item {
-	border: 1px solid;
-	border-color: var(--el-color-primary);
+    border: 1px solid;
+    border-color: var(--el-color-primary);
+
     &:hover {
-		color: #fff;
+        color: #fff;
         background-color: var(--el-color-primary);
     }
-}
-
-</style>
+}</style>

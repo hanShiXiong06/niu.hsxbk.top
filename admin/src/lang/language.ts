@@ -9,7 +9,7 @@ class Language {
     }
 
     /**
-     * 
+     *
      * @param locale 设置语言
      */
     public setI18nLanguage(locale: string) {
@@ -24,16 +24,16 @@ class Language {
 
     /**
      * 加载语言包
-     * @param path 
-     * @param locale 
-     * @returns 
+     * @param path
+     * @param locale
+     * @returns
      */
-    public async loadLocaleMessages(path: string, locale: string) {
+    public async loadLocaleMessages(app: string, path: string, locale: string) {
         try {
-            const file = path == '/' ? 'index' : path.replace(/^(\/admin\/|\/site\/|\/)/, '').replaceAll('/', '.')
+            const file = path == '/' ? 'index' : path.replace(/^(\/admin\/|\/)/, '').replaceAll('/', '.')
 
             // 引入语言包文件
-            const messages = await import(`./${locale}/${file}.json`)
+            const messages = await import(app ? `@/${app}/lang/${locale}/${file}.json` : `@/app/lang/${locale}/${file}.json`)
 
             let data: Record<string, string> = {}
             Object.keys(messages.default).forEach(key => {

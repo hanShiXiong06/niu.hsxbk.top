@@ -1,9 +1,9 @@
 <template>
 	<div>
-		<div @click="show">
+		<div @click="show" class="cursor-pointer">
 			<slot>
 				<div v-if="value.heatMapData.length">{{ t('selected') }}<span class="text-primary p-[4px]">{{ value.heatMapData.length}}</span>{{ t('selectedAfterHotArea') }}</div>
-				<div v-else>{{ t('addHotArea') }}</div>
+				<div v-else>{{ t('clickSet') }}</div>
 			</slot>
 		</div>
 		<el-dialog v-model="showDialog" :title="t('hotAreaSet')" width="45%" :close-on-press-escape="false" :destroy-on-close="true" :close-on-click-modal="false">
@@ -11,7 +11,7 @@
 			<div class="flex">
 
 				<div class="content-box relative bg-cover bg-gray-100 border border-dashed border-gray-500" :style="{ backgroundImage : 'url(' + img(value.imageUrl) + ')',width : contentBoxWidth + 'px', height : contentBoxHeight + 'px' }">
-					<div v-for="(item,index) in dragBoxArr" :id="'box_' + index" class="area-box cursor-move border border-solid border-[#ccc] w-[100px] h-[100px] absolute top-0 left-0 select-none p-[5px]" :style="{ left : item.left + item.unit, top : item.top + item.unit }" @mousedown="mouseDown($event,index)">
+					<div v-for="(item,index) in dragBoxArr" :id="'box_' + index" class="area-box cursor-move border border-solid border-[#ccc] w-[100px] h-[100px] absolute top-0 left-0 select-none p-[5px]" :style="{ left : item.left + item.unit, top : item.top + item.unit, width : item.width + item.unit, height : item.height + item.unit }" @mousedown="mouseDown($event,index)">
 						<span>{{ index + 1 }}</span>
 						<template v-if="item.link.title">
 							<span class="p-[4px]">|</span>
@@ -26,8 +26,7 @@
 
 				<el-form label-width="80px" class="pl-[20px]">
 					<h3 class="mb-[10px] text-lg text-black">{{ t('hotAreaManage') }}</h3>
-					<el-button type="primary" plain size="small" class="mb-[10px]" @click="addArea">{{ t('addHotArea') }}</el-button>
-					<div class="overflow-y-auto h-[300px]">
+					<div class="overflow-y-auto max-h-[300px]">
 						<template v-for="(item,index) in dragBoxArr">
 							<div class="mb-[16px]" v-if="item">
 								<el-form-item :label="t('hotArea') + (index + 1)">
@@ -39,6 +38,7 @@
 							</div>
 						</template>
 					</div>
+					<el-button type="primary" plain class="ml-[80px]" @click="addArea">{{ t('addHotArea') }}</el-button>
 				</el-form>
 
 			</div>
@@ -132,6 +132,12 @@
             if (e.clientY - disY > contentBoxHeight.value - box.offsetHeight) {
                 box.style.top = contentBoxHeight.value - box.offsetHeight + 'px';
             }
+
+            dragBoxArr[index].left = box.offsetLeft;
+            dragBoxArr[index].top = box.offsetTop;
+            dragBoxArr[index].width = box.offsetWidth;
+            dragBoxArr[index].height = box.offsetHeight;
+            dragBoxArr[index].unit = 'px';
         };
 
         // 鼠标抬起时
@@ -581,7 +587,12 @@
                 box.style.width = width + 'px';
                 box.style.height = height + 'px';
             }
-            dragBoxArr[index].unit = 'px'
+
+            dragBoxArr[index].left = box.offsetLeft;
+            dragBoxArr[index].top = box.offsetTop;
+            dragBoxArr[index].width = box.offsetWidth;
+            dragBoxArr[index].height = box.offsetHeight;
+            dragBoxArr[index].unit = 'px';
 
         };
 

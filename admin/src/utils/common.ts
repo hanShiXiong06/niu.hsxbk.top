@@ -55,7 +55,7 @@ export function getAppType() {
         return 'admin'
     } else {
         const app = path[0]
-        return app == 'decorate' ? 'site' : app
+        return app
     }
 }
 
@@ -153,12 +153,12 @@ export function strByteLength(str: string = ''): number {
  */
 export function urlToRouteRaw(url: string) {
     const query = {}
-	const [path, param] = url.split('?')
+    const [path, param] = url.split('?')
 
-	param && param.split('&').forEach((str : string) => {
-		let [name, value] = str.split('=')
-		query[name] = value
-	})
+    param && param.split('&').forEach((str: string) => {
+        let [name, value] = str.split('=')
+        query[name] = value
+    })
 
-	return { path, query }
+    return { path, query }
 }

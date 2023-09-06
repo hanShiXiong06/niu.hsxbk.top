@@ -42,6 +42,8 @@
   "cityPlaceholder": "请选择市",
   "districtPlaceholder": "请选择区/县",
   "emptyData": "暂无数据",
+  "emptyQrCode": "暂无二维码",
+  "fileErr": "无法显示",
   "upload": {
     "root": "上传",
     "selectimage": "选择图片",
@@ -114,5 +116,7 @@
   "mapKey": "腾讯地图KEY",
   "indexTemplate": "首页模版",
   "indexSwitch": "切换首页",
-  "indexWarning": "你确定要切换首页吗？"
+  "indexWarning": "你确定要切换首页吗？",
+  "appName": "应用名称",
+  "appNamePlaceholder": "请输入应用名称"
 }

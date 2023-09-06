@@ -40,10 +40,10 @@
 							</el-form-item>
 						</div>
 						<el-form-item label=" ">
-							<div class="text-sm text-gray-400 select-text">路径必须以“/”开头，例：/pages/index/index</div>
+							<div class="text-sm text-gray-400 select-text">路径必须以“/”开头，例：/app/pages/index/index</div>
 						</el-form-item>
 						<el-form-item label=" ">
-							<div class="text-sm text-gray-400 select-text">跳转外部链接“/”开头，例：https://baidu.com</div>
+							<div class="text-sm text-gray-400 select-text">跳转外部链接“/”开头，例：http://www.niucloud.com</div>
 						</el-form-item>
 					</template>
 					<div v-else class="flex flex-wrap">
@@ -71,7 +71,7 @@
     import {t} from '@/lang'
     import {ref, computed} from 'vue'
     import {cloneDeep} from 'lodash-es'
-    import {getLink} from '@/api/diy';
+    import {getLink} from '@/app/api/diy';
     import {ElMessage} from 'element-plus'
 
     const prop = defineProps({
@@ -102,15 +102,6 @@
 
     const selectLink: any = ref([])
 
-    const show = () => {
-        // 每次打开时赋值
-        if (value.value.name != '') {
-            selectLink.value = cloneDeep(value.value);
-            parentLinkName.value = selectLink.value.parent;
-        }
-        showDialog.value = true
-    }
-
     getLink({}).then((res: any) => {
         link.value = res.data;
 
@@ -124,6 +115,16 @@
         }
         parentLinkName.value = selectLink.value.parent;
     });
+
+    const show = () => {
+        // 每次打开时赋值
+        if (value.value.name != '') {
+            selectLink.value = cloneDeep(value.value);
+            parentLinkName.value = selectLink.value.parent;
+	        if(parentLinkName.value) changeParentLink(link.value[parentLinkName.value]);
+        }
+        showDialog.value = true
+    }
 
     // 选择父级链接
     const changeParentLink = (item: any) => {

@@ -23,6 +23,10 @@ const prop = defineProps({
     api: {
         type: String,
         default: 'sys/document/document'
+    },
+    accept:{
+        type: String,
+        default: '.doc,.docx,.xml,.txt,.pem,.zip,.rar,.7z,.crt'
     }
 })
 
@@ -41,7 +45,7 @@ const upload: Record<string, any> = {
     action: `${import.meta.env.VITE_APP_BASE_URL}/${prop.api}`,
     showFileList: false,
     headers: {},
-    accept: '.doc,.docx,.xml,.txt,.pem,.zip,.rar,.7z,.crt',
+    accept: prop.accept,
     onSuccess: (response: any, uploadFile: UploadFile) => {
         value.value = response.data.url
         ElMessage({
@@ -51,7 +55,6 @@ const upload: Record<string, any> = {
     }
 }
 upload.headers[import.meta.env.VITE_REQUEST_HEADER_TOKEN_KEY] = getToken()
-upload.headers[import.meta.env.VITE_REQUEST_HEADER_SITEID_KEY] = storage.get('siteId') || 0
 
 </script>
 

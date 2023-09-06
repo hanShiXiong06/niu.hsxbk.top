@@ -1,12 +1,31 @@
 import { RouteRecordRaw, RouterView } from 'vue-router'
 import Default from '@/layout/index.vue'
 import Decorate from '@/layout/decorate/index.vue'
+import { Key } from '@element-plus/icons-vue'
 
 // 静态路由
 export const STATIC_ROUTES: Array<RouteRecordRaw> = [
     {
         path: '/:pathMatch(.*)*',
-        component: () => import('@/views/error/404.vue')
+        component: () => import('@/app/views/error/404.vue')
+    },
+    {
+        path: '/login',
+        component: () => import('@/app/views/login/index.vue')
+    },
+    {
+        path: '/user',
+        component: Default,
+        children: [
+            {
+                path: 'center',
+                meta: {
+                    type: 1,
+                    title: '个人中心'
+                },
+                component: () => import('@/app/views/index/personal.vue')
+            }
+        ]
     }
 ]
 
@@ -31,55 +50,6 @@ export const ADMIN_ROUTE: RouteRecordRaw = {
             path: '',
             name: Symbol('adminRoot'),
             component: Default
-        },
-        {
-            path: 'login',
-            component: () => import('@/views/login/index.vue')
-        },
-        {
-            path: 'user',
-            component: Default,
-            children: [
-                {
-                    path: 'center',
-                    meta: {
-                        type: 1,
-                        title: '个人中心'
-                    },
-                    component: () => import('@/views/index/personal.vue')
-                }
-            ]
-        }
-    ]
-}
-
-// 站点端路由
-export const SITE_ROUTE: RouteRecordRaw = {
-    path: '/site',
-    name: Symbol('site'),
-    children: [
-        {
-            path: '',
-            name: Symbol('siteRoot'),
-            component: Default
-        },
-        {
-            path: 'login',
-            component: () => import('@/views/login/index.vue')
-        },
-        {
-            path: 'user',
-            component: Default,
-            children: [
-                {
-                    path: 'center',
-                    meta: {
-                        type: 1,
-                        title: '个人中心'
-                    },
-                    component: () => import('@/views/index/personal.vue')
-                }
-            ]
         }
     ]
 }
@@ -92,53 +62,56 @@ export const DECORATE_ROUTER: RouteRecordRaw = {
     children: []
 }
 
-const modules = import.meta.glob('@/views/**/*.vue')
+const modules = import.meta.glob('@/app/views/**/*.vue')
+const addonModules = import.meta.glob('@/**/views/**/*.vue')
 
 interface Route {
     menu_name: string,
     router_path: string,
     view_path: string
     menu_type: number,
+    menu_key: string,
     icon?: {
         name: string,
         type: string
     },
     children?: [],
     is_show: boolean,
-    app_type: string
+    addon: string
 }
 
 /**
  * 创建路由
- * @param data 
- * @returns 
+ * @param route
+ * @param parentRoute
  */
 const createRoute = function (route: Route, parentRoute: RouteRecordRaw | null = null): RouteRecordRaw {
     const record: RouteRecordRaw = {
-        path: parentRoute ? route.router_path : route.router_path != 'decorate' ? `/${route.app_type}/${route.router_path}` : `/${route.router_path}`,
+        path: parentRoute ? route.router_path : `/${route.router_path}`,
         name: parentRoute ? Symbol(`${parentRoute.path}/${route.router_path}`) : Symbol(`/${route.router_path}`),
         meta: {
             title: route.menu_name,
             icon: route.icon,
             type: route.menu_type,
             show: route.is_show,
-            app: route.app_type,
-            view: route.view_path
+            app: route.addon,
+            view: route.view_path,
+            key: route.menu_key
         }
     }
     if (route.menu_type == 0) {
         record.component = parentRoute ? RouterView : () => Promise.resolve(Default)
         if (!route.children) record.component = RouterView
     } else {
-        record.component = modules[`/src/views/${route.view_path}.vue`]
+        record.component = route.addon ? addonModules[`/src/${route.addon}/views/${route.view_path}.vue`] : modules[`/src/app/views/${route.view_path}.vue`]
     }
     return record
 }
 
 /**
  * 格式化路由
- * @param routes 
- * @returns 
+ * @param routes
+ * @returns
  */
 export function formatRouters(routes: Route[], parentRoute: RouteRecordRaw | null = null) {
     return routes.map((route) => {
@@ -152,8 +125,8 @@ export function formatRouters(routes: Route[], parentRoute: RouteRecordRaw | nul
 
 /**
  * 获取首条有效路由
- * @param routes 
- * @returns 
+ * @param routes
+ * @returns
  */
 export function findFirstValidRoute(routes: RouteRecordRaw[]): string | undefined {
     for (const route of routes) {

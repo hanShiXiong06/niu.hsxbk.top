@@ -8,10 +8,8 @@ interface setParam {
 }
 
 class Storage {
-    private prefix = ''
 
     public constructor() {
-        this.prefix = getAppType()
     }
 
     /**
@@ -20,7 +18,7 @@ class Storage {
      */
     public set(param: setParam) {
         try {
-            window.localStorage.setItem(`${this.prefix}.${param.key}`, JSON.stringify(param.data))
+            window.localStorage.setItem(param.key, JSON.stringify(param.data))
             typeof param.success == 'function' && param.success()
         } catch (error) {
             typeof param.fail == 'function' && param.fail(error)
@@ -34,7 +32,7 @@ class Storage {
      */
     public get(key: string) {
         try {
-            const json: any = window.localStorage.getItem(`${this.prefix}.${key}`)
+            const json: any = window.localStorage.getItem(key)
             return JSON.parse(json)
         } catch (error) {
             return null
@@ -46,8 +44,8 @@ class Storage {
      * @param key 
      */
     public remove(key: string | string[]) {
-        if (typeof key == 'string') window.localStorage.removeItem(`${this.prefix}.${key}`)
-        else key.forEach(item => { window.localStorage.removeItem(`${this.prefix}.${item}`) })
+        if (typeof key == 'string') window.localStorage.removeItem(key)
+        else key.forEach(item => { window.localStorage.removeItem(item) })
     }
 
     /**

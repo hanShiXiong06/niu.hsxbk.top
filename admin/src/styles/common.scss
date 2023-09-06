@@ -50,12 +50,11 @@
     height: 48px;
 
     .fixed-footer {
-        position: fixed;
+        position: absolute;
         height: inherit;
         background:var(--el-bg-color-overlay);
-        margin-left: var(--aside-width);
-        width:calc(100% - var(--aside-width));
         left: 0;
+        right: 0;
         bottom: 0;
         z-index: 100;
         display: flex;
@@ -215,4 +214,23 @@ html.dark {
     .right{
         font-size: 24px;
     }
+}
+
+// ********************************************** 修改整体样式 **********************************************
+// 修改选择框、ipnut、时间选择、按钮，input带按钮的圆角
+.el-input__wrapper, .el-input-group__append, .el-textarea__inner{
+    border-radius: 0 !important;
+}
+.el-button{
+    border-radius: 2px !important;
+}
+
+// /* 多行超出隐藏 */
+.multi-hidden {
+	word-break: break-all;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
 }

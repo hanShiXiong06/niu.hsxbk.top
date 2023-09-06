@@ -4,10 +4,9 @@
 
 <script lang="ts" setup>
 import { ref, markRaw, defineAsyncComponent } from 'vue'
-import Storage from '@/utils/storage'
 
 const modules = import.meta.glob('./*/index.vue')
-const siteLayout = Storage.get('layout') || 'default'
+const siteLayout = 'default'
 const layout = ref<any>(null)
 
 Object.keys(modules).forEach(key => {

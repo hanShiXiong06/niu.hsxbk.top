@@ -128,9 +128,9 @@
 						<el-button :disabled="batchOperateDisabled" @click="moveAttachmentEvent()">{{ t('upload.move') }}</el-button>
 					</div>
 				</el-col>
-				<el-col :span="scene == 'attachment' ? 16 : 24">
+				<el-col :span="24">
 					<div class="flex h-full justify-end items-center">
-						<el-pagination v-model:current-page="attachment.page" :small="true"
+						<el-pagination v-model:current-page="attachment.page" :small="scene != 'attachment'"
 						               v-model:page-size="attachment.limit" :page-sizes="[10, 20, 30, 40, 60]"
 						               layout="total, sizes, prev, pager, next, jumper" :total="attachment.total"
 						               @size-change="getAttachmentList()" @current-change="getAttachmentList"/>
@@ -183,7 +183,7 @@
         moveAttachment,
         getIconCategoryList,
         getIconList
-    } from '@/api/sys'
+    } from '@/app/api/sys'
     import {debounce, img, getToken} from '@/utils/common'
     import {ElMessage, UploadFile, UploadFiles, ElMessageBox} from 'element-plus'
     import storage from '@/utils/storage'
@@ -350,7 +350,6 @@
     const upload = computed(() => {
         const headers: Record<string, any> = {}
         headers[import.meta.env.VITE_REQUEST_HEADER_TOKEN_KEY] = getToken()
-        headers[import.meta.env.VITE_REQUEST_HEADER_SITEID_KEY] = storage.get('siteId') || 0
 
         return {
             action: `${import.meta.env.VITE_APP_BASE_URL}/sys/${prop.type}`,
