@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -15,12 +15,9 @@ use core\base\BaseCoreService;
 use EasyWeChat\Kernel\Exceptions\BadRequestException;
 use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
 use EasyWeChat\Kernel\Exceptions\InvalidConfigException;
-use EasyWeChat\Kernel\Exceptions\RuntimeException;
 use Overtrue\Socialite\Contracts\UserInterface;
-use Psr\Http\Message\ResponseInterface;
 use ReflectionException;
 use Symfony\Component\HttpFoundation\Response;
-use Throwable;
 
 /**
  * 微信服务提供
@@ -33,26 +30,24 @@ class CoreWechatServeService extends BaseCoreService
 
     /**
      * 网页授权
-     * @param int $site_id
      * @param string $url
      * @param string $scopes
      * @return string
      */
-    public function authorization(int $site_id, string $url = '', string $scopes = 'snsapi_base')
+    public function authorization(string $url = '', string $scopes = 'snsapi_base')
     {
-        $oauth = CoreWechatService::app($site_id)->oauth;
-        return $oauth->scopes([$scopes])->redirect($url);
+        $oauth = CoreWechatService::app()->oauth;
+        return $oauth->scopes([ $scopes ])->redirect($url);
     }
 
     /**
      * 处理授权回调
-     * @param int $site_id
      * @param string $code
      * @return UserInterface
      */
-    public function userFromCode(int $site_id, string $code)
+    public function userFromCode(string $code)
     {
-        $oauth = CoreWechatService::app($site_id)->oauth;
+        $oauth = CoreWechatService::app()->oauth;
         return $oauth->userFromCode($code);
     }
 
@@ -73,33 +68,33 @@ class CoreWechatServeService extends BaseCoreService
 
     /**
      * 事件推送
-     * @param int $site_id
      * @return Response
      * @throws BadRequestException
      * @throws InvalidArgumentException
      * @throws ReflectionException
      * @throws InvalidConfigException
      */
-    public function serve(int $site_id)
+    public function serve()
     {
 
-        $app = CoreWechatService::app($site_id);
-        $app->server->push(function ($message) use ($site_id){
-            return (new CoreWechatMessageService)->message($site_id, $message);
+        $app = CoreWechatService::app();
+        $app->server->push(function($message) {
+            return ( new CoreWechatMessageService )->message($message);
             // ...
         });
         $response = $app->server->serve();
         return $response->send();
     }
 
-    public function jssdkConfig(int $site_id, string $url = '')
+    public function jssdkConfig(string $url = '')
     {
-        $jssdk = CoreWechatService::app($site_id)->jssdk;
+        $jssdk = CoreWechatService::app()->jssdk;
         return $jssdk->setUrl($url)->buildConfig([], false, false, false);
     }
 
-    public function scan(int $site_id, string $key, int $expire_seconds = 6 * 24 * 3600){
-        $result = CoreWechatService::app($site_id)->qrcode->temporary($key, $expire_seconds);
-        return $result['url'];
+    public function scan(string $key, int $expire_seconds = 6 * 24 * 3600)
+    {
+        $result = CoreWechatService::app()->qrcode->temporary($key, $expire_seconds);
+        return $result[ 'url' ];
     }
 }

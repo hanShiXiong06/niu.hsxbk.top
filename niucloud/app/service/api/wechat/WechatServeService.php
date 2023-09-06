@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -15,8 +15,6 @@ use app\service\core\wechat\CoreWechatServeService;
 use core\base\BaseApiService;
 use EasyWeChat\Kernel\Exceptions\BadRequestException;
 use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
-use EasyWeChat\Kernel\Exceptions\RuntimeException;
-use Psr\Http\Message\ResponseInterface;
 use ReflectionException;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
@@ -45,7 +43,7 @@ class WechatServeService extends BaseApiService
      * @throws Throwable
      */
     public function serve(){
-        return $this->core_wechat_serve_service->serve($this->site_id);
+        return $this->core_wechat_serve_service->serve();
     }
 
 }

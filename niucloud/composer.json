@@ -37,7 +37,6 @@
         "qiniu/php-sdk": "v7.4.0",
         "qcloud/cos-sdk-v5": "v2.6.2",
         "aliyuncs/oss-sdk-php": "v2.6.0",
-        "tencentcloud/tencentcloud-sdk-php": "v3.0.885",
         "alibabacloud/client": "v1.5.32",
         "rmccue/requests": "v2.0.5",
         "ext-json": "*",
@@ -52,7 +51,8 @@
         "kosinix/grafika": "dev-master",
         "yunwuxin/think-cron": "v3.0.5",
         "nesbot/carbon": "2.66.0",
-        "ext-zip": "*"
+        "ext-zip": "*",
+        "tencentcloud/sms": "^3.0"
     },
     "require-dev": {
         "symfony/var-dumper": "v4.4.47",
@@ -64,8 +64,7 @@
             "app\\": "app",
             "core\\": "core"
         },
-        "psr-0": {
-        }
+        "psr-0": {}
     },
     "config": {
         "preferred-install": "dist",

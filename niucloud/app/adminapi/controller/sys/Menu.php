@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -23,13 +23,12 @@ class Menu extends BaseAdminController
 {
 
     /**
-     * 菜单列表(todo  限制只有平台端可以访问)
+     * 菜单列表
      * @return Response
      */
-    public function lists($app_type)
+    public function lists()
     {
-
-        return success((new MenuService())->getAllMenuList($app_type, 'all', 1));
+        return success((new MenuService())->getAllMenuList('all', 1));
     }
 
     /**
@@ -53,7 +52,6 @@ class Menu extends BaseAdminController
             ['menu_type', 0],
             ['menu_key', ''],
             ['parent_key', ''],
-            ['app_type', ''],
             ['icon', ''],
             ['api_url', ''],
             ['view_path', ''],
@@ -64,6 +62,8 @@ class Menu extends BaseAdminController
 
             ['status', MenuDict::ON],
             ['is_show', 0],
+
+            ['addon', ''],
         ]);
         $this->validate($data, 'app\validate\sys\Menu.add');
         (new MenuService())->add($data);
@@ -90,6 +90,8 @@ class Menu extends BaseAdminController
 
             ['status', MenuDict::ON],
             ['is_show', 0],
+
+            ['addon', ''],
         ]);
         $this->validate($data, 'app\validate\sys\Menu.edit');
         (new MenuService())->edit($menu_key, $data);
@@ -131,4 +133,24 @@ class Menu extends BaseAdminController
         (new InstallSystemService())->install();
         return success('REFRESH_SUCCESS');
     }
+
+    /**
+     * 查询菜单信息
+     */
+    public function getSystem()
+    {
+        return success( (new MenuService())->getSystemMenu('all', 1));
+    }
+
+    /**
+     * 查询应用权限信息
+     */
+    public function getAddonMenu($app_key)
+    {
+        return success( (new MenuService())->getAddonMenu($app_key,'all', 1));
+    }
+
+
+
+
 }

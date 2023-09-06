@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -31,6 +31,7 @@ abstract class BaseUpload extends Storage
     protected $config;
     //可能还需要一个完整路径
     protected $storage_type;
+
 
     /**
      * 初始化
@@ -85,7 +86,7 @@ abstract class BaseUpload extends Storage
      * @param string $name
      * @param bool $is_rename
      */
-    public function read(string $name, bool $is_rename = true)
+    public function read(string $name, bool $is_rename = true, $rename = '')
     {
         $this->name = $name;
         $this->file = request()->file($name);
@@ -98,12 +99,15 @@ abstract class BaseUpload extends Storage
             'ext' => $this->file->getOriginalExtension(),//上传文件后缀
             'size' => $this->file->getSize(),//上传文件大小
         ];
-        if ($is_rename) {
-            $this->file_name = $this->createFileName();
-        } else {
-            $this->file_name = $this->file_info['name'];
+        if(!$rename){
+            if ($is_rename) {
+                $this->file_name = $this->createFileName();
+            } else {
+                $this->file_name = $this->file_info['name'];
+            }
+        }else{
+            $this->file_name = $rename;
         }
-
     }
 
     /**
@@ -127,10 +131,13 @@ abstract class BaseUpload extends Storage
 
     /**
      * 生成新的文件名
+     * @param string $key
+     * @param string $ext
      * @return string
      */
     public function createFileName(string $key = '', string $ext = '')
     {
+        //定义为要重命名,要接受新的名称
         //DIRECTORY_SEPARATOR  常量
         $storage_tag = '_' . $this->storage_type;
         if (empty($key)) {
@@ -188,6 +195,16 @@ abstract class BaseUpload extends Storage
         return $this->file_name;
     }
 
+    /**
+     * 定义文件名
+     * @param $file_name
+     * @return $this
+     */
+    public function setFileName($file_name)
+    {
+        $this->file_name = $file_name;
+        return $this;
+    }
     public function getUrl(string $path = '')
     {
         $path = !empty($path) ? $path : $this->getFullPath();

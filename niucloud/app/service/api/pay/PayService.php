@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -47,7 +47,7 @@ class PayService extends BaseApiService
      */
     public function pay(string $type, string $trade_type, int $trade_id, string $return_url = '', string $quit_url = '', string $buyer_id = '', string $voucher = ''){
 
-        $member = (new CoreMemberService())->getInfoByMemberId($this->site_id, $this->member_id);
+        $member = (new CoreMemberService())->getInfoByMemberId($this->member_id);
         switch ($this->channel) {
             case ChannelDict::WECHAT://公众号
                 $openid = $member['wx_openid'] ?? '';
@@ -57,7 +57,7 @@ class PayService extends BaseApiService
                 break;
         }
 
-        return $this->core_pay_service->pay($this->site_id, $trade_type, $trade_id, $type, $this->channel, $openid ?? '', $return_url, $quit_url, $buyer_id, $voucher);
+        return $this->core_pay_service->pay($trade_type, $trade_id, $type, $this->channel, $openid ?? '', $return_url, $quit_url, $buyer_id, $voucher);
     }
 
     /**
@@ -67,7 +67,7 @@ class PayService extends BaseApiService
      * @return null
      */
     public function close(string $type, string $out_trade_no){
-        return $this->core_pay_service->close($this->site_id, $type);
+        return $this->core_pay_service->close($type);
     }
 
     /**
@@ -78,7 +78,7 @@ class PayService extends BaseApiService
      * @return void|null
      */
     public function notify(string $channel, string $type, string $action){
-        return $this->core_pay_service->notify($this->site_id, $channel, $type, $action);
+        return $this->core_pay_service->notify($channel, $type, $action);
     }
 
     /**
@@ -87,11 +87,11 @@ class PayService extends BaseApiService
      * @return array
      */
     public function getInfoByOutTradeNo($out_trade_no){
-        return $this->core_pay_service->getInfoByOutTradeNo($this->site_id, $out_trade_no, $this->channel);
+        return $this->core_pay_service->getInfoByOutTradeNo($out_trade_no, $this->channel);
     }
 
     public function getInfoByTrade(string $trade_type, int $trade_id){
-        return $this->core_pay_service->getInfoByTrade($this->site_id, $trade_type, $trade_id, $this->channel);
+        return $this->core_pay_service->getInfoByTrade($trade_type, $trade_id, $this->channel);
     }
 
     /**
@@ -103,6 +103,6 @@ class PayService extends BaseApiService
      * @throws ModelNotFoundException
      */
     public function getPayTypeByTrade(string $trade_type){
-        return $this->core_pay_service->getPayTypeByTrade($this->site_id, $trade_type, $this->channel);
+        return $this->core_pay_service->getPayTypeByTrade($trade_type, $this->channel);
     }
 }

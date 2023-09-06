@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -23,7 +23,7 @@ class Config extends BaseAdminController
      */
     public function getWebsite()
     {
-        return success((new ConfigService())->getWebSite());
+        return success(( new ConfigService() )->getWebSite());
     }
 
     /**
@@ -33,35 +33,25 @@ class Config extends BaseAdminController
     public function setWebsite()
     {
         $data = $this->request->params([
-            ["site_name", ""],
-            ["logo", ""],
-            ["keywords", ""],
-            ["desc", ""],
-            ["latitude", ""],
-            ["longitude", ""],
-            ["province_id", 0],
-            ["city_id", 0],
-            ["district_id", 0],
-            ["address", ""],
-            ["full_address", ""],
-            ["phone", ""],
-            ["business_hours", ""],
-            ["site_name", ""],
-            ["logo", ""],
-            ["front_end_name", ""],
-            ["front_end_logo", ""],
-            ["icon", ""]
+            [ 'site_name', '' ],
+            [ 'logo', '' ],
+            [ 'keywords', '' ],
+            [ 'desc', '' ],
+            [ 'latitude', '' ],
+            [ 'longitude', '' ],
+            [ 'province_id', 0 ],
+            [ 'city_id', 0 ],
+            [ 'district_id', 0 ],
+            [ 'address', '' ],
+            [ 'full_address', '' ],
+            [ 'phone', '' ],
+            [ 'business_hours', '' ],
+            [ 'front_end_name', '' ],
+            [ 'front_end_logo', '' ],
+            [ 'icon', '' ],
         ]);
         $this->validate($data, 'app\validate\site\Site.edit');
-        (new ConfigService())->setWebSite($data);
-
-        $service_data = $this->request->params([
-            ["wechat_code", ""],
-            ["enterprise_wechat", ""],
-            ["tel", ""],
-        ]);
-        (new ConfigService())->setService($service_data);
-
+        ( new ConfigService() )->setWebSite($data);
         return success();
     }
 
@@ -71,7 +61,7 @@ class Config extends BaseAdminController
      */
     public function getCopyright()
     {
-        return success((new ConfigService())->getCopyright());
+        return success(( new ConfigService() )->getCopyright());
     }
 
     /**设置版权信息
@@ -80,16 +70,16 @@ class Config extends BaseAdminController
     public function setCopyright()
     {
         $data = $this->request->params([
-            ['icp', ''],
-            ['gov_record', ''],
-            ['gov_url', ''],
-            ['market_supervision_url', ''],
-            ['logo', ''],
-            ['company_name', ''],
-            ['copyright_link', ''],
-            ['copyright_desc', ''],
+            [ 'icp', '' ],
+            [ 'gov_record', '' ],
+            [ 'gov_url', '' ],
+            [ 'market_supervision_url', '' ],
+            [ 'logo', '' ],
+            [ 'company_name', '' ],
+            [ 'copyright_link', '' ],
+            [ 'copyright_desc', '' ],
         ]);
-        (new ConfigService())->setCopyright($data);
+        ( new ConfigService() )->setCopyright($data);
         return success();
     }
 
@@ -99,16 +89,7 @@ class Config extends BaseAdminController
      */
     public function getSceneDomain()
     {
-        return success((new ConfigService())->getSceneDomain());
-    }
-
-    /**
-     * 获取服务信息
-     * @return Response
-     */
-    public function getServiceInfo()
-    {
-        return success((new ConfigService())->getService());
+        return success(( new ConfigService() )->getSceneDomain());
     }
 
     /**设置版权信息
@@ -117,9 +98,9 @@ class Config extends BaseAdminController
     public function setMap()
     {
         $data = $this->request->params([
-            ['key', ''],
+            [ 'key', '' ],
         ]);
-        (new ConfigService())->setMap($data);
+        ( new ConfigService() )->setMap($data);
         return success();
     }
 
@@ -129,27 +110,7 @@ class Config extends BaseAdminController
      */
     public function getMap()
     {
-        return success((new ConfigService())->getMap());
-    }
-
-    /**
-     * 获取站点首页列表（如果正在使用is_use = 1）
-     */
-    public function getSiteIndexList()
-    {
-        return success((new ConfigService())->getSiteIndexList());
-    }
-
-    /**
-     * 首页配置
-     */
-    public function setSiteIndex()
-    {
-        $data = $this->request->params([
-            ['view_path', ''],
-        ]);
-        (new ConfigService())->setSiteIndexConfig($data);
-        return success();
+        return success(( new ConfigService() )->getMap());
     }
 
     /**
@@ -157,7 +118,19 @@ class Config extends BaseAdminController
      */
     public function getAdminIndexList()
     {
-        return success((new ConfigService())->getAdminIndexList());
+        return success(( new ConfigService() )->getAdminIndexList());
+    }
+
+    /**
+     * 获取手机端首页列表
+     */
+    public function getWapIndexList()
+    {
+        $data = $this->request->params([
+            [ 'title', '' ],
+            [ 'key', '' ] // 多个查询，逗号隔开
+        ]);
+        return success(( new ConfigService() )->getWapIndexList($data));
     }
 
     /**
@@ -166,9 +139,9 @@ class Config extends BaseAdminController
     public function setAdminIndex()
     {
         $data = $this->request->params([
-            ['view_path', ''],
+            [ 'view_path', '' ],
         ]);
-        (new ConfigService())->setAdminIndexConfig($data);
+        ( new ConfigService() )->setAdminIndexConfig($data);
         return success();
     }
 
@@ -178,9 +151,9 @@ class Config extends BaseAdminController
     public function setShortcutMenu()
     {
         $data = $this->request->params([
-            ['menu', []],
+            [ 'menu', [] ],
         ]);
-        (new ConfigService())->setShortcutMenu($data['menu']);
+        ( new ConfigService() )->setShortcutMenu($data[ 'menu' ]);
         return success();
     }
 
@@ -189,6 +162,6 @@ class Config extends BaseAdminController
      */
     public function getShortcutMenu()
     {
-        return success(data: (new ConfigService())->getShortcutMenu());
+        return success(data: ( new ConfigService() )->getShortcutMenu());
     }
 }

@@ -39,7 +39,7 @@ return [
             'size' => 2097152
         ],
         'wechat' => [
-            'ext' => ['pem'],
+            'ext' => ['pem', 'key'],
             'mime' => [
                 'application/x-x509-ca-cert',
                 'application/octet-stream'
@@ -64,22 +64,19 @@ return [
             'size' => 2097152
         ]
     ],
-    'thumb' => [
-        'thumb_type' => [
-            'big' => [
-                'width' => 800,
-                'height' => 800,
-            ],
-            'mid' => [
-                'width' => 400,
-                'height' => 400,
-            ],
-            'small' => [
-                'width' => 200,
-                'height' => 200,
-            ],
-        ]
 
-
+    'thumb_type' => [
+        'big' => [
+            'width' => 800,
+            'height' => 800,
+        ],
+        'mid' => [
+            'width' => 400,
+            'height' => 400,
+        ],
+        'small' => [
+            'width' => 200,
+            'height' => 200,
+        ],
     ]
 ];

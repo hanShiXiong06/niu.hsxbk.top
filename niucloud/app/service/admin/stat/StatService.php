@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -90,10 +90,10 @@ class StatService extends BaseAdminService
         $day_end_time = $day_start_time + 86400;
         $data['today_data']['total_member_count'] = (new CoreMemberService())->getCount();
         $data['today_data']['today_member_count'] = (new CoreMemberService())->getCount(['create_time' => get_start_and_end_time_by_day()]);
-        $data['today_data']['total_site_count'] = (new SiteService())->getCount();
-        $data['today_data']['today_site_count'] = (new SiteService())->getCount(['create_time' => [$day_start_time, $day_end_time]]);
-        $data['today_data']['norma_site_count'] = (new SiteService())->getCount(['status' => [1],'app_type' => ['site']]);
-        $data['today_data']['expire_site_count'] = (new SiteService())->getCount(['status' => [2]]);
+        $data['today_data']['total_site_count'] = 0;
+        $data['today_data']['today_site_count'] = 0;
+        $data['today_data']['norma_site_count'] = 0;
+        $data['today_data']['expire_site_count'] = 0;
 
         $data['system'] = (new SystemService())->getInfo();
         $data['version'] = $data['system']['version'] ?? [];
@@ -101,13 +101,16 @@ class StatService extends BaseAdminService
         for ($i = 1; $i <= 7; $i++){
             $item_day = date('Y-m-d', strtotime('+' . $i - 7 . ' days', $time));
             $data['site_stat']['date'][] = $item_day;
-            $data['site_stat']['value'][] = (new SiteService())->getCount(['create_time' => get_start_and_end_time_by_day($item_day)]);
+//            $data['site_stat']['value'][] = (new SiteService())->getCount(['create_time' => get_start_and_end_time_by_day($item_day)]);
+            $data['site_stat']['value'][] = '';
+
         }
         $man_count = (new CoreMemberService())->getCount(['sex' => '1']);
         $woman_count = (new CoreMemberService())->getCount(['sex' => '2']);
         $data['member_stat']['value'] = [$man_count, $woman_count, (int)($data['today_data']['total_member_count'] - $man_count - $woman_count)];
 
-        $site_group_list = (new SiteGroupService())->getAll();
+//        $site_group_list = (new SiteGroupService())->getAll();
+        $site_group_list = [];
 
         if(!empty($site_group_list)){
             foreach($site_group_list as $v){

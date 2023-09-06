@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -31,14 +31,23 @@ Route::group('pay', function () {
     Route::post('channel/set/transfer', 'pay.PayChannel/setTransfer');
     //多渠道设置
     Route::post('channel/set/all', 'pay.PayChannel/setAll');
-    // 支付审核
+    // 线下支付审核
     Route::get('audit', 'pay.Pay/audit');
-    // 审核通过
+    // 线下审核通过
     Route::put('pass/:out_trade_no', 'pay.Pay/pass');
-    // 审核拒绝
+    // 线下审核拒绝
     Route::put('refuse/:out_trade_no', 'pay.Pay/refuse');
     // 支付单据详情
     Route::get('detail/:id', 'pay.Pay/detail');
+    /***************************************************** 账单 *************************************************/
+    //账单列表
+    Route::get('account', 'pay.Account/lists');
+    //账单详情
+    Route::get('account/:id', 'pay.Account/info');
+    //账单统计
+    Route::get('account/stat', 'pay.Account/stat');
+    //账单类型
+    Route::get('account/type', 'pay.Account/accountType');
 })->middleware([
     AdminCheckToken::class,
     AdminCheckRole::class,

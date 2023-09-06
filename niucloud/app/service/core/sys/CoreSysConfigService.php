@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -28,16 +28,16 @@ class CoreSysConfigService extends BaseCoreService
 
     /**
      * 暂用于单站点业务(不适用于命令行模式)
-     * @param int $site_id
      * @return array
      */
-    public function getSceneDomain(int $site_id){
+    public function getSceneDomain()
+    {
         $wap_domain = !empty(env("system.wap_domain")) ? preg_replace('#/$#', '', env("system.wap_domain")) : request()->domain();
         $web_domain = !empty(env("system.web_domain")) ? preg_replace('#/$#', '', env("system.web_domain")) : request()->domain();
 
-        return  [
-            'wap_url' => $wap_domain . "/wap/" . $site_id . "/",
-            'web_url' => $web_domain . "/web/" . $site_id . "/"
+        return [
+            'wap_url' => $wap_domain . "/wap/",
+            'web_url' => $web_domain . "/web/"
         ];
     }
 
@@ -47,11 +47,10 @@ class CoreSysConfigService extends BaseCoreService
      */
     public function getCopyright()
     {
-        $info = (new CoreConfigService())->getConfig(0, 'COPYRIGHT');
-        if(empty($info))
-        {
+        $info = ( new CoreConfigService() )->getConfig(0, 'COPYRIGHT');
+        if (empty($info)) {
             $info = [];
-            $info['value'] = [
+            $info[ 'value' ] = [
                 'icp' => '',
                 'gov_record' => '',
                 'gov_url' => '',
@@ -62,6 +61,42 @@ class CoreSysConfigService extends BaseCoreService
                 'copyright_desc' => ''
             ];
         }
-        return $info['value'];
+        return $info[ 'value' ];
+    }
+
+    /**
+     * 获取手机端首页列表
+     * @param array $data
+     * @return array
+     */
+    public function getWapIndexList($data = [])
+    {
+        $result = event("WapIndex");
+        $index_list = [];
+        foreach ($result as $v) {
+            $index_list = empty($index_list) ? $v : array_merge($index_list, $v);
+        }
+
+//        $app = [];
+        foreach ($index_list as $k => $v) {
+            if (!empty($data[ 'key' ]) && !in_array($v[ 'key' ], explode(',', $data[ 'key' ]))) {
+                unset($index_list[ $k ]);
+                continue;
+            }
+//            if ($v[ 'key' ] == 'app') {
+//                $app = $index_list[ $k ];
+//                $app[ 'icon' ] = 'static/resource/images/system/icon.png';
+//                unset($index_list[ $k ]);
+//            } else {
+//            }
+            $index_list[ $k ][ 'icon' ] = addon_resource($v[ 'key' ], 'icon.png');
+        }
+
+        $index_list = array_values($index_list);
+
+        // 框架首页排到第一位
+//        array_unshift($index_list,$app);
+
+        return $index_list;
     }
 }

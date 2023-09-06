@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -16,7 +16,7 @@ use core\base\BaseApiController;
 
 /**
  * 协议控制器
- * Class Article
+ * Class CmsArticle
  * @package app\api\controller\agreement
  */
 class Agreement extends BaseApiController

@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -49,14 +49,13 @@ class CoreAppletDownloadService extends BaseCoreService
 
     /**
      * 下载小程序包
-     * @param int $site_id
      * @return File
      */
-    public function download(int $site_id)
+    public function download()
     {
         $zip = new ZipArchive;
-        $this->replace = event('AppletReplace', ['site_id' => $site_id, 'type' => $this->type])[0] ?? [];
-        $file_name = $site_id.'.zip';
+        $this->replace = event('AppletReplace', ['type' => $this->type])[0] ?? [];
+        $file_name = '.zip';
         $dir = $this->root_path .'/applet/'.  $this->type.'/'.$this->version.'/';
         //新生成一个当前站点这个版本的压缩包,如果已存在就直接下载
         $file = $dir.$file_name;
@@ -75,7 +74,7 @@ class CoreAppletDownloadService extends BaseCoreService
             }
         }
         //新增下载记录
-        (new CoreAppletSiteVersionService())->add($site_id, $this->version_id, AppletlDict::DOWNLOAD);
+        (new CoreAppletSiteVersionService())->add($this->version_id, AppletlDict::DOWNLOAD);
         return download($file, $this->version);
     }
 

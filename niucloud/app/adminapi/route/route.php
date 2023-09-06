@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -17,7 +17,7 @@ use think\facade\Route;
  */
 Route::group(function () {
     //用户登录
-    Route::get('login/:app_type', 'login.Login/login');
+    Route::get('login', 'login.Login/login');
 
     //登录注册设置
     Route::get('login/config', 'login.Config/getConfig');
@@ -28,6 +28,7 @@ Route::group(function () {
     Route::get('captcha/check', 'login.Captcha/check');
 
     Route::get('test', 'login.Login/test');
+
 });
 
 //加载插件路由

@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -39,19 +39,21 @@ class ServiceGenerator extends BaseGenerator
             '{DATE}',
             '{FIELDS}',
             '{SEARCH_FIELDS}',
+            '{ORDER}'
         ];
 
         $new = [
             $this->getNameSpace(),
             $this->getUse(),
-            $this->getUCaseName(),
+            $this->getUCaseClassName(),
             $this->getPackageName(),
             $this->getPk(),
-            $this->table['table_content'],
+            $this->getNotes(),
             $this->getAuthor(),
             $this->getNoteDate(),
             $this->getField(),
             $this->getSearchField(),
+            $this->getOrderString(),
         ];
 
         $vmPath = $this->getvmPath('service');
@@ -61,6 +63,20 @@ class ServiceGenerator extends BaseGenerator
         $this->setText($text);
     }
 
+    /**
+     * 获取注释名称
+     * @return string
+     */
+    public function getNotes()
+    {
+        $end_str = substr($this->table['table_content'],-3);
+        if($end_str == '表')
+        {
+            return substr($this->table['table_content'],0,strlen($this->table['table_content'])-3);
+        }else{
+            return $this->table['table_content'];
+        }
+    }
 
     /**
      * 字段内容
@@ -70,9 +86,7 @@ class ServiceGenerator extends BaseGenerator
     {
         $field = [];
         foreach ($this->tableColumn as $column) {
-            if ($column['is_query']) {
-                $field[] = $column['column_name'];
-            }
+            $field[] = $column['column_name'];
         }
 
         return implode(',', $field);
@@ -101,9 +115,17 @@ class ServiceGenerator extends BaseGenerator
      */
     public function getNameSpace()
     {
-        if (!empty($this->moduleName)) {
-            return "namespace app\\service\\admin\\" . $this->moduleName . ';';
+        if(!empty($this->addonName))
+        {
+            if (!empty($this->moduleName)) {
+                return "namespace addon\\".$this->addonName."\\app\\service\\admin\\" . $this->moduleName . ';';
+            }
+        }else{
+            if (!empty($this->moduleName)) {
+                return "namespace app\\service\\admin\\" . $this->moduleName . ';';
+            }
         }
+
         return "namespace app\\service\\admin;";
     }
 
@@ -115,9 +137,18 @@ class ServiceGenerator extends BaseGenerator
     public function getUse()
     {
         $tpl = "use app\\model\\" . $this->getUCaseName() . ';';
-        if (!empty($this->moduleName)) {
-            $tpl = "use app\\model\\" . $this->moduleName . "\\" . $this->getUCaseName() . ';';
+        if(!empty($this->addonName))
+        {
+            if (!empty($this->moduleName)) {
+                $tpl = "use addon\\".$this->addonName."\\app\\model\\" . $this->moduleName . "\\" . $this->getUCaseClassName() . ';';
+            }
+
+        }else{
+            if (!empty($this->moduleName)) {
+                $tpl = "use app\\model\\" . $this->moduleName . "\\" . $this->getUCaseClassName() . ';';
+            }
         }
+
         return $tpl;
     }
 
@@ -129,7 +160,22 @@ class ServiceGenerator extends BaseGenerator
      */
     public function getPackageName()
     {
-        return !empty($this->moduleName) ? '\\' . $this->moduleName : '';
+        if(!empty($this->addonName))
+        {
+            if(!empty($this->moduleName))
+            {
+                return 'addon\\'.$this->addonName.'\\app\service\\admin\\'.$this->moduleName;
+            }else{
+                return 'addon\\'.$this->addonName.'\\app\service\\admin\\';
+            }
+        }else{
+            if(!empty($this->moduleName))
+            {
+                return 'app\service\\admin\\'.$this->moduleName;
+            }else{
+                return 'app\\service\\admin';
+            }
+        }
     }
 
 
@@ -154,7 +200,14 @@ class ServiceGenerator extends BaseGenerator
      */
     public function getRuntimeOutDir()
     {
-        $dir = $this->outDir . 'niucloud/app/service/admin/';
+        if(!empty($this->addonName))
+        {
+            $dir = $this->outDir . '/addon/'.$this->addonName.'/app/service/admin/';
+        }else{
+            $dir = $this->outDir . 'niucloud/app/service/admin/';
+        }
+
+
         $this->checkDir($dir);
         if (!empty($this->moduleName)) {
             $dir .= $this->moduleName . '/';
@@ -163,6 +216,40 @@ class ServiceGenerator extends BaseGenerator
         return $dir;
     }
 
+    /**
+     * 获取文件生成到项目中
+     * @return string
+     */
+    public function getObjectOutDir()
+    {
+        if(!empty($this->addonName))
+        {
+            $dir = $this->rootDir . '/niucloud/addon/'.$this->addonName.'/app/service/admin/';
+        }else{
+//            $dir = '';
+            $dir = $this->rootDir . '/niucloud/app/service/admin/';
+        }
+
+
+        $this->checkDir($dir);
+        if (!empty($this->moduleName)) {
+            $dir .= $this->moduleName . '/';
+            $this->checkDir($dir);
+        }
+        return $dir;
+    }
+
+    public function getFilePath()
+    {
+        if(!empty($this->addonName))
+        {
+            $dir = 'addon/'.$this->addonName.'/app/service/admin/';
+        }else{
+            $dir = 'niucloud/app/service/admin/';
+        }
+        $dir .= $this->moduleName . '/';
+        return $dir;
+    }
 
     /**
      * 生成的文件名
@@ -170,7 +257,35 @@ class ServiceGenerator extends BaseGenerator
      */
     public function getFileName()
     {
-        return $this->getUCaseName() . 'Service.php';
+        return $this->getUCaseClassName() . 'Service.php';
+    }
+
+    /**
+     * 排序
+     * return string
+     */
+    public function getOrderString()
+    {
+        if(!empty($this->table['order_type']))
+        {
+            if($this->table['order_type'] == 1)
+            {
+                $type = 'asc';
+            }else if($this->table['order_type'] == 2)
+            {
+                $type = 'desc';
+            }
+            foreach ($this->tableColumn as $column) {
+                if (!$column['is_order']) {
+                    continue;
+                }
+                $order[] = ''.$column['column_name'].' '.$type.'';
+            }
+
+        }else{
+            $order = [];
+        }
+        return implode(',', $order);
     }
 
 }

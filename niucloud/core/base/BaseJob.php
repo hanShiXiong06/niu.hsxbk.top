@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -12,6 +12,7 @@
 namespace core\base;
 
 use core\job\Dispatch;
+use core\util\Terminal;
 use think\queue\Job;
 use Throwable;
 
@@ -64,6 +65,8 @@ abstract class BaseJob extends Dispatch
             $job->delete();
         }
         if ($this->{$action}(...$data)) {
+            // 变更项目文件所属
+            Terminal::execute(project_path(), 'chown -R www.www ' . project_path());
             //删除任务
             $job->delete();
         } else {

@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -23,8 +23,6 @@ use Psr\Http\Message\ResponseInterface;
 class Weapp extends BaseTemplate
 {
 
-    protected $site_id;
-
     /**
      * @param array $config
      * @return void
@@ -32,7 +30,6 @@ class Weapp extends BaseTemplate
     protected function initialize(array $config = [])
     {
         parent::initialize($config);
-        $this->site_id = $config['site_id'] ?? '';
 
     }
 
@@ -42,7 +39,7 @@ class Weapp extends BaseTemplate
      */
     public function template()
     {
-        return CoreWeappService::app($this->site_id)->subscribe_message;
+        return CoreWeappService::app()->subscribe_message;
     }
 
     /**

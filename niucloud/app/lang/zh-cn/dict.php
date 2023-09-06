@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -13,7 +13,6 @@ return [
     //端口管理
     'dict_app' => [
         'type_admin' => '平台管理端',
-        'type_site' => '站点管理端',
         'type_api' => '客户端',
     ],
     'dict_menu' => [
@@ -43,9 +42,7 @@ return [
         'status_experience' => '体验期',
         'status_expire' => '已到期',
         'status_close' => '已停止',
-        'pay' => '收款',
-        'refund' => '退款',
-        'transfer' => '转账',
+
     ],
     // 站点
     'dict_site_index' => [
@@ -56,6 +53,12 @@ return [
     'dict_admin_index' => [
         //站点类型
         'system' => '框架首页',
+    ],
+    // 手机端首页
+    'dict_wap_index' => [
+        //站点类型
+        'system' => '框架首页',
+        'system_desc' => '系统默认首页',
     ],
     'dict_notice' => [
         'type_sms' => '短信',
@@ -99,9 +102,7 @@ return [
         'login_wechat' => '微信公众号授权登录',
         'login_weapp' => '微信小程序授权登录',
         'account_point_adjust' => '账户调整',
-        'account_point_recharge_give' => '充值赠送',
         'account_balance_adjust' => '账户调整',
-        'account_balance_recharge' => '账户充值',
         'account_money_award' => '活动奖励',
         'account_money_cash_out' => '账户提现',
         'account_money_adjust' => '账户调整',
@@ -109,20 +110,16 @@ return [
         'account_commission_cash_out' => '账户提现',
         'status_on' => '正常',
         'status_off' => '锁定',
-        'account_balance_recharge_refund' => '充值订单退款',
+
         'account_balance_order' => '订单消费',
         'account_balance_order_refund' => '订单退款',
     ],
     'dict_order' => [
-        //订单类型
-        'order_type_recharge' => '充值订单',
-        'trade_type_recharge' => '会员充值',
+
 
     ],
     'dict_refund' => [
         //订单类型
-        'order_type_recharge' => '充值订单',
-        'trade_type_recharge' => '会员充值',
         'wait' => '待审核',
         'wait_transfer' => "待转账",
         "success" => "退款成功",
@@ -163,7 +160,10 @@ return [
         'status_ing' => '支付中',
         'status_ed' => '已支付',
         'status_cancle' => '已取消',
-        'status_audit' => '待审核'
+        'status_audit' => '待审核',
+        'pay' => '收款',
+        'refund' => '退款',
+        'transfer' => '转账',
     ],
     //转账相关
     'dict_transfer' => [
@@ -203,7 +203,6 @@ return [
 
         'system_link' => '系统页面',
         'system_link_index' => '首页',
-        'system_link_article_list' => '文章资讯',
 
         'member_link' => '会员页面',
         'member_index' => '个人中心',
@@ -249,6 +248,9 @@ return [
         'update' => '更新',
         'status_on' => '启用',
         'status_off' => '关闭',
+
+        'type_app' => '应用',
+        'type_addon' => '插件',
     ],
     // 退款支付状态
     'dict_pay_refund' => [
@@ -270,7 +272,6 @@ return [
     'dict_app_manage' => [
         'system_app' => '基础应用',
         'message_manage' => '消息管理',
-        'member_recharge' => '会员充值',
     ],
     'dict_setting' => [
         'server_system' => '服务器系统',
@@ -309,5 +310,10 @@ return [
     ],
     'dict_site_layout' => [
         'default' => '默认'
+    ],
+    'dict_cloud_applet' => [
+        'uploading' => '上传中',
+        'upload_success' => '上传成功',
+        'upload_fail' => '上传失败',
     ]
 ];

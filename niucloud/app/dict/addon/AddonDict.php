@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -34,6 +34,9 @@ class AddonDict
     // 执行失败
     const INSTALL_FAIL = 'fail';
 
+    const INSTALL_WARN = 'warn';
+
+
     /**
      * 插件操作方式
      * @return array
@@ -56,6 +59,21 @@ class AddonDict
         return [
             self::ON => get_lang('dict_addon.status_on'),//展示
             self::OFF => get_lang('dict_addon.status_off'),//隐藏
+        ];
+    }
+
+    const APP = 'app';
+    const ADDON = 'addon';
+
+    /**
+     * 插件类型
+     * @return array
+     */
+    public static function getType()
+    {
+        return [
+            self::APP => get_lang('dict_addon.type_app'),//应用
+            self::ADDON => get_lang('dict_addon.type_addon'),//插件
         ];
     }
 }

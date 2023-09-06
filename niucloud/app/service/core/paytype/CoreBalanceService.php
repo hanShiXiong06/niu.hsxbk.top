@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -29,7 +29,6 @@ use think\Model;
 class CoreBalanceService extends BaseCoreService
 {
 
-    private $site_id;//站点id
     private $config;//支付配置
     private $type;//支付类型
     private $channel;//支付渠道  (特殊点,转账也算是一种)
@@ -45,10 +44,9 @@ class CoreBalanceService extends BaseCoreService
 //        if(empty($password)){
 //
 //        }
-        $out_trade_no = $params['out_trade_no'];//交易流水号
-        $site_id = $params['site_id'];
+        $out_trade_no = $params['out_trade_no'];//交易流水
 
-        $pay = (new CorePayService())->findPayInfoByOutTradeNo($site_id, $out_trade_no);
+        $pay = (new CorePayService())->findPayInfoByOutTradeNo($out_trade_no);
 
         $main_id = $pay['main_id'];
         $main_type = $pay['main_type'];
@@ -58,7 +56,7 @@ class CoreBalanceService extends BaseCoreService
             case 'member':
 
                 //余额不足会抛出异常
-                (new CoreMemberAccountService())->addLog($site_id, $main_id, MemberAccountTypeDict::BALANCE,
+                (new CoreMemberAccountService())->addLog($main_id, MemberAccountTypeDict::BALANCE,
                     -$money, 'order', MemberAccountChangeTypeDict::getType('order')['name'] ?? '', $out_trade_no);
 
                 break;
@@ -89,10 +87,9 @@ class CoreBalanceService extends BaseCoreService
     public function refund(array $params){
         $out_trade_no = $params['out_trade_no'];
         $money = $params['money'];
-        $site_id = $params['site_id'];
         $refund_no = $params['refund_no'];
         $core_pay_service = new CorePayService();
-        $pay = $core_pay_service->findPayInfoByOutTradeNo($site_id, $out_trade_no);
+        $pay = $core_pay_service->findPayInfoByOutTradeNo($out_trade_no);
 
         $main_id = $pay['main_id'];
         $main_type = $pay['main_type'];
@@ -100,7 +97,7 @@ class CoreBalanceService extends BaseCoreService
         switch($main_type){
             case 'member':
                     //余额不足会抛出异常
-                    (new CoreMemberAccountService())->addLog($site_id, $main_id, MemberAccountTypeDict::BALANCE,
+                    (new CoreMemberAccountService())->addLog($main_id, MemberAccountTypeDict::BALANCE,
                         $money, 'order_refund', MemberAccountChangeTypeDict::getType('order_refund')['name'] ?? '', $refund_no);
 
                 break;

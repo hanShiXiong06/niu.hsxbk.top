@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -30,4 +30,14 @@ class MenuDict
         ];
     }
 
+    public const SYSTEM = 'system';
+    public const CREATE = 'create';
+    public const GENERATOR = 'generator';
+    public static function getSource(){
+        return [
+            self::SYSTEM => get_lang('dict_menu.source_system'),//系统文件
+            self::CREATE => get_lang('dict_menu.source_create'),//新建菜单
+            self::GENERATOR => get_lang('dict_menu.source_generator'),//代码生成器
+        ];
+    }
 }

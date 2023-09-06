@@ -13,7 +13,6 @@ class Request extends \think\Request
     //认证信息
     protected static $auth_info = [];
 
-    protected static $site_id = 0;
 
     /**
      * 获取请求参数
@@ -36,7 +35,7 @@ class Request extends \think\Request
             }
             $default = $param[1];
             $item_filter = $param[2] ?? $filter;
-            $input[$key] = $this->paramFilter($this->param($key, $default, $filter_rule ?? ''), $item_filter);
+            $input[$name] = $this->paramFilter($this->param($key, $default, $filter_rule ?? ''), $item_filter);
             //过滤后产生空字符串，按照默认值
             if($input[$name] === '')
             {
@@ -91,19 +90,7 @@ class Request extends \think\Request
         }
     }
 
-    /**
-     * 站点id
-     * @param int|string|null $site_id
-     * @return int
-     */
-    public function siteId(int|string|null $site_id = 0)
-    {
-        if ($site_id > 0) {
-            static::$site_id = (int)$site_id;
-        } else {
-            return static::$site_id ?? $this->defaultSiteId();
-        }
-    }
+
 
     /**
      * 用户账号
@@ -120,18 +107,7 @@ class Request extends \think\Request
     }
 
 
-    /**
-     * 定义站点类型
-     * @param string $app_type
-     * @return mixed|string
-     */
-    public function appType(string $app_type = ''){
-        if (!empty($app_type)) {
-            static::$auth_info['app_type'] = $app_type;
-        } else {
-            return static::$auth_info['app_type'] ?? '';
-        }
-    }
+
 
     /**
      * 获取管理端token
@@ -150,21 +126,8 @@ class Request extends \think\Request
         return $this->header(system_name('api_token_name'));
     }
 
-    /**
-     * 平台site_id
-     * @return array|string|null
-     */
-    public function adminSiteId(){
-        return $this->header(system_name('admin_site_id_name'));
-    }
 
-    /**
-     * 客户端site_id
-     * @return array|string|null
-     */
-    public function apiSiteId(){
-        return $this->header(system_name('api_site_id_name'));
-    }
+
 
     /**
      * 获取场景
@@ -174,13 +137,6 @@ class Request extends \think\Request
         return $this->header(system_name('channel_name'), ChannelDict::H5);
     }
 
-    /**
-     * 获取默认站点
-     * @return int
-     */
-    public function defaultSiteId(){
-        return 0;
-    }
 
     /**
      * get传参追加值
@@ -213,6 +169,19 @@ class Request extends \think\Request
             static::$auth_info[$key] = $value;
         } else {
             return static::$auth_info[$key] ?? '';
+        }
+    }
+
+    /**
+     * 定义站点类型
+     * @param string $app_type
+     * @return mixed|string
+     */
+    public function appType(string $app_type = ''){
+        if (!empty($app_type)) {
+            static::$auth_info['app_type'] = $app_type;
+        } else {
+            return static::$auth_info['app_type'] ?? '';
         }
     }
 }

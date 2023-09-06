@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -33,9 +33,9 @@ class Base64Service extends BaseApiService
      */
     public function image(string $content){
 
-        $dir = $this->root_path.'/'.'image'.'/'.$this->site_id.'/'.date('Ym').'/'.date('d');
+        $dir = $this->root_path.'/'.'image'.'/'.date('Ym').'/'.date('d');
         $core_base64_service = new CoreBase64Service();
-        return $core_base64_service->image($content, $this->site_id, $dir);
+        return $core_base64_service->image($content, $dir);
     }
 
 

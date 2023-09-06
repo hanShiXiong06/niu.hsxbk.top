@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -11,7 +11,7 @@
 
 namespace app\service\core\menu;
 
-use app\dict\sys\AppTypeDict;
+use app\dict\sys\MenuDict;
 use app\model\addon\Addon;
 use app\model\sys\SysMenu;
 use app\service\admin\sys\MenuService;
@@ -40,22 +40,7 @@ class CoreMenuService extends BaseCoreService
      */
     public function uninstallAddonMenu($addon)
     {
-        $addon_loader = new DictLoader("Menu");
 
-        //获取插件删除替换的菜单key
-        $addon_admin_tree = $addon_loader->load(["addon" => $addon, "app_type" => "admin"]);
-
-        if (isset($addon_admin_tree["delete"])) {
-            //软删除数据
-            $this->model->where([["menu_key", "in", $addon_admin_tree["delete"]], ["app_type", "=", "admin"]])->update(["delete_time" => 0]);
-        }
-
-        $addon_site_tree = $addon_loader->load(["addon" => $addon, "app_type" => "site"]);
-
-        if (isset($addon_site_tree["delete"])) {
-            //软删除数据
-            $this->model->where([["menu_key", "in", $addon_site_tree["delete"]], ["app_type", "=", "site"]])->update(["delete_time" => 0]);
-        }
         $this->deleteByAddon($addon);
         // 清除缓存
         Cache::tag(MenuService::$cache_tag_name)->clear();
@@ -68,10 +53,13 @@ class CoreMenuService extends BaseCoreService
      * @return true
      * @throws DbException
      */
-    public function deleteByAddon(string $addon)
+    public function deleteByAddon(string $addon, bool $is_all = true)
     {
-        Db::name("sys_menu")->where([['addon', '=', $addon]])->delete();
-        //$this->model->where([['addon', '=', $addon]])->delete();
+        $where = [['addon', '=', $addon]];
+        if(!$is_all){
+            $where[] = ['source', '=', MenuDict::SYSTEM];
+        }
+        Db::name("sys_menu")->where($where)->delete();
         return true;
     }
 
@@ -97,32 +85,14 @@ class CoreMenuService extends BaseCoreService
     {
         $addon_loader = new DictLoader("Menu");
 
-        //获取插件删除替换的菜单key
-        $addon_admin_tree = $addon_loader->load(["addon" => $addon, "app_type" => "admin"]);
+        $addon_menu_tree = $addon_loader->load(["addon" => $addon]);
 
-        if (isset($addon_admin_tree["delete"])) {
-            //软删除数据
-            $this->model->where([["menu_key", "in", $addon_admin_tree["delete"]], ["app_type", "=", "admin"]])->useSoftDelete('delete_time', time())->delete();
-            unset($addon_admin_tree["delete"]);
-        }
         $menu = [];
-        if (!empty($addon_admin_tree)) {
-            $menu = $this->loadMenu($addon_admin_tree, "admin", $addon);
+        if (!empty($addon_menu_tree)) {
+            $menu = $this->loadMenu($addon_menu_tree, $addon);
         }
 
-        $addon_site_tree = $addon_loader->load(["addon" => $addon, "app_type" => "site"]);
-
-        if (isset($addon_site_tree["delete"])) {
-            //软删除数据
-            $this->model->where([["menu_key", "in", $addon_site_tree["delete"]], ["app_type", "=", "site"]])->useSoftDelete('delete_time', time())->delete();
-            unset($addon_site_tree["delete"]);
-        }
-
-        if (!empty($addon_site_tree)) {
-            $site_menu = $this->loadMenu($addon_site_tree, "site", $addon);
-            $menu = array_merge($menu, $site_menu);
-        }
-        $this->deleteByAddon($addon);
+        $this->deleteByAddon($addon, false);
         $this->install($menu);
         return true;
 
@@ -132,11 +102,11 @@ class CoreMenuService extends BaseCoreService
      * 加载菜单
      * @return array
      */
-    public function loadMenu(array $menu_tree, string $app_type, string $addon = '')
+    public function loadMenu(array $menu_tree, string $addon = '')
     {
         //加载系统
         $menu_list = [];
-        $this->menuTreeToList($menu_tree, '', $app_type, $addon, $menu_list);
+        $this->menuTreeToList($menu_tree, '', $addon, $menu_list);
         return $menu_list;
     }
 
@@ -144,18 +114,16 @@ class CoreMenuService extends BaseCoreService
      * 菜单数转为列表
      * @param array $tree
      * @param string $parent_key
-     * @param string $app_type
      * @param string $addon
      * @param array $menu_list
      */
-    private function menuTreeToList(array $tree, string $parent_key = '', string $app_type = AppTypeDict::ADMIN, string $addon = '', array &$menu_list = [])
+    private function menuTreeToList(array $tree, string $parent_key = '', string $addon = '', array &$menu_list = [])
     {
         if (is_array($tree)) {
-            foreach ($tree as $key => $value) {
+            foreach ($tree as $value) {
                 $item = [
                     'menu_name' => $value['menu_name'],
                     'menu_key' => $value['menu_key'],
-                    'app_type' => $app_type,
                     'addon' => $addon,
                     'parent_key' => $value['parent_key'] ?? $parent_key,
                     'menu_type' => $value['menu_type'],
@@ -166,14 +134,15 @@ class CoreMenuService extends BaseCoreService
                     'methods' => $value['methods'] ?? '',
                     'sort' => $value['sort'] ?? '',
                     'status' => 1,
-                    'is_show' => $value['is_show'] ?? 1
+                    'is_show' => $value['is_show'] ?? 1,
+                    'source' => MenuDict::SYSTEM
                 ];
                 $refer = $value;
                 if (isset($refer['children'])) {
                     unset($refer['children']);
                     $menu_list[] = $item;
                     $p_key = $refer['menu_key'];
-                    $this->menuTreeToList($value['children'], $p_key, $app_type, $addon, $menu_list);
+                    $this->menuTreeToList($value['children'], $p_key, $addon, $menu_list);
                 } else {
                     $menu_list[] = $item;
                 }

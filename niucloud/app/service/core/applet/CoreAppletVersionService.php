@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -33,7 +33,7 @@ class CoreAppletVersionService extends BaseCoreService
      */
     public function getPage(array $where = [])
     {
-        $field = 'id, site_id, type, uid, version, version_num, path, create_time, update_time,desc, config';
+        $field = 'id, type, uid, version, version_num, path, create_time, update_time,desc, config';
         $search_model = $this->model->where($where)->field($field)->order('create_time desc');
         return $this->pageQuery($search_model);
     }
@@ -45,7 +45,7 @@ class CoreAppletVersionService extends BaseCoreService
      */
     public function getInfo(int $id)
     {
-        $field = 'id, site_id, type, uid, version, version_num, path, create_time, update_time,desc, config';
+        $field = 'id, type, uid, version, version_num, path, create_time, update_time,desc, config';
         return $this->model->where([[ 'id', '=', $id ]])->field($field)->findOrEmpty()->toArray();
     }
 

@@ -52,7 +52,7 @@ class Local extends BaseUpload
     public function fetch(string $url, ?string $key)
     {
         try {
-            mkdirs_or_notexist($key, 0777);
+            mkdirs_or_notexist(dirname($key), 0777);
             $content = @file_get_contents($url);
             if (!empty($content)) {
                 file_put_contents($key, $content);
@@ -122,7 +122,7 @@ class Local extends BaseUpload
     public function thumb($file_path, $thumb_type)
     {
         //todo  判断缩略图是否存在
-        $thumb_config = config('upload.thumb.thumb_type');
+        $thumb_config = config('upload.thumb_type');
         //  ……
         //获取文件原名  获取
         $file_arr = explode('/', $file_path);

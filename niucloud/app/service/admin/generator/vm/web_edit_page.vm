@@ -26,13 +26,14 @@
 import { ref, reactive, computed } from 'vue'
 import { t } from '@/lang'
 import type { FormInstance } from 'element-plus'
-import { get{UCASE_NAME}Info,add{UCASE_NAME},edit{UCASE_NAME} } from '@/api/{MODULE_NAME}';
+import { get{UCASE_NAME}Info,add{UCASE_NAME},edit{UCASE_NAME} } from '@/{API_PATH}';
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const id:number = parseInt(route.query.id);
 const loading = ref(false)
 const pageName = route.meta.title
+
 
 /**
  * 表单数据

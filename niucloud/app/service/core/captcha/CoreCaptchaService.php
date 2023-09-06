@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -11,7 +11,6 @@
 
 namespace app\service\core\captcha;
 
-use app\Request;
 use core\base\BaseCoreService;
 use core\exception\CaptchaException;
 use think\captcha\facade\Captcha;
@@ -32,11 +31,10 @@ class CoreCaptchaService extends BaseCoreService
 
     /**
      * 创建验证码
-     * @param int $site_id
      * @param array|null $data
      * @return array
      */
-    public function create(int $site_id = 0, ?array $data = []){
+    public function create(?array $data = []){
         $captcha_data = Captcha::create(null, true);
 
         $captcha_key   = md5(uniqid(null, true));

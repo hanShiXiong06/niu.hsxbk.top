@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -50,6 +50,7 @@ class CoreAddonBaseService extends BaseCoreService
             $info = json_decode($json_string, true);
             $info['icon'] = $resource_path . 'icon.png';
             $info['cover'] = $resource_path . 'cover.png';
+            $info['compile'] = $info['compile'] ?? [];
         }
         return $info ?? [];
     }
@@ -96,6 +97,7 @@ class CoreAddonBaseService extends BaseCoreService
     protected function writeArrayToJsonFile(array $content, string $file_path)
     {
         $content_json = json_encode($content, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        $content_json = preg_replace('/\[\]/', '{}', $content_json);
         $result = @file_put_contents($file_path, $content_json);
         if (!$result) {
             throw new CommonException($file_path . '文件不存在或者权限不足');

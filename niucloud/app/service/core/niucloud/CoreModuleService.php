@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -61,7 +61,7 @@ class CoreModuleService extends BaseNiucloudClient
         return $this->download('member_app_download/' . $app_key, [], $path);
     }
 
-    public function update($app_key, $version_id)
+    public function upgrade($app_key, $version_id)
     {
 
     }

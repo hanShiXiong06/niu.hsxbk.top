@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -14,7 +14,6 @@ namespace app\service\core\wechat;
 use core\base\BaseCoreService;
 use core\exception\WechatException;
 use EasyWeChat\Factory;
-use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
 use EasyWeChat\OfficialAccount\Application;
 
 /**
@@ -26,21 +25,20 @@ class CoreWechatService extends BaseCoreService
 {
     /**
      * 获取公众号的handle
-     * @param int $site_id
      * @return Application
      */
-    public static function app(int $site_id)
+    public static function app()
     {
         $core_wechat_service = new CoreWechatConfigService();
-        $wechat_config = $core_wechat_service->getWechatConfig($site_id);
-        if(empty($wechat_config['app_id']) || empty($wechat_config['app_secret']))
+        $wechat_config = $core_wechat_service->getWechatConfig();
+        if (empty($wechat_config[ 'app_id' ]) || empty($wechat_config[ 'app_secret' ]))
             throw new WechatException('WECHAT_NOT_EXIST');//公众号未配置
-        $config = array(
-            'app_id' => $wechat_config['app_id'],
-            'secret' => $wechat_config['app_secret'],
-            'token' => $wechat_config['token'],
-            'aes_key' => $wechat_config['encoding_aes_key'],// 明文模式请勿填写 EncodingAESKey
-            'encryption_type'   => $wechat_config['encryption_type'],//消息加解密方式
+        $config = array (
+            'app_id' => $wechat_config[ 'app_id' ],
+            'secret' => $wechat_config[ 'app_secret' ],
+            'token' => $wechat_config[ 'token' ],
+            'aes_key' => $wechat_config[ 'encoding_aes_key' ],// 明文模式请勿填写 EncodingAESKey
+            'encryption_type' => $wechat_config[ 'encryption_type' ],//消息加解密方式
             // 指定 API 调用返回结果的类型：array(default)/collection/object/raw/自定义类名
             'response_type' => 'array',
             /**
@@ -54,13 +52,13 @@ class CoreWechatService extends BaseCoreService
                     // 测试环境
                     'dev' => [
                         'driver' => 'single',
-                        'path' => app()->getRootPath() . 'runtime'.DIRECTORY_SEPARATOR.'wechat'.DIRECTORY_SEPARATOR.'dev'.DIRECTORY_SEPARATOR . date('Ym') . DIRECTORY_SEPARATOR . date('d') . '.log',
+                        'path' => app()->getRootPath() . 'runtime' . DIRECTORY_SEPARATOR . 'wechat' . DIRECTORY_SEPARATOR . 'dev' . DIRECTORY_SEPARATOR . date('Ym') . DIRECTORY_SEPARATOR . date('d') . '.log',
                         'level' => 'debug',
                     ],
                     // 生产环境
                     'prod' => [
                         'driver' => 'daily',
-                        'path' => app()->getRootPath() . 'runtime'.DIRECTORY_SEPARATOR.'wechat'.DIRECTORY_SEPARATOR.'dev'.DIRECTORY_SEPARATOR . date('Ym') . DIRECTORY_SEPARATOR . date('d') . '.log',
+                        'path' => app()->getRootPath() . 'runtime' . DIRECTORY_SEPARATOR . 'wechat' . DIRECTORY_SEPARATOR . 'dev' . DIRECTORY_SEPARATOR . date('Ym') . DIRECTORY_SEPARATOR . date('d') . '.log',
                         'level' => 'info',
                     ],
                 ],

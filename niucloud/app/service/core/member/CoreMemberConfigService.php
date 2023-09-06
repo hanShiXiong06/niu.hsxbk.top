@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -28,11 +28,10 @@ class CoreMemberConfigService extends BaseCoreService
 {
     /**
      * 获取注册与登录设置
-     * @param int $site_id
      * @return array
      */
-    public function getLoginConfig(int $site_id){
-        $info = (new CoreConfigService())->getConfig($site_id, 'LOGIN')['value'] ?? [];
+    public function getLoginConfig(){
+        $info = (new CoreConfigService())->getConfig('LOGIN')['value'] ?? [];
         return [
             'is_username' => $info['is_username'] ?? 1,//是否用户名密码登录
             'is_mobile' => $info['is_mobile'] ?? 0,//是否手机验证码登录
@@ -44,11 +43,10 @@ class CoreMemberConfigService extends BaseCoreService
 
     /**
      * 注册与登录设置
-     * @param int $site_id
      * @param array $data
      * @return true
      */
-    public function setLoginConfig(int $site_id, array $data){
+    public function setLoginConfig(array $data){
         $config = [
             'is_username' => $data['is_username'] ?? 1,//是否用户名密码登录
             'is_mobile' => $data['is_mobile'] ?? 0,//是否手机验证码登录
@@ -56,46 +54,44 @@ class CoreMemberConfigService extends BaseCoreService
             'is_bind_mobile'            => $data['is_bind_mobile'] ?? 0,//是否强制绑定手机
             'agreement_show' => $data['agreement_show'] ?? 0 // 政策协议是否展示
         ];
-        (new CoreConfigService())->setConfig($site_id, 'LOGIN', $config);
+        (new CoreConfigService())->setConfig('LOGIN', $config);
         return true;
     }
 
     /**
      * 获取会员设置
-     * @param int $site_id
      * @return array
      */
-    public function getMemberConfig(int $site_id){
-        $info = (new CoreConfigService())->getConfig($site_id, 'MEMBER')['value'] ?? [];
+    public function getMemberConfig(){
+        $info = (new CoreConfigService())->getConfig('MEMBER')['value'] ?? [];
         return [
             'prefix' => $info['prefix'] ?? '',// 会员编码前缀
             'length' => $info['length'] ?? 4, // 会员编码长度
+            'member_no' => $info['member_no'] ?? 0
         ];
     }
 
     /**
      * 会员设置
-     * @param int $site_id
      * @param array $data
      * @return true
      */
-    public function setMemberConfig(int $site_id, array $data){
-        $config = [
-            'prefix' => $data['prefix'] ?? '',// 会员编码前缀
-            'length' => $data['length'] ?? 4,// 会员编码长度
-        ];
-        (new CoreConfigService())->setConfig($site_id, 'MEMBER', $config);
+    public function setMemberConfig(array $data){
+        $config = $this->getMemberConfig();
+        if (isset($data['prefix'])) $config['prefix'] = $data['prefix']; // 会员编码前缀
+        if (isset($data['length'])) $config['length'] = $data['length']; // 会员编码长度
+        if (isset($data['member_no'])) $config['member_no'] = $data['member_no'];
+        (new CoreConfigService())->setConfig('MEMBER', $config);
         return true;
     }
 
 
     /**
      * 获取会员提现设置
-     * @param int $site_id
      * @return array
      */
-    public function getCashOutConfig(int $site_id){
-        $config = (new CoreConfigService())->getConfig($site_id, ConfigKeyDict::MEMBER_CASH_OUT)['value'] ?? [];
+    public function getCashOutConfig(){
+        $config = (new CoreConfigService())->getConfig(ConfigKeyDict::MEMBER_CASH_OUT)['value'] ?? [];
         return [
             'is_open' => $config['is_open'] ?? '0',//是否启用提现
             'transfer_type' => $config['transfer_type'] ?? [],//提现方式
@@ -109,11 +105,10 @@ class CoreMemberConfigService extends BaseCoreService
 
     /**
      * 会员提现配置
-     * @param int $site_id
      * @param array $data
      * @return true
      */
-    public function setCashOutConfig(int $site_id, array $data){
+    public function setCashOutConfig(array $data){
         //校验转账方式是否合法
         $transfer_type_list = array_keys(TransferDict::getTransferType());
         if(array_diff(array_diff($data['transfer_type'], $transfer_type_list), $transfer_type_list)) throw new CommonException('TRANSFER_TYPE_NOT_EXIST');
@@ -126,9 +121,10 @@ class CoreMemberConfigService extends BaseCoreService
 //            'max'            => $data['max'] ?? '',//最高提现金额
             'rate'        => $data['rate'] ?? '',//手续费比率
         ];
-        (new CoreConfigService())->setConfig($site_id, ConfigKeyDict::MEMBER_CASH_OUT, $config);
+        (new CoreConfigService())->setConfig(ConfigKeyDict::MEMBER_CASH_OUT, $config);
         return true;
     }
+
 
 
 }

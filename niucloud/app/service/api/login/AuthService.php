@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -11,11 +11,9 @@
 
 namespace app\service\api\login;
 
-use app\dict\site\SiteDict;
 use app\model\member\Member;
 use app\Request;
 use app\service\api\member\MemberService;
-use app\service\core\site\CoreSiteService;
 use app\service\core\weapp\CoreWeappAuthService;
 use core\base\BaseApiService;
 use core\exception\ApiException;
@@ -35,31 +33,14 @@ class AuthService extends BaseApiService
         $this->model = new Member();
     }
 
-    public function checkSiteAuth(Request $request){
+    public function checkAuth(Request $request){
         //如果登录信息非法就报错
         if($this->member_id > 0){
             $member_service = new MemberService();
-            $member_info = $member_service->findMemberInfo(['member_id' => $this->member_id, 'site_id' => $this->site_id]);
+            $member_info = $member_service->findMemberInfo(['member_id' => $this->member_id]);
             if($member_info->isEmpty())
                 throw new AuthException('MEMBER_NOT_EXIST');
         }
-        return true;
-    }
-
-    /**
-     * 检测站点的合法性
-     * @param Request $request
-     * @return true
-     */
-    public function checkSite(Request $request){
-        $site_id = $request->apiSiteId();//todo  可以是依赖传值,也可以通过domain域名来获取site_id
-        $site_info = (new CoreSiteService())->getSiteCache($site_id);
-        if(empty($site_info)) throw new AuthException('SITE_NOT_EXIST');
-        if($site_info['status'] == SiteDict::CLOSE){
-            $rule = strtolower(trim($request->rule()->getRule()));
-            if($rule != 'site') throw new AuthException('SITE_CLOSE_NOT_ALLOW');
-        }
-        $request->siteId($site_id);
         return true;
     }
 
@@ -72,7 +53,7 @@ class AuthService extends BaseApiService
         public function bindMobile(string $mobile, string $mobile_code){
 
         if(empty($mobile)){
-            $result = (new CoreWeappAuthService())->getUserPhoneNumber($this->site_id, $mobile_code);
+            $result = (new CoreWeappAuthService())->getUserPhoneNumber($mobile_code);
             if(empty($result)) throw new ApiException('WECHAT_EMPOWER_NOT_EXIST');
             $phone_info = $result['phone_info'];
             $mobile = $phone_info['purePhoneNumber'];
@@ -82,13 +63,13 @@ class AuthService extends BaseApiService
             (new LoginService())->checkMobileCode($mobile);
         }
         $member_service = new MemberService();
-        $member = $member_service->findMemberInfo(['member_id' => $this->member_id, 'site_id' => $this->site_id]);
+        $member = $member_service->findMemberInfo(['member_id' => $this->member_id]);
         if($member->isEmpty()) throw new AuthException('MEMBER_NOT_EXIST');
 
         $o_mobile = $member['mobile'];//原始手机号
         if(!empty($o_mobile)) throw new AuthException('MOBILE_IS_BIND_MEMBER');
 
-        $mobile_member = $member_service->findMemberInfo(['mobile' => $mobile, 'site_id' => $this->site_id]);
+        $mobile_member = $member_service->findMemberInfo(['mobile' => $mobile]);
         if(!$mobile_member->isEmpty()) throw new AuthException('MOBILE_IS_EXIST');
 
 //        if(empty($mobile)) throw new AuthException('MOBILE_NEEDED');//必须填写

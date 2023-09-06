@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -38,7 +38,7 @@ class UploadConfigService extends BaseAdminService
      */
     public function getUploadConfig()
     {
-        return $this->core_upload_config_service->getUploadConfig($this->site_id);
+        return $this->core_upload_config_service->getUploadConfig();
 
     }
 
@@ -49,7 +49,7 @@ class UploadConfigService extends BaseAdminService
      */
     public function setUploadConfig(array $data)
     {
-        return $this->core_upload_config_service->setUploadConfig($this->site_id, $data);
+        return $this->core_upload_config_service->setUploadConfig($data);
     }
 
 

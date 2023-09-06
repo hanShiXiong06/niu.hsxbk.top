@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -29,15 +29,15 @@ class CoreSmsService extends BaseCoreService
         parent::__construct();
     }
 
-    public function send($site_id, $mobile, $params, $key, $template_id, $content)
+    public function send($mobile, $params, $key, $template_id, $content)
     {
         //查询配置
-        $config = $this->getDefaultSmsConfig($site_id);
+        $config = $this->getDefaultSmsConfig();
         $sms_type = $config['sms_type'];
         if(empty($sms_type)) throw new NoticeException('SMS_TYPE_NOT_OPEN');
         //创建
         $core_notice_sms_log_service = new CoreNoticeSmsLogService();
-        $log_id = $core_notice_sms_log_service->add($site_id, [
+        $log_id = $core_notice_sms_log_service->add([
             'mobile' => $mobile,
             'sms_type' => $sms_type,
             'key' => $key,
@@ -49,19 +49,19 @@ class CoreSmsService extends BaseCoreService
 
         $sms_driver  = new SmsLoader($sms_type, $config);
         $params = $this->makeUp($params, $content, $sms_type);
-        $result = $sms_driver->send($mobile, $template_id, $params);
-
-        if (!$result) {
+        try {
+            $result = $sms_driver->send($mobile, $template_id, $params);
+        }catch(NoticeException $e){
             //失败修改短信记录
-            $error = $sms_driver->getError();
-            $core_notice_sms_log_service->edit($site_id, $log_id, [
+            $error = $e->getMessage();
+            $core_notice_sms_log_service->edit($log_id, [
                 'status' => SmsDict::FAIL,
-                'result' => $sms_driver->getError()
+                'result' => $error
             ]);
             throw new NoticeException($error);
         }
         //成功修改短信记录
-        $core_notice_sms_log_service->edit($site_id, $log_id, [
+        $core_notice_sms_log_service->edit($log_id, [
             'status' => SmsDict::SUCCESS,
             'result' => $result
         ]);
@@ -86,12 +86,11 @@ class CoreSmsService extends BaseCoreService
     }
     /**
      * 主要用于短信发送(todo 慎用!!!!!)
-     * @param int $site_id
      * @return array
      */
-    public function getDefaultSmsConfig(int $site_id)
+    public function getDefaultSmsConfig()
     {
-        $info = (new CoreConfigService())->getConfig($site_id, 'SMS')['value'] ?? [];
+        $info = (new CoreConfigService())->getConfig('SMS')['value'] ?? [];
         if (empty($info))
             throw new NoticeException('NOTICE_SMS_NOT_OPEN');
 

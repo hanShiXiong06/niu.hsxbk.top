@@ -142,7 +142,7 @@ class Tencent extends BaseUpload
     {
         //腾讯云缩略图地址
 
-        $thumb_config = config('upload.thumb.thumb_type');
+        $thumb_config = config('upload.thumb_type');
         $thumb_data = [];
         foreach ($thumb_config as $k => $v) {
             if ($thumb_type == 'all' || $thumb_type == $k || (is_array($thumb_type) && in_array($k, $thumb_type))) {

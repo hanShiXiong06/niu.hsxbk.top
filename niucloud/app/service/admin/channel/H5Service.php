@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -42,7 +42,7 @@ class H5Service extends BaseAdminService
         $data = [
             'is_open' => $value['is_open']
         ];
-        return $this->core_config_service->setConfig($this->site_id,ConfigKeyDict::H5, $data);
+        return $this->core_config_service->setConfig(ConfigKeyDict::H5, $data);
     }
 
     /**
@@ -50,6 +50,6 @@ class H5Service extends BaseAdminService
      * @return mixed
      */
     public function getH5(){
-        return (new CoreH5Service())->getH5($this->site_id);
+        return (new CoreH5Service())->getH5();
     }
 }

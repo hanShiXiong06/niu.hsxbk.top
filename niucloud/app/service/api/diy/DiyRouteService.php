@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -36,7 +36,7 @@ class DiyRouteService extends BaseApiService
     public function getShare(array $data = [])
     {
         $field = 'id,title,name,page,share,is_share';
-        $info = $this->model->field($field)->where([ [ 'page', '=', $data[ 'route' ] ], [ 'site_id', '=', $this->site_id ] ])->findOrEmpty()->toArray();
+        $info = $this->model->field($field)->where([ [ 'page', '=', $data[ 'route' ] ] ])->findOrEmpty()->toArray();
         $share = [];
         if (!empty($info[ 'share' ])) {
             $share = json_decode($info[ 'share' ], true);

@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -28,16 +28,15 @@ class CoreWechatTemplateService extends BaseCoreService
 {
     /**
      * 获取模板消息业务对象
-     * @param $site_id
      * @return Client
      */
-    public function template($site_id){
-        return CoreWechatService::app($site_id)->template_message;
+    public function template()
+    {
+        return CoreWechatService::app()->template_message;
     }
 
     /**
      * 发送模板消息
-     * @param int $site_id
      * @param string $open_id
      * @param string $wechat_template_id
      * @param array $data
@@ -50,11 +49,12 @@ class CoreWechatTemplateService extends BaseCoreService
      * @throws InvalidConfigException
      * @throws GuzzleException
      */
-    public function send(int $site_id, string $open_id, string $wechat_template_id, array $data, string $first, string $remark, string $url = '', $miniprogram = ''){
-        if(!empty($first)) $data['first'] = $first;
-        if(!empty($remark)) $data['remark'] = $remark;
+    public function send(string $open_id, string $wechat_template_id, array $data, string $first, string $remark, string $url = '', $miniprogram = '')
+    {
+        if (!empty($first)) $data[ 'first' ] = $first;
+        if (!empty($remark)) $data[ 'remark' ] = $remark;
 
-        return $this->template($site_id)->send([
+        return $this->template()->send([
             'touser' => $open_id,
             'template_id' => $wechat_template_id,
             'url' => $url,
@@ -66,26 +66,27 @@ class CoreWechatTemplateService extends BaseCoreService
 
     /**
      * 删除
-     * @param int $site_id
      * @param string $templateId
      * @return array|Collection|object|ResponseInterface|string
      * @throws GuzzleException
      * @throws InvalidConfigException
      */
-    public function deletePrivateTemplate(int $site_id, string $templateId){
-        return $this->template($site_id)->deletePrivateTemplate($templateId);
+    public function deletePrivateTemplate(string $templateId)
+    {
+        return $this->template()->deletePrivateTemplate($templateId);
     }
 
     /**
      * 添加
-     * @param int $site_id
      * @param string $shortId
+     * @param string $keyword_name_list
      * @return array|Collection|object|ResponseInterface|string
      * @throws GuzzleException
      * @throws InvalidConfigException
      */
-    public function addTemplate(int $site_id, string $shortId){
-        return $this->template($site_id)->addTemplate($shortId);
+    public function addTemplate(string $shortId, string $keyword_name_list)
+    {
+        return $this->template()->addTemplate($shortId, $keyword_name_list);
     }
 
 }

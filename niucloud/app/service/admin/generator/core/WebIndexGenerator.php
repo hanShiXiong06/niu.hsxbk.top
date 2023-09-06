@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -48,15 +48,15 @@ class WebIndexGenerator extends BaseGenerator
             '{EDIT_DIALOG}',
             '{ADD_EVENT}',
             '{EDIT_EVENT}',
-
+            '{API_PATH}',
         ];
 
         $new = [
             $this->getSearch(),
             $this->getSearchParams(),
             $this->getTable(),
-            $this->table['table_content'],
-            $this->getUCaseName(),
+            $this->getNotes(),
+            $this->getUCaseClassName(),
             $this->getLCaseName(),
             $this->getUCaseClassName(),
             $this->getLCaseClassName(),
@@ -67,6 +67,7 @@ class WebIndexGenerator extends BaseGenerator
             $this->getEditDialog(),
             $this->getAddEvent(),
             $this->getEditEvent(),
+            $this->getApiPath(),
         ];
 
         $vmPath = $this->getvmPath('web_index');
@@ -75,6 +76,22 @@ class WebIndexGenerator extends BaseGenerator
 
         $this->setText($text);
     }
+
+    /**
+     * 获取注释名称
+     * @return string
+     */
+    public function getNotes()
+    {
+        $end_str = substr($this->table['table_content'],-3);
+        if($end_str == '表')
+        {
+            return substr($this->table['table_content'],0,strlen($this->table['table_content'])-3);
+        }else{
+            return $this->table['table_content'];
+        }
+    }
+
 
     /**
      * 编辑框路径
@@ -88,7 +105,12 @@ class WebIndexGenerator extends BaseGenerator
         if($this->className){
             $file_name = Str::lower($this->className) . '-edit.vue';
         }
-        return "import ".$this->getUCaseClassName()."Edit from '@/views/".$this->moduleName."/".$path.$file_name."'";
+        if(!empty($this->addonName))
+        {
+            return "import ".$this->getUCaseClassName()."Edit from '@/".$this->addonName."/views/".$this->moduleName."/".$path.$file_name."'";
+        }else{
+            return "import ".$this->getUCaseClassName()."Edit from '@/views/".$this->moduleName."/".$path.$file_name."'";
+        }
     }
 
     /**
@@ -275,7 +297,7 @@ class WebIndexGenerator extends BaseGenerator
         $content = '';
         $queryDate = false;
         foreach ($this->tableColumn as $column) {
-            if (!$column['is_query'] || $column['is_pk']) {
+            if (!$column['is_pk']) {
                 continue;
             }
             $content .= $column['column_name'] . ": ''," . PHP_EOL;
@@ -311,13 +333,48 @@ class WebIndexGenerator extends BaseGenerator
      */
     public function getRuntimeOutDir()
     {
-        $dir = $this->outDir . 'admin/src/views/' . $this->moduleName . '/';
+        if(!empty($this->addonName))
+        {
+            $dir = $this->outDir . 'addon/'.$this->addonName.'/admin/src/views/' . $this->moduleName . '/';
+
+        }else{
+            $dir = $this->outDir . 'admin/src/views/' . $this->moduleName . '/';
+        }
+
+
         $this->checkDir($dir);
 
         return $dir;
     }
 
+    /**
+     * 获取文件生成到项目中
+     * @return string
+     */
+    public function getObjectOutDir()
+    {
+        if(!empty($this->addonName))
+        {
+            $dir = $this->rootDir . '/admin/src/'.$this->addonName.'/views/'. $this->moduleName . '/';
+        }else{
+            $dir = $this->rootDir . '/admin/src/views/' . $this->moduleName . '/';
+        }
 
+        $this->checkDir($dir);
+        return $dir;
+    }
+
+    public function getFilePath()
+    {
+        if(!empty($this->addonName))
+        {
+            $dir = 'addon/'.$this->addonName.'/admin/'.$this->addonName.'/views/' . $this->moduleName . '/';
+
+        }else{
+            $dir = 'admin/app/views/' . $this->moduleName . '/';
+        }
+        return $dir;
+    }
     /**
      * 生成的文件名
      * @return string
@@ -328,5 +385,17 @@ class WebIndexGenerator extends BaseGenerator
         return 'list.vue';
     }
 
-
+    /**
+     * 生成的API路径
+     * @return string
+     */
+    public function getApiPath()
+    {
+        if(!empty($this->addonName))
+        {
+            return $this->addonName.'/api/'.$this->moduleName;
+        }else{
+            return 'api/'.$this->moduleName;
+        }
+    }
 }

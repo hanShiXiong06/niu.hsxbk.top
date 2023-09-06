@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -43,16 +43,18 @@ class WebEditGenerator extends BaseGenerator
             '{FORM_VALIDATE}',
             '{PK}',
             '{MODULE_NAME}',
+            '{API_PATH}',
         ];
 
         $new = [
             $this->getFormView(),
-            $this->getUCaseName(),
+            $this->getUCaseClassName(),
             $this->getUCaseClassName(),
             $this->getFormData(),
             $this->getFormValidate(),
             $this->getPk(),
             $this->moduleName,
+            $this->getApiPath(),
         ];
         $vmPath = $this->getvmPath('web_edit');
 
@@ -237,7 +239,12 @@ class WebEditGenerator extends BaseGenerator
         if($this->table['edit_type'] != 1) {
             return '';
         }
-        $dir = $this->outDir . 'admin/src/views/' . $this->moduleName . '/';
+        if(!empty($this->addonName))
+        {
+            $dir = $this->outDir . '/addon/'.$this->addonName.'/admin/src/views/' . $this->moduleName . '/';
+        }else{
+            $dir = $this->outDir . 'admin/src/views/' . $this->moduleName . '/';
+        }
 
         $dir .= 'components/';
         $this->checkDir($dir);
@@ -245,6 +252,40 @@ class WebEditGenerator extends BaseGenerator
         return $dir;
     }
 
+    /**
+     * 获取文件生成到项目中
+     * @return string
+     */
+    public function getObjectOutDir()
+    {
+        if(!empty($this->addonName))
+        {
+            $dir = $this->rootDir . '/admin/src/'.$this->addonName.'/views/'. $this->moduleName . '/';
+        }else{
+//            $dir = '';
+            $dir = $this->rootDir . '/admin/src/views/'. $this->moduleName . '/';
+        }
+
+        $dir .= 'components/';
+        $this->checkDir($dir);
+        return $dir;
+    }
+
+    public function getFilePath()
+    {
+        if($this->table['edit_type'] != 1) {
+            return '';
+        }
+        if(!empty($this->addonName))
+        {
+            $dir = 'addon/'.$this->addonName.'/admin/'.$this->addonName.'/views/' . $this->moduleName . '/';
+        }else{
+            $dir = 'admin/app/views/' . $this->moduleName . '/';
+        }
+
+        $dir .= 'components/';
+        return $dir;
+    }
 
     /**
      * 生成的文件名
@@ -261,4 +302,17 @@ class WebEditGenerator extends BaseGenerator
         return str_replace('_', '-', Str::lower($this->getTableName())).'-edit.vue';
     }
 
+    /**
+     * 生成的API路径
+     * @return string
+     */
+    public function getApiPath()
+    {
+        if(!empty($this->addonName))
+        {
+            return $this->addonName.'/api/'.$this->moduleName;
+        }else{
+            return 'api/'.$this->moduleName;
+        }
+    }
 }

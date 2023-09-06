@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -15,7 +15,6 @@ use app\dict\sys\SmsDict;
 use app\service\core\sys\CoreConfigService;
 use core\base\BaseAdminService;
 use core\exception\AdminException;
-use think\Response;
 
 /**
  * 短信配置服务层
@@ -33,7 +32,7 @@ class SmsService extends BaseAdminService
     public function getList()
     {
         $sms_type_list = SmsDict::getType();
-        $info = (new CoreConfigService())->getConfig($this->site_id, 'SMS');
+        $info = (new CoreConfigService())->getConfig('SMS');
         if(empty($info))
         {
             $config_type = ['default' => ''];//初始化
@@ -68,7 +67,7 @@ class SmsService extends BaseAdminService
     {
         $sms_type_list = SmsDict::getType();
         if(!array_key_exists($sms_type, $sms_type_list)) throw new AdminException('SMS_TYPE_NOT_EXIST');
-        $info = (new CoreConfigService())->getConfig($this->site_id, 'SMS');
+        $info = (new CoreConfigService())->getConfig( 'SMS');
         if(empty($info))
         {
             $config_type = ['default' => ''];//初始化
@@ -101,7 +100,7 @@ class SmsService extends BaseAdminService
     {
         $sms_type_list = SmsDict::getType();
         if(!array_key_exists($sms_type, $sms_type_list)) throw new AdminException('SMS_TYPE_NOT_EXIST');
-        $info = (new CoreConfigService())->getConfig($this->site_id, 'SMS');
+        $info = (new CoreConfigService())->getConfig( 'SMS');
         if(empty($info))
         {
             $config['default'] = '';
@@ -121,7 +120,7 @@ class SmsService extends BaseAdminService
             $config[$sms_type][$k_param] = $data[$k_param] ?? '';
         }
 
-        return (new CoreConfigService())->setConfig($this->site_id, 'SMS', $config);
+        return (new CoreConfigService())->setConfig('SMS', $config);
     }
 
 

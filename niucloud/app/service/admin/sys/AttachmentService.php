@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -45,7 +45,6 @@ class AttachmentService extends BaseAdminService
      */
     public function add(array $data)
     {
-        $data[ 'site_id' ] = $this->site_id;
         return $this->core_attachment_service->add($data);
     }
 
@@ -59,7 +58,7 @@ class AttachmentService extends BaseAdminService
      */
     public function edit(int $att_id, array $data)
     {
-        return $this->core_attachment_service->edit($this->site_id, $att_id, $data);
+        return $this->core_attachment_service->edit($att_id, $data);
     }
 
     /**
@@ -72,7 +71,6 @@ class AttachmentService extends BaseAdminService
     {
         $where = array (
             [ 'att_id', '=', $att_id ],
-            [ 'site_id', '=', $this->site_id ],
         );
         $this->model->where($where)->update([ 'cate_id' => $cate_id, 'update_time' => time() ]);
         return true;
@@ -89,7 +87,6 @@ class AttachmentService extends BaseAdminService
 
         $where = array (
             [ 'att_id', 'in', is_string($att_ids) ? explode($att_ids) : $att_ids ],
-            [ 'site_id', '=', $this->site_id ],
         );
         $this->model->where($where)->update([ 'cate_id' => $cate_id, 'update_time' => time() ]);
         return true;
@@ -102,7 +99,7 @@ class AttachmentService extends BaseAdminService
      */
     public function del(int $att_id)
     {
-        return $this->core_attachment_service->del($this->site_id, $att_id);
+        return $this->core_attachment_service->del($att_id);
     }
 
     /**
@@ -112,7 +109,7 @@ class AttachmentService extends BaseAdminService
      */
     public function delAll($data)
     {
-        return $this->core_attachment_service->delAll($this->site_id, $data);
+        return $this->core_attachment_service->delAll($data);
     }
 
     /**
@@ -122,9 +119,7 @@ class AttachmentService extends BaseAdminService
      */
     public function getPage(array $data)
     {
-        $where = array (
-            [ 'site_id', '=', $this->site_id ]
-        );
+
         if (!empty($data[ 'att_type' ])) {
             $where[] = [ 'att_type', '=', $data[ 'att_type' ] ];
         }
@@ -134,9 +129,9 @@ class AttachmentService extends BaseAdminService
         if (!empty($data[ 'real_name' ])) {
             $where[] = [ 'real_name', 'like', '%' . $data[ 'real_name' ] . '%' ];
         }
-        return $this->getPageList($this->model, $where, 'att_id,path,real_name,att_type,url', 'att_id desc', each:function($item, $key)
+        return $this->getPageList($this->model, $where ?? [], 'att_id,path,real_name,att_type,url', 'att_id desc', each:function($item, $key)
     {
-        $item[ 'thumb' ] = get_thumb_images($this->site_id, $item[ 'url' ], FileDict::SMALL);
+        $item[ 'thumb' ] = get_thumb_images($item[ 'url' ], FileDict::SMALL);
     });
     }
 
@@ -147,7 +142,6 @@ class AttachmentService extends BaseAdminService
      */
     public function addCategory(array $data)
     {
-        $data[ 'site_id' ] = $this->site_id;
         $category_model = new SysAttachmentCategory();
         $attachment = $category_model->create($data);
         if (!$attachment->id)
@@ -157,14 +151,12 @@ class AttachmentService extends BaseAdminService
 
     /**
      * 素材组模型对象
-     * @param int $site_id
      * @param int $id
      * @return mixed
      */
-    public function findCategory(int $site_id, int $id)
+    public function findCategory(int $id)
     {
         $where = array (
-            [ 'site_id', '=', $site_id ],
             [ 'id', '=', $id ]
         );
         $category_model = new SysAttachmentCategory();
@@ -183,7 +175,6 @@ class AttachmentService extends BaseAdminService
     public function editCategory(int $id, array $data)
     {
         $where = array (
-            [ 'site_id', '=', $this->site_id ],
             [ 'id', '=', $id ]
         );
         $category_model = new SysAttachmentCategory();
@@ -199,7 +190,7 @@ class AttachmentService extends BaseAdminService
     public function delCategory(int $id)
     {
         //查询是否有下级菜单或按钮
-        $category = $this->findCategory($this->site_id, $id);
+        $category = $this->findCategory($id);
         if ($this->model->where([ [ 'cate_id', '=', $id ] ])->count() > 0)
             throw new AdminException('ATTACHMENT_GROUP_HAS_IMAGE');
 
@@ -216,16 +207,13 @@ class AttachmentService extends BaseAdminService
      */
     public function getCategoryPage(array $data)
     {
-        $where = array (
-            [ 'site_id', '=', $this->site_id ]
-        );
         if (!empty($data[ 'type' ])) {
             $where[] = [ 'type', '=', $data[ 'type' ] ];
         }
         if (!empty($data[ 'name' ])) {
             $where[] = [ 'name', 'like', '%' . $data[ 'name' ] . '%' ];
         }
-        return $this->getPageList(( new SysAttachmentCategory() ), $where, 'id,name', 'id desc');
+        return $this->getPageList(( new SysAttachmentCategory() ), $where ?? [], 'id,name', 'id desc');
     }
 
     /**
@@ -238,16 +226,14 @@ class AttachmentService extends BaseAdminService
      */
     public function getCategoryList(array $data)
     {
-        $where = array (
-            [ 'site_id', '=', $this->site_id ]
-        );
+
         if (!empty($data[ 'type' ])) {
             $where[] = [ 'type', '=', $data[ 'type' ] ];
         }
         if (!empty($data[ 'name' ])) {
             $where[] = [ 'name', 'like', '%' . $data[ 'name' ] . '%' ];
         }
-        return SysAttachmentCategory::where($where)->field('id,name,type')->order('id desc')->select()->toArray();
+        return SysAttachmentCategory::where($where ?? [])->field('id,name,type')->order('id desc')->select()->toArray();
     }
 
     /**

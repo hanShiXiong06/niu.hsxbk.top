@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -32,7 +32,7 @@ class NoticeSmsLogService extends BaseAdminService
      */
     public function getPage($where)
     {
-        return (new CoreNoticeSmsLogService())->getPage($this->site_id, $where);
+        return (new CoreNoticeSmsLogService())->getPage($where);
     }
 
     /**
@@ -42,6 +42,6 @@ class NoticeSmsLogService extends BaseAdminService
      */
     public function getInfo(int $id)
     {
-        return (new CoreNoticeSmsLogService())->getInfo($this->site_id, $id);
+        return (new CoreNoticeSmsLogService())->getInfo( $id);
     }
 }

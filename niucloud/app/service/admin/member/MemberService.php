@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -41,9 +41,19 @@ class MemberService extends BaseAdminService
      */
     public function getPage(array $where = [])
     {
-
-        $field = 'member_id, member_no, site_id, username, mobile, password, register_channel, register_type, nickname, headimg, member_level, member_label, wx_openid, weapp_openid, wx_unionid, ali_openid, douyin_openid, login_ip, login_type, login_channel, login_count, login_time, create_time, last_visit_time, last_consum_time, sex, status, birthday, point, point_get, balance, balance_get, growth, growth_get, is_member, member_time, is_del, province_id, city_id, district_id, address, location, delete_time, money, money_get, commission, commission_get, commission_cash_outing';
-        $search_model = $this->model->where([['site_id', '=', $this->site_id]])->withSearch(['keyword','register_type', 'create_time', 'is_del', 'member_label', 'register_channel'],$where)->field($field)->order('member_id desc')->append(['register_channel_name', 'register_type_name', 'sex_name', 'login_channel_name', 'login_type_name', 'status_name']);
+        if($where['status'] == 2)
+        {
+            $status[] = ['status','=',1];
+        }else if($where['status'] == 3)
+        {
+            $status[] = ['status','=',0];
+        }else{
+            $status[] = ['status','in',[1,0]];
+        }
+        $field = 'member_id, member_no, username, mobile, password, register_channel, register_type, nickname, headimg, member_level, member_label, wx_openid, weapp_openid, wx_unionid, ali_openid, douyin_openid, login_ip, login_type, login_channel, login_count, login_time, create_time, last_visit_time, last_consum_time, sex, status, birthday, point, point_get, balance, balance_get, growth, growth_get, is_member, member_time, is_del, province_id, city_id, district_id, address, location, delete_time, money, money_get, commission, commission_get, commission_cash_outing';
+        $search_model = $this->model->withSearch(['keyword','register_type', 'create_time', 'is_del', 'member_label', 'register_channel'],$where)
+            ->where($status)
+            ->field($field)->order('member_id desc')->append(['register_channel_name', 'register_type_name', 'sex_name', 'login_channel_name', 'login_type_name', 'status_name']);
         return $this->pageQuery($search_model, function ($item, $key) {
             $item = $this->makeUp($item);
         });
@@ -60,7 +70,7 @@ class MemberService extends BaseAdminService
     public function getList(array $where = [])
     {
         $field = 'member_id, nickname, headimg';
-        return  $this->model->where([['site_id', '=', $this->site_id]])->withSearch(['keyword'],$where)->field($field)->order('member_id desc')->limit($this->getPageParam()['limit'] ?? 0)->select()->toArray();
+        return  $this->model->withSearch(['keyword'],$where)->field($field)->order('member_id desc')->limit($this->getPageParam()['limit'] ?? 0)->select()->toArray();
     }
     /**
      * 会员详情
@@ -69,8 +79,8 @@ class MemberService extends BaseAdminService
      */
     public function getInfo(int $member_id)
     {
-        $field = 'member_id,member_no, site_id, username, mobile, password, register_channel, register_type, nickname, headimg, member_level, member_label, wx_openid, weapp_openid, wx_unionid, ali_openid, douyin_openid, login_ip, login_type, login_channel, login_count, login_time, create_time, last_visit_time, last_consum_time, sex, status, birthday, point, point_get, balance, balance_get, growth, growth_get, is_member, member_time, is_del, province_id, city_id, district_id, address, location, delete_time, money, money_get, commission, commission_get, commission_cash_outing';
-        return $this->makeUp($this->model->where([['member_id', '=', $member_id], ['site_id', '=', $this->site_id]])->field($field)->append(['register_channel_name', 'register_type_name', 'sex_name', 'login_channel_name', 'login_type_name', 'status_name'])->findOrEmpty()->toArray());
+        $field = 'member_id,member_no, username, mobile, password, register_channel, register_type, nickname, headimg, member_level, member_label, wx_openid, weapp_openid, wx_unionid, ali_openid, douyin_openid, login_ip, login_type, login_channel, login_count, login_time, create_time, last_visit_time, last_consum_time, sex, status, birthday, point, point_get, balance, balance_get, growth, growth_get, is_member, member_time, is_del, province_id, city_id, district_id, address, location, delete_time, money, money_get, commission, commission_get, commission_cash_outing';
+        return $this->makeUp($this->model->where([['member_id', '=', $member_id]])->field($field)->append(['register_channel_name', 'register_type_name', 'sex_name', 'login_channel_name', 'login_type_name', 'status_name'])->findOrEmpty()->toArray());
     }
 
     /**
@@ -83,24 +93,23 @@ class MemberService extends BaseAdminService
 
         //检测手机是否重复
         if(!empty($data['mobile'])){
-            if(!$this->model->where([['site_id', '=', $this->site_id], ['mobile', '=', $data['mobile']]])->findOrEmpty()->isEmpty())
+            if(!$this->model->where([ ['mobile', '=', $data['mobile']]])->findOrEmpty()->isEmpty())
             throw new AdminException('MOBILE_IS_EXIST');
         }
         if($data['init_member_no'] != $data['member_no']){
-            if(!$this->model->where([['site_id', '=', $this->site_id], ['member_no', '=', $data['member_no']]])->findOrEmpty()->isEmpty())
+            if(!$this->model->where([ ['member_no', '=', $data['member_no']]])->findOrEmpty()->isEmpty())
                 throw new AdminException('MEMBER_NO_IS_EXIST');
         }else{
-            if(!$this->model->where([['site_id', '=', $this->site_id], ['member_no', '=', $data['member_no']]])->findOrEmpty()->isEmpty()){
+            if(!$this->model->where([ ['member_no', '=', $data['member_no']]])->findOrEmpty()->isEmpty()){
                 $data['member_no'] = $this->getMemberNo();
             }
         }
 
         $data['username'] = $data['member_no'];
         if(!empty($data['username'])){
-            if(!$this->model->where([['site_id', '=', $this->site_id], ['username', '=', $data['username']]])->findOrEmpty()->isEmpty())
+            if(!$this->model->where([['username', '=', $data['username']]])->findOrEmpty()->isEmpty())
                 throw new AdminException('MEMBER_IS_EXIST');
         }
-        $data['site_id'] = $this->site_id;
         $password_hash = create_password($data['password']);
         $data['password'] = $password_hash;
         $data['register_type'] = MemberRegisterTypeDict::MANUAL;
@@ -121,7 +130,7 @@ class MemberService extends BaseAdminService
     public function edit(int $member_id, array $data)
     {
         $where = array(
-            ['site_id', '=', $this->site_id],
+
             ['member_id', '=', $member_id],
         );
         if(!empty($data['password'])){
@@ -140,7 +149,7 @@ class MemberService extends BaseAdminService
      */
     public function modify(int $member_id, string $field, $data)
     {
-        return (new CoreMemberService())->modify($this->site_id, $member_id, $field, $data);
+        return (new CoreMemberService())->modify($member_id, $field, $data);
     }
 
     /**
@@ -162,7 +171,6 @@ class MemberService extends BaseAdminService
      * @throws DbException
      */
     public function getCount(array $where = []){
-        $where[] = ['site_id', '=', $this->site_id];
         $where[] = ['is_del', '=', 0];
         return $this->model->where($where)->count();
     }
@@ -175,7 +183,6 @@ class MemberService extends BaseAdminService
      */
     public function setStatus(array $member_ids, int $status){
         $where = array(
-            ['site_id', '=', $this->site_id],
             ['member_id', 'in', $member_ids],
         );
         $data = array(
@@ -192,7 +199,7 @@ class MemberService extends BaseAdminService
      */
     public function getSum($field)
     {
-        return $this->model->where([['site_id', '=', $this->site_id] ])->sum($field);
+        return $this->model->sum($field);
     }
 
     /**
@@ -201,7 +208,7 @@ class MemberService extends BaseAdminService
      */
     public function getMemberNo()
     {
-        return (new CoreMemberService())->createMemberNo($this->site_id);
+        return (new CoreMemberService())->createMemberNo();
     }
 
     /**
@@ -212,7 +219,7 @@ class MemberService extends BaseAdminService
     public function deleteMember(int $member_id)
     {
         $this->model->destroy(function($query) use($member_id){
-            $query->where([['member_id', '=', $member_id], ['site_id', '=', $this->site_id]]);
+            $query->where([['member_id', '=', $member_id]]);
         });
         return true;
     }

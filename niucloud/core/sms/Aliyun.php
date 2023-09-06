@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -70,9 +70,9 @@ class Aliyun extends BaseSms
                 return $res;
             }
             $message = $res['Message'] ?? $res;
-            throw new NoticeException($message);
+            throw new NoticeException('【阿里云平台提示】：'.$message);
         } catch ( Exception $e ) {
-            throw new NoticeException($e->getMessage());
+            throw new NoticeException('【阿里云平台提示】：'.$e->getMessage());
         }
     }
 

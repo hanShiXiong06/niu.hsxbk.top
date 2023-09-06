@@ -128,7 +128,7 @@ class Qiniu extends BaseUpload
     public function thumb($file_path, $thumb_type)
     {
 //       mageView2/1/w/400/h/600/q/85
-        $thumb_config = config('upload.thumb.thumb_type');
+        $thumb_config = config('upload.thumb_type');
         $thumb_data = [];
         foreach ($thumb_config as $k => $v) {
             if ($thumb_type == 'all' || $thumb_type == $k || (is_array($thumb_type) && in_array($k, $thumb_type))) {

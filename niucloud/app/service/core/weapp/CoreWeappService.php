@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -26,13 +26,12 @@ class CoreWeappService extends BaseCoreService
 {
     /**
      * 获取小程序的handle
-     * @param int $site_id
      * @return Application
      */
-    public static function app(int $site_id)
+    public static function app()
     {
         $core_weapp_service = new CoreWeappConfigService();
-        $weapp_config = $core_weapp_service->getWeappConfig($site_id);
+        $weapp_config = $core_weapp_service->getWeappConfig();
         if(empty($weapp_config['app_id']) || empty($weapp_config['app_secret']))
             throw new WechatException('WEAPP_NOT_EXIST');//公众号未配置
         $config = array(

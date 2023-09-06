@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -36,15 +36,26 @@ class ConfigService extends BaseApiService
      */
     public function getCopyright()
     {
-       return (new CoreSysConfigService())->getCopyright();
+        return ( new CoreSysConfigService() )->getCopyright();
     }
 
     /**
      * 获取前端域名
      * @return array|string[]
      */
-    public function getSceneDomain(){
-        return (new CoreSysConfigService())->getSceneDomain($this->site_id);
+    public function getSceneDomain()
+    {
+        return ( new CoreSysConfigService() )->getSceneDomain();
+    }
+
+    /**
+     * 获取手机端首页列表
+     * @param $data
+     * @return array
+     */
+    public function getWapIndexList($data)
+    {
+        return ( new CoreSysConfigService() )->getWapIndexList($data);
     }
 
 

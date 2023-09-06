@@ -1,0 +1,129 @@
+<?php
+// +----------------------------------------------------------------------
+// | Niucloud-admin 企业快速开发的多应用管理平台
+// +----------------------------------------------------------------------
+// | 官方网址：https://www.niucloud.com
+// +----------------------------------------------------------------------
+// | niucloud团队 版权所有 开源版本可自由商用
+// +----------------------------------------------------------------------
+// | Author: Niucloud Team
+// +----------------------------------------------------------------------
+
+namespace app\service\core\weapp;
+
+use app\model\addon\Addon;
+use app\service\core\addon\CoreAddonDevelopDownloadService;
+use app\service\core\niucloud\CoreCloudBaseService;
+use core\exception\CommonException;
+use core\util\niucloud\CloudService;
+
+/**
+ * 微信小程序云服务
+ * Class CoreWeappAuthService
+ * @package app\service\core\weapp
+ */
+class CoreWeappCloudService extends CoreCloudBaseService
+{
+    /**
+     * 上传小程序
+     * @param $addon
+     * @return void
+     */
+    public function uploadWeapp(array $data) {
+        $config = (new CoreWeappConfigService())->getWeappConfig();
+        if (empty($config['app_id'])) throw new CommonException('WEAPP_APPID_EMPTY');
+        if (empty($config['upload_private_key'])) throw new CommonException('UPLOAD_KEY_EMPTY');
+        if (!file_exists($config['upload_private_key'])) throw new CommonException('UPLOAD_KEY_NOT_EXIST');
+
+        $compile_addon = (new Addon())->where([ ['compile', 'like', "%weapp%"] ])->field('key')->findOrEmpty();
+        // 上传任务key
+        $task_key = uniqid();
+        // 此次上传任务临时目录
+        $temp_dir = runtime_path() . 'backup' . DIRECTORY_SEPARATOR . 'weapp' . DIRECTORY_SEPARATOR . $task_key;
+        // 小程序源码存放路径
+        $package_dir = $temp_dir . DIRECTORY_SEPARATOR . 'package' . DIRECTORY_SEPARATOR;
+        // uni
+        $uni_dir = $package_dir . 'uni-app';
+
+        // 如果不存在编译版小程序
+        if ($compile_addon->isEmpty()) {
+            dir_copy($this->root_path . 'uni-app', $uni_dir, exclude_dirs:['node_modules', 'unpackage', 'dist']);
+            // 替换env文件
+            $this->weappEnvReplace($uni_dir . DIRECTORY_SEPARATOR . '.env.production');
+        } else {
+            $compile_dir = $this->addonPath($compile_addon->key) . 'compile' . DIRECTORY_SEPARATOR . 'weapp';
+            if (!is_dir($compile_dir)) throw new CommonException('CLOUD_WEAPP_COMPILE_NOT_EXIST');
+            dir_copy($compile_dir, $uni_dir);
+            $this->weappCompileReplace($uni_dir);
+        }
+        file_put_contents($package_dir . 'private.key', file_get_contents($config['upload_private_key']));
+
+        // 将临时目录下文件生成压缩包
+        $zip_file = $temp_dir . DIRECTORY_SEPARATOR . 'weapp.zip';
+        (new CoreAddonDevelopDownloadService(''))->compressToZip($package_dir, $zip_file);
+
+        $query = [
+            'action' => 'wechat',
+            'compile' => $compile_addon->isEmpty() ? 0 : 1,
+            'authorize_code' => $this->auth_code,
+            'appid' => $config['app_id'],
+            'version' => $data['version'] ?? '',
+            'desc' => $data['desc'] ?? '',
+            'do' => 1
+        ];
+        (new CloudService())->httpPost('cloud?' . http_build_query($query), [
+            'multipart' => [
+                [
+                    'name'     => 'weapp',
+                    'contents' => fopen($zip_file, 'r'),
+                    'filename' => 'weapp.zip'
+                ]
+            ],
+        ]);
+
+        return ['key' => $task_key];
+    }
+
+    /**
+     * 小程序上传env文件处理
+     * @param string $env_file
+     * @return void
+     */
+    private function weappEnvReplace(string $env_file) {
+        $env = file_get_contents($env_file);
+        $env = str_replace("VITE_APP_BASE_URL=''", "VITE_APP_BASE_URL='" . (string)url('/api/', [], '', true) . "'", $env);
+        $env = str_replace("VITE_IMG_DOMAIN=''", "VITE_IMG_DOMAIN='" . (string)url('/', [], '', true) . "'", $env);
+        file_put_contents($env_file, $env);
+    }
+
+    /**
+     * 小程序上传vendor文件处理
+     * @param string $vendor_file
+     * @return void
+     */
+    private function weappCompileReplace(string $path) {
+        // 替换request.js
+        $request_file = $path . DIRECTORY_SEPARATOR . 'utils' . DIRECTORY_SEPARATOR . 'request.js';
+        $content = file_get_contents($request_file);
+        $content = str_replace('{{$baseUrl}}',  (string)url('/api/', [], '', true), $content);
+        file_put_contents($request_file, $content);
+
+        // 替换common.js
+        $common_file = $path . DIRECTORY_SEPARATOR . 'utils' . DIRECTORY_SEPARATOR . 'common.js';
+        $content = file_get_contents($common_file);
+        $content = str_replace('{{$imgUrl}}',  (string)url('/', [], '', true), $content);
+        file_put_contents($common_file, $content);
+    }
+
+    /**
+     * 获取微信小程序预览码
+     * @return void
+     */
+    public function getWeappPreviewImage() {
+        $query = [
+            'action' => 'get_wechat_preview',
+            'authorize_code' => $this->auth_code,
+        ];
+        return (new CloudService())->httpGet('cloud?' . http_build_query($query));
+    }
+}

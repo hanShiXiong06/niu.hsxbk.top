@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -13,7 +13,6 @@ return [
     //端口管理
     'dict_app' => [
         'type_admin' => 'admin',
-        'type_site' => 'site',
         'type_api' => 'api',
     ],
     'dict_menu' => [
@@ -81,14 +80,10 @@ return [
         'login_wechat' => 'wechat login',
         'login_weapp' => 'weapp login',
         'account_point_adjust' => 'adjust point',
-        'account_point_recharge_give' => 'recharge give',
         'account_balance_adjust' => 'adjust balance',
-        'account_balance_recharge' => 'recharge',
 
     ],
     'dict_order' => [
-        //订单类型
-        'order_type_recharge' => 'recharge order',
 
     ],
     //微信回复
@@ -187,11 +182,7 @@ return [
         'code_edit' => 'table edit',
         'tools_Update_cache' => 'update cache',
         'tools_check_environment' => 'check environment',
-        'app_store' => 'app market'
-
-    ],
-    'dict_menu_site' => [
-        'overview' => 'overview',
+        'app_store' => 'app market',
         'diy' => 'diy manage',
         'diy_page_index' => 'diy index',
         'diy_page_member' => 'diy member',
@@ -202,10 +193,6 @@ return [
         'attachment' => 'attachment',
         'decorate' => 'decorate',
         'page_decorate' => 'page decorate',
-        'article' => 'article',
-        'article_list' => 'article list',
-        'article_edit' => 'article edit',
-        'article_category' => 'article category',
         'member' => 'member',
         'member_list' => 'member list',
         'member_update' => 'edit',
@@ -217,13 +204,6 @@ return [
         'member_point' => 'member point',
         'member_balance' => 'member balance',
         'member_commission' => 'member commission',
-        'order' => 'order',
-        'recharge_order' => 'recharge order',
-        'recharge_order_list' => 'order list',
-        'recharge_refund' => 'refund',
-        'recharge_order_detail' => 'order detail',
-        'recharge_refund_list' => 'refund list',
-        'recharge_refund_detail' => 'refund detail',
         'finance' => 'finance manage',
         'cash_out_list' => 'member cashout',
         'addon' => 'app manage',
@@ -242,19 +222,6 @@ return [
         'weapp_template_message' => 'weapp message',
         'channel_aliapp' => 'aliapp manage',
         'aliapp_config' => 'aliapp config',
-        'auth' => 'auth manage',
-        'auth_user' => 'manager',
-        'auth_user_add' => 'add',
-        'auth_user_update' => 'edit',
-        'auth_user_del' => 'delete',
-        'auth_user_info' => 'detail',
-        'auth_role' => 'role manage',
-        'auth_role_add' => 'add',
-        'auth_role_update' => 'edit',
-        'auth_role_del' => 'delete',
-        'auth_log' => 'log',
-        'setting' => 'system config',
-        'setting_system' => 'web config',
         'system_agreement' => 'agreement manage',
         'system_agreement_edit' => 'edit agreement',
         'setting_login_register' => 'login config',
@@ -272,6 +239,7 @@ return [
         'sms_setting' => 'sms config',
         'sms_notice_records' => 'send log',
         'map_setting' => 'map config',
+
     ],
     'dict_date' => [
         //week

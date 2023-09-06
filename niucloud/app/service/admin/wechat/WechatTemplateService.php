@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -17,9 +17,6 @@ use app\service\core\notice\CoreNoticeService;
 use core\base\BaseAdminService;
 use core\exception\NoticeException;
 use core\template\TemplateLoader;
-use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
-use EasyWeChat\Kernel\Exceptions\InvalidConfigException;
-use GuzzleHttp\Exception\GuzzleException;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use think\db\exception\ModelNotFoundException;
@@ -41,12 +38,13 @@ class WechatTemplateService extends BaseAdminService
      * @throws DbException
      * @throws ModelNotFoundException
      */
-    public function syncAll(array $keys = []){
-        $site_id = $this->site_id;
+    public function syncAll(array $keys = [])
+    {
+
         $core_notice_service = new CoreNoticeService();
-        $list = $core_notice_service->getList($site_id, $keys);
-        if(empty($list)) throw new NoticeException('NOTICE_TEMPLATE_NOT_EXIST');
-        foreach($list as $v){
+        $list = $core_notice_service->getList($keys);
+        if (empty($list)) throw new NoticeException('NOTICE_TEMPLATE_NOT_EXIST');
+        foreach ($list as $v) {
             $this->syncItem($v);
         }
         return true;
@@ -56,19 +54,20 @@ class WechatTemplateService extends BaseAdminService
      * @param $item
      * @return true
      */
-    public function syncItem($item){
-        $key = $item['key'] ?? '';
-        $wechat = $item['wechat'] ?? '';
-        $temp_key = $wechat['temp_key'] ?? '';
-        if(empty($temp_key)) $error = 'WECHAT_TEMPLATE_NEED_NO';
-        $wechat_template_id = $item['wechat_template_id'];
-        //删除原来的消息模板
-//        (new CoreWechatTemplateService())->deletePrivateTemplate($this->site_id, $wechat_template_id);
-        $template_loader = new TemplateLoader('wechat', ['site_id' => $this->site_id]);
-        $template_loader->delete(['templateId' => $wechat_template_id]);
+    public function syncItem($item)
+    {
+        $key = $item[ 'key' ] ?? '';
+        $wechat = $item[ 'wechat' ] ?? '';
+        $temp_key = $wechat[ 'temp_key' ] ?? '';
+        $keyword_name_list = $wechat[ 'keyword_name_list' ] ?? '';
+
+        if (empty($temp_key)) $error = 'WECHAT_TEMPLATE_NEED_NO';
+        $wechat_template_id = $item[ 'wechat_template_id' ];
+
+        $template_loader = new TemplateLoader('wechat');
+        $template_loader->delete([ 'templateId' => $wechat_template_id ]);
         //新的消息模板
-//        $res = (new CoreWechatTemplateService())->addTemplate($this->site_id, $temp_key);
-        $res = $template_loader->addTemplate(['shortId' => $temp_key]);
+        $res = $template_loader->addTemplate([ 'shortId' => $temp_key, 'keyword_name_list' => $keyword_name_list ]);
         $notice_service = new NoticeService();
         if (isset($res[ 'errcode' ]) && $res[ 'errcode' ] == 0) {
             //修改
@@ -85,12 +84,11 @@ class WechatTemplateService extends BaseAdminService
      */
     public function getList()
     {
-        $site_id = $this->site_id;
         $core_notice_service = new CoreNoticeService();
-        $list = $core_notice_service->getList($site_id);
+        $list = $core_notice_service->getList();
         $template = [];
-        foreach ($list as $k => $v){
-            if(in_array(NoticeTypeDict::WECHAT, $v['support_type'])) $template[] = $v;
+        foreach ($list as $k => $v) {
+            if (in_array(NoticeTypeDict::WECHAT, $v[ 'support_type' ])) $template[] = $v;
         }
         return $template;
     }

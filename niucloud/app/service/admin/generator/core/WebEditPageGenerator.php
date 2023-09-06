@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -44,11 +44,12 @@ class WebEditPageGenerator extends BaseGenerator
             '{UCASE_CLASS_NAME}',
             '{LCASE_CLASS_NAME}',
             '{MODULE_NAME}',
+            '{API_PATH}',
         ];
 
         $new = [
             $this->getFormView(),
-            $this->getUCaseName(),
+            $this->getUCaseClassName(),
             $this->getFormData(),
             $this->getFormValidate(),
             $this->getPk(),
@@ -56,6 +57,7 @@ class WebEditPageGenerator extends BaseGenerator
             $this->getUCaseClassName(),
             $this->getLCaseClassName(),
             $this->moduleName,
+            $this->getApiPath(),
         ];
         $vmPath = $this->getvmPath('web_edit_page');
 
@@ -243,13 +245,54 @@ class WebEditPageGenerator extends BaseGenerator
         if($this->table['edit_type'] != 2) {
             return '';
         }
-        $dir = $this->outDir . 'admin/src/views/' . $this->moduleName . '/';
+        if(!empty($this->addonName))
+        {
+            $dir = $this->outDir . 'addon/'.$this->addonName.'/admin/src/views/' . $this->moduleName . '/';
+
+        }else{
+            $dir = $this->outDir . 'admin/src/views/' . $this->moduleName . '/';
+        }
+
 
         $this->checkDir($dir);
 
         return $dir;
     }
 
+    /**
+     * 获取文件生成到项目中
+     * @return string
+     */
+    public function getObjectOutDir()
+    {
+        if($this->table['edit_type'] != 2) {
+            return '';
+        }
+        if(!empty($this->addonName))
+        {
+            $dir = $this->rootDir . '/admin/src/'.$this->addonName.'/views/'.$this->moduleName.'/';
+        }else{
+            $dir = $this->rootDir . '/admin/src/views/' . $this->moduleName . '/';
+        }
+
+        $this->checkDir($dir);
+        return $dir;
+    }
+
+    public function getFilePath()
+    {
+        if($this->table['edit_type'] != 2) {
+            return '';
+        }
+        if(!empty($this->addonName))
+        {
+            $dir = 'addon/'.$this->addonName.'/admin/'.$this->addonName.'/views/' . $this->moduleName . '/';
+
+        }else{
+            $dir = 'admin/app/views/' . $this->moduleName . '/';
+        }
+        return $dir;
+    }
 
     /**
      * 生成的文件名
@@ -266,4 +309,17 @@ class WebEditPageGenerator extends BaseGenerator
         return 'edit.vue';
     }
 
+    /**
+     * 生成的API路径
+     * @return string
+     */
+    public function getApiPath()
+    {
+        if(!empty($this->addonName))
+        {
+            return $this->addonName.'/api/'.$this->moduleName;
+        }else{
+            return 'api/'.$this->moduleName;
+        }
+    }
 }

@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -31,16 +31,15 @@ class NoticeService extends BaseCoreService
 
     /**
      * 消息发送
-     * @param $site_id
      * @param $key
      * @param $data
      * @return false|mixed
      */
-    public static function send($site_id, $key, $data){
+    public static function send($key, $data){
 
-        $template = (new CoreNoticeService())->getInfo($site_id, $key);
+        $template = (new CoreNoticeService())->getInfo($key);
         if(empty($template)) return false;
 
-        return Notice::invoke(['site_id' => $site_id, 'key' => $key, 'data' => $data, 'template' => $template], is_async:$template['async']);
+        return Notice::invoke(['key' => $key, 'data' => $data, 'template' => $template], is_async:$template['async']);
     }
 }

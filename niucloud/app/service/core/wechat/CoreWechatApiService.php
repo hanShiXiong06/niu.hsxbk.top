@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -12,7 +12,6 @@
 namespace app\service\core\wechat;
 
 use core\base\BaseCoreService;
-use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
 use EasyWeChat\Kernel\Exceptions\InvalidConfigException;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -26,47 +25,46 @@ class CoreWechatApiService extends BaseCoreService
     /**
      * 获取用户信息
      */
-    public function userInfo(int $site_id, string $openid)
+    public function userInfo(string $openid)
     {
-        return CoreWechatService::app($site_id)->user->get($openid);
+        return CoreWechatService::app()->user->get($openid);
     }
 
     /**
      * 批量获取用户基本信息
-     * @param int $site_id
      * @param array $openids
      * @param string $lang
      * @return mixed
      * @throws GuzzleException
      * @throws InvalidConfigException
      */
-    public function userInfoBatchget(int $site_id, array $openids, string $lang = 'zh_CN')
+    public function userInfoBatchget(array $openids, string $lang = 'zh_CN')
     {
-        return CoreWechatService::app($site_id)->user->select($openids);
+        return CoreWechatService::app()->user->select($openids);
     }
     
     /**
      * 用户列表(可以再外部设计一个递归查询全部的函数)  返回的是 openid
      */
-    public function userGet(int $site_id, ?string $next_openid = '')
+    public function userGet(?string $next_openid = '')
     {
-        return CoreWechatService::app($site_id)->user->list($next_openid);
+        return CoreWechatService::app()->user->list($next_openid);
     }
 
 
     /**
      * 创建菜单按钮接口
-     * @param int $site_id
      * @param array $buttons
      * @param array $match_rule
      * @return mixed
      * @throws GuzzleException
      * @throws InvalidConfigException
      */
-    public function menuCreate(int $site_id, array $buttons, array $match_rule = [])
+    public function menuCreate(array $buttons, array $match_rule = [])
     {
-//        CoreWechatService::app($site_id)->menu->current();
-        return CoreWechatService::app($site_id)->menu->create($buttons, $match_rule);
+
+//        CoreWechatService::app()->menu->current();
+        return CoreWechatService::app()->menu->create($buttons, $match_rule);
     }
 
 

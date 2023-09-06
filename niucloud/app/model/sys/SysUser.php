@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -46,25 +46,17 @@ class SysUser extends BaseModel
      */
     protected $deleteTime = 'delete_time';
 
+    // 设置json类型字段
+    protected $json = ['role_ids'];
+    // 设置JSON数据返回数组
+    protected $jsonAssoc = true;
     /**
      * 定义软删除字段的默认值
      * @var int
      */
     protected $defaultSoftDelete = 0;
 
-    public function userrole()
-    {
-        return $this->hasOne(SysUserRole::class, 'uid', 'uid')->joinType('inner');
-    }
 
-    /**
-     * 权限组
-     * @return HasMany
-     */
-    public function roles()
-    {
-        return $this->hasMany(SysUserRole::class, 'uid', 'uid');
-    }
 
     /**
      * 状态字段转化
@@ -105,6 +97,20 @@ class SysUser extends BaseModel
     {
         if ($value) {
             $query->whereLike('real_name', '%' . $value . '%');
+        }
+
+    }
+
+    /**
+     * 角色组筛选
+     * @param $query
+     * @param $value
+     * @return void
+     */
+    public function searchRoleIdsAttr($query, $value)
+    {
+        if ($value) {
+            $query->whereLike('role_ids', '%' . $value . '%');
         }
 
     }

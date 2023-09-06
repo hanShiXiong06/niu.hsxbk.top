@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -36,13 +36,15 @@ Route::group('sys', function () {
     Route::put('role/:role_id', 'sys.Role/edit');
     //删除用户组
     Route::delete('role/:role_id', 'sys.Role/del');
+    //编辑用户组状态
+    Route::put('role/status/:id/:status', 'sys.Role/setStatus');
     /***************************************************** 菜单 ****************************************************/
     //菜单新增
     Route::post('menu', 'sys.Menu/add');
     //菜单更新
     Route::put('menu/:menu_key', 'sys.Menu/edit');
     //菜单列表
-    Route::get('menu/:app_type', 'sys.Menu/lists');
+    Route::get('menu', 'sys.Menu/lists');
     //删除单个菜单
     Route::delete('menu/:menu_key', 'sys.Menu/del');
     //菜单类型
@@ -51,17 +53,15 @@ Route::group('sys', function () {
     Route::get('authmenu', 'sys.Auth/authMenuList');
     // 获取菜单信息
     Route::get('menu/info/:menu_key', 'sys.Menu/info');
-    // 初始化菜单
-    Route::post('menu/refresh', 'sys.Menu/refreshMenu');
 
     Route::get('menu/mothod', 'sys.Menu/getMethodType');
+    Route::get('menu/system_menu', 'sys.Menu/getSystem');
+    Route::get('menu/addon_menu/:app_key', 'sys.Menu/getAddonMenu');
     /***************************************************** 设置 ****************************************************/
     //网站设置
     Route::get('config/website', 'sys.Config/getWebsite');
     //网站设置
-    Route::put('config/website', 'sys.Config/setWebsite');
-    //服务信息设置
-    Route::get('config/service', 'sys.Config/getServiceInfo');
+    Route::post('config/website', 'sys.Config/setWebsite');
     //版权设置
     Route::get('config/copyright', 'sys.Config/getCopyright');
     //版权设置
@@ -72,15 +72,13 @@ Route::group('sys', function () {
     //地图设置
     Route::get('config/map', 'sys.Config/getMap');
 
-    //首页加载设置
-    Route::put('config/site_index', 'sys.Config/setSiteIndex');
-    //获取首页加载
-    Route::get('config/site_index', 'sys.Config/getSiteIndexList');
-
     //平台首页加载设置
     Route::put('config/admin_index', 'sys.Config/setAdminIndex');
     //获取平台首页加载
     Route::get('config/admin_index', 'sys.Config/getAdminIndexList');
+
+    // 获取手机端首页加载
+    Route::get('config/wap_index', 'sys.Config/getWapIndexList');
 
     //快捷菜单设置
     Route::put('config/shortcut_menu', 'sys.Config/setShortcutMenu');
@@ -138,8 +136,7 @@ Route::group('sys', function () {
     Route::get('agreement/:key', 'sys.Agreement/info');
     //短信配置修改
     Route::put('agreement/:key', 'sys.Agreement/edit');
-    // 刷新菜单
-    Route::put('menu/refresh', 'sys.Menu/refreshMenu');
+
     /***************************************************** 地区管理 ****************************************************/
     //通过pid获取列表
     Route::get('area/list_by_pid/:pid', 'sys.Area/listByPid');
@@ -180,12 +177,12 @@ Route::group('sys', function () {
     Route::get('schedule/template', 'sys.Schedule/template');
     //任务时间间隔
     Route::get('schedule/datetype', 'sys.Schedule/getDateType');
-    /***************************************************** 应用管理 ****************************************************/
-    Route::get('applist', 'sys.App/getAppList');
 
-    /***************************************************** 清理缓存-刷新菜单 ****************************************************/
+    /***************************************************** 清理缓存 ****************************************************/
     Route::post('schema/clear', 'sys.System/schemaCache');
-
+    /***************************************************** 刷新菜单 ****************************************************/
+    // 刷新菜单
+    Route::post('menu/refresh', 'sys.Menu/refreshMenu');
     /***************************************************** 公共字典数据 ****************************************************/
     Route::get('date/month', 'sys.Common/getMonth');
     Route::get('date/week', 'sys.Common/getWeek');

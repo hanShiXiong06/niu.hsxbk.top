@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -12,8 +12,10 @@
 namespace app\service\admin\niucloud;
 
 use app\dict\sys\ConfigKeyDict;
+use app\service\core\niucloud\CoreAuthService;
 use app\service\core\sys\CoreConfigService;
 use core\base\BaseAdminService;
+use core\exception\CommonException;
 
 /**
  * 消息管理服务层
@@ -40,7 +42,9 @@ class NiucloudService extends BaseAdminService
             'auth_code' => $data['auth_code'],
             'auth_secret' => $data['auth_secret']
         ];
-        return $this->core_config_service->setConfig(0,ConfigKeyDict::NIUCLOUD_CONFIG, $data);
+        $auth_info = (new CoreAuthService($data['auth_code'], $data['auth_secret']))->getAuthInfo()['data'] ?? [];
+        if (empty($auth_info)) throw new CommonException('AUTH_NOT_EXISTS');
+        return $this->core_config_service->setConfig(ConfigKeyDict::NIUCLOUD_CONFIG, $data);
     }
 
     /**
@@ -48,7 +52,7 @@ class NiucloudService extends BaseAdminService
      * @return mixed|string[]
      */
     public function getAuthorize(){
-        $info = $this->core_config_service->getConfig(0, ConfigKeyDict::NIUCLOUD_CONFIG);
+        $info = $this->core_config_service->getConfig(ConfigKeyDict::NIUCLOUD_CONFIG);
         if(empty($info))
         {
             $info = [];

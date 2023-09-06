@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -43,12 +43,15 @@ class DiyRouteService extends BaseAdminService
             if (!empty($v[ 'child_list' ])) {
                 foreach ($v[ 'child_list' ] as $ck => $cv) {
                     if (!empty($cv[ 'url' ])) {
-                        if (empty($where[ 'title' ]) || ( !empty($where[ 'title' ]) && str_contains($cv['title'], $where['title']))) {
+                        if (empty($where[ 'title' ]) || ( !empty($where[ 'title' ]) && str_contains($cv[ 'title' ], $where[ 'title' ]) )) {
                             $diy_route_list[] = [
+                                'key' => $v[ 'key' ] ?? '',
+                                'addon_title' => $v[ 'addon_title' ] ?? '',
                                 'title' => $cv[ 'title' ],
                                 'name' => $cv[ 'name' ],
                                 'page' => $cv[ 'url' ],
                                 'is_share' => $cv[ 'is_share' ],
+                                'action' => $cv[ 'action' ] ?? '',
                                 'sort' => ++$sort
                             ];
                         }
@@ -66,11 +69,10 @@ class DiyRouteService extends BaseAdminService
      */
     public function getPage(array $where = [])
     {
-        $where[] = [ 'site_id', '=', $this->site_id ];
         $field = 'id,title,name,page,share,is_share,sort';
         $order = '';
 
-        $search_model = $this->model->where([ [ 'site_id', '=', $this->site_id ] ])->withSearch([ "title" ], $where)->field($field)->order($order);
+        $search_model = $this->model->withSearch([ "title" ], $where)->field($field)->order($order);
         return $this->pageQuery($search_model);
     }
 
@@ -83,7 +85,7 @@ class DiyRouteService extends BaseAdminService
     {
         $field = 'title,name,page,share,is_share,sort';
 
-        return $this->model->field($field)->where([ [ 'id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->findOrEmpty()->toArray();
+        return $this->model->field($field)->where([ [ 'id', '=', $id ] ])->findOrEmpty()->toArray();
     }
 
     /**
@@ -94,7 +96,7 @@ class DiyRouteService extends BaseAdminService
     public function getInfoByName(string $name)
     {
         $field = 'id,title,name,page,share,is_share,sort';
-        return $this->model->field($field)->where([ [ 'name', '=', $name ], [ 'site_id', '=', $this->site_id ] ])->findOrEmpty()->toArray();
+        return $this->model->field($field)->where([ [ 'name', '=', $name ] ])->findOrEmpty()->toArray();
     }
 
     /**
@@ -104,7 +106,6 @@ class DiyRouteService extends BaseAdminService
      */
     public function add(array $data)
     {
-        $data[ 'site_id' ] = $this->site_id;
         $res = $this->model->create($data);
         return $res->id;
     }
@@ -117,7 +118,7 @@ class DiyRouteService extends BaseAdminService
      */
     public function edit(int $id, array $data)
     {
-        $this->model->where([ [ 'id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->update($data);
+        $this->model->where([ [ 'id', '=', $id ] ])->update($data);
         return true;
     }
 
@@ -128,7 +129,7 @@ class DiyRouteService extends BaseAdminService
      */
     public function del(int $id)
     {
-        return $this->model->where([ [ 'id', '=', $id ], [ 'site_id', '=', $this->site_id ] ])->delete();
+        return $this->model->where([ [ 'id', '=', $id ] ])->delete();
     }
 
     /**
@@ -139,10 +140,9 @@ class DiyRouteService extends BaseAdminService
     public function modifyShare($data)
     {
         $field = 'id';
-        $data[ 'site_id' ] = $this->site_id;
-        $info = $this->model->field($field)->where([ [ 'name', '=', $data[ 'name' ] ], [ 'site_id', '=', $this->site_id ] ])->findOrEmpty()->toArray();
+        $info = $this->model->field($field)->where([ [ 'name', '=', $data[ 'name' ] ] ])->findOrEmpty()->toArray();
         if (!empty($info)) {
-            $this->model->where([ [ 'id', '=', $info[ 'id' ] ], [ 'site_id', '=', $this->site_id ] ])->update([ 'share' => $data[ 'share' ] ]);
+            $this->model->where([ [ 'id', '=', $info[ 'id' ] ] ])->update([ 'share' => $data[ 'share' ] ]);
         } else {
             $this->model->create($data);
         }

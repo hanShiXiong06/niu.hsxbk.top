@@ -3,15 +3,11 @@
 namespace app\install\controller;
 
 
-use app\model\site\Site;
 use app\model\sys\SysUser;
 use app\service\admin\install\InstallSystemService;
-use app\service\admin\site\SiteGroupService;
-use app\service\admin\site\SiteService;
 use app\service\core\schedule\CoreScheduleInstallService;
 use Exception;
 use think\facade\Cache;
-use think\facade\Db;
 use think\facade\View;
 use think\Response;
 
@@ -227,39 +223,14 @@ class Index extends BaseInstall
         $password = input('password', "");
         $password2 = input('password2', "");
 
-        $site_name = input('site_name', "");
-        $site_username = input('site_username', "");
-        $site_password = input('site_password', "");
-        $site_password2 = input('site_password2', "");
-
         if ($admin_name == '' || $username == '' || $password == '') {
             $this->setSuccessLog([ '平台信息不能为空', 'error' ]);
             return fail('平台信息不能为空!');
         }
 
-        if ($site_username == $username) {
-            $this->setSuccessLog([ '站点管理员和平台管理员不能相同，请重新输入', 'error' ]);
-            return fail('站点管理员和平台管理员不能相同，请重新输入');
-        }
-
         if ($password != $password2) {
             $this->setSuccessLog([ '平台两次密码输入不一样，请重新输入', 'error' ]);
             return fail('平台两次密码输入不一样，请重新输入');
-        }
-
-        if ($site_name == '' || $site_username == '' || $site_password == '') {
-            $this->setSuccessLog([ '平台信息不能为空', 'error' ]);
-            return fail('平台信息不能为空!');
-        }
-
-        if($site_username == $username) {
-            $this->setSuccessLog([ '站点账号不能跟平台账号一致', 'error' ]);
-            return fail('站点账号不能跟平台账号一致!');
-        }
-
-        if ($site_password != $site_password2) {
-            $this->setSuccessLog([ '站点两次密码输入不一样，请重新输入', 'error' ]);
-            return fail('站点两次密码输入不一样，请重新输入');
         }
 
         try {
@@ -292,28 +263,12 @@ class Index extends BaseInstall
         $password = input('password', "");
         $password2 = input('password2', "");
 
-        $site_name = input('site_name', "");
-        $site_username = input('site_username', "");
-        $site_password = input('site_password', "");
-        $site_password2 = input('site_password2', "");
         if ($admin_name == '' || $username == '' || $password == '') {
             return fail('平台信息不能为空!');
         }
 
         if ($password != $password2) {
             return fail('平台两次密码输入不一样，请重新输入');
-        }
-
-        if ($site_name == '' || $site_username == '' || $site_password == '') {
-            return fail('站点信息不能为空!');
-        }
-
-        if($site_username == $username) {
-            return fail('站点账号不能跟平台账号一致');
-        }
-
-        if ($site_password != $site_password2) {
-            return fail('站点两次密码输入不一样，请重新输入');
         }
 
         try {
@@ -338,27 +293,7 @@ class Index extends BaseInstall
                     'password' => create_password($password),
                 ]);
             }
-            ( new Site() )->where([ [ 'site_id', '=', 1 ] ])->update(['site_id' => 0]);
-            $site = ( new Site() )->where([ [ 'site_id', '=', 0 ] ])->findOrEmpty();
-            if (!$site->isEmpty()) {
-                $site->save([
-                    'site_name' => $admin_name,
-                ]);
-            }
-            //修改自增主键默认值
-            Db::execute("alter table ".env('database.prefix', '')."site auto_increment = 100000");
-            //获取默认套餐
-            $group_id = (new SiteGroupService())->addAllMenuGroup();
 
-            $data = [
-                'site_name' => $site_name,
-                'real_name' => '',
-                'group_id' => $group_id,
-                'expire_time' => 0,
-                'username' => $site_username,
-                'password' => $site_password,
-            ];
-            (new SiteService())->add($data);
             $fp = fopen($this->lock_file, 'wb');
             if (!$fp) {
                 $this->setSuccessLog([ "写入失败，请检查目录" . dirname(__FILE__, 2) . "是否可写入！'", 'error' ]);

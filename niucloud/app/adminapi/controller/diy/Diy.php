@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -13,10 +13,6 @@ namespace app\adminapi\controller\diy;
 
 use app\service\admin\diy\DiyService;
 use core\base\BaseAdminController;
-use Exception;
-use think\db\exception\DataNotFoundException;
-use think\db\exception\DbException;
-use think\db\exception\ModelNotFoundException;
 use think\Response;
 
 
@@ -28,34 +24,31 @@ use think\Response;
 class Diy extends BaseAdminController
 {
     /**
-     * @notes 获取自定义页面分页列表
+     * 获取自定义页面分页列表
      * @return Response
      */
     public function lists()
     {
         $data = $this->request->params([
-            ["title", ""],
-            ["type", ""],
-            ['mode', '']
+            [ "title", "" ],
+            [ "type", "" ],
+            [ 'mode', '' ]
         ]);
-        return success((new DiyService())->getPage($data));
+        return success(( new DiyService() )->getPage($data));
     }
 
     /**
      * @notes 获取自定义页面列表
      * @return Response
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
      */
     public function getList()
     {
         $data = $this->request->params([
-            ["title", ""],
-            ["type", ""],
-            ['mode', '']
+            [ "title", "" ],
+            [ "type", "" ],
+            [ 'mode', '' ]
         ]);
-        return success((new DiyService())->getList($data));
+        return success(( new DiyService() )->getList($data));
     }
 
     /**
@@ -65,7 +58,7 @@ class Diy extends BaseAdminController
      */
     public function info(int $id)
     {
-        return success((new DiyService())->getInfo($id));
+        return success(( new DiyService() )->getInfo($id));
     }
 
     /**
@@ -75,19 +68,19 @@ class Diy extends BaseAdminController
     public function add()
     {
         $data = $this->request->params([
-            ["title", ""],
-            ["name", ""],
-            ["type", ""],
-            ['template', ''],
-            ['mode', 'diy'], // 页面展示模式，diy：自定义，fixed：固定
-            ["value", ""],
-            ['is_default', 0],
-            ['is_change', '']
+            [ "title", "" ],
+            [ "name", "" ],
+            [ "type", "" ],
+            [ 'template', '' ],
+            [ 'mode', 'diy' ], // 页面展示模式，diy：自定义，fixed：固定
+            [ "value", "" ],
+            [ 'is_default', 0 ],
+            [ 'is_change', '' ]
         ]);
 
         $this->validate($data, 'app\validate\diy\Diy.add');
-        $id = (new DiyService())->add($data);
-        return success('ADD_SUCCESS', ['id' => $id]);
+        $id = ( new DiyService() )->add($data);
+        return success('ADD_SUCCESS', [ 'id' => $id ]);
     }
 
     /**
@@ -98,13 +91,13 @@ class Diy extends BaseAdminController
     public function edit($id)
     {
         $data = $this->request->params([
-            ["title", ""],
-            ["name", ""],
-            ["value", ""],
-            ['is_change', '']
+            [ "title", "" ],
+            [ "name", "" ],
+            [ "value", "" ],
+            [ 'is_change', '' ]
         ]);
         $this->validate($data, 'app\validate\diy\Diy.edit');
-        (new DiyService())->edit($id, $data);
+        ( new DiyService() )->edit($id, $data);
         return success('MODIFY_SUCCESS');
     }
 
@@ -115,7 +108,7 @@ class Diy extends BaseAdminController
      */
     public function del(int $id)
     {
-        (new DiyService())->del($id);
+        ( new DiyService() )->del($id);
         return success('DELETE_SUCCESS');
     }
 
@@ -123,11 +116,10 @@ class Diy extends BaseAdminController
      * 设为使用
      * @param $id
      * @return Response
-     * @throws Exception
      */
     public function setUse($id)
     {
-        (new DiyService())->setUse($id);
+        ( new DiyService() )->setUse($id);
         return success('MODIFY_SUCCESS');
     }
 
@@ -138,11 +130,12 @@ class Diy extends BaseAdminController
     public function getPageInit()
     {
         $params = $this->request->params([
-            ['id', ""],
-            ["name", ""],
-            ["type", ""],
-            ['template', ''],
-            ["title", ""],
+            [ 'id', "" ],
+            [ "name", "" ],
+            [ "url", "" ],
+            [ "type", "" ],
+            [ 'template', '' ],
+            [ "title", "" ],
         ]);
 
         $diy_service = new DiyService();
@@ -165,9 +158,9 @@ class Diy extends BaseAdminController
     public function getTemplate()
     {
         $params = $this->request->params([
-            ['type', ""], // 页面类型模板
-            ['action', ''], // 页面是否装修标识，为空标识不装修，decorate：装修
-            ['mode', ''] // 页面展示模式，diy：自定义，fixed：固定
+            [ 'type', [] ], // 页面类型模板
+            [ 'action', '' ], // 页面是否装修标识，为空标识不装修，decorate：装修
+            [ 'mode', '' ] // 页面展示模式，diy：自定义，fixed：固定
         ]);
         $diy_service = new DiyService();
         return success($diy_service->getTemplate($params));
@@ -181,9 +174,9 @@ class Diy extends BaseAdminController
     public function modifyShare(int $id)
     {
         $data = $this->request->params([
-            ["share", ""],
+            [ "share", "" ],
         ]);
-        (new DiyService())->modifyShare($id, $data);
+        ( new DiyService() )->modifyShare($id, $data);
         return success('MODIFY_SUCCESS');
     }
 
@@ -192,7 +185,7 @@ class Diy extends BaseAdminController
      */
     public function getDecoratePage()
     {
-        return success((new DiyService())->getDecoratePage());
+        return success(( new DiyService() )->getDecoratePage());
     }
 
     /**
@@ -201,12 +194,15 @@ class Diy extends BaseAdminController
     public function changeTemplate()
     {
         $data = $this->request->params([
-            ["id", ""],
-            ['type', ''], // 页面类型
-            ['mode', ''], //  页面展示模式，diy：自定义，fixed：固定
-            ['template', ''] // 模板名称
+            [ "id", "" ],
+            [ 'type', '' ], // 页面类型
+            [ 'mode', '' ], //  页面展示模式，diy：自定义，fixed：固定，other：其他页面
+            [ 'template', '' ], // 模板名称
+            [ 'page', '' ], // 页面路由
+            [ 'title', '' ], // 页面标题
+            [ 'action', '' ] // 是否存在操作，decorate 表示支持装修
         ]);
-        return success((new DiyService())->changeTemplate($data));
+        return success(( new DiyService() )->changeTemplate($data));
     }
 
     /**
@@ -215,10 +211,10 @@ class Diy extends BaseAdminController
     public function getPreviewData()
     {
         $data = $this->request->params([
-            ["id", ""],
-            ['name', '']
+            [ "id", "" ],
+            [ 'name', '' ]
         ]);
-        $res = (new DiyService())->getPreviewData($data);
+        $res = ( new DiyService() )->getPreviewData($data);
         return success($res);
     }
 

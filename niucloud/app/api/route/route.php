@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -18,14 +18,14 @@ use think\facade\Route;
 use app\service\core\niucloud\CoreNotifyService;
 
 //公众号消息推送
-Route::any('wechat/serve/:site_id', 'wechat.Serve/serve')
+Route::any('wechat/serve', 'wechat.Serve/serve')
     ->middleware(ApiChannel::class)
     ->middleware(ApiCheckToken::class)
     ->middleware(ApiLog::class);
 
 Route::group(function() {
-    Route::post('niucloud/notify', function(){
-        return (new CoreNotifyService())->notify();
+    Route::post('niucloud/notify', function() {
+        return ( new CoreNotifyService() )->notify();
     });
 
 });
@@ -79,10 +79,10 @@ Route::group(function() {
     Route::get('wechat/jssdkconfig', 'wechat.Wechat/jssdkConfig');
     /***************************************************** 版权相关设置**************************************************/
     Route::get('copyright', 'sys.Config/getCopyright');
-    // 站点信息
-    Route::get('site', 'sys.Config/site');
     //场景域名
     Route::get('scene_domain', 'sys.Config/getSceneDomain');
+    // 获取手机端首页列表
+    Route::get('wap_index', 'sys.Config/getWapIndexList');
 })->middleware(ApiChannel::class)
     ->middleware(ApiCheckToken::class)
     ->middleware(ApiLog::class);

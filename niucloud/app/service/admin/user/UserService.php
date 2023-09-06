@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -13,13 +13,15 @@ namespace app\service\admin\user;
 
 
 use app\dict\sys\UserDict;
+use app\model\sys\SysRole;
 use app\model\sys\SysUser;
 use app\service\admin\auth\LoginService;
+use app\service\admin\sys\RoleService;
 use core\base\BaseAdminService;
 use core\exception\AdminException;
 use Exception;
 use think\db\exception\DbException;
-use think\facade\Db;
+use think\facade\Cache;
 use think\Model;
 
 /**
@@ -29,6 +31,7 @@ use think\Model;
  */
 class UserService extends BaseAdminService
 {
+    public static $cache_tag_name = 'user_cache';
     public function __construct()
     {
         parent::__construct();
@@ -42,7 +45,20 @@ class UserService extends BaseAdminService
      */
     public function getPage(array $where)
     {
-        return $this->getPageList($this->model, $where, 'uid,username,head_img,real_name,last_ip,last_time,login_count,status', 'uid desc',['status_name']);
+        $field = 'uid,username,head_img,real_name,last_ip,last_time,login_count,status, role_ids, is_admin';
+        $search = [
+            'username' => $where['username'],
+            'realname' => $where['realname'],
+            'create_time' => $where['create_time']
+        ];
+        if (!empty($where['role'])) {
+            $search['role_ids'] = $where['role'];
+        }
+        $search_model = $this->model->withSearch(['username', 'realname', 'create_time', 'role_ids'], $search)->field($field)->order('uid desc')->append(['status_name']);
+        return $this->pageQuery($search_model, function ($item, $key) {
+            $role_ids = $item['role_ids'] ?? [];
+            $item->role_data = $this->getRoleByUserRoleIds($role_ids);
+        });
     }
 
 
@@ -55,40 +71,20 @@ class UserService extends BaseAdminService
         $where = array(
             ['uid', '=', $uid],
         );
-        $field = 'uid, username, head_img, real_name, last_ip, last_time, create_time, login_count, status, delete_time, update_time';
-        $user = $this->model->where($where)->field($field)->append(['status_name'])->findOrEmpty();
-        return $user->toArray();
+        $field = 'uid, username, head_img, real_name, last_ip, last_time, create_time, login_count, status, delete_time, update_time, role_ids, is_admin';
+        $user = $this->model->where($where)->field($field)->findOrEmpty();
+        if ($user->isEmpty())
+            return [];
+
+        if (!empty($user?->userrole)) {
+            $user->userrole->appendData(['role_array' => $this->getRoleByUserRoleIds($user->role_ids ?? [])]);
+        }
+        return $user->append(['status_name'])->toArray();
     }
 
-    /**
-     * 获取用户列表（用于平台整体用户管理）
-     * @param array $where
-     * @return array
-     */
-    public function getUserAdminPage(array $where)
-    {
-        $field = 'uid, username, head_img, real_name, last_ip, last_time, create_time, login_count, status, delete_time, update_time';
-        $order = 'create_time desc';
-        $search_model = $this->model->withSearch(['username', 'realname', 'create_time'], $where)->field($field)->with(['roles' => function($query) {
-        $query->field('uid, site_id, is_admin')->with('siteInfo');
-        }])->order($order);
-        return $this->pageQuery($search_model);
 
-    }
 
-    /**
-     * 获取用户列表（用于平台整体用户管理）
-     * @param int $uid
-     * @return array
-     */
-    public function getUserAdminInfo(int $uid)
-    {
-        $field = 'uid, username, head_img, real_name, last_ip, last_time, create_time, login_count, status, delete_time, update_time';
-        return $this->model->where([['uid', '=', $uid]])->field($field)->with(['roles' => function($query) {
-            $query->field('uid, site_id, is_admin')->with('siteInfo');
-        }])->findOrEmpty()->toArray();
 
-    }
 
     /**
      * 添加用户（添加用户，不添加站点）
@@ -102,7 +98,10 @@ class UserService extends BaseAdminService
             'head_img' => $data['head_img'],
             'status' => $data['status'],
             'real_name' => $data['real_name'],
-            'password' => create_password($data['password'])
+            'password' => create_password($data['password']),
+
+            'is_admin' => $data['is_admin'],
+            'role_ids' => $data['role_ids'],
         ];
         $user = $this->model->create($user_data);
         return $user?->uid;
@@ -111,50 +110,74 @@ class UserService extends BaseAdminService
     /**
      * 添加对应站点用户(添加站点，同时添加站点用户,用于添加站点以及站点添加站点用户)
      * @param $data
-     * @param $site_id
      * @return bool
      */
-    public function addSiteUser($data, $site_id)
+    public function addUser($data)
     {
-        Db::startTrans();
-        try {
-            //添加用户
-            $uid = $this->add($data);
-            $role_ids = $data['role_ids'] ?? [];
-            $is_admin = $data['is_admin'] ?? 0;
-            //创建用户站点管理权限
-            (new UserRoleService())->add($uid, ['role_ids' => $role_ids, 'is_admin' => $is_admin], $site_id);
-            Db::commit();
-            return $uid;
-        } catch ( Exception $e) {
-            Db::rollback();
-            throw new AdminException($e->getMessage());
-        }
-    }
+        $role_ids = $data['role_ids'] ?? [];
+        $is_admin = $data['is_admin'] ?? 0;
 
+        $data['is_admin'] = $is_admin;
+        if(!$is_admin){
+            $data['role_ids'] = $role_ids;
+        }
+        //添加用户
+        $uid = $this->add($data);
+        return $uid;
+    }
     /**
      * 更新对应站点用户
      * @param $uid
      * @param $data
-     * @param $site_id
      * @return true
      */
-    public function editSiteUser($uid, $data, $site_id)
+    public function editUser($uid, $data)
     {
-        Db::startTrans();
-        try {
-            //添加用户
-            $this->edit($uid, $data);
-            $role_ids = $data['role_ids'] ?? [];
-            $is_admin = $data['is_admin'] ?? 0;
-            //创建用户站点管理权限
-            (new UserRoleService())->edit($site_id, $uid, $role_ids);
-            Db::commit();
-            return true;
-        } catch ( Exception $e) {
-            Db::rollback();
-            throw new AdminException($e->getMessage());
+        $role_ids = $data['role_ids'] ?? [];
+        $is_admin = $data['is_admin'] ?? 0;
+        $data['is_admin'] = $is_admin;
+        if(!$is_admin){
+            $data['role_ids'] = $role_ids;
         }
+        $this->edit($uid, $data);
+        return true;
+
+    }
+
+
+    /**
+     * 修改字段
+     * @param int $uid
+     * @param string $field
+     * @param $data
+     * @return bool|true
+     */
+    public function modify(int $uid, string $field, $data)
+    {
+        $field_name = match ($field) {
+            'password' => 'password',
+            'real_name' => 'real_name',
+            'head_img' => 'head_img',
+        };
+        return $this->edit($uid, [$field_name => $data]);
+    }
+
+    /**
+     * 锁定
+     * @param int $uid
+     * @return bool|true
+     */
+    public function lock(int $uid){
+        return $this->edit($uid, ['status' => UserDict::OFF]);
+    }
+
+    /**
+     * 解锁
+     * @param int $uid
+     * @return bool|true
+     */
+    public function unlock(int $uid){
+        return $this->edit($uid, ['status' => UserDict::ON]);
     }
 
     /**
@@ -215,6 +238,11 @@ class UserService extends BaseAdminService
             $user_data['password'] = create_password($password);
             $is_change_password = true;
         }
+
+        if(isset($data['role_ids'])){
+            $user_data['role_ids'] = $data['role_ids'];
+        }
+
         if(empty($user_data))
             return true;
         //更新用户信息
@@ -223,6 +251,9 @@ class UserService extends BaseAdminService
         if($is_off_status || $is_change_password){
             LoginService::clearToken($uid);
         }
+        //清除用户缓存
+        $cache_name = 'user_role_'.$uid;
+        Cache::delete($cache_name);
         return true;
     }
 
@@ -249,4 +280,44 @@ class UserService extends BaseAdminService
         return $this->model->where([['username', '=',$username]])->findOrEmpty();
     }
 
+    /**
+     * 获取用户缓存
+     * @param int $uid
+     * @return mixed|string
+     */
+    public function getUserCache(int $uid){
+        $cache_name = 'user_role_'.$uid;
+        return cache_remember(
+            $cache_name,
+            function() use($uid) {
+                $where = array(
+                    ['uid', '=', $uid],
+                );
+                $field = 'uid, username, head_img, real_name, last_ip, last_time, create_time, login_count, status, delete_time, update_time, role_ids, is_admin';
+                $user = $this->model->where($where)->field($field)->append(['status_name'])->findOrEmpty();
+                return $user->toArray();
+            },
+            [self::$cache_tag_name, RoleService::$cache_tag_name]
+        );
+
+    }
+    /**
+     * 通过角色id组获取角色
+     * @param array $role_ids
+     * @return mixed
+     */
+    public function getRoleByUserRoleIds(array $role_ids){
+        sort($role_ids);
+        $cache_name = 'role_by_ids_'.md5(implode(',', $role_ids));
+        return cache_remember(
+            $cache_name,
+            function() use($role_ids) {
+                $where = array(
+                    ['role_id', 'in', $role_ids],
+                );
+                return SysRole::where($where)->column('role_name');
+            },
+            [RoleService::$cache_tag_name]
+        );
+    }
 }

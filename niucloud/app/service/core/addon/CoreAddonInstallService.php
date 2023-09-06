@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -24,7 +24,6 @@ use think\db\exception\DbException;
 use think\db\exception\PDOException;
 use think\facade\Cache;
 use think\facade\Db;
-use think\helper\Str;
 use think\Response;
 
 /**
@@ -42,7 +41,7 @@ class CoreAddonInstallService extends CoreAddonBaseService
     const DIR_INSTALLED = 'dir_installed';
     const SQL_INSTALLED = 'sql_installed';
     const MENU_INSTALLED = 'menu_installed';
-        const SCHEDULE_INSTALLED = 'schedule_installed';// 待安装的插件目录
+    const SCHEDULE_INSTALLED = 'schedule_installed';// 待安装的插件目录
 
     // 对象实例
     const WAIT_DEPEND = 'wait_depend';
@@ -74,7 +73,7 @@ class CoreAddonInstallService extends CoreAddonBaseService
         'diy'
     ];
     private $addon;
-private $install_addon_path;
+    private $install_addon_path;
     private $state;
 
     // 安装任务
@@ -111,16 +110,17 @@ private $install_addon_path;
      */
     public function installCheck()
     {
-        $from_admin_dir = $this->install_addon_path . "admin" . DIRECTORY_SEPARATOR;
-        $from_web_dir = $this->install_addon_path . "web" . DIRECTORY_SEPARATOR;
-        $from_wap_dir = $this->install_addon_path . "uni-app" . DIRECTORY_SEPARATOR;
-        $from_resource_dir = $this->install_addon_path . "resource" . DIRECTORY_SEPARATOR;
+        $from_admin_dir = $this->install_addon_path . 'admin' . DIRECTORY_SEPARATOR;
+        $from_web_dir = $this->install_addon_path . 'web' . DIRECTORY_SEPARATOR;
+        $from_wap_dir = $this->install_addon_path . 'uni-app' . DIRECTORY_SEPARATOR;
+        $from_resource_dir = $this->install_addon_path . 'resource' . DIRECTORY_SEPARATOR;
 
         // 放入的文件
-        $to_admin_dir = $this->root_path . "admin" . DIRECTORY_SEPARATOR;
-        $to_web_dir = $this->root_path . "web" . DIRECTORY_SEPARATOR;
-        $to_wap_dir = $this->root_path . "uni-app" . DIRECTORY_SEPARATOR;
-        $to_resource_dir = public_path() . "addon" . DIRECTORY_SEPARATOR . $this->addon . DIRECTORY_SEPARATOR;
+        $to_admin_dir = $this->root_path . 'admin' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . $this->addon . DIRECTORY_SEPARATOR;
+        $to_web_dir = $this->root_path . 'web' . DIRECTORY_SEPARATOR;
+        $to_wap_dir = $this->root_path . 'uni-app' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . $this->addon . DIRECTORY_SEPARATOR;
+
+        $to_resource_dir = public_path() . 'addon' . DIRECTORY_SEPARATOR . $this->addon . DIRECTORY_SEPARATOR;
 
         // 配置文件
         $package_path = $this->install_addon_path . 'package' . DIRECTORY_SEPARATOR;
@@ -141,7 +141,6 @@ private $install_addon_path;
             // 运行环境检测
             'runtime' => [],
             'job_normal' => (new SystemService())->checkJob(),
-            'conflict_files' => $this->dirCheck()
         ];
 
         if (is_dir($from_admin_dir)) $data['dir']['is_readable'][] = ['dir' => str_replace(project_path(), '', $from_admin_dir), 'status' => is_readable($from_admin_dir)];
@@ -154,74 +153,17 @@ private $install_addon_path;
         if (is_dir($to_wap_dir)) $data['dir']['is_write'][] = ['dir' => str_replace(project_path(), '', $to_wap_dir), 'status' => is_write($to_wap_dir)];
         if (is_dir($to_resource_dir)) $data['dir']['is_write'][] = ['dir' => str_replace(project_path(), '', $to_resource_dir), 'status' => is_write($to_resource_dir)];
 
-        if (in_array('composer.json', $package_file)) {
-            $data['runtime'][] = ['name' => 'composer', 'status' => Terminal::execute(root_path(), 'composer -V') === true];
-        }
-        if (in_array('admin-package.json', $package_file) || in_array('web-package.json', $package_file) || in_array('uni-app-package.json', $package_file)) {
-            $data['runtime'][] = ['name' => 'npm', 'status' => Terminal::execute(root_path(), 'npm -v') === true];
-        }
-
         $check_res = array_merge(
             array_column($data['dir']['is_readable'], 'status'),
             array_column($data['dir']['is_write'], 'status'),
             array_column($data['runtime'], 'status'),
             [$data['job_normal']]
         );
-        if (count($data['conflict_files'])) $check_res[] = false;
 
         // 是否通过校验
         $data['is_pass'] = !in_array(false, $check_res);
         Cache::set($this->cache_key . '_install_check', $data['is_pass'], 120);
         return $data;
-    }
-
-    /**
-     * 安装前检测冲突文件
-     * @return array  //返回冲突文件，空数组表示无冲突
-     */
-    public function dirCheck()
-    {
-        $from_admin_dir = $this->install_addon_path . "admin";
-        $from_web_dir = $this->install_addon_path . "web";
-        $from_wap_dir = $this->install_addon_path . "uni-app";
-        // 放入的文件
-        $to_admin_dir = $this->root_path . "admin";
-        $to_web_dir = $this->root_path . "web";
-        $to_wap_dir = $this->root_path . "uni-app";
-
-        $conflict_files = [];
-
-        //检测admin文件
-        if (is_dir($from_admin_dir)) {
-            search_dir($from_admin_dir, $this->install_files["admin"]);
-            foreach ($this->install_files['admin'] as $admin_file) {
-                $file_path = str_replace($from_admin_dir, "", $admin_file);
-                if (is_file($to_admin_dir . $file_path))
-                    $conflict_files[] = str_replace(project_path(), '', $admin_file);
-            }
-        }
-
-        //检测web端文件
-        if (is_dir($from_web_dir)) {
-            search_dir($from_web_dir, $this->install_files["web"]);
-            foreach ($this->install_files['web'] as $web_file) {
-                $file_path = str_replace($from_web_dir, "", $web_file);
-                if (is_file($to_web_dir . $file_path))
-                    $conflict_files[] = str_replace(project_path(), '', $web_file);
-            }
-        }
-
-        //检测wap的uniapp文件
-        if (is_dir($from_wap_dir)) {
-            search_dir($from_wap_dir, $this->install_files["wap"]);
-            foreach ($this->install_files['wap'] as $wap_file) {
-                $file_path = str_replace($from_wap_dir, "", $wap_file);
-                if (is_file($to_wap_dir . $file_path))
-                    $conflict_files[] = str_replace(project_path(), '', $wap_file);
-            }
-        }
-
-        return $conflict_files;
     }
 
     /**
@@ -251,6 +193,8 @@ private $install_addon_path;
 
         $this->setTaskState($task, AddonDict::INPROGRESS);
 
+        set_time_limit(0);
+
         $result = Terminal::execute(root_path(), $this->task[$task]['command']);
 
         // 变更任务状态
@@ -264,8 +208,20 @@ private $install_addon_path;
                 $this->setTaskState($task, AddonDict::INSTALL_SUCCESS, '', 30);
             }
         } else {
-            // 设置任务缓存30秒后失效
-            $this->setTaskState($task, AddonDict::INSTALL_FAIL, $result, 30);
+            if (in_array($task, ['updateComposer', 'updateAdminDependencies', 'updateWapDependencies', 'updateWebDependencies'])) {
+                $warn = [
+                    'updateComposer' => '在线更新composer依赖执行失败，请在项目niucloud目录下执行 composer update命令手动更新依赖',
+                    'updateAdminDependencies' => '在线更新admin端依赖执行失败，请在项目admin目录下执行 npm install 命令手动更新依赖',
+                    'updateWapDependencies' => '在线更新wap端依赖执行失败，请在项目uni-app目录下执行 npm install 命令手动更新依赖',
+                    'updateWebDependencies' => '在线更新web端依赖执行失败，请在项目web目录下执行 npm install 命令手动更新依赖'
+                ];
+                $this->setTaskState($task, AddonDict::INSTALL_WARN, $warn[$task]);
+                $task_key = array_keys($this->task);
+                AddonInstall::invoke(['addon' => $this->addon, 'task' => $task_key[array_search($task, $task_key) + 1]]);
+            } else {
+                // 设置任务缓存30秒后失效
+                $this->setTaskState($task, AddonDict::INSTALL_FAIL, $result, 30);
+            }
         }
         return $result;
     }
@@ -310,16 +266,16 @@ private $install_addon_path;
      */
     public function installDir()
     {
-        $from_admin_dir = $this->install_addon_path . "admin" . DIRECTORY_SEPARATOR;
-        $from_web_dir = $this->install_addon_path . "web" . DIRECTORY_SEPARATOR;
-        $from_wap_dir = $this->install_addon_path . "uni-app" . DIRECTORY_SEPARATOR;
-        $from_resource_dir = $this->install_addon_path . "resource" . DIRECTORY_SEPARATOR;
+        $from_admin_dir = $this->install_addon_path . 'admin' . DIRECTORY_SEPARATOR;
+        $from_web_dir = $this->install_addon_path . 'web' . DIRECTORY_SEPARATOR;
+        $from_wap_dir = $this->install_addon_path . 'uni-app' . DIRECTORY_SEPARATOR;
+        $from_resource_dir = $this->install_addon_path . 'resource' . DIRECTORY_SEPARATOR;
 
         // 放入的文件
-        $to_admin_dir = $this->root_path . "admin" . DIRECTORY_SEPARATOR;
-        $to_web_dir = $this->root_path . "web" . DIRECTORY_SEPARATOR;
-        $to_wap_dir = $this->root_path . "uni-app" . DIRECTORY_SEPARATOR;
-        $to_resource_dir = public_path() . "addon" . DIRECTORY_SEPARATOR . $this->addon . DIRECTORY_SEPARATOR;
+        $to_admin_dir = $this->root_path . 'admin' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . $this->addon . DIRECTORY_SEPARATOR;
+        $to_web_dir = $this->root_path . 'web' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . $this->addon . DIRECTORY_SEPARATOR;
+        $to_wap_dir = $this->root_path . 'uni-app' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . $this->addon . DIRECTORY_SEPARATOR;
+        $to_resource_dir = public_path() . 'addon' . DIRECTORY_SEPARATOR . $this->addon . DIRECTORY_SEPARATOR;
 
         // 安装admin管理端
         if (file_exists($from_admin_dir)) {
@@ -349,7 +305,7 @@ private $install_addon_path;
 
     /**
      * 编译后台图标库文件
-     * 图标开发注意事项，不能占用  iconfont、icon 关键词（会跟系统图标冲突），建议增加业务前缀，比如 旅游业：tourism
+     * 图标开发注意事项，不能占用  iconfont、icon 关键词（会跟系统图标冲突），建议增加业务前缀，比如 旅游业：recharge
      * @return bool
      */
     public function compileAdminIcon()
@@ -422,14 +378,14 @@ private $install_addon_path;
     {
         $core_addon_service = new CoreAddonService();
         $install_data = $this->getAddonConfig($this->addon);
-        $install_data['icon'] = $this->addon . 'icon.png';
+        $install_data['icon'] = 'addon/' . $this->addon . '/icon.png';
         $core_addon_service->set($install_data);
         //清理缓存
         Cache::tag(self::$cache_tag_name)->clear();
         Cache::set("local_install_addons", []);
         //执行命令
         //执行插件安装方法
-        $class = "addon\\" . $this->addon . "\\" . Str::studly($this->addon);
+        $class = "addon\\" . $this->addon . "\\" . 'Manage';
         if (class_exists($class)) {
             (new $class())->install();
         }
@@ -572,7 +528,7 @@ private $install_addon_path;
     public function uninstall()
     {
         //执行插件卸载方法
-        $class = "addon\\" . $this->addon . "\\" . Str::studly($this->addon);
+        $class = "addon\\" . $this->addon . "\\" . 'Manage';
         if (class_exists($class)) {
             (new $class())->uninstall();
         }
@@ -616,43 +572,25 @@ private $install_addon_path;
      */
     public function uninstallDir()
     {
-        $from_admin_dir = $this->install_addon_path . "admin" . DIRECTORY_SEPARATOR;
-        $from_web_dir = $this->install_addon_path . "web" . DIRECTORY_SEPARATOR;
-        $from_wap_dir = $this->install_addon_path . "uni-app" . DIRECTORY_SEPARATOR;
-
-        search_dir($from_admin_dir, $from_admin_dirs, $from_admin_dir);
-        search_dir($from_web_dir, $from_web_dirs, $from_web_dir);
-        search_dir($from_wap_dir, $from_wap_dirs, $from_wap_dir);
-
         // 将要删除的根目录
-        $to_admin_dir = $this->root_path . "admin" . DIRECTORY_SEPARATOR;
-        $to_web_dir = $this->root_path . "web" . DIRECTORY_SEPARATOR;
-        $to_wap_dir = $this->root_path . "uni-app" . DIRECTORY_SEPARATOR;
-        $to_resource_dir = public_path() . "addon" . DIRECTORY_SEPARATOR . $this->addon . DIRECTORY_SEPARATOR;
+        $to_admin_dir = $this->root_path . 'admin' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . $this->addon . DIRECTORY_SEPARATOR;
+        $to_web_dir = $this->root_path . 'web' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . $this->addon . DIRECTORY_SEPARATOR;
+        $to_wap_dir = $this->root_path . 'uni-app' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . $this->addon . DIRECTORY_SEPARATOR;
+        $to_resource_dir = public_path() . 'addon' . DIRECTORY_SEPARATOR . $this->addon . DIRECTORY_SEPARATOR;
 
         // 卸载admin管理端
-        if (file_exists($from_admin_dir)) {
-            dir_remove($to_admin_dir, $from_admin_dirs ?? []);
-            // 编译后台图标库文件
-            $this->compileAdminIcon();
-        }
+        if (is_dir($to_admin_dir)) del_target_dir($to_admin_dir, true);
+        // 编译后台图标库文件
+        $this->compileAdminIcon();
 
         // 卸载pc端
-        if (file_exists($from_web_dir)) {
-            dir_remove($to_web_dir, $from_web_dirs ?? []);
-        }
+        if (is_dir($to_web_dir)) del_target_dir($to_web_dir, true);
 
         // 卸载手机端
-        if (file_exists($from_wap_dir)) {
-            dir_remove($to_wap_dir, $from_wap_dirs ?? []);
-        }
+        if (is_dir($to_wap_dir)) del_target_dir($to_wap_dir, true);
 
         //删除资源文件
-        if (file_exists($to_resource_dir)) {
-            search_dir($to_resource_dir, $from_resource_dirs, $to_resource_dir);
-            dir_remove($to_resource_dir, $from_resource_dirs ?? []);
-            rmdir($to_resource_dir);
-        }
+        if (is_dir($to_resource_dir)) del_target_dir($to_resource_dir, true);
 
         //todo  卸载插件目录涉及到的空文件
         return true;
@@ -661,7 +599,6 @@ private $install_addon_path;
     /**
      * 卸载菜单
      * @return true
-     * @throws DbException
      * @throws DbException
      */
     public function uninstallMenu()
@@ -689,13 +626,17 @@ private $install_addon_path;
     public function uninstallWap()
     {
         // 编译 diy-group 自定义组件代码文件
-        $this->compileDiyComponentsCode($this->root_path . "uni-app" . DIRECTORY_SEPARATOR);
+        $this->compileDiyComponentsCode($this->root_path . 'uni-app' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR, $this->addon);
 
         // 编译 fixed-group 固定模板组件代码文件
-        $this->compileFixedComponentsCode($this->root_path . "uni-app" . DIRECTORY_SEPARATOR);
+        $this->compileFixedComponentsCode($this->root_path . 'uni-app' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR, $this->addon);
 
         // 编译 pages.json 页面路由代码文件
-        $this->uninstallPageCode($this->root_path . "uni-app" . DIRECTORY_SEPARATOR);
+        $this->uninstallPageCode($this->root_path . 'uni-app' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR);
+
+        // 编译 加载插件标题语言包
+        $this->compileLocale($this->root_path . 'uni-app' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR, $this->addon);
+
     }
 
     /**
@@ -719,13 +660,16 @@ private $install_addon_path;
     {
 
         // 编译 diy-group 自定义组件代码文件
-        $this->compileDiyComponentsCode($this->root_path . "uni-app" . DIRECTORY_SEPARATOR);
+        $this->compileDiyComponentsCode($this->root_path . 'uni-app' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR, $this->addon);
 
         // 编译 fixed-group 固定模板组件代码文件
-        $this->compileFixedComponentsCode($this->root_path . "uni-app" . DIRECTORY_SEPARATOR);
+        $this->compileFixedComponentsCode($this->root_path . 'uni-app' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR, $this->addon);
 
         // 编译 pages.json 页面路由代码文件
-        $this->installPageCode($this->root_path . "uni-app" . DIRECTORY_SEPARATOR);
+        $this->installPageCode($this->root_path . 'uni-app' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR);
+
+        // 编译 加载插件标题语言包
+        $this->compileLocale($this->root_path . 'uni-app' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR, $this->addon);
 
     }
 
@@ -811,4 +755,89 @@ private $install_addon_path;
         return true;
     }
 
+    /**
+     * 编译admin端
+     * @return true
+     */
+    public function buildAdmin()
+    {
+        $result = Terminal::execute(root_path() . '../admin/', 'npm run build');
+        if ($result !== true) {
+            throw new CommonException($result);
+        }
+        return $result;
+    }
+
+    /**
+     * 覆盖admin端
+     * @return true
+     */
+    public function coverAdmin()
+    {
+        // admin编译后文件目录
+        $dist_dir = $this->root_path . "admin" . DIRECTORY_SEPARATOR . 'dist' . DIRECTORY_SEPARATOR;
+        // admin端代码目录
+        $target_dir = public_path() . "admin";
+
+        dir_copy($dist_dir, $target_dir);
+        return true;
+    }
+
+    /**
+     * 编译wap端
+     * @return true
+     */
+    public function buildWap()
+    {
+        $result = Terminal::execute(root_path() . '../uni-app/', 'npm run build:h5');
+        if ($result !== true) {
+            throw new CommonException($result);
+        }
+        return $result;
+    }
+
+    /**
+     * 覆盖admin端
+     * @return true
+     */
+    public function coverWap()
+    {
+        // admin编译后文件目录
+        $dist_dir = $this->root_path . "uni-app" . DIRECTORY_SEPARATOR . 'dist' . DIRECTORY_SEPARATOR;
+        // admin端代码目录
+        $target_dir = public_path() . "wap";
+
+        dir_copy($dist_dir, $target_dir);
+        return true;
+    }
+
+    /**
+     * 编译web端
+     * @return true
+     */
+    public function buildWeb()
+    {
+        $result = Terminal::execute(root_path() . '../web/', 'npm run generate');
+        if ($result !== true) {
+            throw new CommonException($result);
+        }
+        return $result;
+    }
+
+    /**
+     * 覆盖admin端
+     * @return true
+     */
+    public function coverWeb()
+    {
+        // admin编译后文件目录
+        $dist_dir = $this->root_path . "web" . DIRECTORY_SEPARATOR . '.output' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR;
+        // admin端代码目录
+        $target_dir = public_path() . "web";
+
+        dir_copy($dist_dir, $target_dir);
+        del_target_dir($target_dir, true);
+
+        return true;
+    }
 }

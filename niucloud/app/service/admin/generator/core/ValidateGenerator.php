@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | Niucloud-admin 企业快速开发的saas管理平台
+// | Niucloud-admin 企业快速开发的多应用管理平台
 // +----------------------------------------------------------------------
-// | 官方网址：https://www.niucloud-admin.com
+// | 官方网址：https://www.niucloud.com
 // +----------------------------------------------------------------------
 // | niucloud团队 版权所有 开源版本可自由商用
 // +----------------------------------------------------------------------
@@ -42,7 +42,7 @@ class ValidateGenerator extends BaseGenerator
         $new = [
             $this->getNameSpace(),
             $this->getClassComment(),
-            $this->getUCaseName(),
+            $this->getUCaseClassName(),
             $this->getPackageName(),
             $this->getRule(),
             $this->getMessage(),
@@ -110,9 +110,18 @@ class ValidateGenerator extends BaseGenerator
      */
     public function getNameSpace()
     {
-        if (!empty($this->moduleName)) {
-            return "namespace app\\validate\\" . $this->moduleName . ';';
+        if(!empty($this->addonName))
+        {
+            if (!empty($this->moduleName)) {
+                return "namespace addon\\".$this->addonName."\\app\\validate\\" . $this->moduleName . ';';
+            }
+
+        }else{
+            if (!empty($this->moduleName)) {
+                return "namespace app\\validate\\" . $this->moduleName . ';';
+            }
         }
+
         return "namespace app\\validate;";
     }
 
@@ -138,7 +147,22 @@ class ValidateGenerator extends BaseGenerator
      */
     public function getPackageName()
     {
-        return !empty($this->moduleName) ? '\\' . $this->moduleName : '';
+        if(!empty($this->addonName))
+        {
+            if(!empty($this->moduleName))
+            {
+                return 'addon\\'.$this->addonName.'\\app\validate\\'.$this->moduleName;
+            }else{
+                return 'addon\\'.$this->addonName.'\\app\validate\\';
+            }
+        }else{
+            if(!empty($this->moduleName))
+            {
+                return 'addon\\app\validate\\'.$this->moduleName;
+            }else{
+                return 'addon\\app\\validate';
+            }
+        }
     }
 
 
@@ -163,7 +187,37 @@ class ValidateGenerator extends BaseGenerator
      */
     public function getRuntimeOutDir()
     {
-        $dir = $this->outDir . 'niucloud/app/validate/';
+        if(!empty($this->addonName))
+        {
+            $dir = $this->outDir . '/addon/'.$this->addonName.'/app/validate/';
+        }else{
+            $dir = $this->outDir . 'niucloud/app/validate/';
+        }
+
+
+        $this->checkDir($dir);
+        if (!empty($this->moduleName)) {
+            $dir .= $this->moduleName . '/';
+            $this->checkDir($dir);
+        }
+        return $dir;
+    }
+
+    /**
+     * 获取文件生成到项目中
+     * @return string
+     */
+    public function getObjectOutDir()
+    {
+        if(!empty($this->addonName))
+        {
+            $dir = $this->rootDir . '/niucloud/addon/'.$this->addonName.'/app/validate/';
+        }else{
+//            $dir = '';
+            $dir = $this->rootDir . '/niucloud/app/validate/';
+        }
+
+
         $this->checkDir($dir);
         if (!empty($this->moduleName)) {
             $dir .= $this->moduleName . '/';
@@ -173,13 +227,24 @@ class ValidateGenerator extends BaseGenerator
     }
 
 
+    public function getFilePath()
+    {
+        if(!empty($this->addonName))
+        {
+            $dir = 'addon/'.$this->addonName.'/app/validate/';
+        }else{
+            $dir = 'niucloud/app/validate/';
+        }
+        $dir .= $this->moduleName . '/';
+        return $dir;
+    }
     /**
      * 生成的文件名
      * @return string
      */
     public function getFileName()
     {
-        return $this->getUCaseName() . '.php';
+        return $this->getUCaseClassName() . '.php';
     }
 
 
