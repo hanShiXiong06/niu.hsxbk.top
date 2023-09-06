@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getAgreementInfo } from '@/api/system'
+import { getAgreementInfo } from '@/app/api/system'
 
 const agreement = ref<any | null>(null)
 const route = useRoute()

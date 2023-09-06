@@ -1,4 +1,5 @@
 import { nextTick } from 'vue'
+import useAppStore from '~/stores/app'
 
 class Language {
     private i18n: any;
@@ -28,27 +29,41 @@ class Language {
      * @param locale 
      * @returns 
      */
-    public async loadLocaleMessages(path: string, locale: string) {
+    public async loadLocaleMessages(app: string, path: string, locale: string) {
         try {
-            const file = path == '/' ? 'index' : path.replace('/', '').replaceAll('/', '.')
+            const file = path.replaceAll('/', '.')
 
-            if (this.loadLocale.includes(`${locale}/${file}`)) {
+            if (this.loadLocale.includes(`${app}/${locale}/${file}`)) {
                 return nextTick()
             }
-            this.loadLocale.push(`${locale}/${file}`)
+
+            // 加载pages语言包
+            if (!this.loadLocale.includes(`${app}/${locale}/pages`)) {
+                // 引入语言包文件
+                const pagesMessages = await import(`@/${app}/lang/${locale}/pages.json`)
+                this.i18n.global.mergeLocaleMessage(locale, pagesMessages.default)
+                this.loadLocale.push(`${app}/${locale}/pages`)
+            }
+
+            this.loadLocale.push(`${app}/${locale}/${file}`)
 
             // 引入语言包文件
-            const messages = await import(`~/lang/${locale}/${file}.json`)
+            const messages = await import(`@/${app}/lang/${locale}/${file}.json`)
 
             let data: Record<string, string> = {}
             Object.keys(messages.default).forEach(key => {
-                data[`${file}.${key}`] = messages.default[key]
+                data[`${app}.${file}.${key}`] = messages.default[key]
+            })
+
+            useAppStore().$patch(state => {
+                state.langKey = `${app}.${file}`
             })
 
             this.i18n.global.mergeLocaleMessage(locale, data)
             this.setI18nLanguage(locale)
             return nextTick()
-        } catch {
+        } catch (e) {
+            console.log(e)
             this.setI18nLanguage(locale)
             return nextTick()
         }

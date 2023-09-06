@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { loadEnv } from 'vite'
+import topLevelAwait from 'vite-plugin-top-level-await'
 
 const envScript = (process.env as any).npm_lifecycle_script.split(' ')
 const envName = envScript[envScript.length - 1]
@@ -18,6 +19,14 @@ export default defineNuxtConfig({
     },
     vite: {
         envDir: '~/env',
+        plugins: [
+            topLevelAwait({
+                // The export name of top-level await promise for each chunk module
+                promiseExportName: '__tla',
+                // The function to generate import names of top-level await promise in each chunk module
+                promiseImportName: i => `__tla_${i}`
+            })
+        ]
     },
     ssr: false
 })

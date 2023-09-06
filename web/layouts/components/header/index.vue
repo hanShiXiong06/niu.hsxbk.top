@@ -9,12 +9,12 @@
         </div>
 
         <div class="mx-auto flex-shrink">
-            <el-menu :default-active="appStore.route" class="h-full" mode="horizontal" :ellipsis="false" :router="true">
+            <el-menu :default-active="route.path" class="h-full" mode="horizontal" :ellipsis="false" :router="true">
                 <el-menu-item index="/" route="/">
                     <span class="text-base mx-4">首页</span>
                     <span></span>
                 </el-menu-item>
-                <el-menu-item index="/article/list" route="/article/list">
+                <el-menu-item index="/cms/article/list" route="/cms/article/list">
                     <span class="text-base mx-4">文章</span>
                     <span></span>
                 </el-menu-item>
@@ -42,7 +42,6 @@
 
 <script lang="ts" setup>
 import useMemberStore from '@/stores/member'
-import useAppStore from '@/stores/app'
 
 const memberStore = useMemberStore()
 const info = computed(() => memberStore.info)
@@ -52,7 +51,7 @@ const logoutFn = () => {
     navigateTo(`/auth/login`)
 }
 
-const appStore = useAppStore()
+const route = useRoute()
 </script>
 
 <style lang="scss" scoped>

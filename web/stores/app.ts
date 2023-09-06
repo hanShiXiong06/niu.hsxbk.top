@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia'
 
 interface App {
-    route: string
+    langKey: string
 }
 
 const useAppStore = defineStore('app', {
     state: (): App => {
         return {
-            route: ''
+            langKey: ''
         }
     },
     actions: {

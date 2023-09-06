@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { getMemberInfo } from '@/api/member'
-import { logout } from '@/api/auth'
+import { getMemberInfo } from '~/app/api/member'
+import { logout } from '~/app/api/auth'
 
 interface Member {
     token: string | null
@@ -21,6 +21,7 @@ const useMemberStore = defineStore('member', {
             await this.getMemberInfo()
         },
         async getMemberInfo() {
+            if (!this.token) return
             await getMemberInfo()
                 .then((res: any) => {
                     this.info = res.data
@@ -30,6 +31,7 @@ const useMemberStore = defineStore('member', {
                 })
         },
         logout() {
+            if (!this.token) return
             logout().then(() => {
                 this.$reset()
                 useCookie('token').value = null
