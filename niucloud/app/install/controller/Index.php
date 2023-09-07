@@ -287,10 +287,11 @@ class Index extends BaseInstall
 
 
             $user = ( new SysUser() )->where([ [ 'uid', '=', 1 ] ])->findOrEmpty();
-            if (!$user->isEmpty()) {
+            if ($user->isEmpty()) {
                 $user->save([
                     'username' => $username,
                     'password' => create_password($password),
+                    'is_admin'=>1
                 ]);
             }
 
