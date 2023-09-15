@@ -26,7 +26,7 @@ class Request {
             baseURL: import.meta.env.VITE_APP_BASE_URL.substr(-1) == '/' ? import.meta.env.VITE_APP_BASE_URL : `${import.meta.env.VITE_APP_BASE_URL}/`,
             timeout: 30000,
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded;',
+                'Content-Type': 'application/json;',
                 'lang': storage.get('lang') ?? 'zh-cn'
             }
         });

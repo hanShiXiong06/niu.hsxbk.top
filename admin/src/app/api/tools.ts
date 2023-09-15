@@ -4,7 +4,7 @@ import request from '@/utils/request'
  * 获取插件列表
  * @returns
  */
-export function getaddonDevelop(params: Record<string, any>) {
+export function getAddonDevelop(params: Record<string, any>) {
     return request.get(`addon_develop`,{params});
 }
 /**
@@ -19,7 +19,7 @@ export function getAddontype() {
 
  * @returns
  */
-export function getAddonDevelop(key:any) {
+export function getAddonDevelopInfo(key:any) {
     return request.get(`addon_develop/${key}`)
 }
 /**
@@ -147,13 +147,13 @@ export function getSystem() {
  * 获取全部模型
  */
 export function getGeneratorAllModel(params:any) {
-    return request.get(`generator/all_model`,params)
+    return request.get(`generator/all_model`,{params})
 }
 /**
  * 获取 表字段
  */
 export function getGeneratorTableColumn(params:any){
-    return request.get(`generator/table_column`,params)
+    return request.get(`generator/table_column`,{params})
 }
 /**
  * 同步校验

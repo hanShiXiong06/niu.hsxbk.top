@@ -148,7 +148,7 @@
                                     <el-input v-model="params.search" :placeholder="t('titlePlaceholder')" />
                                 </el-form-item>
                                 <el-form-item>
-                                    <el-button type="primary" @click="getaddonDevelopFn">{{ t('search') }}</el-button>
+                                    <el-button type="primary" @click="getAddonDevelopFn">{{ t('search') }}</el-button>
                                     <el-button @click="resetForm(searchFormRef)">{{ t('reset') }}</el-button>
                                 </el-form-item>
                             </el-form>
@@ -200,7 +200,7 @@
 <script lang="ts" setup>
 import { reactive, toRefs, ref, onMounted } from 'vue'
 import { t } from '@/lang'
-import { getaddonDevelop, deleteAddonDevelop, addonDevelopBuild,addonDevelopDownload } from '@/app/api/tools'
+import { getAddonDevelop, deleteAddonDevelop, addonDevelopBuild,addonDevelopDownload } from '@/app/api/tools'
 import { img } from '@/utils/common'
 import { ElMessageBox } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
@@ -228,11 +228,11 @@ onMounted(() => {
         state.activeName = window.addonActiveName + ''
         window.addonActiveName = null
     }
-    getaddonDevelopFn()
+    getAddonDevelopFn()
 })
-const getaddonDevelopFn = () => {
+const getAddonDevelopFn = () => {
     loading.value = true
-    getaddonDevelop(state.params).then(res => {
+    getAddonDevelop(state.params).then(res => {
         state.data = res.data
         loading.value = false
     }).catch(() => {
@@ -244,7 +244,7 @@ const getaddonDevelopFn = () => {
 const resetForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.resetFields();
-    getaddonDevelopFn();
+    getAddonDevelopFn();
 }
 const editEvent = (key: any) => {
     router.push({ path: '/tools/addon_edit', query: { key } })
@@ -296,7 +296,7 @@ const deleteEvent = (key: any) => {
     ).then(() => {
         loading.value = true
         deleteAddonDevelop(key).then(() => {
-            getaddonDevelopFn()
+            getAddonDevelopFn()
         }).catch(() => {
             loading.value = false
         })

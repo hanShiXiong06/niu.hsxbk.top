@@ -44,5 +44,6 @@
       "btn5":"官方市场",
       "saveAndSync":"同步代码",
       "saveAndSyncText":"同步的代码与项目产生冲突，是否确认覆盖?",
-      "saveAndSyncText1":"同步的代码会加入到项目代码中，是否确认继续"
+      "saveAndSyncText1":"同步的代码会加入到项目代码中，是否确认继续",
+      "addonName": "所属插件"
 }

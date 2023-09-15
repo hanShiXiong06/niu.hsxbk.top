@@ -33,5 +33,11 @@
 	"addonVersion": "插件版本",
 	"versionCode": "版本号",
 	"createTime": "发布时间",
-	"buyLabel": "已购买"
+	"buyLabel": "已购买",
+	"installTips": "安装后需手动更新插件引用的依赖和编译各个端口的前端源码",
+	"localInstall":"本地安装",
+	"cloudInstall": "一键云安装",
+	"cloudInstallTips": "云安装可实现一键安装，安装后无需手动更新依赖和编译前端源码",
+	"installingTips": "有插件正在安装中请等待安装完成之后再进行其他操作，点击查看",
+	"installPercent": "安装进度"
 }

@@ -97,14 +97,20 @@
                 <el-tab-pane :label="t('codeList')" name="codeList">
                     <el-card class="box-card !border-none my-[10px] table-search-wrap" shadow="never">
                         <el-form :inline="true" :model="codeTableData.searchParam" ref="searchFormRef">
+                             <el-form-item :label="t('addonName')" prop="addon_name">
+                                <el-select v-model="codeTableData.searchParam.addon_name" placeholder="Select" filterable remote clearable :remote-method="getAddonDevelopFn">
+                                    <el-option label="全部" value="" />
+                                    <el-option label="系统" value="2" />
+                                    <el-option :label="item.title" :value="item.key" v-for="item in addonList"
+                                            :key="item.key" />
+                                </el-select>
+                            </el-form-item>
+
                             <el-form-item :label="t('tableName')" prop="table_name">
                                 <el-input v-model="codeTableData.searchParam.table_name"
                                     :placeholder="t('tableNamePlaceholder')" />
                             </el-form-item>
-                            <el-form-item :label="t('tableContent')" prop="table_content">
-                                <el-input v-model="codeTableData.searchParam.table_content"
-                                    :placeholder="t('tableContentPlaceholder')" />
-                            </el-form-item>
+                          
                             <el-form-item>
                                 <el-button type="primary" @click="loadGenerateTableList()">{{ t('search') }}</el-button>
                                 <el-button @click="resetForm(searchFormRef)">{{ t('reset') }}</el-button>
@@ -119,6 +125,8 @@
                             </template>
 
                             <el-table-column prop="table_name" :show-overflow-tooltip="true" :label="t('tableName')"
+                                min-width="120" />
+                            <el-table-column prop="title" :show-overflow-tooltip="true" :label="t('addonName')"
                                 min-width="120" />
                             <el-table-column prop="table_content" :show-overflow-tooltip="true" :label="t('tableContent')"
                                 min-width="120" />
@@ -159,7 +167,7 @@
                 </el-tab-pane>
             </el-tabs>
             <add-table ref="addCodeDialog" />
-            <el-dialog v-model="dialogVisible" width="70%" title="代码预览">
+            <el-dialog v-model="dialogVisible" class="dialog-visible" width="70%" title="代码预览">
                 <div class="flex h-[50vh]" v-loading="codeLoading">
                     <el-scrollbar class="h-[100%] w-[270px]">
                         <el-tree v-if="treeData.length && treeKey != ''" :data="treeData" :props="{ label: 'name', value: 'key' }"
@@ -182,7 +190,7 @@
                     </el-scrollbar>
                     <div class="ml-[20px]" style="width: calc(100% - 285px);">
                         <el-scrollbar class="h-[100%] w-[100%]">
-                            <highlightjs autodetect :code="code" />
+                            <highlightjs autodetect class="h-[100%]" :code="code" />
                         </el-scrollbar>
                     </div>
                 </div>
@@ -194,7 +202,7 @@
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from 'vue'
 import { t } from '@/lang'
-import { getGenerateTableList, deleteGenerateTable, generateCreate, generatePreview, generatorCheckFile, } from '@/app/api/tools'
+import { getGenerateTableList, deleteGenerateTable, generateCreate, generatePreview, generatorCheckFile,getAddonDevelop } from '@/app/api/tools'
 import { img } from '@/utils/common'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import AddTable from '@/app/views/tools/code/components/add-table.vue'
@@ -214,7 +222,8 @@ let codeTableData = reactive({
     data: [],
     searchParam: {
         table_name: "",
-        table_content: ""
+        table_content: "",
+        addon_name:""
     }
 })
 
@@ -253,7 +262,16 @@ const loadGenerateTableList = (page: number = 1) => {
     })
 }
 
+const addonList = ref<Array<any>>([])
+//获取插件远程搜索
+const getAddonDevelopFn = (search: string) => {
+    getAddonDevelop({ search }).then(res => {
+        addonList.value = res.data
+    })
+}
+
 const addCodeDialog: Record<string, any> | null = ref(null)
+
 
 /**
  * 添加代码生成
@@ -312,6 +330,7 @@ const generatorCheckFileFn = ((id: any) => {
         codeTableData.loading = false
     })
 })
+
 /**
  * 同步or下载
  */
@@ -333,6 +352,7 @@ const generateCreateFn = (id: any, generate_type: any) => {
         codeTableData.loading = false
     })
 }
+
 /*
 *代码预览
 */
@@ -429,4 +449,11 @@ const listToTree = (arr) => {
     height: 44px;
     display: flex;
     justify-content: center;
-}</style>
+}
+
+:deep(.dialog-visible .el-scrollbar__view), :deep(.dialog-visible .el-scrollbar__view .hljs.ruby){
+    height: 100%;
+}
+</style>
+<style>
+</style>

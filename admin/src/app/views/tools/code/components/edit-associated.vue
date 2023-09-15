@@ -44,7 +44,7 @@
 import { ref, reactive, computed, toRaw, } from 'vue'
 import { t } from '@/lang'
 import type { FormInstance } from 'element-plus'
-import { getGeneratorAllModel, getGeneratorTableColumn,getaddonDevelop } from '@/app/api/tools'
+import { getGeneratorAllModel, getGeneratorTableColumn,getAddonDevelop } from '@/app/api/tools'
 import { cloneDeep } from 'lodash-es'
 
 const showDialog = ref(false)
@@ -80,6 +80,9 @@ const formRules = computed(() => {
         name: [
             { required: true, message: t('associatedNamePlaceholder'), trigger: 'blur' }
         ],
+        addon: [
+            { required: true, message: t('addonsPlaceholder'), trigger: 'change' }
+        ],
         model: [
             { required: true, message: t('associatedModelPlaceholder'), trigger: 'change' }
         ],
@@ -97,8 +100,8 @@ const formRules = computed(() => {
  * 获取关联模型
  */
 const modelList = ref([])
-const getGeneratorAllModelFn = () => {
-    getGeneratorAllModel().then(res => {
+const getGeneratorAllModelFn = (params:any) => {
+    getGeneratorAllModel(params).then(res => {
         modelList.value = res.data
     })
 }
@@ -114,13 +117,13 @@ const getGeneratorTableColumnFn = (key: any) => {
 }
 //获取插件列表
 const addonLst = ref<Array<any>>([])
-const getaddonDevelopFn = async () => {
-    let { data } = await getaddonDevelop({})
+const getAddonDevelopFn = async () => {
+    let { data } = await getAddonDevelop({})
     addonLst.value = [{ title: "系统", key: "system" }]
     addonLst.value.push(...data)
     getGeneratorAllModelFn({addon:'system'}) 
 }
-getaddonDevelopFn()
+getAddonDevelopFn()
 //选择应用
 const addonChange =(val:any)=>{
     formData.value.model = ''

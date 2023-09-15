@@ -8,12 +8,13 @@
                     <img v-else src="@/app/assets/images/login/login_index_left.png" alt="">
                 </div>
                 <div class="login flex flex-col w-[400px] h-[400px] p-[40px]">
-                    <h3 class="text-center text-lg font-bold mb-[10px]">{{  webSite.site_name || t('siteTitle') }}</h3>
+                    <h3 class="text-center text-lg font-bold mb-[10px]">{{ webSite.site_name || t('siteTitle') }}</h3>
                     <h3 class="text-center text-2xl font-bold mb-[26px]">{{ t('platform') }}</h3>
 
                     <el-form :model="form" ref="formRef" :rules="formRules">
                         <el-form-item prop="username">
-                            <el-input v-model="form.username" :placeholder="t('userPlaceholder')" @keyup.enter="handleLogin(formRef)" class="h-[40px] input-with-select">
+                            <el-input v-model="form.username" :placeholder="t('userPlaceholder')"
+                                @keyup.enter="handleLogin(formRef)" class="h-[40px] input-with-select">
                                 <template #prepend>
                                     <icon name="element-User" />
                                 </template>
@@ -21,7 +22,9 @@
                         </el-form-item>
 
                         <el-form-item prop="password">
-                            <el-input v-model="form.password" :placeholder="t('passwordPlaceholder')" type="password" @keyup.enter="handleLogin(formRef)" :show-password="true" class="h-[40px] input-with-select">
+                            <el-input v-model="form.password" :placeholder="t('passwordPlaceholder')" type="password"
+                                @keyup.enter="handleLogin(formRef)" :show-password="true"
+                                class="h-[40px] input-with-select">
                                 <template #prepend>
                                     <icon name="element-Lock" />
                                 </template>
@@ -29,7 +32,8 @@
                         </el-form-item>
 
                         <el-form-item>
-                            <el-button type="primary" class="mt-[30px] h-[40px] w-full" @click="handleLogin(formRef)" :loading="loading">{{ loading ? t('logging') : t('login') }}</el-button>
+                            <el-button type="primary" class="mt-[30px] h-[40px] w-full" @click="handleLogin(formRef)"
+                                :loading="loading">{{ loading ? t('logging') : t('login') }}</el-button>
                         </el-form-item>
 
                     </el-form>
@@ -38,7 +42,8 @@
         </el-main>
 
         <!-- 验证组件 -->
-        <verify @success="success" :mode="pop" captchaType="blockPuzzle" :imgSize="{ width: '330px', height: '155px' }" ref="verifyRef"></verify>
+        <verify @success="success" :mode="pop" captchaType="blockPuzzle" :imgSize="{ width: '330px', height: '155px' }"
+            ref="verifyRef"></verify>
         <!-- <el-footer></el-footer> -->
     </el-container>
 </template>
@@ -67,6 +72,9 @@ const setFormData = async (id: number = 0) => {
     webSite.value = await (await getWebConfig()).data
     storage.set({ key: 'siteInfo', data: webSite.value })
 }
+const routerList = ref({
+    tourism: "/tourism/index", vipcard: "/vipcard/index", cms: "/cms/article/list", shop: "/shop/hello_world"
+})
 setFormData()
 setWindowTitle(t('adminLogin'))
 
@@ -117,8 +125,11 @@ const handleLogin = async (formEl: FormInstance | undefined) => {
 const loginFn = (data = {}) => {
     loading.value = true
     userStore.login({ username: form.username, password: form.password, ...data }).then(res => {
-        const { query: { redirect } } = route
-        const path = typeof redirect === 'string' ? redirect : '/'
+        // const { query: { redirect } } = route
+        // const path = typeof redirect === 'string' ? redirect : '/'
+        let key = storage.get('menuAppStorage')
+        if(!key) storage.set({key:'menuAppStorage',data:'tourism'})
+        let path = key&&key!=''?routerList.value[key]:'/tourism/index'
         router.push(path)
     }).catch(() => {
         loading.value = false
@@ -161,5 +172,4 @@ const loginFn = (data = {}) => {
     .login-main-left {
         display: none;
     }
-}
-</style>
+}</style>

@@ -4,6 +4,10 @@
             <el-col :span="12">
                 <div class="left-panel h-full flex items-center">
                     <!-- 刷新当前页 -->
+                    <div v-if="floatMenuStyle" class="navbar-item flex items-center h-full cursor-pointer" @click="cutMenuStyleFn(false)">
+                        <a href="javascript:;" title="切换" class="iconfont iconqiehuan2"></a>
+                    </div>
+                    <!-- 刷新当前页 -->
                     <div class="navbar-item flex items-center h-full cursor-pointer" @click="refreshRouter">
                         <icon name="element-Refresh" />
                     </div>
@@ -171,6 +175,15 @@ const submitIndex = () => {
         showDialog.value = false
         router.go(0)
     })
+}
+
+// 切换风格
+let floatMenuStyle = ref(false);
+floatMenuStyle.value = storage.get('floatMenuStyle') || false;
+const cutMenuStyleFn = (bool)=>{
+    floatMenuStyle.value = bool;
+    storage.set({ key: 'floatMenuStyle', data: bool });
+    location.reload();
 }
 </script>
 

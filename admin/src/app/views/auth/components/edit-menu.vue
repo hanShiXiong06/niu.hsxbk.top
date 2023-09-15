@@ -91,7 +91,7 @@ import { t } from '@/lang'
 import type { FormInstance } from 'element-plus'
 import selectMenuItem from './select-menu-item.vue'
 import { addMenu, editMenu, getMenuInfo, getSystemMenu,getAddonMenu } from '@/app/api/sys'
-import { getaddonDevelop } from '@/app/api/tools'
+import { getAddonDevelop } from '@/app/api/tools'
 const showDialog = ref(false)
 const method = ref('post')
 const loading = ref(false)
@@ -169,8 +169,8 @@ const formRules = computed(() => {
     }
 })
 //获取插件列表
-const getaddonDevelopFn = async () => {
-    let { data } = await getaddonDevelop({})
+const getAddonDevelopFn = async () => {
+    let { data } = await getAddonDevelop({})
     addonLst.value = [{ title: "系统", key: "" }]
     addonLst.value.push(...data)
 }
@@ -226,7 +226,7 @@ const setFormData = async (row: any = null) => {
     loading.value = true
     Object.assign(formData, initialFormData)
     popTitle = t('addMenu')
-    getaddonDevelopFn()
+    getAddonDevelopFn()
     getSystemMenuFn()
     if (row.menu_key) {
         popTitle = t('updateMenu')

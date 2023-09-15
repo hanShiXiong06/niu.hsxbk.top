@@ -5,7 +5,7 @@ import request from '@/utils/request'
  * @returns
  */
 export function getAddonLocal(params: Record<string, any>) {
-    return request.get('addon/local', params, {showSuccessMessage: true})
+    return request.get('addon/local', params)
 }
 
 /**
@@ -34,12 +34,21 @@ export function installAddon(params: Record<string, any>) {
 }
 
 /**
+ * 安装插件
+ * @param params
+ * @returns
+ */
+export function cloudInstallAddon(params: Record<string, any>) {
+    return request.post(`addon/cloudinstall/${params.addon}`, params)
+}
+
+/**
  * 卸载插件
  * @param params
  * @returns
  */
 export function uninstallAddon(params: Record<string, any>) {
-    return request.post(`addon/uninstall/${params.addon}`, params, {showSuccessMessage: true})
+    return request.post(`addon/uninstall/${params.addon}`, params, { showSuccessMessage: true })
 }
 
 /**
@@ -48,23 +57,22 @@ export function uninstallAddon(params: Record<string, any>) {
  * @returns
  */
 export function preInstallCheck(addon: string) {
-    return request.get(`addon/install/check/${addon}`, {timeout: 30 * 1000})
+    return request.get(`addon/install/check/${addon}`, { timeout: 30 * 1000 })
 }
 
 /**
- * 获取插件安装任务执行状态
- * @param addon
- * @param key
- * @returns
+ * 获取正在安装的插件
+ * @returns 
  */
-export function getAddonInstallTaskState(addon: string, key: string) {
-    return request.get(`addon/install/${addon}/status/${key}`)
+export function getAddonInstalltask() {
+    return request.get('addon/installtask')
 }
 
 /**
- * 执行安装任务
- * @param addon
+ * 获取插件云安装日志
+ * @param addon 
+ * @returns 
  */
-export function executeInstall(addon: string) {
-    return request.post(`addon/install/execute/${addon}`, {})
+export function getAddonCloudInstallLog(addon: string) {
+    return request.get(`addon/cloudinstall/${addon}`)
 }

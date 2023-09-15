@@ -118,5 +118,12 @@
   "indexSwitch": "切换首页",
   "indexWarning": "你确定要切换首页吗？",
   "appName": "应用名称",
-  "appNamePlaceholder": "请输入应用名称"
+  "appNamePlaceholder": "请输入应用名称",
+  "generateMobile":"请输入正确的手机号格式",
+  "generateNumber":"请输入整数",
+  "generateIdCard":"请输入正确的身份证号",
+  "generateEmail":"请输入正确的邮箱号",
+  "generateMax":"超过最多输入字符数",
+  "generateMin":"少于最少输入字符数",
+  "generateBetween":"请输入正确的字符信息"
 }

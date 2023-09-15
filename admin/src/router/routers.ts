@@ -77,7 +77,8 @@ interface Route {
     },
     children?: [],
     is_show: boolean,
-    addon: string
+    addon: string,
+    menu_attr: string
 }
 
 /**
@@ -86,9 +87,10 @@ interface Route {
  * @param parentRoute
  */
 const createRoute = function (route: Route, parentRoute: RouteRecordRaw | null = null): RouteRecordRaw {
+    // parentRoute ? Symbol(`${parentRoute.path}/${route.router_path}`) : Symbol(`/${route.router_path}`)
     const record: RouteRecordRaw = {
         path: parentRoute ? route.router_path : `/${route.router_path}`,
-        name: parentRoute ? Symbol(`${parentRoute.path}/${route.router_path}`) : Symbol(`/${route.router_path}`),
+        name: route.menu_key,
         meta: {
             title: route.menu_name,
             icon: route.icon,
@@ -96,7 +98,8 @@ const createRoute = function (route: Route, parentRoute: RouteRecordRaw | null =
             show: route.is_show,
             app: route.addon,
             view: route.view_path,
-            key: route.menu_key
+            key: route.menu_key,
+            attr: route.menu_attr
         }
     }
     if (route.menu_type == 0) {

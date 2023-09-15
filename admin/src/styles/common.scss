@@ -227,6 +227,7 @@ html.dark {
 
 // /* 多行超出隐藏 */
 .multi-hidden {
+    white-space: normal;
 	word-break: break-all;
 	text-overflow: ellipsis;
 	overflow: hidden;

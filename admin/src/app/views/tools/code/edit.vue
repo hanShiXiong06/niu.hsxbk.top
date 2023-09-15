@@ -21,8 +21,8 @@
                                 class="input-width" maxlength="64" />
                         </el-form-item>
                         <el-form-item :label="t('addon')">
-                            <el-select class="input-width" :placeholder="t('addonPlaceholder')"
-                                v-model="formData.addon_name" filterable remote clearable :remote-method="getaddonDevelopFn"
+                            <el-select class="input-width" :placeholder="t('addonPlaceholder1')"
+                                v-model="formData.addon_name" filterable remote clearable :remote-method="getAddonDevelopFn"
                                 @change="addonChange">
                                 <el-option :label="item.title" :value="item.key" v-for="item in addonList"
                                     :key="item.key" />
@@ -56,39 +56,39 @@
                             </template>
                         </el-table-column>
                         <el-table-column :label="t('columnName')" prop="column_name" min-width="130px" />
-                        <el-table-column :label="t('columnComment')" prop="" min-width="230px">
+                        <el-table-column :label="t('columnComment')" prop="" min-width="220px">
                             <template #default="{ row }">
                                 <el-input class="" v-model="row.column_comment"
                                     :placeholder="t('columnCommentPlaceholder')" />
                             </template>
                         </el-table-column>
                         <el-table-column :label="t('columnType')" prop="column_type" width="100px" />
-                        <el-table-column :label="t('isPk')" prop="" align="center" width="80px">
+                        <el-table-column :label="t('isPk')" prop="" align="center" width="65px">
                             <template #default="{ row }">
                                 <el-checkbox v-model="row.is_pk" disabled :true-label="1" :false-label="0" />
                             </template>
                         </el-table-column>
-                        <el-table-column :label="t('isRequired')" prop="" align="center" width="80px">
+                        <el-table-column :label="t('isRequired')" prop="" align="center" width="65px">
                             <template #default="{ row }">
                                 <el-checkbox v-model="row.is_required" :true-label="1" :false-label="0" />
                             </template>
                         </el-table-column>
-                        <el-table-column :label="t('isInsert')" prop="" align="center" width="80px">
+                        <el-table-column :label="t('isInsert')" prop="" align="center" width="65px">
                             <template #default="{ row }">
                                 <el-checkbox v-model="row.is_insert" :true-label="1" :false-label="0" />
                             </template>
                         </el-table-column>
-                        <el-table-column :label="t('isUpdate')" prop="" align="center" width="80px">
+                        <el-table-column :label="t('isUpdate')" prop="" align="center" width="65px">
                             <template #default="{ row }">
                                 <el-checkbox v-model="row.is_update" :true-label="1" :false-label="0" />
                             </template>
                         </el-table-column>
-                        <el-table-column :label="t('isLists')" prop="" align="center" width="80px">
+                        <el-table-column :label="t('isLists')" prop="" align="center" width="65px">
                             <template #default="{ row }">
                                 <el-checkbox v-model="row.is_lists" :true-label="1" :false-label="0" />
                             </template>
                         </el-table-column>
-                        <el-table-column :label="t('isSearch')" prop="" align="center" width="80px">
+                        <el-table-column :label="t('isSearch')" prop="" align="center" width="65px">
                             <template #default="{ row }">
                                 <el-checkbox v-model="row.is_search" :true-label="1" :false-label="0" />
                             </template>
@@ -100,19 +100,51 @@
                     </el-table-column> -->
                         <el-table-column :label="t('queryType')" prop="" min-width="170px">
                             <template #default="{ row }">
-                                <el-select v-if="row.is_search" :placeholder="t('selectPlaceholder')"
-                                    v-model="row.query_type">
-                                    <el-option :label="item" :value="item" v-for="(item, index) in queryType"
-                                        :key="index" />
-                                </el-select>
+                                <div class="flex items-center">
+                                    <el-select class="" v-if="row.is_search" :placeholder="t('selectPlaceholder')"
+                                        v-model="row.query_type">
+                                        <el-option :label="item" :value="item" v-for="(item, index) in queryType"
+                                            :key="index" />
+                                    </el-select>
+                                </div>
                             </template>
                         </el-table-column>
-                        <el-table-column :label="t('formType')" prop="" min-width="170px">
-                            <template #default="{ row }">
-                                <el-select :placeholder="t('selectPlaceholder')" v-model="row.view_type">
+                        <el-table-column :label="t('formType')" prop="" min-width="225px">
+                            <template #default="{ row, $index }">
+                                <el-select class="w-[146px]" :placeholder="t('selectPlaceholder')" v-model="row.view_type"
+                                    @change="viewTypeBtn(row, $index)">
                                     <el-option :label="item.label" :value="item.value" v-for="(item, index) in viewType"
                                         :key="index" />
                                 </el-select>
+                                <el-button class="ml-[10px]" v-if="['select', 'radio', 'checkbox'].includes(row.view_type)"
+                                    type="primary" link @click="viewTypeBtn(row, $index)">{{ t('setUp')
+                                    }}</el-button>
+                                <el-button class="ml-[10px]" v-if="row.view_type === 'number'" type="primary" link
+                                    @click="validatorBtn(row, $index)">{{ t('setUp')
+                                    }}</el-button>
+                            </template>
+                        </el-table-column>
+                        <el-table-column :label="t('verifyType')" prop="" min-width="260px">
+                            <template #default="{ row, $index }">
+                                <div class="flex items-center">
+                                    <el-select class="w-[196px]" :placeholder="t('selectPlaceholder')"
+                                        v-model="row.validate_type" @change="validatorBtn(row, $index)"
+                                        :disabled="!['input', 'textarea'].includes(row.view_type)">
+                                        <template v-for="(item, index) in verifyType" :key="index">
+                                            <el-option v-if="item.value === 'max'" :value="item.value" :label="`最大输入字符`" />
+                                            <el-option v-else-if="item.value === 'min'" :value="item.value"
+                                                :label="`最小输入字符`" />
+                                            <el-option v-else-if="item.value === 'between'" :value="item.value"
+                                                :label="`输入字符区间`" />
+                                            <el-option v-else :label="item.label" :value="item.value" />
+                                        </template>
+                                    </el-select>
+                                    <el-button class="ml-[10px]"
+                                        v-if="['max', 'min', 'between'].includes(row.validate_type)" type="primary" link
+                                        @click="validatorBtn(row, $index)">{{ t('setUp')
+                                        }}</el-button>
+                                </div>
+
                             </template>
                         </el-table-column>
                         <!-- <el-table-column :label="t('formValidation')" prop="" min-width="170px">
@@ -135,15 +167,22 @@
                                 </el-radio-group>
                                 <p class="text-[12px] text-[#a9a9a9] leading-normal mt-[5px]">
                                     物理删除：从表中把记录移除。软删除：通过标识使得这条记录在系统逻辑层面上不可见</p>
+
                             </div>
 
                         </el-form-item>
                         <el-form-item prop="delete_column_name" :label="t('deleteField')" v-if="formData.is_delete">
-                            <el-select class="input-width" :placeholder="t('deleteFieldPlaceholder')"
-                                v-model="formData.delete_column_name">
-                                <el-option :label="`${item.column_name}:${item.column_comment}`" :value="item.column_name"
-                                    v-for="(item, index) in formData.table_column " :key="index" />
-                            </el-select>
+                            <div>
+                                <el-select class="input-width" :placeholder="t('deleteFieldPlaceholder')"
+                                    v-model="formData.delete_column_name">
+                                    <el-option :label="`${item.column_name}:${item.column_comment}`"
+                                        :value="item.column_name" v-for="(item, index) in formData.table_column "
+                                        :key="index" />
+                                </el-select>
+                                <p class="text-[12px] text-[#a9a9a9] leading-normal mt-[5px]">
+                                    软删除字段需为int类型，并且默认值为0</p>
+                            </div>
+
                         </el-form-item>
 
                         <el-form-item :label="t('editType')">
@@ -236,6 +275,8 @@
         </el-card>
     </div>
     <edit-associated ref="editDialog" :table_name="formData.table_name" @complete="complete" />
+    <edit-view-type ref="editViewTypeRef" @complete="completeViewType" />
+    <edit-verify ref="editVerifyRef" @complete="completeVerify" />
     <div class="fixed-footer-wrap">
         <div class="fixed-footer">
             <el-button type="primary" @click="onSave(1)">{{ t('save') }}</el-button>
@@ -252,7 +293,9 @@ import { t } from '@/lang'
 import { img } from '@/utils/common'
 import { FormInstance, ElMessageBox, ElMessage } from 'element-plus'
 import editAssociated from '@/app/views/tools/code/components/edit-associated.vue'
-import { getGenerateTableInfo, editGenerateTable, getaddonDevelop, generatorCheckFile, generateCreate } from '@/app/api/tools'
+import editViewType from '@/app/views/tools/code/components/edit-view-type.vue'
+import editVerify from '@/app/views/tools/code/components/edit-verify.vue'
+import { getGenerateTableInfo, editGenerateTable, getAddonDevelop, generatorCheckFile, generateCreate } from '@/app/api/tools'
 import { getSystemMenu, getAddonMenu } from '@/app/api/sys'
 import { useRoute, useRouter } from 'vue-router'
 import Sortable from 'sortablejs'
@@ -314,13 +357,52 @@ const viewType = [
     {
         label: t('formEditor'),
         value: 'editor'
+    },
+    {
+        label: t('formNumber'),
+        value: 'number'
     }
+]
+const verifyType = [
+    {
+        label: '无需验证',
+        value: ''
+    },
+    {
+        label: t('mobileVerify'),
+        value: 'mobile'
+    },
+    {
+        label: t('numberVerify'),
+        value: 'number'
+    },
+    {
+        label: t('idCardVerify'),
+        value: 'idCard'
+    },
+    {
+        label: t('emailVerify'),
+        value: 'email'
+    },
+    {
+        label: '',
+        value: 'max'
+    },
+    {
+        label: '',
+        value: 'min'
+    },
+    {
+        label: '',
+        value: 'between'
+    },
+
 ]
 
 const addonList = ref<Array<any>>([])
 //获取插件远程搜索
-const getaddonDevelopFn = (search: string) => {
-    getaddonDevelop({ search }).then(res => {
+const getAddonDevelopFn = (search: string) => {
+    getAddonDevelop({ search }).then(res => {
         addonList.value = res.data
     })
 }
@@ -345,7 +427,7 @@ const rowDrop = () => {
 }
 onMounted(() => {
     rowDrop()
-    getaddonDevelopFn('')
+    getAddonDevelopFn('')
 })
 //删除类型change
 const deleteTypeChange = (val: any) => {
@@ -376,6 +458,10 @@ const setFormData = async (id: number = 0) => {
     const data = await (await getGenerateTableInfo(id)).data
     Object.keys(data).forEach((key: string) => {
         if (data[key] != undefined) formData[key] = data[key]
+    })
+    formData.table_column.forEach(el => {
+        el.betweenMin = cloneDeep(el.min_number);
+        el.betweenMax = cloneDeep(el.max_number);
     })
     if (formData.addon_name != '') getAddonMenuFn(formData.addon_name)
     loading.value = false
@@ -409,6 +495,7 @@ const addonChange = async (val: any) => {
 const associatedIndex = ref(0)
 const editDialog = ref()
 //添加编辑关联设置
+
 const addEvent = (val: any, index: number) => {
     associatedIndex.value = index
     editDialog.value.setFormData(val)
@@ -426,13 +513,28 @@ const deleteEvent = (index: number) => {
     formData.relations.splice(index, 1)
 }
 const onSave = async (code: number) => {
-    loading.value = true
+
     const data = cloneDeep(formData)
+    // if (data.table_column.some(el => { return ['select', 'radio', 'checkbox'].includes(el.view_type) && el.dict_type == '' })) {
+    //     // ElMessage({
+    //     //     type: 'error',
+    //     //     message: t('dictTypePlaceholder'),
+    //     // })
+    //     // return false
+    // }
+
     data.table_column = JSON.stringify(data.table_column.map(el => {
         if (!el.is_search) el.query_type = ''
+        if (el.validate_type === 'between' || el.view_type === 'number') {
+            el.max_number = el.betweenMax
+            el.min_number = el.betweenMin
+        }
+        if (!['select', 'radio', 'checkbox'].includes(el.view_type)) el.dict_type = ''
         return el
     }))
+    console.log(JSON.parse(data.table_column))
     data.relations = JSON.stringify(data.relations)
+    loading.value = true
     editGenerateTable(data).then((res: any) => {
         if (code === 3) {
             generatorCheckFileFn()
@@ -495,6 +597,37 @@ const generateCreateFn = (generate_type: any) => {
     }).catch(() => {
         loading.value = false
     })
+}
+const rowIndex = ref(0)
+const editVerifyRef = ref(null)
+const editViewTypeRef = ref(null)
+/**
+ * 打开最大最小值设置
+ */
+
+const validatorBtn = (row: any, index: number) => {
+    if (['max', 'min', 'between'].includes(row.validate_type) || row.view_type === 'number') {
+        rowIndex.value = index
+        editVerifyRef.value?.setFormData(row)
+    }
+
+}
+const completeVerify = (row: any) => {
+    formData.table_column.splice(rowIndex.value, 1, row)
+}
+const viewTypeBtn = (row: any, index: number) => {
+    if (!['input', 'textarea'].includes(row.view_type)) row.validate_type = ''
+    if (['select', 'radio', 'checkbox'].includes(row.view_type)) {
+
+        rowIndex.value = index
+        editViewTypeRef.value?.setFormData(row)
+    } else if (row.view_type === 'number') {
+        validatorBtn(row, index)
+    }
+
+}
+const completeViewType = (row: any) => {
+    formData.table_column.splice(rowIndex.value, 1, row)
 }
 const back = () => {
     router.push({ path: '/tools/code' })

@@ -227,10 +227,8 @@
                 <el-scrollbar max-height="50vh">
                     <div class="min-h-[150px]">
                         <div class="bg-[#fff] my-3" v-if="installCheckResult.dir">
-                            <el-alert :title="t('jobError')" type="error" :closable="false" class="mt-[20px]"
-                                v-if="!installCheckResult.job_normal" />
                             <p class="pt-[20px] pl-[20px] ">{{ t('dirPermission') }}</p>
-                            <div class="px-[20px] text-[14px]">
+                            <div class="px-[20px] pt-[10px] text-[14px]">
                                 <el-row class="py-[10px] items table-head-bg pl-[15px] mb-[10px]">
                                     <el-col :span="12">
                                         <span>{{ t('path') }}</span>
@@ -277,45 +275,27 @@
                                 </el-row>
                             </div>
                         </div>
-                        <div class="bg-[#fff] my-3">
-                            <p class="pl-[20px] ">{{ t('process') }}</p>
-                            <div class="px-[20px] text-[14px]">
-                                <el-row class="py-[10px] items table-head-bg pl-[15px] mb-[10px]">
-                                    <el-col :span="12">
-                                        <span>{{ t('name') }}</span>
-                                    </el-col>
-                                    <el-col :span="6">
-                                        <span>{{ t('demand') }}</span>
-                                    </el-col>
-                                    <el-col :span="6">
-                                        <span>{{ t('status') }}</span>
-                                    </el-col>
-                                </el-row>
-                                <el-row class="pb-[10px] items pl-[15px]">
-                                    <el-col :span="12">
-                                        <span>php think queue:listen</span>
-                                    </el-col>
-                                    <el-col :span="6">
-                                        <span>{{ t('open') }}</span>
-                                    </el-col>
-                                    <el-col :span="6">
-                                        <span v-if="installCheckResult.job_normal">
-                                            <el-icon color="green"><Select /></el-icon>
-                                        </span>
-                                        <span v-else>
-                                            <el-icon color="red">
-                                                <CloseBold />
-                                            </el-icon>
-                                        </span>
-                                    </el-col>
-                                </el-row>
-                            </div>
-                        </div>
                     </div>
                 </el-scrollbar>
-                <div class="flex justify-end">
-                    <el-button type="primary" :disabled="!installCheckResult.is_pass" @click="handleInstall">{{ t('install')
-                    }}</el-button>
+                <div class="flex justify-end" v-if="mode == 'development'">
+                    <el-tooltip effect="dark" :content="t('installTips')" placement="top">
+                        <el-button type="default" :disabled="!installCheckResult.is_pass || cloudInstalling"
+                            :loading="localInstalling" @click="handleInstall">{{
+                                t('localInstall')
+                            }}</el-button>
+                    </el-tooltip>
+                    <el-tooltip effect="dark" :content="t('cloudInstallTips')" placement="top">
+                        <el-button type="primary" :disabled="!installCheckResult.is_pass || localInstalling"
+                            :loading="cloudInstalling" @click="handleCloudInstall">{{
+                                t('cloudInstall')
+                            }}</el-button>
+                    </el-tooltip>
+                </div>
+                <div class="flex justify-end" v-else>
+                    <el-button type="primary" :disabled="!installCheckResult.is_pass" :loading="cloudInstalling"
+                        @click="handleCloudInstall">{{
+                            t('cloudInstall')
+                        }}</el-button>
                 </div>
             </div>
             <div v-show="installStep == 1" class="h-[50vh] mt-[20px]">
@@ -334,17 +314,18 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, h } from 'vue'
 import { t } from '@/lang'
-import { getAddonLocal, uninstallAddon, installAddon, preInstallCheck, getAddonInstallTaskState, executeInstall } from '@/app/api/addon'
+import { getAddonLocal, uninstallAddon, installAddon, preInstallCheck, cloudInstallAddon, getAddonInstalltask, getAddonCloudInstallLog } from '@/app/api/addon'
 import { downloadVersion } from '@/app/api/module'
-import { TabsPaneContext, ElMessageBox } from 'element-plus'
+import { TabsPaneContext, ElMessageBox, ElNotification } from 'element-plus'
 import { img } from '@/utils/common'
 import { Terminal, api as terminalApi } from 'vue-web-terminal'
 
 const activeName = ref('installed')
 const loading = ref<Boolean>(false)
 const showType = ref('large')
+const mode = ref(import.meta.env.MODE)
 
 const downEvent = (key: string) => {
     downloadVersion(key).then(() => {
@@ -417,101 +398,134 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
 const currAddon = ref('')
 // 安装面板弹窗
 const installShowDialog = ref(false)
-// 安装任务
-let installTask: AnyObject = {}
-// 当前查询的任务
-let currTask: string = ''
-// 已执行任务
-let executedTask: string[] = []
 // 安装步骤
 const installStep = ref(0)
 // 安装检测结果
 const installCheckResult = ref({})
 // 安装警告
 const installWarning = ref<string[]>([])
-// 定时器对象
-let timer: null | any = null
+
 /**
  * 安装
  * @param key
  */
 const installAddonFn = (key: string) => {
     currAddon.value = key
-    installAddon({ addon: key }).then(res => {
-        installStep.value = 0
-        executedTask = []
-        installWarning.value = []
-        installTask = makeIterator(Object.keys(res.data))
-        currTask = installTask.next().value
-        installShowDialog.value = true
+    installStep.value = 0
+    installWarning.value = []
+    installShowDialog.value = true
 
-        preInstallCheck(key).then(res => {
-            installCheckResult.value = res.data
-        }).catch(() => { })
-    }).catch(() => {
-    })
+    preInstallCheck(key).then(res => {
+        installCheckResult.value = res.data
+    }).catch(() => { })
 }
 
 /**
- * 创建遍历器
- * @param arr array
+ * 获取正在进行的安装任务
  */
-const makeIterator = (arr: string[]) => {
-    let nextIndex = 0
-    return {
-        next: function () {
-            return nextIndex < arr.length
-                ? { value: arr[nextIndex++] }
-                : { done: true }
+let notificationEl = null
+const getInstallTask = (first: boolean = true) => {
+    getAddonInstalltask().then(res => {
+        if (res.data) {
+            if (first) {
+                installLog = []
+                currAddon.value = res.data.addon
+                if (!installShowDialog.value) {
+                    notificationEl = ElNotification.success({
+                        title: t('warning'),
+                        dangerouslyUseHTMLString: true,
+                        message: h('div', {}, [
+                            t('installingTips'),
+                            h('span', { class: 'text-primary cursor-pointer', onClick: checkInstallTask }, [t('installPercent')])
+                        ]),
+                        duration: 0,
+                        showClose: false
+                    })
+                }
+            }
+            if (res.data.error) {
+                return
+            }
+            if (res.data.mode == 'cloud') {
+                getCloudInstallLog()
+            }
+            setTimeout(() => {
+                getInstallTask(false)
+            }, 2000)
+        } else {
+            if (!first) {
+                installStep.value += 2
+                localListFn()
+                notificationEl.close()
+            }
         }
-    }
+    })
+}
+getInstallTask()
+
+const checkInstallTask = () => {
+    installShowDialog.value = true
+    installStep.value = 1
 }
 
+const localInstalling = ref(false)
+/**
+ * 安装插件
+ */
 const handleInstall = () => {
-    if (!installCheckResult.value.is_pass) return
-    installStep.value += 1
+    if (!installCheckResult.value.is_pass || localInstalling.value) return
+    localInstalling.value = true
 
-    terminalApi.execute('my-terminal', 'clear')
+    installAddon({ addon: currAddon.value }).then(res => {
+        installStep.value += 2
+        localListFn()
+        localInstalling.value = false
+    }).catch((res) => {
+        localInstalling.value = false
+    })
+}
 
-    executeInstall(currAddon.value)
-        .then(() => {
-            timer = setInterval(() => {
-                getAddonInstallTaskState(currAddon.value, currTask).then(({ data }) => {
-                    if (!executedTask.includes(currTask)) {
-                        terminalApi.execute('my-terminal', data.command)
-                        executedTask.push(currTask)
-                    }
-                    switch (data.state) {
-                        case 'success':
-                            terminalApi.pushMessage('my-terminal', { content: `${data.desc}执行成功`, class: 'success' })
-                            if (data.step == 'installComplete') {
-                                clearInterval(timer)
-                                installStep.value += 2
-                                localListFn()
-                            } else {
-                                currTask = installTask.next().value
-                            }
-                            break
-                        case 'fail':
-                            terminalApi.pushMessage('my-terminal', { content: `${data.desc}执行失败`, class: 'error' })
-                            terminalApi.pushMessage('my-terminal', { content: `失败原因：${data.error}` })
-                            clearInterval(timer)
-                            break
-                        case 'warn':
-                            terminalApi.pushMessage('my-terminal', { content: data.error, class: 'warning' })
-                            installWarning.value.push(data.error)
-                            break
+const cloudInstalling = ref(false)
+/**
+ * 云安装插件
+ */
+const handleCloudInstall = () => {
+    if (!installCheckResult.value.is_pass || cloudInstalling.value) return
+    cloudInstalling.value = true
+
+    cloudInstallAddon({ addon: currAddon.value }).then(res => {
+        installStep.value += 1
+        terminalApi.execute('my-terminal', 'clear')
+        terminalApi.pushMessage('my-terminal', { content: '开始安装插件', class: 'info' })
+        getInstallTask()
+        cloudInstalling.value = false
+    }).catch((res) => {
+        cloudInstalling.value = false
+    })
+}
+
+let installLog: string[] = []
+const getCloudInstallLog = () => {
+    getAddonCloudInstallLog(currAddon.value)
+        .then(res => {
+            const data = res.data.data ?? []
+            if (data[0] && data[0].length && installShowDialog.value == true) {
+                data[0].forEach(item => {
+                    if (!installLog.includes(item.action)) {
+                        terminalApi.pushMessage('my-terminal', { content: `正在执行：${item.action}` })
+                        installLog.push(item.action)
+
+                        if (item.code == 0) {
+                            terminalApi.pushMessage('my-terminal', { content: item.msg, class: 'error' })
+                        }
                     }
                 })
-            }, 2000)
+            }
         })
-        .catch()
+        .catch(() => {
+            notificationEl?.close()
+        })
 }
-
-// 监听安装弹窗关闭
-watch(installShowDialog, (nval) => {
-    if (!installShowDialog.value) clearInterval(timer)
-})
 
 watch(currAddon, (nval) => {
     installCheckResult.value = {}

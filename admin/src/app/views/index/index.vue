@@ -14,30 +14,24 @@
             </div>
             <div class="flex flex-wrap plug-list pb-10 plug-large" v-if="applyList.list.length">
                 <div v-for="(item, index) in applyList.list" :key="index + 'b'">
-                    <div v-if="appLink[item.key]" class="relative app-item cursor-pointer px-4 mr-4 mt-[20px] bg-[#f7f7f7] border-[1px] hover:border-primary">
-                        <div @click="toLink(item.key)">
-                            <div class="flex py-5 items-center">
-                                <div class="flex justify-center items-center">
-                                    <el-image class="w-[50px] h-[50px]" :src="img(item.icon)" fit="contain">
-                                        <template #error>
-                                            <div class="image-slot">
-                                                <img class="w-[50px] h-[50px]" src="@/app/assets/images/index/app_default.png" />
-                                            </div>
-                                        </template>
-                                    </el-image>
-                                </div>
-                                <div class="flex flex-col justify-between text-left w-[190px]">
-                                    <p class="app-text w-[190px] text-[17px] text-[#222] pl-3">{{ item.title }}</p>
-
-                                </div>
+                    <div v-if="appLink[item.key] && item.type == 'addon'" class="relative app-item cursor-pointer px-4 mr-4 mt-[20px] bg-[#f7f7f7] border-[1px] hover:border-primary">
+                        <div @click="toLink(item.key)"  class="flex py-5 items-center">
+                            <div class="flex justify-center items-center">
+                                <el-image class="w-[40px] h-[40px]" :src="img(item.icon)" fit="contain">
+                                    <template #error>
+                                        <div class="image-slot">
+                                            <img class="w-[50px] h-[50px]" src="@/app/assets/images/index/app_default.png" />
+                                        </div>
+                                    </template>
+                                </el-image>
                             </div>
-                            <div class="border-t-[1px] border-[#e8e9eb] py-3">
-                                <p class="app-text text-[14px] text-[#999] w-[200px]">{{ item.desc }}</p>
+                            <div class="flex flex-col justify-between text-left w-[190px]">
+                                <p class="app-text w-[190px] text-[17px] text-[#222] pl-3">{{ item.title }}</p>
                             </div>
                         </div>
-                        <div class="with-ite absolute top-0 right-0 flex flex-col hidden">
+                        <!-- <div class="with-ite absolute top-0 right-0 flex flex-col hidden">
                             <span class="block pr-4 mt-3" :class="item.is_star == 2 ? 'text-primary' : 'text-[#999]'" @click.stop="withEvent(item.key)"><el-icon size="18px"><StarFilled /></el-icon></span>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -58,6 +52,7 @@ import { findFirstValidRoute } from '@/router/routers'
 import useUserStore from '@/stores/modules/user'
 import { useRouter } from 'vue-router'
 import { t } from '@/lang'
+import storage from '@/utils/storage'
 const userStore = useUserStore()
 const router = useRouter()
 const applyList = reactive({
@@ -89,6 +84,7 @@ const getAppLink = () => {
 getAppLink()
 
 const toLink = (addon: string) => {
+    storage.set({ key: 'plugMenuTypeStorage', data: addon })
     let data = userStore.appMenuList
     if(!data.length){
         data.push(addon)

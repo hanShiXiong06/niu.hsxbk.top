@@ -26,7 +26,12 @@
                 </template>
                 <el-table-column prop="version" :label="t('code')" align="left" />
                 <!-- <el-table-column prop="desc" :label="t('content')" align="left" /> -->
-                <el-table-column prop="status_name" :label="t('status')" align="left" />
+                <el-table-column prop="status_name" :label="t('status')" align="left">
+                    <template #default="{ row }">
+                        <div>{{ row.status_name }}</div>
+                        <div class="text-error" v-if="row.status == -1">{{ t('failReason') }}{{ row.fail_reason }}</div>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="create_time" :label="t('createTime')" align="center" />
                 <el-table-column :label="t('operation')" fixed="right" align="right" min-width="120">
                     <template #default="{ row, $index }">
