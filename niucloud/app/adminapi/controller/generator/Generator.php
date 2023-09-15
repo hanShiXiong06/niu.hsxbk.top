@@ -36,6 +36,7 @@ class Generator extends BaseController
         $data = $this->request->params([
             ['table_name', ''],
             ['table_content', ''],
+            ['addon_name','']
         ]);
         return success((new GenerateService())->getPage($data));
     }
@@ -61,6 +62,7 @@ class Generator extends BaseController
     public function preview(int $id)
     {
         $data = (new GenerateService())->preview(['id' => $id]);
+//        dd($data);
         return success('ADD_SUCCESS', $data);
     }
 
@@ -101,6 +103,7 @@ class Generator extends BaseController
             ['parent_menu',''],
             ['relations',[]]
         ], false);
+
         $this->validate($data, 'app\validate\generator\Generator.edit');
         (new GenerateService())->edit($id, $data);
         return success('MODIFY_SUCCESS');
@@ -125,7 +128,7 @@ class Generator extends BaseController
     {
         $data = $this->request->params([
             ['id', ''],
-            ['generate_type', '3']
+            ['generate_type', '2']
         ]);
 
         $data = (new GenerateService())->generate($data);

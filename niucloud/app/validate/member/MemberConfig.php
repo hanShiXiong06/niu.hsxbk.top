@@ -11,6 +11,7 @@
 
 namespace app\validate\member;
 
+use core\base\BaseValidate;
 use think\facade\Lang;
 use think\Validate;
 
@@ -19,7 +20,7 @@ use think\Validate;
  * Class LoginConfig
  * @package app\validate\member
  */
-class MemberConfig extends Validate
+class MemberConfig extends BaseValidate
 {
     protected $rule = [
         'length' => 'number|checkLength'

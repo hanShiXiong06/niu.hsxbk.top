@@ -11,12 +11,13 @@
 
 namespace app\validate\channel;
 
+use core\base\BaseValidate;
 use think\Validate;
 
 /**
  * 微信小程序配置验证类
  */
-class Weapp extends Validate
+class Weapp extends BaseValidate
 {
 
     //用户名或密码的规范可能是从数据库中获取的

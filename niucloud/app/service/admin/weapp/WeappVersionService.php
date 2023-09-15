@@ -73,7 +73,7 @@ class WeappVersionService extends BaseAdminService
      */
     public function getPage(array $where = [])
     {
-        $field = 'id, version, version_no, desc, create_time, status';
+        $field = 'id, version, version_no, desc, create_time, status, fail_reason';
         $order = 'version_no desc';
         $search_model = $this->model->field($field)->order($order)->append(['status_name']);
         return $this->pageQuery($search_model);

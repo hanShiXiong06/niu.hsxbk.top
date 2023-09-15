@@ -50,9 +50,9 @@ function fail($msg = 'FAIL', ?array $data = [], int $code = 0, int $http_code = 
  * @param string $str
  * @return lang()
  */
-function get_lang($str)
+function get_lang($str,$vars = [])
 {
-    return Lang::get($str);
+    return Lang::get($str,$vars);
 }
 
 
@@ -174,8 +174,9 @@ function del_target_dir($path, $delDir)
         }
         closedir($handle);
         if ($delDir) {
-            return rmdir($path);
+            @rmdir($path);
         }
+        return true;
     } else {
         if (file_exists($path)) {
             return unlink($path);

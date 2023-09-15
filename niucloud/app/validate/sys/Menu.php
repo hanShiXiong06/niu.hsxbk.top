@@ -13,6 +13,7 @@ namespace app\validate\sys;
 
 use app\dict\sys\MenuTypeDict;
 use app\dict\sys\MethodDict;
+use core\base\BaseValidate;
 use think\facade\Lang;
 use think\Validate;
 
@@ -20,7 +21,7 @@ use think\Validate;
  * Class Menu
  * @package app\validate\sys
  */
-class Menu extends Validate
+class Menu extends BaseValidate
 {
 
     //用户名或密码的规范可能是从数据库中获取的

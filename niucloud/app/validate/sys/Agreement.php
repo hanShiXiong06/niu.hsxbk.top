@@ -12,6 +12,7 @@
 namespace app\validate\sys;
 
 
+use core\base\BaseValidate;
 use think\Validate;
 
 /**
@@ -19,7 +20,7 @@ use think\Validate;
  * Class Agreement
  * @package app\validate\sys
  */
-class Agreement extends Validate
+class Agreement extends BaseValidate
 {
 
     protected $rule = [

@@ -11,6 +11,7 @@
 
 namespace app\validate\sys;
 
+use core\base\BaseValidate;
 use think\Validate;
 
 /**
@@ -18,7 +19,7 @@ use think\Validate;
  * Class Page
  * @package app\validate\sys
  */
-class Page extends Validate
+class Page extends BaseValidate
 {
 
     protected $rule = [

@@ -13,12 +13,13 @@ namespace app\validate\member;
 
 use app\dict\member\MemberAccountTypeDict;
 use app\dict\pay\TransferDict;
+use core\base\BaseValidate;
 use think\Validate;
 
 /**
  * 提现验证类
  */
-class CashOut extends Validate
+class CashOut extends BaseValidate
 {
     protected $rule = [
         'apply_money' => 'min:0.01',  // 提现金额

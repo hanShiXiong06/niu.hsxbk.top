@@ -63,7 +63,6 @@ class CoreWeappCloudService extends CoreCloudBaseService
         (new CoreAddonDevelopDownloadService(''))->compressToZip($package_dir, $zip_file);
 
         $query = [
-            'action' => 'wechat',
             'compile' => $compile_addon->isEmpty() ? 0 : 1,
             'authorize_code' => $this->auth_code,
             'appid' => $config['app_id'],
@@ -71,15 +70,18 @@ class CoreWeappCloudService extends CoreCloudBaseService
             'desc' => $data['desc'] ?? '',
             'do' => 1
         ];
-        (new CloudService())->httpPost('cloud?' . http_build_query($query), [
+        (new CloudService())->httpPost('cloud/wechat?' . http_build_query($query), [
             'multipart' => [
                 [
-                    'name'     => 'weapp',
+                    'name'     => 'file',
                     'contents' => fopen($zip_file, 'r'),
                     'filename' => 'weapp.zip'
                 ]
             ],
         ]);
+
+        // 删除临时文件
+        del_target_dir(runtime_path() . 'backup' . DIRECTORY_SEPARATOR . 'weapp', true);
 
         return ['key' => $task_key];
     }
@@ -121,9 +123,8 @@ class CoreWeappCloudService extends CoreCloudBaseService
      */
     public function getWeappPreviewImage() {
         $query = [
-            'action' => 'get_wechat_preview',
             'authorize_code' => $this->auth_code,
         ];
-        return (new CloudService())->httpGet('cloud?' . http_build_query($query));
+        return (new CloudService())->httpGet('cloud/get_wechat_preview?' . http_build_query($query));
     }
 }

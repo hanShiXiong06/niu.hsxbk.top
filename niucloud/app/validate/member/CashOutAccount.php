@@ -12,12 +12,13 @@
 namespace app\validate\member;
 
 use app\dict\pay\TransferDict;
+use core\base\BaseValidate;
 use think\Validate;
 
 /**
  * 提现账号验证类
  */
-class CashOutAccount extends Validate
+class CashOutAccount extends BaseValidate
 {
     protected $rule = [
         'account_type' => 'checkAccountType',

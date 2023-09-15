@@ -2,17 +2,18 @@
 return
     [
         [
-            'menu_name' => '首页',
+            'menu_name' => '应用中心',
             'menu_key' => 'overview',
             'menu_type' => 0,
             'icon' => 'iconfont-icona-shouyediannao',
             'api_url' => '',
-            'router_path' => 'index',
+            'router_path' => 'apply',
             'view_path' => '',
             'methods' => '',
-            'sort' => 100,
+            'sort' => 60,
             'status' => 1,
             'is_show' => 1,
+            'menu_attr' => 'system',
             'children' => [
                 [
                     'menu_name' => '应用管理',
@@ -29,7 +30,7 @@ return
                 ],
                 [
                     'menu_name' => '我的星标',
-                    'menu_key' => 'app_index',
+                    'menu_key' => 'app_star',
                     'menu_type' => 1,
                     'icon' => 'iconfont-iconwodexingbiao',
                     'api_url' => '',
@@ -38,11 +39,11 @@ return
                     'methods' => '',
                     'sort' => 100,
                     'status' => 1,
-                    'is_show' => 1,
+                    'is_show' => 0,
                 ],
                 [
                     'menu_name' => '历史查看',
-                    'menu_key' => 'app_index',
+                    'menu_key' => 'app_record',
                     'menu_type' => 1,
                     'icon' => 'iconfont-iconchakanlishi',
                     'api_url' => '',
@@ -51,13 +52,13 @@ return
                     'methods' => '',
                     'sort' => 100,
                     'status' => 1,
-                    'is_show' => 1,
+                    'is_show' => 0,
                 ]
 
             ]
         ],
         [
-            'menu_name' => '网站',
+            'menu_name' => '网站装修',
             'menu_key' => 'website',
             'menu_type' => 0,
             'icon' => 'iconfont-iconwangzhan1',
@@ -68,6 +69,7 @@ return
             'sort' => 90,
             'status' => 1,
             'is_show' => 1,
+            'menu_attr' => 'common',
             'children' => [
                 [
                     'menu_name' => '装修管理',
@@ -390,7 +392,7 @@ return
             ]
         ],
         [
-            'menu_name' => '会员',
+            'menu_name' => '会员管理',
             'menu_key' => 'member',
             'menu_type' => 0,
             'icon' => 'iconfont-iconhuiyuan2',
@@ -401,6 +403,7 @@ return
             'sort' => 70,
             'status' => 1,
             'is_show' => 1,
+            'menu_attr' => 'system',
             'children' => [
                 [
                     'menu_name' => '会员列表',
@@ -623,7 +626,7 @@ return
             ],
         ],
         [
-            'menu_name' => '设置',
+            'menu_name' => '系统设置',
             'menu_key' => 'setting',
             'menu_type' => 0,
             'icon' => 'iconfont-iconshezhi1',
@@ -634,6 +637,7 @@ return
             'sort' => 40,
             'status' => 1,
             'is_show' => 1,
+            'menu_attr' => 'common',
             'children' => [
                 [
                     'menu_name' => '基础设置',
@@ -1210,7 +1214,7 @@ return
             ]
         ],
         [
-            'menu_name' => '云市场',
+            'menu_name' => '应用市场',
             'menu_key' => 'app',
             'menu_type' => 0,
             'icon' => 'iconfont-iconyunshichang',
@@ -1221,6 +1225,7 @@ return
             'sort' => 10,
             'status' => 1,
             'is_show' => 1,
+            'menu_attr' => 'common',
             'children' => [
                 [
                     'menu_name' => '应用插件',
@@ -1275,6 +1280,7 @@ return
             'sort' => 10,
             'status' => 1,
             'is_show' => 1,
+            'menu_attr' => 'common',
             'children' => [
                 [
                     'menu_name' => '插件开发',

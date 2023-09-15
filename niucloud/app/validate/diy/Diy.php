@@ -11,6 +11,7 @@
 
 namespace app\validate\diy;
 
+use core\base\BaseValidate;
 use think\Validate;
 
 /**
@@ -18,7 +19,7 @@ use think\Validate;
  * Class Diy
  * @package app\validate\diy
  */
-class Diy extends Validate
+class Diy extends BaseValidate
 {
 
     protected $rule = [

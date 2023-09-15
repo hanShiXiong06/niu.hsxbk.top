@@ -40,7 +40,9 @@ class WebApiGenerator extends BaseGenerator
             '{UCASE_NAME}',
             '{MODULE_NAME}',
             '{ROUTE_GROUP_NAME}',
-            '{IMPORT}'
+            '{IMPORT}',
+            '{BEGIN}',
+            '{END}',
         ];
 
         $new = [
@@ -53,6 +55,8 @@ class WebApiGenerator extends BaseGenerator
             $this->moduleName,
             $this->getRouteGroupName(),
             $this->getImport(),
+            $this->getBegin(),
+            $this->getEnd(),
         ];
         $vmPath = $this->getvmPath('web_api');
 
@@ -79,7 +83,13 @@ class WebApiGenerator extends BaseGenerator
      */
     public function getModuleOutDir()
     {
-        $dir = dirname(app()->getRootPath()) . '/admin/src/api/';
+        if(!empty($this->addonName))
+        {
+            $dir = dirname(app()->getRootPath()) . '/admin/src/api/';
+        }else{
+            $dir = dirname(app()->getRootPath()) . '/admin/src/app/api/';
+        }
+
         $this->checkDir($dir);
         return $dir;
     }
@@ -101,12 +111,38 @@ class WebApiGenerator extends BaseGenerator
 
         if(file_exists($file))
         {
-            $import = file_get_contents($file);
+
+            $content = file_get_contents($file);
+            $code_begin = 'USER_CODE_BEGIN -- '.$this->getTableName();
+            $code_end = 'USER_CODE_END -- '.$this->getTableName();
+
+            if(strpos($content,$code_begin) !== false && strpos($content,$code_end) !== false)
+            {
+                // 清除相应对应代码块
+                $pattern = "/\s+\/\/ {$code_begin}[\S\s]+\/\/ {$code_end}(\n,)?/";
+
+                $import = preg_replace($pattern, '', $content);
+
+            }else{
+                $import = $content;
+            }
         }else{
-            $import = "import request from '@//utils//request'";
+            $import = "import request from '@/utils/request'";
         }
         return $import;
 
+    }
+
+    public function getBegin()
+    {
+        $begin = '// USER_CODE_BEGIN -- '.$this->getTableName();
+        return $begin;
+    }
+
+    public function getEnd()
+    {
+        $end = '// USER_CODE_END -- '.$this->getTableName();
+        return $end;
     }
 
     /**
@@ -137,7 +173,7 @@ class WebApiGenerator extends BaseGenerator
         {
             $dir = $this->rootDir . '/admin/src/'.$this->addonName.'/api/';
         }else{
-            $dir = $this->rootDir . '/admin/src/api/';
+            $dir = $this->rootDir . '/admin/src/app/api/';
         }
 
         $this->checkDir($dir);

@@ -201,6 +201,7 @@ return [
         'page_diy' => '自定义页面',
         'component_type_basic' => '基础组件',
 
+        'system_title' => '系统',
         'system_link' => '系统页面',
         'system_link_index' => '首页',
 

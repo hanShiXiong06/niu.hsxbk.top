@@ -7,15 +7,9 @@ import { ref } from 'vue'
 import { getHelloWorld } from '@/{key}/api/hello_world'
 
 const hello_world_text = ref('');
-onMounted(() => {
-  getHelloWorldInfo()
-});
 
-const getHelloWorldInfo = () => {
-  getHelloWorld().then(res => {
+getHelloWorld().then(res => {
     hello_world_text.value = res.data;
-	})
-}
-
+})
 </script>
 <style lang="scss" scoped></style>

@@ -41,9 +41,9 @@ class GenerateService extends BaseAdminService
      */
     public function getPage(array $where = [])
     {
-        $field = 'id,table_name,table_content,class_name,edit_type,create_time';
+        $field = 'id,table_name,table_content,class_name,edit_type,create_time,addon_name';
         $order = 'create_time desc';
-        $search_model = (new GenerateTable())->withSearch(['table_name', 'table_content'], $where)->field($field)->order($order);
+        $search_model = (new GenerateTable())->withSearch(['table_name', 'table_content','addon_name'], $where)->with('addon')->field($field)->order($order);
         return $this->pageQuery($search_model);
     }
 
@@ -57,11 +57,12 @@ class GenerateService extends BaseAdminService
      */
     public function getInfo(int $id)
     {
-        $field = 'id,table_name,table_content,class_name,module_name,edit_type,addon_name,order_type,parent_menu,relations';
+        $field = 'id,table_name,table_content,class_name,module_name,edit_type,addon_name,order_type,parent_menu,relations,synchronous_number';
 
         $info = (new GenerateTable())->field($field)->where([['id', '=', $id]])->findOrEmpty()->toArray();
 
         $info['table_column'] = (new GenerateColumn())->where([['table_id', '=', $id]])->select()->toArray();
+
         $column = (new GenerateColumn())->where([['table_id', '=', $id],['is_delete','=',1]])->find();
         if($info && $info['order_type'] != 0)
         {
@@ -88,7 +89,77 @@ class GenerateService extends BaseAdminService
         {
             $info['relations'] = [];
         }else{
-            $info['relations'] = json_decode($info['relations'],true);
+            if(!empty($info['relations']))
+            {
+                $info['relations'] = json_decode($info['relations'],true);
+            }else{
+                $info['relations'] = [];
+            }
+
+        }
+        if($info && !empty($info['table_column']))
+        {
+            foreach ($info['table_column'] as &$value)
+            {
+                if($value['view_type'] === 'number')
+                {
+
+                    if(!empty($value['validate_type']))
+                    {
+
+                        $num_validate = json_decode($value['validate_type'],true);
+                        if($num_validate[0] == 'between')
+                        {
+                            $value['view_max'] = $num_validate[1][1];
+                            $value['view_min'] = $num_validate[1][0];
+                        } else if($num_validate[0] == 'max')
+                        {
+                            $value['view_max'] = $num_validate[1][0];
+
+                        } else if($num_validate[0] == 'min')
+                        {
+                            $value['view_min'] = $num_validate[1][0];
+                        }else{
+                            $value['view_max'] = 100;
+                            $value['view_min'] = 0;
+                        }
+                    }else{
+                        $value['view_min'] = 0;
+                        $value['view_max'] = 100;
+                    }
+
+                }else{
+                    $value['view_min'] = 0;
+                    $value['view_max'] = 100;
+                }
+
+                if(!empty($value['validate_type']))
+                {
+                    $validate = json_decode($value['validate_type'],true);
+
+                    if($validate[0] == 'between')
+                    {
+                        $value['max_number'] = $validate[1][1];
+                        $value['min_number'] = $validate[1][0];
+                    } else if($validate[0] == 'max')
+                    {
+                        $value['max_number'] = $validate[1][0];
+
+                    } else if($validate[0] == 'min')
+                    {
+                        $value['min_number'] = $validate[1][0];
+                    }else{
+                        $value['max_number'] = 120;
+                        $value['min_number'] = 1;
+                    }
+                    $value['validate_type'] = $validate[0];
+                }else{
+                    $value['max_number'] = 120;
+                    $value['min_number'] = 1;
+                }
+
+
+            }
         }
         return $info;
     }
@@ -119,7 +190,7 @@ class GenerateService extends BaseAdminService
             $add_table_data = [
                 'table_name' => $table_name,
                 'table_content' => $table_info['Comment'],
-                'class_name' => '',
+                'class_name' => $table_name,
                 'create_time' => time(),
                 'module_name' => $table_name
             ];
@@ -218,6 +289,26 @@ class GenerateService extends BaseAdminService
                 }else{
                     $item['is_order'] = 0;
                 }
+                if(!empty($item['validate_type']) && $item['view_type'] != 'number')
+                {
+                    if($item['validate_type'] == 'between')
+                    {
+                        $validate_type = [$item['validate_type'],[$item['min_number'],$item['max_number']]];
+                    }else if($item['validate_type'] == 'max'){
+                        $validate_type = [$item['validate_type'],[$item['max_number']]];
+                    }else if($item['validate_type'] == 'min'){
+                        $validate_type = [$item['validate_type'],[$item['min_number']]];
+                    }else{
+                        $validate_type = [$item['validate_type'],[]];
+                    }
+                    $item['validate_type'] = json_encode($validate_type,JSON_UNESCAPED_UNICODE);
+                }
+                if($item['view_type'] === 'number')
+                {
+                    $validate_type = ['between',[$item['view_min'],$item['view_max']]];
+                    $item['validate_type'] = $validate_type;
+                    $item['validate_type'] = json_encode($validate_type,JSON_UNESCAPED_UNICODE);
+                }
 
                 $add_column_data[] = [
                     'table_id' => $id,
@@ -238,6 +329,8 @@ class GenerateService extends BaseAdminService
                     'update_time' => time(),
                     'create_time' => time(),
                     'column_type' => $item['column_type'] ?? 'string',
+                    'validate_type' => $item['validate_type'] ?? '',
+                    'validate_rule' => $params['rule'] ?? []
                 ];
             }
             (new GenerateColumn())->saveAll($add_column_data);
@@ -309,6 +402,8 @@ class GenerateService extends BaseAdminService
                 $id = $params['id'];
                 $table_info = (new GenerateTable())->where([ ['id', '=', $id] ])->field('*')->find()->toArray();
                 $table_info['fields'] = (new GenerateColumn())->where([ ['table_id', '=', $id] ])->field('*')->select()->toArray();
+                $synchronous_number = $table_info['synchronous_number'] +1;
+                (new GenerateTable())->where([ ['id', '=', $id] ])->save(['synchronous_number' => $synchronous_number]);
                 $generator = new Generate();
                 $generator->delOutFiles();
                 $flag = array_unique(array_column($table_info, 'table_name'));
@@ -456,7 +551,7 @@ class GenerateService extends BaseAdminService
         if($data['addon'] == 'system')
         {
             //获取系统模型
-            $modulePath = base_path() . '\\model\\';
+            $modulePath = dirname(root_path()) . '/niucloud/app/model/';
             if(!is_dir($modulePath)) {
                 return [];
             }
@@ -489,13 +584,13 @@ class GenerateService extends BaseAdminService
             }
         }else{
             //获取插件模型
-            $path = dirname(root_path())."\\niucloud\\addon\\".$data['addon']."\\app\\model";
+            $path = dirname(root_path())."/niucloud/addon/".$data['addon']."/app/model";
 
             if(!is_dir($path)) {
                 return [];
             }
 
-            $modulefiles = glob($path . '\*');
+            $modulefiles = glob($path . '/*');
 
             $targetFiles = [];
             foreach ($modulefiles as $file) {

@@ -11,12 +11,13 @@
 
 namespace app\validate\niucloud;
 
+use core\base\BaseValidate;
 use think\Validate;
 
 /**
  * 提现验证类
  */
-class Module extends Validate
+class Module extends BaseValidate
 {
     protected $rule = [
         'auth_code' => 'require',

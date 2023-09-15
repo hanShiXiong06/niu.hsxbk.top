@@ -12,12 +12,13 @@
 namespace app\validate\addon;
 
 use app\dict\addon\AddonDict;
+use core\base\BaseValidate;
 use think\Validate;
 
 /**
  * 开发插件
  */
-class AddonDevelop extends Validate
+class AddonDevelop extends BaseValidate
 {
 
 

@@ -11,6 +11,7 @@
 
 namespace app\model\generator;
 
+use app\model\addon\Addon;
 use app\model\applet\AppletVersion;
 use core\base\BaseModel;
 
@@ -62,5 +63,27 @@ class GenerateTable extends BaseModel
         }
     }
 
+    /**
+     * 插件搜索器
+     * @param $query
+     * @param $value
+     * @param $data
+     */
+    public function searchAddonNameAttr($query, $value, $data)
+    {
+        if ($value) {
+            if($value == 2)
+            {
+                $query->where('addon_name','=','');
+            }else{
+                $query->where('addon_name', 'like', '%' . $value . '%');
+            }
 
+        }
+    }
+
+    public function addon()
+    {
+        return $this->hasOne(Addon::class, 'key', 'addon_name')->joinType('left')->withField('key, title')->bind(['title' => 'title']);
+    }
 }

@@ -15,6 +15,7 @@ use app\dict\addon\AddonDict;
 use app\service\admin\addon\AddonService;
 use app\service\core\addon\CoreAddonService;
 use core\base\BaseAdminController;
+use think\facade\Cache;
 use think\Response;
 
 
@@ -34,17 +35,34 @@ class Addon extends BaseAdminController
      */
     public function install($addon)
     {
-        return (new AddonService())->install($addon);
+        return success((new AddonService())->install($addon));
     }
 
     /**
-     * 执行安装
+     * 云安装插件
      * @param $addon
      * @return Response
      */
-    public function execute($addon)
+    public function cloudInstall($addon)
     {
-        return (new AddonService())->executeInstall($addon);
+        return success(data:(new AddonService())->cloudInstall($addon));
+    }
+
+    /**
+     * 获取安装任务
+     * @return Response
+     */
+    public function getInstallTask() {
+        return success(data:(new AddonService())->getInstallTask());
+    }
+
+    /**
+     * 获取云安装日志
+     * @param $addon
+     * @return mixed
+     */
+    public function cloudInstallLog($addon) {
+        return success(data:(new AddonService())->cloudInstallLog($addon));
     }
 
     /**
@@ -55,17 +73,6 @@ class Addon extends BaseAdminController
     public function installCheck($addon)
     {
         return (new AddonService())->installCheck($addon);
-    }
-
-    /**
-     * 查询插件安装状态
-     * @param $addon
-     * @param $key
-     * @return Response
-     */
-    public function getInstallState($addon, $key)
-    {
-        return success((new AddonService())->getInstallState($addon, $key));
     }
 
     /**
@@ -118,7 +125,10 @@ class Addon extends BaseAdminController
      * @return Response
      */
     public function download($addon){
-        (new AddonService())->download($addon);
+        $data = $this->request->params([
+            ['version', '']
+        ]);
+        (new AddonService())->download($addon, $data['version']);
         return success('DOWNLOAD_SUCCESS');
     }
 

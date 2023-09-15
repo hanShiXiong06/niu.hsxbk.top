@@ -76,10 +76,9 @@ class CoreAddonInstallService extends CoreAddonBaseService
     private $install_addon_path;
     private $state;
 
-    // 安装任务
-    private $task = [];
-
     private $cache_key = '';
+
+    private $install_task = null;
 
     public function __construct($addon)
     {
@@ -88,7 +87,8 @@ class CoreAddonInstallService extends CoreAddonBaseService
         $this->install_addon_path = $this->addon_path . $addon . DIRECTORY_SEPARATOR;
 
         $this->cache_key = "install_{$addon}";
-        $this->task = Cache::get($this->cache_key, []);
+
+        $this->install_task = Cache::get('install_task');
     }
 
     /**
@@ -137,10 +137,7 @@ class CoreAddonInstallService extends CoreAddonBaseService
                 'is_readable' => [],
                 // 要求可写权限
                 'is_write' => []
-            ],
-            // 运行环境检测
-            'runtime' => [],
-            'job_normal' => (new SystemService())->checkJob(),
+            ]
         ];
 
         if (is_dir($from_admin_dir)) $data['dir']['is_readable'][] = ['dir' => str_replace(project_path(), '', $from_admin_dir), 'status' => is_readable($from_admin_dir)];
@@ -155,9 +152,7 @@ class CoreAddonInstallService extends CoreAddonBaseService
 
         $check_res = array_merge(
             array_column($data['dir']['is_readable'], 'status'),
-            array_column($data['dir']['is_write'], 'status'),
-            array_column($data['runtime'], 'status'),
-            [$data['job_normal']]
+            array_column($data['dir']['is_write'], 'status')
         );
 
         // 是否通过校验
@@ -167,97 +162,85 @@ class CoreAddonInstallService extends CoreAddonBaseService
     }
 
     /**
-     *
+     * 插件安装
      * @return true
      */
-    public function executeInstall()
+    public function install(string $mode = 'local')
     {
-        if (empty($this->task)) throw new CommonException('ADDON_INSTALL_NOT_EXIST');
+        $core_addon_service = new CoreAddonService();
+        if (!empty($core_addon_service->getInfoByKey($this->addon))) throw new AddonException('REPEAT_INSTALL');
+
+        $install_data = $this->getAddonConfig($this->addon);
+        if (empty($install_data)) throw new AddonException('ADDON_INFO_FILE_NOT_EXIST');
 
         $check_res = Cache::get($this->cache_key . '_install_check');
         if (!$check_res) throw new CommonException('INSTALL_CHECK_NOT_PASS');
 
-        if ($this->task['installDir']['state'] == AddonDict::INSTALL_UNEXECUTED) AddonInstall::invoke(['addon' => $this->addon, 'task' => 'installDir']);
-        return true;
-    }
-
-    /**
-     * 执行任务
-     * @param string $task
-     * @return Response
-     */
-    public function executeTask(string $task)
-    {
-        if (empty($this->task) || !isset($this->task[$task])) throw new CommonException('ADDON_INSTALL_NOT_EXIST');
-        if ($this->task[$task]['state'] != AddonDict::INSTALL_UNEXECUTED) throw new CommonException('ADDON_INSTALL_EXECUTED');
-
-        $this->setTaskState($task, AddonDict::INPROGRESS);
+        if ($this->install_task) throw new CommonException('ADDON_INSTALLING');
+        $this->install_task = [ 'mode' => $mode, 'addon' => $this->addon, 'step' => [], 'timestamp' => time() ];
+        Cache::set('install_task', $this->install_task);
 
         set_time_limit(0);
 
-        $result = Terminal::execute(root_path(), $this->task[$task]['command']);
+        $install_step = ['installDir','installSql','installMenu','installSchedule','installWap','installDepend'];
 
-        // 变更任务状态
-        if ($result === true) {
-            if ($task != 'installComplete') {
-                $this->setTaskState($task, AddonDict::INSTALL_SUCCESS);
-                $task_key = array_keys($this->task);
-                AddonInstall::invoke(['addon' => $this->addon, 'task' => $task_key[array_search($task, $task_key) + 1]]);
-            } else {
-                // 设置任务缓存30秒后失效
-                $this->setTaskState($task, AddonDict::INSTALL_SUCCESS, '', 30);
-            }
-        } else {
-            if (in_array($task, ['updateComposer', 'updateAdminDependencies', 'updateWapDependencies', 'updateWebDependencies'])) {
-                $warn = [
-                    'updateComposer' => '在线更新composer依赖执行失败，请在项目niucloud目录下执行 composer update命令手动更新依赖',
-                    'updateAdminDependencies' => '在线更新admin端依赖执行失败，请在项目admin目录下执行 npm install 命令手动更新依赖',
-                    'updateWapDependencies' => '在线更新wap端依赖执行失败，请在项目uni-app目录下执行 npm install 命令手动更新依赖',
-                    'updateWebDependencies' => '在线更新web端依赖执行失败，请在项目web目录下执行 npm install 命令手动更新依赖'
-                ];
-                $this->setTaskState($task, AddonDict::INSTALL_WARN, $warn[$task]);
-                $task_key = array_keys($this->task);
-                AddonInstall::invoke(['addon' => $this->addon, 'task' => $task_key[array_search($task, $task_key) + 1]]);
-            } else {
-                // 设置任务缓存30秒后失效
-                $this->setTaskState($task, AddonDict::INSTALL_FAIL, $result, 30);
-            }
+        if (!empty($install_data['compile']) || $mode == 'cloud') {
+            // 备份前端目录
+            $install_step[] = 'backupFrontend';
         }
-        return $result;
+
+        // 检测插件是否存在编译内容
+        if (!empty($install_data['compile'])) {
+            $install_step[] = 'coverCompile';
+        }
+
+        if ($mode == 'cloud') {
+            $install_step[] = 'cloudInstall';
+        } else {
+            $install_step[] = 'handleAddonInstall';
+        }
+
+        try {
+            foreach ($install_step as $step) {
+                $this->install_task['step'][] = $step;
+                $this->$step();
+            }
+            if ($mode == 'cloud') Cache::set('install_task', $this->install_task);
+            return true;
+        } catch (\Exception $e) {
+            Cache::set('install_task', null);
+            throw new CommonException($e->getMessage());
+        }
     }
 
     /**
-     * 设置任务执行状态
-     * @param string $task
-     * @param string $state
-     * @param $error
-     * @param int|null $ttl
+     * 安装异常处理
      * @return void
      */
-    public function setTaskState(string $task, string $state, $error = '', $ttl = null)
-    {
-        $this->task[$task]['state'] = $state;
-        if (!empty($error)) $this->task[$task]['error'] = $error;
-        Cache::set($this->cache_key, $this->task, $ttl);
+    public function installExceptionHandle() {
+        $install_task = Cache::get('install_task');
+
+        if (in_array('installDir', $install_task['step'])) {
+            @$this->uninstallDir();
+        }
+
+        if (in_array('installMenu', $install_task['step'])) {
+            @$this->uninstallMenu();
+        }
+
+        if ($install_task['mode'] == 'cloud') {
+            $this->revertFrontendBackup();
+        }
+
+        Cache::set('install_task', null);
     }
 
     /**
      * 获取安装任务
-     * @return array
+     * @return mixed
      */
-    public function getTask()
-    {
-        return $this->task;
-    }
-
-    /**
-     * 获取任务执行状态
-     * @param string $key
-     * @return array|mixed
-     */
-    public function getInstallState(string $key)
-    {
-        return $this->task[$key] ?? [];
+    public function getInstallTask() {
+        return $this->install_task;
     }
 
     /**
@@ -389,127 +372,9 @@ class CoreAddonInstallService extends CoreAddonBaseService
         if (class_exists($class)) {
             (new $class())->install();
         }
+        // 清除插件安装中标识
+        Cache::delete('install_task');
         return true;
-    }
-
-    /**
-     * 插件安装
-     * @return true
-     */
-    public function install()
-    {
-        $core_addon_service = new CoreAddonService();
-        if (!empty($core_addon_service->getInfoByKey($this->addon))) throw new AddonException('REPEAT_INSTALL');
-
-        if (!empty($this->task)) return $this->task;
-
-        // 配置文件
-        $package_path = $this->install_addon_path . 'package' . DIRECTORY_SEPARATOR;
-        $package_file = [];
-        search_dir($package_path, $package_file);
-        $package_file = array_map(function ($file) use ($package_path) {
-            return str_replace($package_path . DIRECTORY_SEPARATOR, '', $file);
-        }, $package_file);
-
-        $this->task = [
-            'installDir' => [
-                'addon' => $this->addon,
-                'step' => 'installDir',
-                'command' => "php think addon:install {$this->addon} --step installDir",
-                'desc' => '复制插件文件',
-                'state' => AddonDict::INSTALL_UNEXECUTED
-            ],
-            'installSql' => [
-                'addon' => $this->addon,
-                'step' => 'installSql',
-                'command' => "php think addon:install {$this->addon} --step installSql",
-                'desc' => '执行插件sql',
-                'state' => AddonDict::INSTALL_UNEXECUTED
-            ],
-            'installMenu' => [
-                'addon' => $this->addon,
-                'step' => 'installMenu',
-                'command' => "php think addon:install {$this->addon} --step installMenu",
-                'desc' => '安装插件菜单',
-                'state' => AddonDict::INSTALL_UNEXECUTED
-            ],
-            'installSchedule' => [//安装计划任务
-                'addon' => $this->addon,
-                'step' => 'installSchedule',
-                'command' => "php think addon:install {$this->addon} --step installSchedule",
-                'desc' => '安装插件计划任务',
-                'state' => AddonDict::INSTALL_UNEXECUTED
-            ],
-            'installWap' => [
-                'addon' => $this->addon,
-                'step' => 'installWap',
-                'command' => "php think addon:install {$this->addon} --step installWap",
-                'desc' => '安装插件手机端',
-                'state' => AddonDict::INSTALL_UNEXECUTED
-            ],
-            'handleAddonInstall' => [
-                'addon' => $this->addon,
-                'step' => 'handleAddonInstall',
-                'command' => "php think addon:install {$this->addon} --step handleAddonInstall",
-                'desc' => '执行插件安装方法',
-                'state' => AddonDict::INSTALL_UNEXECUTED
-            ],
-            'installDepend' => [
-                'addon' => $this->addon,
-                'step' => 'installDepend',
-                'command' => "php think addon:install {$this->addon} --step installDepend",
-                'desc' => '合并依赖文件',
-                'state' => AddonDict::INSTALL_UNEXECUTED
-            ]
-        ];
-
-        if (in_array('composer.json', $package_file)) {
-            $this->task['updateComposer'] = [
-                'addon' => $this->addon,
-                'step' => 'updateComposer',
-                'command' => "php think addon:install {$this->addon} --step updateComposer",
-                'desc' => '更新composer依赖',
-                'state' => AddonDict::INSTALL_UNEXECUTED
-            ];
-        }
-        if (in_array('admin-package.json', $package_file)) {
-            $this->task['updateAdminDependencies'] = [
-                'addon' => $this->addon,
-                'step' => 'updateAdminDependencies',
-                'command' => "php think addon:install {$this->addon} --step updateAdminDependencies",
-                'desc' => '更新admin端依赖',
-                'state' => AddonDict::INSTALL_UNEXECUTED
-            ];
-        }
-        if (in_array('uni-app-package.json', $package_file)) {
-            $this->task['updateWapDependencies'] = [
-                'addon' => $this->addon,
-                'step' => 'updateWapDependencies',
-                'command' => "php think addon:install {$this->addon} --step updateWapDependencies",
-                'desc' => '更新wap端依赖',
-                'state' => AddonDict::INSTALL_UNEXECUTED
-            ];
-        }
-        if (in_array('web-package.json', $package_file)) {
-            $this->task['updateWebDependencies'] = [
-                'addon' => $this->addon,
-                'step' => 'updateWebDependencies',
-                'command' => "php think addon:install {$this->addon} --step updateWebDependencies",
-                'desc' => '更新web端依赖',
-                'state' => AddonDict::INSTALL_UNEXECUTED
-            ];
-        }
-
-        $this->task['installComplete'] = [
-            'addon' => $this->addon,
-            'step' => 'installComplete',
-            'command' => "php think addon:install {$this->addon} --step installComplete",
-            'desc' => '安装完成',
-            'state' => AddonDict::INSTALL_UNEXECUTED
-        ];
-
-        Cache::set($this->cache_key, $this->task);
-        return $this->task;
     }
 
     /**
@@ -519,6 +384,66 @@ class CoreAddonInstallService extends CoreAddonBaseService
     public function installDepend()
     {
         (new CoreDependService())->installDepend($this->addon);
+    }
+
+    /**
+     * 备份前端页面
+     * @return void
+     */
+    public function backupFrontend() {
+        $backup_dir = runtime_path() . 'backup' . DIRECTORY_SEPARATOR . 'frontend' . DIRECTORY_SEPARATOR;
+        if (is_dir($backup_dir)) del_target_dir($backup_dir, true);
+
+        foreach (['admin', 'wap', 'web'] as $port) {
+            $to_dir = public_path() . $port;
+            if (is_dir($to_dir)) {
+                if (is_dir($backup_dir . $port)) del_target_dir($backup_dir . $port, true);
+                // 备份原目录
+                dir_copy($to_dir, $backup_dir . $port);
+            }
+        }
+    }
+
+    /**
+     * 还原被覆盖前的文件
+     * @return void
+     */
+    public function revertFrontendBackup() {
+        $backup_dir = runtime_path() . 'backup' . DIRECTORY_SEPARATOR . 'frontend' . DIRECTORY_SEPARATOR;
+        $backup_file = [];
+
+        search_dir($backup_dir, $backup_file);
+
+        if (!empty($backup_file)) {
+            dir_copy(public_path(), $backup_dir);
+            @del_target_dir($backup_dir, true);
+        }
+    }
+
+    /**
+     * 插件编译文件覆盖
+     * @return void
+     */
+    public function coverCompile() {
+        $compile = $this->getAddonConfig($this->addon)['compile'];
+        foreach ($compile as $port) {
+            $to_dir = public_path() . $port;
+            $from_dir = $this->addon_path . 'compile' . DIRECTORY_SEPARATOR . $port;
+
+            if (is_dir($from_dir) && is_dir($to_dir)) {
+                // 删除后覆盖目录
+                del_target_dir($to_dir, true);
+                dir_copy($from_dir, $to_dir . $port);
+            }
+        }
+    }
+
+    /**
+     * 云安装
+     * @return void
+     */
+    public function cloudInstall() {
+        (new CoreAddonCloudService())->cloudBuild($this->addon);
     }
 
     /**
@@ -533,7 +458,8 @@ class CoreAddonInstallService extends CoreAddonBaseService
             (new $class())->uninstall();
         }
         $core_addon_service = new CoreAddonService();
-        if (empty($core_addon_service->getInfoByKey($this->addon))) throw new AddonException('NOT_UNINSTALL');
+        $addon_info = $core_addon_service->getInfoByKey($this->addon);
+        if (empty($addon_info)) throw new AddonException('NOT_UNINSTALL');
         if (!$this->uninstallSql()) throw new AddonException('ADDON_SQL_FAIL');
         if (!$this->uninstallDir()) throw new AddonException('ADDON_DIR_FAIL');
 
@@ -545,6 +471,9 @@ class CoreAddonInstallService extends CoreAddonBaseService
 
         // 卸载wap
         $this->uninstallWap();
+
+        // 还原备份
+        if (!empty($addon_info['compile'])) (new CoreAddonCompileHandleService())->revertBackup();
 
         $core_addon_service = new CoreAddonService();
         $core_addon_service->delByKey($this->addon);

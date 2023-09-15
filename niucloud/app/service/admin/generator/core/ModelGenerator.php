@@ -294,7 +294,7 @@ class ModelGenerator extends BaseGenerator
                 $data['deleteColumnValue'] = '';
             }else{
                 $data['softDelete'] = ' use SoftDelete;';
-                $data['deleteColumn'] = '/**'.PHP_EOL.'    * 定义软删除标记字段.'.PHP_EOL.'    * @var string'.PHP_EOL.'    */'.PHP_EOL.'    protected $deleteTime = '."'".$column['column_name']."'";
+                $data['deleteColumn'] = '/**'.PHP_EOL.'    * 定义软删除标记字段.'.PHP_EOL.'    * @var string'.PHP_EOL.'    */'.PHP_EOL.'    protected $deleteTime = '."'".$column['column_name']."';";
                 $data['deleteColumnValue'] = '/**'.PHP_EOL.'    * 定义软删除字段的默认值.'.PHP_EOL.'    * @var int'.PHP_EOL.'    */'.PHP_EOL.'    protected $defaultSoftDelete = 0;';
             }
         }
@@ -307,37 +307,43 @@ class ModelGenerator extends BaseGenerator
     public function getRelationModel()
     {
         $tpl = '';
-//        $this->table['relations'] = '[{"name":"test","model":"\\app\\common\\model\\Config","type":"has_one","local_key":"id","foreign_key":"id"}]';
+
         if ($this->table['relations'] == '[]') {
             return $tpl;
         }
 
         // 遍历关联配置
-        $relations = json_decode($this->table['relations'],true);
+        if(!empty($this->table['relations']))
+        {
+            $relations = json_decode($this->table['relations'],true);
 
-        foreach ($relations as $config) {
-            if (empty($config) || empty($config['name']) || empty($config['model'])) {
-                continue;
+            foreach ($relations as $config) {
+                if (empty($config) || empty($config['name']) || empty($config['model'])) {
+                    continue;
+                }
+
+                $needReplace = [
+                    '{RELATION_NAME}',
+                    '{RELATION_MODEL}',
+                    '{FOREIGN_KEY}',
+                    '{LOCAL_KEY}',
+                ];
+
+                $waitReplace = [
+                    $config['name'],
+                    $config['model'],
+                    $config['foreign_key'],
+                    $config['local_key'],
+                ];
+
+                $vmPath = $this->getvmPath('php/model/'.$config['type']);
+                $tpl .= $this->replaceFileText($needReplace, $waitReplace, $vmPath). PHP_EOL;
             }
-
-            $needReplace = [
-                '{RELATION_NAME}',
-                '{RELATION_MODEL}',
-                '{FOREIGN_KEY}',
-                '{LOCAL_KEY}',
-            ];
-
-            $waitReplace = [
-                $config['name'],
-                $config['model'],
-                $config['foreign_key'],
-                $config['local_key'],
-            ];
-
-            $vmPath = $this->getvmPath('php/model/'.$config['type']);
-            $tpl .= $this->replaceFileText($needReplace, $waitReplace, $vmPath). PHP_EOL;
+            return $tpl;
+        }else{
+            return '';
         }
-        return $tpl;
+
     }
 
 }

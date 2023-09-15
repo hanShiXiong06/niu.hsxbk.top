@@ -5,6 +5,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { getHelloWorld } from '@/{key}/api/hello_world';
+import { onLoad } from '@dcloudio/uni-app';
 let hello_world_text = ref('');
 onLoad(() => {
     getHelloWorld().then((res) => {

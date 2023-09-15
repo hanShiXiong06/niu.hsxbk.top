@@ -12,6 +12,7 @@
 namespace app\validate\pay;
 
 use app\dict\pay\PayDict;
+use core\base\BaseValidate;
 use think\facade\Lang;
 use think\Validate;
 
@@ -19,7 +20,7 @@ use think\Validate;
  * Class PayTemplate
  * @package app\validate\pay
  */
-class PayTemplate extends Validate
+class PayTemplate extends BaseValidate
 {
 
     //用户名或密码的规范可能是从数据库中获取的

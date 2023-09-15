@@ -12,6 +12,7 @@
 namespace app\validate\sys;
 
 use app\dict\sys\FileDict;
+use core\base\BaseValidate;
 use think\facade\Lang;
 use think\Validate;
 
@@ -20,7 +21,7 @@ use think\Validate;
  * Class AttachmentCategory
  * @package app\validate\sys
  */
-class AttachmentCategory extends Validate
+class AttachmentCategory extends BaseValidate
 {
 
     protected $rule = [

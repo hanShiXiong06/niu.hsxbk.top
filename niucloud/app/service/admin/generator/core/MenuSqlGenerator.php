@@ -33,8 +33,8 @@ class MenuSqlGenerator extends BaseGenerator
         $old = [
             '{SQL}',
         ];
-
-        $new = [$this->getMenuSql(),];
+        $res = $this->getMenuSql();
+        $new = [$res['sql'],];
 
         if($this->table['generate_type'] == 3)
         {
@@ -57,8 +57,14 @@ class MenuSqlGenerator extends BaseGenerator
         {
             $dir = dirname(root_path());
             $file = $dir.'\niucloud\addon\\'.$this->addonName.'\\sql\\install.sql';
-            $addSql = $this->getMenuSql();
-            file_put_contents($file,$addSql,FILE_APPEND);
+            $res = $this->getMenuSql();
+            $key = $res['data'][0]['menu_key'];
+            $result = (new SysMenu())->where([['menu_key','=',$key]])->find()->toArray();
+            if(!$result){
+                $addSql = $res['sql'];
+                file_put_contents($file,$addSql,FILE_APPEND);
+            }
+
         }
     }
     /**
@@ -145,11 +151,18 @@ class MenuSqlGenerator extends BaseGenerator
         } else {
             $table_content = '';
         }
+
+        if(!empty($this->className))
+        {
+            $name = $this->className;
+        }else{
+            $name = $this->table['table_name'];
+        }
         if(!empty($this->addonName))
         {
-            $key = $this->addonName.'_'.$this->table['table_name'].'_'.$this->moduleName.'_'.$this->getUCaseClassName();
+            $key = $this->addonName.'_'.$this->table['table_name'].'_'.$this->moduleName.'_'.$name;
         }else{
-            $key = $this->table['table_name'].'_'.$this->moduleName.'_'.$this->getUCaseClassName();
+            $key = $this->table['table_name'].'_'.$this->moduleName.'_'.$name;
         }
         $data = [
             [
@@ -177,8 +190,8 @@ class MenuSqlGenerator extends BaseGenerator
                 'menu_type' => 1,
                 'icon' => '',
                 'api_url' => $this->getRouteName(),
-                'router_path' => $this->className.'_list',
-                'view_path' => $this->moduleName.'/'.$this->className.'_list',
+                'router_path' => 'list',
+                'view_path' => $this->moduleName.'/'.'list',
                 'methods' => 'get',
                 'sort' => 90,
                 'status' => 1,
@@ -188,33 +201,33 @@ class MenuSqlGenerator extends BaseGenerator
                 'addon' => $this->addonName,
                 'source' => MenuDict::GENERATOR
             ],
-            [
-                'menu_name' => $table_content.'详情',
-                'menu_key' => $key.'_info',
-                'parent_key' => $key,
-                'menu_type' => 1,
-                'icon' => '',
-                'api_url' => $this->getRouteName().'/<'.'id>',
-                'router_path' => $this->moduleName,
-                'view_path' => $this->moduleName.'/'.$this->className.'_list',
-                'methods' => 'get',
-                'sort' => 80,
-                'status' => 1,
-                'is_show' => 1,
-                'create_time' => time(),
-                'delete_time' => 0,
-                'addon' => $this->addonName,
-                'source' => MenuDict::GENERATOR
-            ],
+//            [
+//                'menu_name' => $table_content.'详情',
+//                'menu_key' => $key.'_info',
+//                'parent_key' => $key,
+//                'menu_type' => 1,
+//                'icon' => '',
+//                'api_url' => $this->getRouteName().'/<'.'id>',
+//                'router_path' => $this->moduleName,
+//                'view_path' => $this->moduleName.'/'.$this->className.'_list',
+//                'methods' => 'get',
+//                'sort' => 80,
+//                'status' => 1,
+//                'is_show' => 1,
+//                'create_time' => time(),
+//                'delete_time' => 0,
+//                'addon' => $this->addonName,
+//                'source' => MenuDict::GENERATOR
+//            ],
             [
                 'menu_name' => $table_content.'添加',
                 'menu_key' => $key.'_add',
                 'parent_key' => $key,
-                'menu_type' => 1,
+                'menu_type' => 2,
                 'icon' => '',
                 'api_url' => $this->getRouteName(),
-                'router_path' => $this->className.'_edit',
-                'view_path' => $this->moduleName.'/'.$this->className.'_edit',
+                'router_path' => 'edit',
+                'view_path' => $this->moduleName.'/'.'edit',
                 'methods' => 'post',
                 'sort' => 70,
                 'status' => 1,
@@ -228,11 +241,13 @@ class MenuSqlGenerator extends BaseGenerator
                 'menu_name' => $table_content.'编辑',
                 'menu_key' => $key.'_edit',
                 'parent_key' => $key,
-                'menu_type' => 1,
+                'menu_type' => 2,
                 'icon' => '',
                 'api_url' => $this->getRouteName().'/<'.'id>',
-                'router_path' => $this->className.'_edit',
-                'view_path' => $this->moduleName.'/'.$this->className.'_edit',
+                'router_path' => 'edit',
+                'view_path' => $this->moduleName.'/'.'edit',
+//                'router_path' => $this->className.'_edit',
+//                'view_path' => $this->moduleName.'/'.$this->className.'_edit',
                 'methods' => 'put',
                 'sort' => 60,
                 'status' => 1,
@@ -264,7 +279,11 @@ class MenuSqlGenerator extends BaseGenerator
 
         $sql = Db::name('sys_menu')->fetchSql(true)->insertAll($data);
         $sql = str_replace(' (', PHP_EOL.'(', $sql);
-        return $sql;
+        $res = [
+            'data' => $data,
+            'sql' => $sql
+        ];
+        return $res;
 
 
     }
@@ -302,11 +321,17 @@ class MenuSqlGenerator extends BaseGenerator
         } else {
             $table_content = '';
         }
+        if(!empty($this->className))
+        {
+            $name = $this->className;
+        }else{
+            $name = $this->table['table_name'];
+        }
         if(!empty($this->addonName))
         {
-            $key = $this->addonName.'_'.$this->table['table_name'].'_'.$this->moduleName.'_'.$this->getUCaseClassName();
+            $key = $this->addonName.'_'.$this->table['table_name'].'_'.$this->moduleName.'_'.$name;
         }else{
-            $key = $this->table['table_name'].'_'.$this->moduleName.'_'.$this->getUCaseClassName();
+            $key = $this->table['table_name'].'_'.$this->moduleName.'_'.$name;
         }
         $data = [
             [
@@ -334,8 +359,8 @@ class MenuSqlGenerator extends BaseGenerator
                 'menu_type' => 1,
                 'icon' => '',
                 'api_url' => $this->getRouteName(),
-                'router_path' => $this->className.'_list',
-                'view_path' => $this->moduleName.'/'.$this->className.'_list',
+                'router_path' => 'list',
+                'view_path' => $this->moduleName.'/'.'list',
                 'methods' => 'get',
                 'sort' => 90,
                 'status' => 1,
@@ -345,33 +370,33 @@ class MenuSqlGenerator extends BaseGenerator
                 'addon' => $this->addonName,
                 'source' => MenuDict::GENERATOR
             ],
-            [
-                'menu_name' => $table_content.'详情',
-                'menu_key' => $key.'_info',
-                'parent_key' => $key,
-                'menu_type' => 1,
-                'icon' => '',
-                'api_url' => $this->getRouteName().'/<'.'id>',
-                'router_path' => $this->moduleName,
-                'view_path' => $this->moduleName.'/'.$this->className.'_list',
-                'methods' => 'get',
-                'sort' => 80,
-                'status' => 1,
-                'is_show' => 1,
-                'create_time' => time(),
-                'delete_time' => 0,
-                'addon' => $this->addonName,
-                'source' => MenuDict::GENERATOR
-            ],
+//            [
+//                'menu_name' => $table_content.'详情',
+//                'menu_key' => $key.'_info',
+//                'parent_key' => $key,
+//                'menu_type' => 1,
+//                'icon' => '',
+//                'api_url' => $this->getRouteName().'/<'.'id>',
+//                'router_path' => $this->moduleName,
+//                'view_path' => $this->moduleName.'/'.$this->className.'_list',
+//                'methods' => 'get',
+//                'sort' => 80,
+//                'status' => 1,
+//                'is_show' => 1,
+//                'create_time' => time(),
+//                'delete_time' => 0,
+//                'addon' => $this->addonName,
+//                'source' => MenuDict::GENERATOR
+//            ],
             [
                 'menu_name' => $table_content.'添加',
                 'menu_key' => $key.'_add',
                 'parent_key' => $key,
-                'menu_type' => 1,
+                'menu_type' => 2,
                 'icon' => '',
                 'api_url' => $this->getRouteName(),
-                'router_path' => $this->className.'_edit',
-                'view_path' => $this->moduleName.'/'.$this->className.'_edit',
+                'router_path' => 'edit',
+                'view_path' => $this->moduleName.'/'.'edit',
                 'methods' => 'post',
                 'sort' => 70,
                 'status' => 1,
@@ -385,11 +410,13 @@ class MenuSqlGenerator extends BaseGenerator
                 'menu_name' => $table_content.'编辑',
                 'menu_key' => $key.'_edit',
                 'parent_key' => $key,
-                'menu_type' => 1,
+                'menu_type' => 2,
                 'icon' => '',
                 'api_url' => $this->getRouteName().'/<'.'id>',
-                'router_path' => $this->className.'_edit',
-                'view_path' => $this->moduleName.'/'.$this->className.'_edit',
+                'router_path' => 'edit',
+                'view_path' => $this->moduleName.'/'.'edit',
+//                'router_path' => $this->className.'_edit',
+//                'view_path' => $this->moduleName.'/'.$this->className.'_edit',
                 'methods' => 'put',
                 'sort' => 60,
                 'status' => 1,
@@ -419,9 +446,15 @@ class MenuSqlGenerator extends BaseGenerator
             ],
         ];
         $menu_model = new SysMenu();
-        (new $menu_model())->saveAll($data);
-        $cache_tag_name = 'menu_cache';
-        Cache::tag($cache_tag_name)->clear();
+
+        $result = (new SysMenu())->where([['menu_key','=',$key]])->find();
+
+        if(empty($result)){
+            (new $menu_model())->saveAll($data);
+            $cache_tag_name = 'menu_cache';
+            Cache::tag($cache_tag_name)->clear();
+        }
+
         return true;
     }
 }

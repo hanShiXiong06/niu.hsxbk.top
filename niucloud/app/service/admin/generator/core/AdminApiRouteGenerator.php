@@ -38,7 +38,9 @@ class AdminApiRouteGenerator extends BaseGenerator
             '{MODULE_NAME}',
             '{ROUTE_NAME}',
             '{ROUTE_PATH}',
-            '{ROUTE}'
+            '{ROUTE}',
+            '{BEGIN}',
+            '{END}'
         ];
 
         $new = [
@@ -51,6 +53,8 @@ class AdminApiRouteGenerator extends BaseGenerator
             $this->getRouteName(),
             $this->getRoutePath(),
             $this->getRoute(),
+            $this->getBegin(),
+            $this->getEnd()
         ];
 
         $vmPath = $this->getvmPath('admin_api_route');
@@ -88,7 +92,17 @@ class AdminApiRouteGenerator extends BaseGenerator
 
         if(file_exists($file))
         {
-            $route = file_get_contents($file);
+            $content = file_get_contents($file);
+            $code_begin = 'USER_CODE_BEGIN  -- '.$this->getTableName();
+            $code_end = 'USER_CODE_END -- '.$this->getTableName();
+            if(strpos($content,$code_begin) !== false && strpos($content,$code_end) !== false)
+            {
+                // 清除相应对应代码块
+                $pattern = "/\s+\/\/ {$code_begin}[\S\s]+\/\/ {$code_end}(\n,)?/";
+                $route = preg_replace($pattern, '', $content);
+            }else{
+                $route = $content;
+            }
         }else{
             $route = "<?php
 // +----------------------------------------------------------------------
@@ -109,6 +123,19 @@ use app\adminapi\middleware\AdminLog;";
         }
         return $route;
     }
+
+    public function getBegin()
+    {
+        $begin = '// USER_CODE_BEGIN -- '.$this->getTableName();
+        return $begin;
+    }
+
+    public function getEnd()
+    {
+        $end = '// USER_CODE_END -- '.$this->getTableName();
+        return $end;
+    }
+
 
     /**
      * 获取表主键
@@ -232,12 +259,13 @@ use app\adminapi\middleware\AdminLog;";
         {
             return 'route.php';
         }else{
-            //如果是某个模块下的功能，公用一个路由
-            if($this->moduleName && ($this->getLCaseTableName() != $this->moduleName)){
-                return Str::lower($this->moduleName) . '.php';
-            }else{
-                return 'route.php';
-            }
+            return Str::lower($this->moduleName) . '.php';
+//            //如果是某个模块下的功能，公用一个路由
+//            if($this->moduleName && ($this->getLCaseTableName() != $this->moduleName)){
+//                return Str::lower($this->moduleName) . '.php';
+//            }else{
+//                return 'route.php';
+//            }
         }
 
     }

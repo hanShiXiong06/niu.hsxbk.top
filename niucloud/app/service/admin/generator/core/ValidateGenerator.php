@@ -65,9 +65,43 @@ class ValidateGenerator extends BaseGenerator
     {
         $content = "";
         foreach ($this->tableColumn as $column) {
-            if (!$column['is_pk']) {
-                $content .= "'" . $column['column_name'] . "' => 'require'," . PHP_EOL;
+
+            if($column['is_required'] == 1){
+                if(!empty($column['validate_type']))
+                {
+                    $column['validate_type'] = json_decode($column['validate_type'],true);
+                    if($column['validate_type'][0] == 'max')
+                    {
+                        $content .= "'".$column['column_name']."' => 'require|".$column['validate_type'][0].":".$column['validate_type'][1][0]."',". PHP_EOL;
+                    }else if($column['validate_type'][0] == 'min')
+                    {
+                        $content .= "'".$column['column_name']."' => 'require|".$column['validate_type'][0].":".$column['validate_type'][1][0]."',". PHP_EOL;
+                    }else if($column['validate_type'][0] == 'between'){
+                        $content .= "'".$column['column_name']."' => 'require|".$column['validate_type'][0].":".$column['validate_type'][1][0].','.$column['validate_type'][1][1]."',". PHP_EOL;
+                    }else{
+                        $content .= "'".$column['column_name']."' => 'require|".$column['validate_type'][0]."',". PHP_EOL;
+                    }
+                }else{
+                    $content .=  "'".$column['column_name'] . "' => 'require'," . PHP_EOL;
+                }
+            }else{
+                if(!empty($column['validate_type']))
+                {
+                    $column['validate_type'] = json_decode($column['validate_type'],true);
+                    if($column['validate_type'][0] == 'max')
+                    {
+                        $content .= "'".$column['column_name']."' => '".$column['validate_type'][0].":".$column['validate_type'][1][0]."',". PHP_EOL;
+                    }else if($column['validate_type'][0] == 'min')
+                    {
+                        $content .= "'".$column['column_name']."' => '".$column['validate_type'][0].":".$column['validate_type'][1][0]."',". PHP_EOL;
+                    }else if($column['validate_type'][0] == 'between'){
+                        $content .= "'".$column['column_name']."' => '".$column['validate_type'][0].":".$column['validate_type'][1][0].','.$column['validate_type'][1][1]."',". PHP_EOL;
+                    }else{
+                        $content .= "'".$column['column_name']."' => '".$column['validate_type'][0]."',". PHP_EOL;
+                    }
+                }
             }
+
         }
         $content = substr($content, 0, -2);
         $content = $this->setBlankSpace($content, "            ");
@@ -80,7 +114,36 @@ class ValidateGenerator extends BaseGenerator
      */
     public function getMessage()
     {
-        return '[]';
+        $content = "";
+        foreach ($this->tableColumn as $column) {
+
+            if($column['is_required'] == 1)
+            {
+                $content .= "'".$column['column_name'].".require"."' => "."['".'common_validate.require'."', ['".$column['column_name']."']]".','. PHP_EOL;
+            }
+            if(!empty($column['validate_type']))
+            {
+                $column['validate_type'] = json_decode($column['validate_type'],true);
+                if($column['validate_type'][0] == 'max')
+                {
+                    $content .= "'".$column['column_name'].".".$column['validate_type'][0]."' => "."['".'common_validate.'.$column['validate_type'][0]."', ['".$column['column_name']."','".$column['validate_type'][1][0]."']]".','. PHP_EOL;
+
+                }else if($column['validate_type'][0] == 'min')
+                {
+                    $content .= "'".$column['column_name'].".".$column['validate_type'][0]."' => "."['".'common_validate.'.$column['validate_type'][0]."', ['".$column['column_name']."','".$column['validate_type'][1][0]."']]".','. PHP_EOL;
+
+                }else if($column['validate_type'][0] == 'between'){
+                    $content .= "'".$column['column_name'].".".$column['validate_type'][0]."' => "."['".'common_validate.'.$column['validate_type'][0]."', ['".$column['column_name']."','".$column['validate_type'][1][0]."','".$column['validate_type'][1][1]."']]".','. PHP_EOL;
+
+                }else{
+                    $content .= "'".$column['column_name'].".".$column['validate_type'][0]."' => "."['".'common_validate.'.$column['validate_type'][0]."', ['".$column['column_name']."']]".','. PHP_EOL;
+
+                }
+            }
+        }
+        $content = substr($content, 0, -2);
+        $content = $this->setBlankSpace($content, "            ");
+        return '['.PHP_EOL.$content.PHP_EOL.'        ]';
     }
 
     /**
@@ -97,8 +160,8 @@ class ValidateGenerator extends BaseGenerator
             if ($column['is_update'] == 1 && !$column['is_pk']) $update_arr[] = "'".$column['column_name']."'";
         }
 
-        $content .= '"add" => ['.implode(',', $add_arr).'],'.PHP_EOL;
-        $content .= '"edit" => ['.implode(',', $update_arr).']';
+        $content .= '"add" => ['.implode(', ', $add_arr).'],'.PHP_EOL;
+        $content .= '"edit" => ['.implode(', ', $update_arr).']';
         $content = $this->setBlankSpace($content, "            ");
         return '['.PHP_EOL.$content.PHP_EOL.'        ]';
     }
@@ -132,12 +195,19 @@ class ValidateGenerator extends BaseGenerator
      */
     public function getClassComment()
     {
-        if (!empty($this->table['table_content'])) {
-            $tpl = $this->table['table_content'] . '验证器';
-        } else {
-            $tpl = $this->getUCaseName() . '验证器';
-        }
+        $tpl = $this->getNotes() . '验证器';
         return $tpl;
+    }
+
+    public function getNotes()
+    {
+        $end_str = substr($this->table['table_content'],-3);
+        if($end_str == '表')
+        {
+            return substr($this->table['table_content'],0,strlen($this->table['table_content'])-3);
+        }else{
+            return $this->table['table_content'];
+        }
     }
 
 

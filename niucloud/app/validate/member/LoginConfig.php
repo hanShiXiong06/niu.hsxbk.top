@@ -11,6 +11,7 @@
 
 namespace app\validate\member;
 
+use core\base\BaseValidate;
 use think\Validate;
 
 /**
@@ -18,7 +19,7 @@ use think\Validate;
  * Class LoginConfig
  * @package app\validate\member
  */
-class LoginConfig extends Validate
+class LoginConfig extends BaseValidate
 {
 
 

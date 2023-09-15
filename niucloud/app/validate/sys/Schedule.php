@@ -12,13 +12,14 @@
 namespace app\validate\sys;
 
 use app\service\core\schedule\CoreScheduleService;
+use core\base\BaseValidate;
 use think\facade\Lang;
 use think\Validate;
 
 /**
  * Class Schedule
  */
-class Schedule extends Validate
+class Schedule extends BaseValidate
 {
 
     //用户名或密码的规范可能是从数据库中获取的

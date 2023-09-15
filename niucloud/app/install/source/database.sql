@@ -96,7 +96,7 @@ CREATE TABLE `generate_column` (
   `query_type` varchar(100) DEFAULT '=' COMMENT '查询类型',
   `view_type` varchar(100) DEFAULT 'input' COMMENT '显示类型',
   `dict_type` varchar(255) DEFAULT '' COMMENT '字典类型',
-  `validate_type` VARCHAR(255) DEFAULT '' COMMENT '验证类型',
+  `validate_type` varchar(255) DEFAULT '' COMMENT '验证类型',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '修改时间',
   PRIMARY KEY (`id`)
@@ -115,8 +115,8 @@ CREATE TABLE `generate_table` (
   `edit_type` int(11) NOT NULL DEFAULT '1' COMMENT '编辑方式 1-弹框 2-新页面',
   `order_type` int NOT NULL DEFAULT 0 COMMENT '排序方式 0-无排序 1-正序 2-倒序',
   `parent_menu` varchar(255) NOT NULL DEFAULT '' COMMENT '上级菜单',
-  `relations` text NOT NULL COMMENT '关联配置',
-  `synchronous_number` INT(11) NOT NULL DEFAULT 0 COMMENT '同步次数',
+  `relations` text DEFAULT NULL COMMENT '关联配置',
+  `synchronous_number` int NOT NULL DEFAULT 0 COMMENT '同步次数',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='代码生成表';
 
@@ -4160,6 +4160,7 @@ CREATE TABLE `sys_config` (
   KEY `config_key` (`config_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统配置表';
 
+
 DROP TABLE IF EXISTS `sys_dict`;
 CREATE TABLE `sys_dict` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
@@ -4171,6 +4172,7 @@ CREATE TABLE `sys_dict` (
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='数据字典表';
+
 
 DROP TABLE IF EXISTS `sys_menu`;
 CREATE TABLE `sys_menu` (

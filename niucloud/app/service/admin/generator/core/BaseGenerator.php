@@ -169,7 +169,11 @@ abstract class BaseGenerator
         }
 
         // 写入内容
-        if($path) file_put_contents($path, $this->text);
+        if(!empty($this->getFileName()))
+        {
+            file_put_contents($path, $this->text);
+        }
+
     }
 
 
@@ -179,12 +183,19 @@ abstract class BaseGenerator
      */
     public function fileInfo(): array
     {
-        return [
-            'name' => $this->getFileName(),
-            'type' => 'php',
-            'content' => $this->text,
-            'file_dir' => $this->getFilePath(),
-        ];
+        if(!empty($this->getFileName()))
+        {
+            return
+            [
+                'name' => $this->getFileName(),
+                'type' => 'php',
+                'content' => $this->text,
+                'file_dir' => $this->getFilePath(),
+            ];
+        }else{
+            return [];
+        }
+
     }
 
     /**
@@ -414,5 +425,6 @@ abstract class BaseGenerator
     {
         return str_replace($old, $new, file_get_contents($template));
     }
+
 
 }

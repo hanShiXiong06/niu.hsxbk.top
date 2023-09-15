@@ -30,12 +30,14 @@ Route::group(function () {
     Route::put('addon/status/:id/:status', 'addon.Addon/setStatus');
     //安装插件
     Route::post('addon/install/:addon', 'addon.Addon/install');
+    //云安装插件
+    Route::post('addon/cloudinstall/:addon', 'addon.Addon/cloudInstall');
+    // 云编译进度
+    Route::get('addon/cloudinstall/:addon', 'addon.Addon/cloudInstallLog');
     //插件安装检测安装环境
     Route::get('addon/install/check/:addon', 'addon.Addon/installCheck');
-    // 执行安装
-    Route::post('addon/install/execute/:addon', 'addon.Addon/execute');
-    //插件安装状态
-    Route::get('addon/install/:addon/status/:key', 'addon.Addon/getInstallState');
+    // 获取安装任务
+    Route::get('addon/installtask', 'addon.Addon/getInstallTask');
     //下载插件
     Route::post('addon/download/:addon', 'addon.Addon/download');
     //插件类型
@@ -58,8 +60,6 @@ Route::group(function () {
     //编辑插件
     Route::put('addon_develop/:key', 'addon.AddonDevelop/edit');
     //删除插件
-    Route::delete('addon_develop/:key', 'addon.AddonDevelop/del');
-
     Route::delete('addon_develop/:key', 'addon.AddonDevelop/del');
     //校验是否存在
     Route::get('addon_develop/check/:key', 'addon.AddonDevelop/checkKey');

@@ -12,7 +12,9 @@
 {NAMESPACE}
 
 use core\base\BaseModel;
-
+use think\model\concern\SoftDelete;
+use think\model\relation\HasMany;
+use think\model\relation\HasOne;
 
 /**
  * {CLASS_COMMENT}

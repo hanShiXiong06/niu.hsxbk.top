@@ -25,7 +25,7 @@ class LinkDict
         $system_links = [
             'SYSTEM_LINK' => [
                 'key' => '',
-                'addon_title' => '',
+                'addon_title' => get_lang('dict_diy.system_title'),
                 'title' => get_lang('dict_diy.system_link'),
                 'child_list' => [
                     [
@@ -39,7 +39,7 @@ class LinkDict
             ],
             'MEMBER_LINK' => [
                 'key' => '',
-                'addon_title' => '',
+                'addon_title' => get_lang('dict_diy.system_title'),
                 'title' => get_lang('dict_diy.member_link'),
                 'child_list' => [
                     [

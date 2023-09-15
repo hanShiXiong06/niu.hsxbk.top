@@ -28,7 +28,7 @@
                     <el-table-column :label="t('operation')" fixed="right" min-width="120">
                        <template #default="{ row }">
                            <el-button type="primary" link @click="editEvent(row)">{{ t('edit') }}</el-button>
-                           <el-button type="danger" link @click="deleteEvent(row.{PK})">{{ t('delete') }}</el-button>
+                           <el-button type="primary" link @click="deleteEvent(row.{PK})">{{ t('delete') }}</el-button>
                        </template>
                     </el-table-column>
 
@@ -48,7 +48,8 @@
 <script lang="ts" setup>
 import { reactive, ref, watch } from 'vue'
 import { t } from '@/lang'
-import { get{UCASE_NAME}List, delete{UCASE_NAME} } from '@/{API_PATH}'
+import { useDictionary } from '@/app/api/dict'
+import { get{UCASE_NAME}List, delete{UCASE_NAME} } from '@{API_PATH}'
 import { img } from '@/utils/common'
 import { ElMessageBox } from 'element-plus'
 {EDIT_PATH}
@@ -69,6 +70,11 @@ let {LCASE_CLASS_NAME}Table = reactive({
 
 const searchFormRef = ref<FormInstance>()
 
+// 选中数据
+const selectData = ref<any[]>([])
+
+// 字典数据
+{DICT_LIST}
 /**
  * 获取{NOTES}列表
  */

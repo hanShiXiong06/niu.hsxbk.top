@@ -11,12 +11,13 @@
 
 namespace app\validate\channel;
 
+use core\base\BaseValidate;
 use think\Validate;
 
 /**
  * 支付宝小程序配置验证类
  */
-class Aliapp extends Validate
+class Aliapp extends BaseValidate
 {
 
     //用户名或密码的规范可能是从数据库中获取的

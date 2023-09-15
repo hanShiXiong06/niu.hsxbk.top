@@ -38,6 +38,7 @@ return [
     'ADDON_INSTALL_NOT_EXIST' => '未找到插件安装任务',
     'ADDON_INSTALL_EXECUTED' => '插件安装任务已执行',
     'INSTALL_CHECK_NOT_PASS' => '安装校验未通过',
+    'ADDON_INSTALLING' => '插件正在安装中',
     'SITE_INDEX_VIEW_PATH_NOT_EXIST' => '当前首页路径不存在',
     'ADMIN_INDEX_VIEW_PATH_NOT_EXIST' => '当前首页路径不存在',
     'ADDON_SQL_FAIL' => '插件sql执行失败',
@@ -45,6 +46,7 @@ return [
     'LAYOUT_NOT_EXIST' => '该布局不存在',
     'ZIP_FILE_NOT_FOUND' => '找不到可用的压缩文件',
     'DOWNLOAD_SUCCESS' => '下载成功',
+    'ADDON_INFO_FILE_NOT_EXIST' => '未找到插件info.json配置文件',
     //登录注册重置账号....
 
     'LOGIN_SUCCESS' => '登录成功',

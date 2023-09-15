@@ -13,6 +13,7 @@ namespace app\validate\member;
 
 use app\dict\common\CommonDict;
 use app\dict\member\MemberDict;
+use core\base\BaseValidate;
 use think\facade\Lang;
 use think\Validate;
 
@@ -21,7 +22,7 @@ use think\Validate;
  * Class Member
  * @package app\validate\member
  */
-class Member extends Validate
+class Member extends BaseValidate
 {
 
 

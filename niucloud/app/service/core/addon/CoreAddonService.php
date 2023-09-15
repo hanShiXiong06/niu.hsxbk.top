@@ -274,7 +274,12 @@ class CoreAddonService extends CoreAddonBaseService
             $data['cover'] = is_file($data['icon']) ? image_to_base64($data['cover']) : '';
             $data['type_name'] = empty($data['type']) ? '' : AddonDict::getType()[$data['type']] ?? '';
         }
-
+        if(isset($data['support_app']) && !empty($data['support_app']))
+        {
+            $data['support_type'] = 2;
+        }else{
+            $data['support_type'] = 1;
+        }
         return $data;
     }
 }

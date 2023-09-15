@@ -12,6 +12,7 @@
 namespace app\validate\generator;
 
 
+use core\base\BaseValidate;
 use think\Validate;
 
 /**
@@ -19,7 +20,7 @@ use think\Validate;
  * Class Generator
  * @package app\validate\generator
  */
-class Generator extends Validate
+class Generator extends BaseValidate
 {
 
     protected $rule = [

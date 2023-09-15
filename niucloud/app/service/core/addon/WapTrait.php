@@ -53,7 +53,7 @@ trait WapTrait
                     $name_arr = explode('-', $path);
                     foreach ($name_arr as $k => $v) {
                         // 首字母大写
-                        $name_arr[$k] = strtoupper($v[0] ?? '') . substr($v, 1);
+                        $name_arr[ $k ] = strtoupper($v[ 0 ] ?? '') . substr($v, 1);
                     }
                     $name = implode('', $name_arr);
                     $file_name = 'diy-' . $path;
@@ -72,7 +72,7 @@ trait WapTrait
         $addon_arr = [];
         if (!empty($addon_list)) {
             foreach ($addon_list as $k => $v) {
-                $addon_arr[] = $v['key'];
+                $addon_arr[] = $v[ 'key' ];
             }
         }
         $addon_arr[] = $addon; // 追加新装插件
@@ -91,7 +91,7 @@ trait WapTrait
                         $name_arr = explode('-', $path);
                         foreach ($name_arr as $nk => $nv) {
                             // 首字母大写
-                            $name_arr[$nk] = strtoupper($nv[0] ?? '') . substr($nv, 1);
+                            $name_arr[ $nk ] = strtoupper($nv[ 0 ] ?? '') . substr($nv, 1);
                         }
                         $name = implode('', $name_arr);
                         $file_name = 'diy-' . $path;
@@ -213,7 +213,7 @@ trait WapTrait
         $addon_arr = [];
         if (!empty($addon_list)) {
             foreach ($addon_list as $k => $v) {
-                $addon_arr[] = $v['key'];
+                $addon_arr[] = $v[ 'key' ];
             }
         }
         $addon_arr[] = $addon; // 追加新装插件
@@ -233,7 +233,7 @@ trait WapTrait
                         $name_arr = explode('-', $path);
                         foreach ($name_arr as $nk => $nv) {
                             // 首字母大写
-                            $name_arr[$nk] = strtoupper($nv[0] ?? '') . substr($nv, 1);
+                            $name_arr[ $nk ] = strtoupper($nv[ 0 ] ?? '') . substr($nv, 1);
                         }
                         $name = implode('', $name_arr);
                         $file_name = 'fixed-' . $path;
@@ -276,7 +276,7 @@ trait WapTrait
 
         $uniapp_pages = require $this->geAddonPackagePath($this->addon) . 'uni-app-pages.php';
 
-        if (empty($uniapp_pages['pages'])) {
+        if (empty($uniapp_pages[ 'pages' ])) {
             return;
         }
 
@@ -291,12 +291,12 @@ trait WapTrait
         $pattern = "/\s+\/\/ {$page_begin}[\S\s]+\/\/ {$page_end}(\n,)?/";
         $content = preg_replace($pattern, '', $content);
 
-        $uniapp_pages['pages'] = str_replace('PAGE_BEGIN', $page_begin, $uniapp_pages['pages']);
-        $uniapp_pages['pages'] = str_replace('PAGE_END', $page_end, $uniapp_pages['pages']);
-        $uniapp_pages['pages'] = str_replace('{{addon_name}}', $this->addon, $uniapp_pages['pages']); // 将变量替换为当前安装的插件名称
+        $uniapp_pages[ 'pages' ] = str_replace('PAGE_BEGIN', $page_begin, $uniapp_pages[ 'pages' ]);
+        $uniapp_pages[ 'pages' ] = str_replace('PAGE_END', $page_end, $uniapp_pages[ 'pages' ]);
+        $uniapp_pages[ 'pages' ] = str_replace('{{addon_name}}', $this->addon, $uniapp_pages[ 'pages' ]); // 将变量替换为当前安装的插件名称
 
         $replacement = ",// {{PAGE}}\n";
-        $replacement .= $uniapp_pages['pages'] . "\n,";
+        $replacement .= $uniapp_pages[ 'pages' ] . "\n,";
 
         $page_begin_matches_count = preg_match_all('/PAGE_BEGIN/', $content . $replacement, $page_begin_matches);
 
@@ -325,7 +325,7 @@ trait WapTrait
 
         $uniapp_pages = require $this->geAddonPackagePath($this->addon) . 'uni-app-pages.php';
 
-        if (empty($uniapp_pages['pages'])) {
+        if (empty($uniapp_pages[ 'pages' ])) {
             return;
         }
 
@@ -336,8 +336,8 @@ trait WapTrait
         $page_begin = $addon . '_PAGE_BEGIN';
         $page_end = $addon . '_PAGE_END';
 
-        $uniapp_pages['pages'] = str_replace('PAGE_BEGIN', $page_begin, $uniapp_pages['pages']);
-        $uniapp_pages['pages'] = str_replace('PAGE_END', $page_end, $uniapp_pages['pages']);
+        $uniapp_pages[ 'pages' ] = str_replace('PAGE_BEGIN', $page_begin, $uniapp_pages[ 'pages' ]);
+        $uniapp_pages[ 'pages' ] = str_replace('PAGE_END', $page_end, $uniapp_pages[ 'pages' ]);
 
         // 清除插件页面路由代码块
         $pattern = "/\s+\/\/ {$page_begin}[\S\s]+\/\/ {$page_end}(\n,)?/";
@@ -373,9 +373,16 @@ trait WapTrait
             foreach ($file_arr as $ck => $cv) {
                 if (str_contains($cv, '.json')) {
                     $app_json = @file_get_contents($ck);
-                    $locale_data[$cv] = [
+                    $json = json_decode($app_json, true);
+                    // 清空当前安装/卸载的插件语言包
+                    foreach ($json as $jk => $jc) {
+                        if (strpos($jk, $addon) !== false) {
+                            unset($json[ $jk ]);
+                        }
+                    }
+                    $locale_data[ $cv ] = [
                         'path' => $ck,
-                        'json' => json_decode($app_json, true)
+                        'json' => $json
                     ];
                 }
             }
@@ -387,7 +394,7 @@ trait WapTrait
         $addon_arr = [];
         if (!empty($addon_list)) {
             foreach ($addon_list as $k => $v) {
-                $addon_arr[] = $v['key'];
+                $addon_arr[] = $v[ 'key' ];
             }
         }
         $addon_arr[] = $addon; // 追加新装插件
@@ -402,16 +409,16 @@ trait WapTrait
                         $json = json_decode($json, true);
                         $addon_json = [];
                         foreach ($json as $jk => $jv) {
-                            $addon_json[$v . '.' . $jk] = $jv;
+                            $addon_json[ $v . '.' . $jk ] = $jv;
                         }
-                        $locale_data[$cv]['json'] = array_merge($locale_data[$cv]['json'], $addon_json);
+                        $locale_data[ $cv ][ 'json' ] = array_merge($locale_data[ $cv ][ 'json' ], $addon_json);
                     }
                 }
             }
         }
 
         foreach ($locale_data as $k => $v) {
-            file_put_contents($v['path'], json_encode($v['json'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+            file_put_contents($v[ 'path' ], json_encode($v[ 'json' ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
         }
     }
 

@@ -14,6 +14,7 @@ namespace app\service\admin\addon;
 
 use app\dict\addon\AddonDict;
 use app\model\addon\Addon;
+use app\service\core\addon\CoreAddonCloudService;
 use app\service\core\addon\CoreAddonDownloadService;
 use app\service\core\addon\CoreAddonInstallService;
 use app\service\core\addon\CoreAddonService;
@@ -54,26 +55,33 @@ class AddonService extends BaseAdminService
      */
     public function install(string $addon)
     {
-        try {
-            $data = (new CoreAddonInstallService($addon))->install();
-            return success('SUCCESS', $data);
-        } catch ( Exception $e) {
-            return fail($e->getMessage());
-        }
+        return (new CoreAddonInstallService($addon))->install();
     }
 
     /**
-     * 执行安装
+     * 云安装插件
      * @param string $addon
      * @return Response
      */
-    public function executeInstall(string $addon) {
-        try {
-            $data = (new CoreAddonInstallService($addon))->executeInstall();
-            return success('SUCCESS', $data);
-        } catch ( Exception $e) {
-            return fail($e->getMessage());
-        }
+    public function cloudInstall(string $addon) {
+        return (new CoreAddonInstallService($addon))->install('cloud');
+    }
+
+    /**
+     * 云安装日志
+     * @param string $addon
+     * @return null
+     */
+    public function cloudInstallLog(string $addon) {
+        return (new CoreAddonCloudService())->getBuildLog($addon);
+    }
+
+    /**
+     * 获取安装任务
+     * @return mixed
+     */
+    public function getInstallTask() {
+        return (new CoreAddonInstallService(''))->getInstallTask();
     }
 
     /**
@@ -84,17 +92,6 @@ class AddonService extends BaseAdminService
     public function installCheck(string $addon) {
         $data = (new CoreAddonInstallService($addon))->installCheck();
         return success('SUCCESS', $data);
-    }
-
-    /**
-     * 获取插件安装状态
-     * @param string $addon
-     * @param string $key
-     * @return mixed
-     */
-    public function getInstallState(string $addon, string $key)
-    {
-        return CoreAddonInstallService::instance($addon)->getInstallState($key);
     }
 
     /**
@@ -142,8 +139,8 @@ class AddonService extends BaseAdminService
      * @param string $app_key
      * @return true
      */
-    public function download(string $app_key){
-        return (new CoreAddonDownloadService())->download($app_key);
+    public function download(string $app_key, string $version){
+        return (new CoreAddonDownloadService())->download($app_key, $version);
     }
 
     /**
@@ -161,7 +158,7 @@ class AddonService extends BaseAdminService
      * @return array
      */
     public function getInstallAddonList($where){
-        $field = 'title, icon, key, desc, status, is_star';
+        $field = 'title, icon, key, desc, status, is_star, type, support_app';
         return $this->model->where([['status', '=', AddonDict::ON]])->withSearch([ 'title' ], $where)->field($field)->append(['status_name'])->order('create_time desc')->select()->toArray();
     }
 
@@ -170,7 +167,7 @@ class AddonService extends BaseAdminService
      * @return array
      */
     public function getInstallStarAddonList($where){
-        $field = 'title, icon, key, desc, status, is_star';
+        $field = 'title, icon, key, desc, status, is_star, type, support_app';
         return $this->model->where([['status', '=', AddonDict::ON],['is_star', '=', 2]])->withSearch([ 'title' ], $where)->field($field)->append(['status_name'])->order('create_time desc')->select()->toArray();
     }
 
@@ -201,7 +198,7 @@ class AddonService extends BaseAdminService
             ['key', 'in', $keys],
             ['status', '=', AddonDict::ON]
         ];
-        return $this->model->where($data)->withSearch([ 'title' ], $where)->field('title, icon, key, desc, status, cover, is_star')->select()->toArray();
+        return $this->model->where($data)->withSearch([ 'title' ], $where)->field('title, icon, key, desc, status, cover, is_star, type, support_app')->select()->toArray();
     }
 
 
@@ -232,7 +229,7 @@ class AddonService extends BaseAdminService
             ['status', '=', AddonDict::ON],
             ['is_star', '=', 2]
         ];
-        return $this->model->where($data)->withSearch([ 'title' ], $where)->field('title, icon, key, desc, status, cover')->select()->toArray();
+        return $this->model->where($data)->withSearch([ 'title' ], $where)->field('title, icon, key, desc, status, cover, type, support_app')->select()->toArray();
 
     }
     /**

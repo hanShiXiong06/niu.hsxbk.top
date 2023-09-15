@@ -11,13 +11,14 @@
 
 namespace app\validate\sys;
 
+use core\base\BaseValidate;
 use think\Validate;
 
 /**
  * Class User
  * @package app\validate\sys
  */
-class User extends Validate
+class User extends BaseValidate
 {
 
     //用户名或密码的规范可能是从数据库中获取的

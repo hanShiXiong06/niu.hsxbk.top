@@ -11,12 +11,13 @@
 
 namespace app\validate\member;
 
+use core\base\BaseValidate;
 use think\Validate;
 
 /**
  * 提现设置验证类
  */
-class CashOutConfig extends Validate
+class CashOutConfig extends BaseValidate
 {
 
 

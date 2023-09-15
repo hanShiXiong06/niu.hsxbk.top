@@ -11,6 +11,7 @@
 
 namespace app\validate\site;
 
+use core\base\BaseValidate;
 use think\Validate;
 
 /**
@@ -18,7 +19,7 @@ use think\Validate;
  * Class Site
  * @package app\validate\site
  */
-class Site extends Validate
+class Site extends BaseValidate
 {
 
 

@@ -186,8 +186,8 @@ class DiyService extends BaseAdminService
         } elseif (!empty($params[ 'url' ])) {
             foreach ($template as $k => $v) {
                 if ($params[ 'url' ] == '/' . $v[ 'page' ]) {
-                    $params[ 'name' ]=$k;
-                    $params[ 'type' ]=$k;
+                    $params[ 'name' ] = $k;
+                    $params[ 'type' ] = $k;
                 }
             }
         }
@@ -383,14 +383,19 @@ class DiyService extends BaseAdminService
     /**
      * 获取默认页面数据
      * @param $type
+     * @param array $template
      * @return array|mixed
      */
-    public function getFirstPageData($type)
+    public function getFirstPageData($type, $template = [])
     {
         $pages = PagesDict::getPages([ 'type' => $type ]);
         if (!empty($pages)) {
-            $template = array_key_first($pages);
-            $page = array_shift($pages);
+            if (empty($template)) {
+                $template = array_key_first($pages);
+                $page = array_shift($pages);
+            } else {
+                $page = $pages[ $template ];
+            }
             $page[ 'template' ] = $template;
             $page[ 'type' ] = $type;
             return $page;
@@ -503,6 +508,11 @@ class DiyService extends BaseAdminService
                     $use_template[ 'name' ] = '';
                     $use_template[ 'desc' ] = '将 ' . $start_up_page[ 'title' ] . ' 设为首页';
                 }
+            }
+
+            // 如果没有预览图，并且没有地址，则赋值
+            if (empty($use_template[ 'cover' ]) && empty($use_template[ 'url' ])) {
+                $use_template[ 'url' ] = '/' . $v[ 'page' ];
             }
 
             $template[ $k ][ 'use_template' ] = $use_template;
@@ -649,6 +659,10 @@ class DiyService extends BaseAdminService
             } else {
                 $res[ 'page' ] .= '?id=' . $info[ 'id' ];
             }
+        } elseif ($params[ 'name' ]) {
+            // 表里没有数据，查询默认页面数据
+            $template = $this->getTemplate([ 'type' => [ $params[ 'name' ] ] ])[ $params[ 'name' ] ];
+            $res[ 'page' ] = $template[ 'page' ];
         }
 
         return $res;

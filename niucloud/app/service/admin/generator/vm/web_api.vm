@@ -1,6 +1,7 @@
 {IMPORT}
 
-/***************************************************** {NOTES} ****************************************************/
+{BEGIN}
+
 
 /**
  * 获取{NOTES}列表
@@ -47,4 +48,4 @@ export function edit{UCASE_NAME}(params: Record<string, any>) {
 export function delete{UCASE_NAME}({PK}: number) {
     return request.delete(`{ROUTE_GROUP_NAME}/{ROUTE_NAME}/${{PK}}`, { showErrorMessage: true, showSuccessMessage: true })
 }
-
+{END}

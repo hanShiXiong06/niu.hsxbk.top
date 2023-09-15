@@ -132,7 +132,7 @@ class WebEditLangGenerator extends BaseGenerator
         {
             $dir = $this->rootDir . '/admin/src/'.$this->addonName.'/lang/zh-cn/';
         }else{
-            $dir = $this->rootDir . '/admin/src/lang/zh-cn/';
+            $dir = $this->rootDir . '/admin/src/app/lang/zh-cn/';
         }
 
         $this->checkDir($dir);

@@ -29,7 +29,7 @@
         "topthink/think-image": "v1.0.7",
         "topthink/think-queue": "v3.0.7",
         "firebase/php-jwt": "v5.5.1",
-        "overtrue/wechat": "v5.30.0",
+        "w7corp/easywechat": "v5.30.0",
         "spatie/macroable": "v1.0.1",
         "dh2y/think-qrcode": "v2.0",
         "dragonmantank/cron-expression": "v3.3.1",

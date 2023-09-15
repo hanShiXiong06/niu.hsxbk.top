@@ -82,14 +82,7 @@ class PagesDict
                                 "componentName" => "AddonList",
                                 "componentTitle" => "应用",
                                 "ignore" => [],
-                                "list" => [
-                                    [
-                                        "key" => "",
-                                        "title" => "",
-                                        "url" => "",
-                                        "icon" => "",
-                                    ]
-                                ],
+                                "list" => [],
                                 "textColor" => "#303133",
                                 "pageBgColor" => "",
                                 "componentBgColor" => "",

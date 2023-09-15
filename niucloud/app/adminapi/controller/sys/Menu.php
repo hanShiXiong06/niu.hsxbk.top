@@ -56,13 +56,10 @@ class Menu extends BaseAdminController
             ['api_url', ''],
             ['view_path', ''],
             ['router_path', ''],
-
             ['methods', ''],
             ['sort', 0],
-
             ['status', MenuDict::ON],
             ['is_show', 0],
-
             ['addon', ''],
         ]);
         $this->validate($data, 'app\validate\sys\Menu.add');
@@ -94,6 +91,7 @@ class Menu extends BaseAdminController
             ['addon', ''],
         ]);
         $this->validate($data, 'app\validate\sys\Menu.edit');
+
         (new MenuService())->edit($menu_key, $data);
         return success('EDIT_SUCCESS');
     }

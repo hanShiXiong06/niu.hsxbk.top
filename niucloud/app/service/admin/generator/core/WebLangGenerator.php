@@ -75,7 +75,7 @@ class WebLangGenerator extends BaseGenerator
         }
         $lang .= '"add'.$this->getUCaseClassName() .'":"添加'.$table_content.'",'.PHP_EOL;
         $lang .= '"update'.$this->getUCaseClassName() .'":"编辑'.$table_content.'",'.PHP_EOL;
-        $lang .= '"'.$this->getLCaseClassName() .'DeleteTips":"确定要删除该'.$table_content.'吗？",'.PHP_EOL;
+        $lang .= '"'.$this->getLCaseClassName() .'DeleteTips":"确定要删除该数据吗？",'.PHP_EOL;
         $lang = trim(trim($lang), ',');
         return '{'.PHP_EOL.$this->setBlankSpace($lang, "      ").PHP_EOL.'}';
     }
@@ -120,7 +120,7 @@ class WebLangGenerator extends BaseGenerator
         {
             $dir = $this->rootDir . '/admin/src/'.$this->addonName.'/lang/zh-cn/';
         }else{
-            $dir = $this->rootDir . '/admin/src/lang/zh-cn/';
+            $dir = $this->rootDir . '/admin/src/app/lang/zh-cn/';
         }
 
         $this->checkDir($dir);
@@ -146,7 +146,7 @@ class WebLangGenerator extends BaseGenerator
     public function getFileName()
     {
         if($this->className){
-            return $this->moduleName.'.'.Str::lower($this->className).'_list.json';
+            return $this->moduleName.'.'.'list.json';
         }
         return $this->moduleName.'.list.json';
     }

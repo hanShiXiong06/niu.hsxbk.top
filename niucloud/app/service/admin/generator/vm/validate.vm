@@ -10,13 +10,13 @@
 // +----------------------------------------------------------------------
 
 {NAMESPACE}
-
+use core\base\BaseValidate;
 /**
  * {CLASS_COMMENT}
  * Class {UCASE_NAME}
  * @package {PACKAGE_NAME}
  */
-class {UCASE_NAME} extends \think\Validate
+class {UCASE_NAME} extends BaseValidate
 {
 
        protected $rule = {RULE};

@@ -192,11 +192,15 @@ class Generate
     public function preview(array $table)
     {
         $data = [];
-//        $data = [];
         foreach ($this->getGenerator() as $item) {
             $generator = app()->make($item);
             $generator->init($table);
-            $data[] = $generator->fileInfo();
+            $file_info = $generator->fileInfo();
+            if(!empty($file_info))
+            {
+                $data[] = $file_info;
+            }
+
         }
 
         return $data;
@@ -217,8 +221,8 @@ class Generate
             WebLangGenerator::class,
             WebEditGenerator::class,
             WebIndexGenerator::class,
-//            WebEditPageGenerator::class,
-//            WebEditLangGenerator::class
+            WebEditPageGenerator::class,
+            WebEditLangGenerator::class
         ];
     }
 
