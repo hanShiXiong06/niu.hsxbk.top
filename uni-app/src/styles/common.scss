@@ -5,13 +5,3 @@
     --primary-color-light: #ecf5ff;
     --page-bg-color: #f7f7f7;
 }
-
-/* 多行超出隐藏 */
-.multi-hidden {
-	word-break: break-all;
-	text-overflow: ellipsis;
-	overflow: hidden;
-	display: -webkit-box;
-	-webkit-line-clamp: 2;
-	-webkit-box-orient: vertical;
-}

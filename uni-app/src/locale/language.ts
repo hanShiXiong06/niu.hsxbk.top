@@ -7,7 +7,7 @@ class Language {
     constructor(i18n: any) {
         this.i18n = i18n
     }
-
+	
     /**
      *
      * @param locale 设置语言
@@ -29,7 +29,6 @@ class Language {
      */
     public async loadLocaleMessages(path: string, locale: string) {
         try {
-
             let route = 'app'; // 默认系统
 
             // 检测当前访问的是系统（app）还是插件
@@ -42,11 +41,11 @@ class Language {
             else file = file.split('.').splice(1).join('.')
 
             // 是否已加载
-            if (this.loadLocale.includes(`${locale}/${file}`)) {
+            if (this.loadLocale.includes(`${route}/${locale}/${file}`)) {
                 this.setI18nLanguage(locale, file)
                 return nextTick()
             }
-            this.loadLocale.push(`${locale}/${file}`)
+            this.loadLocale.push(`${route}/${locale}/${file}`)
 
             // 引入语言包文件
             const messages = await import(`../${route}/locale/${locale}/${file}.json`)

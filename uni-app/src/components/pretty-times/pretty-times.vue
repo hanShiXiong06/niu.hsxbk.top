@@ -4,7 +4,7 @@
 			<!-- 日期列表 -->
 			<scroll-view class="scroll-view_H b-t b-b" scroll-x>
 				<block v-for="(item,index) in dateArr" :key="index">
-					<div class="flex-box" @click="selectDateEvent(index,item)" :class="{ borderb: index==dateActive}">
+					<div class="flex-box" @click="selectDateEvent(index,item)" :class="{ borderb: index==dateActive }" :style="{borderColor: selectedBorderColor}">
 						<view class="date-box" :style="{color:index==dateActive?selectedTabColor:'#333'}">
 							<text class="fontw">{{item.week}}</text>
 							<text class="text-xs">{{item.date}}</text>
@@ -19,7 +19,7 @@
 					<view class="item"> 
 						<view class="item-box" :class="{'disable':item.disable,
 						'active':isMultiple?item.isActive:_index==timeActive}" :style="{color:isMultiple?item.isActive? selectedItemColor:'#333'
-						 :_index==timeActive?selectedItemColor:'#333'}" @click="selectTimeEvent(_index,item)">
+						 :_index==timeActive?selectedItemColor:'#333', borderColor:(isMultiple?item.isActive:_index==timeActive? selectedBorderColor:'')}" @click="selectTimeEvent(_index,item)">
 							<text v-if="isQuantum">{{item.begin}}~{{item.end}}</text>
 							<text v-else>{{item.time}}</text>
 							<text class="all">{{item.disable?disableText:undisableText}}</text>
@@ -101,6 +101,10 @@
 				default: "#FB4B5C"
 			},
 			selectedItemColor: { // 时间选中的颜色
+				type: String,
+				default: "#FB4B5C"
+			},
+			selectedBorderColor: { // 时间选中border的颜色
 				type: String,
 				default: "#FB4B5C"
 			},
@@ -415,6 +419,6 @@
 	}
 
 	.borderb {
-		border-bottom: 2px solid #FB4B5C;
+		border-bottom: 2px solid;
 	}
 </style>

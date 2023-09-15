@@ -13,7 +13,6 @@ export const redirectInterceptor = () => {
 		uni.addInterceptor(name, {
 			invoke(args) {
 				const route = urlDeconstruction(args.url)
-
 				// 加载语言包
 				language.loadLocaleMessages(route.path, uni.getLocale())
 
@@ -34,7 +33,6 @@ export const redirectInterceptor = () => {
 export const launchInterceptor = () => {
 	const launch = uni.getLaunchOptionsSync()
 	launch.path = `/${launch.path}`
-
 	// 加载语言包
 	language.loadLocaleMessages(launch.path, uni.getLocale())
 
