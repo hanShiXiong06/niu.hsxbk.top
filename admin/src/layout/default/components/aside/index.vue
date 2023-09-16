@@ -1,11 +1,11 @@
 <template>
-    <div :class="['flex', { 'two-type': sidebar == 'twoType' }, { 'three-type': sidebar == 'threeType' }]" v-if="aaa">
+    <div :class="['flex', { 'two-type': sidebar == 'twoType' }, { 'three-type': sidebar == 'threeType' }]">
 
         <div class="w-[65px] overflow-hidden" v-if="!floatMenuStyle">
             <el-aside
                 :class="['h-screen layout-aside w-[65px] pb-[30px] bg-[#F7F8FA] ease-in duration-200', { 'bright': !dark }]">
                 <!-- 一级菜单 -->
-                <div class="h-full flex flex-col pt-2 relative">
+                <div class="h-full flex flex-col relative">
                     <!-- <el-header class="logo-wrap h-auto mb-[10px]">
                         <div class="logo flex items-center m-auto max-w-[210px] h-[60px] justify-center"#19233C>
                             <span class="iconfont iconyun text-[#999] !text-[36px]"></span>
@@ -18,8 +18,13 @@
                             <img :src="img(item.icon)" class="w-[35px] h-[35px] rounded-full" alt="" :title="item.title">
                         </div>
                     </template> -->
-                    <div class=" flex items-center justify-center h-[45px] mb-[5px] cursor-pointer cut-style" @click="floatActive=!floatActive">
+                    <div class=" flex items-center justify-center h-[64px] cursor-pointer cut-style"
+                        @click="floatActive = !floatActive">
                         <span class="iconfont icontuodong !text-[30px] "></span>
+                    </div>
+                    <div @click="homeClick"
+                        class="flex items-center justify-center h-[56px] cursor-pointer text-[#6d7278] hover:bg-[#f1f2f6] menu-item hover:text-color whitespace-nowrap">
+                        <span class="iconfont iconshouye !text-[24px] "></span>
                     </div>
                     <div class="mb-[20px]">
                         <template v-for="(item, index) in menus" :key="index">
@@ -37,8 +42,9 @@
             </el-aside>
         </div>
         <!-- 浮动样式的应用菜单 -->
-        <div v-if="!floatMenuStyle&&floatActive"
+        <div v-if="!floatMenuStyle && floatActive && applyList.filter(el => { return el.type === 'app' }).length"
             class="flex absolute bg-[#fff] w-[640px] px-[28px] py-[20px] flex-wrap left-0 top-[65px] z-10 box-border shadow-lg">
+
             <template v-for="(item, index) in applyList" :key="index">
                 <div v-if="item.type == 'app'" @click="appToLink(item.key)"
                     class="flex items-center cursor-pointer text-[#6d7278] hover:bg-[#f1f2f6] whitespace-nowrap py-[10px] px-[15px]">
@@ -63,7 +69,7 @@
                         <span>{{ item.meta.app ? appInfo.title : item.meta.title }}</span>
                     </div>
                     <!-- 浮动样式的应用菜单 -->
-                    <div v-if="floatMenuStyle"
+                    <div v-if="floatMenuStyle && applyList.filter(el => { return el.type === 'app' }).length"
                         class="hidden group-hover:flex absolute bg-[#fff] w-[640px] px-[28px] py-[20px] flex-wrap left-0 top-[65px] z-10 box-border shadow-lg">
                         <template v-for="(item, index) in applyList" :key="index">
                             <div v-if="item.type == 'app'" @click="appToLink(item.key)"
@@ -79,95 +85,10 @@
                 <el-scrollbar class="overflow-y-auto menus-wrap">
                     <el-menu class="apply-menu !border-0" :router="true" unique-opened="true"
                         :default-active="String(route.name)">
-                        <template v-for="(twoMenu, twoIndex) in item.children">
-                            <el-sub-menu :index="String(twoMenu.meta.title)" v-if="twoMenu.children && twoMenu.meta.show">
-                                <template #title>
-                                    <div class="w-[16px] h-[16px] relative flex items-center">
-                                        <icon v-if="twoMenu.meta.icon" :name="twoMenu.meta.icon" class="absolute !w-auto"
-                                            size="18px" />
-                                    </div>
-                                    <span class="ml-[11px] text-[15px]">{{ twoMenu.meta.title }}</span>
-                                </template>
-                                <template v-for="(threeMenu, threeIndex) in twoMenu.children" :key="threeIndex">
-                                    <!-- 三级菜单 -->
-                                    <el-sub-menu :index="String(threeMenu.meta.title)" class="three-menu"
-                                        v-if="threeMenu.children && threeMenu.meta.show">
-                                        <template #title>
-                                            <div class="w-[16px] h-[16px] relative flex items-center">
-                                                <icon v-if="threeMenu.meta.icon && floatMenuStyle"
-                                                    :name="threeMenu.meta.icon" class="absolute !w-auto" size="18px" />
-                                                <span v-if="!floatMenuStyle" class="iconfont icondian !text-[25px]"></span>
-                                            </div>
-                                            <span class="ml-[11px] text-[15px]">{{ threeMenu.meta.title }}</span>
-                                        </template>
-                                        <template v-for="(fourMenu, fourIndex) in threeMenu.children" :key="fourIndex">
-                                            <el-sub-menu :index="String(fourMenu.meta.title)"
-                                                v-if="fourMenu.children && fourMenu.meta.show">
-                                                <template #title>
-                                                    <div
-                                                        class="w-[16px] h-[16px] relative flex items-center justify-center">
-                                                        <span class="iconfont icondian !text-[25px]"></span>
-                                                    </div>
-                                                    <span class="ml-[11px] text-[15px]">{{ fourMenu.meta.title }}</span>
-                                                </template>
-                                                <template v-for="(fiveMenu, fiveIndex) in fourMenu.children"
-                                                    :key="fiveIndex">
-                                                    <el-menu-item v-if="fiveMenu.meta.show" class="!h-[52px] !pl-[55px]"
-                                                        :index="String(fiveMenu.name)" @click="toLink(fiveMenu)">
-                                                        <template #title>
-                                                            <span class="text-[14px]">{{ fiveMenu.meta.title }}</span>
-                                                        </template>
-                                                    </el-menu-item>
-                                                </template>
-                                            </el-sub-menu>
-                                            <el-menu-item v-else-if="fourMenu.meta.show" class="!h-[52px] !pl-[35px]"
-                                                :index="String(fourMenu.name)" @click="toLink(fourMenu)">
-                                                <template #title>
-                                                    <span class="text-[14px]">{{ fourMenu.meta.title }}</span>
-                                                </template>
-                                            </el-menu-item>
-                                        </template>
-                                    </el-sub-menu>
-
-                                    <!-- 二级菜单 -->
-                                    <el-menu-item v-else-if="threeMenu.meta.show" class="!h-[52px] !pl-[52px]"
-                                        :index="String(threeMenu.name)" @click="toLink(threeMenu)">
-                                        <template #title>
-                                            <span class="text-[14px]">{{ threeMenu.meta.title }}</span>
-                                        </template>
-                                    </el-menu-item>
-                                </template>
-
-                            </el-sub-menu>
-
-                            <el-menu-item v-else-if="twoMenu.meta.show && twoMenu.meta.key != 'official_market'"
-                                class="!pl-[25px] text-[#333]" :index="String(twoMenu.name)" @click="toLink(twoMenu)">
-                                <template #title>
-                                    <div v-if="twoMenu.meta.icon" class="w-[16px] h-[16px] relative flex items-center">
-                                        <icon v-if="twoMenu.meta.icon" :name="twoMenu.meta.icon" class="absolute !w-auto"
-                                            size="18px" />
-                                    </div>
-                                    <span class="ml-[11px] text-[15px]">{{ twoMenu.meta.title }}</span>
-                                </template>
-                            </el-menu-item>
-                            <div class="flex items-center !px-[25px] h-[56px] cursor-pointer text-[#333] el-menu-item"
-                                v-else-if="twoMenu.meta.show && twoMenu.meta.key == 'official_market'"
-                                @click="toLink(twoMenu)">
-                                <div v-if="twoMenu.meta.icon" class="w-[16px] h-[16px] relative flex items-center">
-                                    <icon v-if="twoMenu.meta.icon" :name="twoMenu.meta.icon" class="absolute !w-auto"
-                                        size="18px" />
-                                </div>
-                                <span class="ml-[11px] text-[15px]">{{ twoMenu.meta.title }}</span>
-                            </div>
-                        </template>
-
-                        <!-- 系统菜单 -->
-                        <template
-                            v-if="applyTypeList.includes(localMenuKey) || otherTypeList.includes(localMenuKey) || floatMenuStyle">
-                            <div class="!border-0 !border-t-[1px] border-solid mx-[25px] bg-[#f7f7f7] my-[5px]"></div>
-                            <template v-for="(twoMenu, twoIndex) in menus">
+                        <template v-if="!floatMenuStyle || floatMenuStyle && applyTypeList.length">
+                            <template v-for="(twoMenu, twoIndex) in item.children">
                                 <el-sub-menu :index="String(twoMenu.meta.title)"
-                                    v-if="twoMenu.meta.attr == 'system' && !twoMenu.meta.app && twoMenu.children">
+                                    v-if="twoMenu.children && twoMenu.meta.show">
                                     <template #title>
                                         <div class="w-[16px] h-[16px] relative flex items-center">
                                             <icon v-if="twoMenu.meta.icon" :name="twoMenu.meta.icon"
@@ -176,17 +97,19 @@
                                         <span class="ml-[11px] text-[15px]">{{ twoMenu.meta.title }}</span>
                                     </template>
                                     <template v-for="(threeMenu, threeIndex) in twoMenu.children" :key="threeIndex">
-                                        <el-sub-menu :index="String(threeMenu.meta.title)"
-                                            v-if="threeMenu.meta.app && threeMenu.children">
+                                        <!-- 三级菜单 -->
+                                        <el-sub-menu :index="String(threeMenu.meta.title)" class="three-menu"
+                                            v-if="threeMenu.children && threeMenu.meta.show">
                                             <template #title>
                                                 <div class="w-[16px] h-[16px] relative flex items-center">
-                                                    <icon v-if="threeMenu.meta.icon" :name="threeMenu.meta.icon"
-                                                        class="absolute !w-auto" size="18px" />
+                                                    <icon v-if="threeMenu.meta.icon && floatMenuStyle"
+                                                        :name="threeMenu.meta.icon" class="absolute !w-auto" size="18px" />
+                                                    <span v-if="!floatMenuStyle"
+                                                        class="iconfont icondian !text-[25px]"></span>
                                                 </div>
                                                 <span class="ml-[11px] text-[15px]">{{ threeMenu.meta.title }}</span>
                                             </template>
                                             <template v-for="(fourMenu, fourIndex) in threeMenu.children" :key="fourIndex">
-                                                <!-- 三级菜单 -->
                                                 <el-sub-menu :index="String(fourMenu.meta.title)"
                                                     v-if="fourMenu.children && fourMenu.meta.show">
                                                     <template #title>
@@ -206,84 +129,27 @@
                                                         </el-menu-item>
                                                     </template>
                                                 </el-sub-menu>
-                                                <el-menu-item v-else-if="fourMenu.meta.show"
-                                                    class="!ml-[30px] !h-[52px] !pl-[35px]" :index="String(fourMenu.name)"
-                                                    @click="toLink(fourMenu)">
+                                                <el-menu-item v-else-if="fourMenu.meta.show" class="!h-[52px] !pl-[35px]"
+                                                    :index="String(fourMenu.name)" @click="toLink(fourMenu)">
                                                     <template #title>
                                                         <span class="text-[14px]">{{ fourMenu.meta.title }}</span>
                                                     </template>
                                                 </el-menu-item>
                                             </template>
                                         </el-sub-menu>
-                                        <el-menu-item v-if="threeMenu.meta.show" class="!h-[52px] !pl-[52px]"
+
+                                        <!-- 二级菜单 -->
+                                        <el-menu-item v-else-if="threeMenu.meta.show" class="!h-[52px] !pl-[52px]"
                                             :index="String(threeMenu.name)" @click="toLink(threeMenu)">
                                             <template #title>
                                                 <span class="text-[14px]">{{ threeMenu.meta.title }}</span>
                                             </template>
                                         </el-menu-item>
                                     </template>
-                                    <!-- 插件菜单 -->
-                                    <template v-if="otherTypeList.includes(localMenuKey) && plugMenuType">
-                                        <template v-for="(twoMenu, twoIndex) in menus">
-                                            <el-sub-menu :index="String(twoMenu.meta.title)"
-                                                v-if="twoMenu.meta.app && twoMenu.meta.app == plugMenuType && twoMenu.children">
-                                                <template #title>
-                                                    <div class="w-[16px] h-[16px] relative flex items-center">
-                                                        <icon v-if="twoMenu.meta.icon" :name="twoMenu.meta.icon"
-                                                            class="absolute !w-auto" size="18px" />
-                                                    </div>
-                                                    <span class="ml-[11px] text-[15px]">{{ twoMenu.meta.title }}</span>
-                                                </template>
-                                                <template v-for="(threeMenu, threeIndex) in twoMenu.children"
-                                                    :key="threeIndex">
-                                                    <!-- 三级菜单 -->
-                                                    <el-sub-menu :index="String(threeMenu.meta.title)"
-                                                        v-if="threeMenu.children && threeMenu.meta.show">
-                                                        <template #title>
-                                                            <div
-                                                                class="w-[16px] h-[16px] relative flex items-center justify-center">
-                                                                <span class="iconfont icondian !text-[25px]"></span>
-                                                            </div>
-                                                            <span class="ml-[11px] text-[15px]">{{ threeMenu.meta.title
-                                                            }}</span>
-                                                        </template>
-                                                        <template v-for="(fourMenu, fourIndex) in threeMenu.children"
-                                                            :key="fourIndex">
-                                                            <el-menu-item v-if="fourMenu.meta.show"
-                                                                class="!h-[52px] !pl-[55px]" :index="String(fourMenu.name)"
-                                                                @click="toLink(fourMenu)">
-                                                                <template #title>
-                                                                    <span class="text-[14px]">{{ fourMenu.meta.title
-                                                                    }}</span>
-                                                                </template>
-                                                            </el-menu-item>
-                                                        </template>
-                                                    </el-sub-menu>
-                                                    <el-menu-item v-else-if="threeMenu.meta.show"
-                                                        class="!ml-[30px] !h-[52px] !pl-[35px]"
-                                                        :index="String(threeMenu.name)" @click="toLink(threeMenu)">
-                                                        <template #title>
-                                                            <span class="text-[14px]">{{ threeMenu.meta.title }}</span>
-                                                        </template>
-                                                    </el-menu-item>
-                                                </template>
-                                            </el-sub-menu>
-                                            <el-menu-item v-else-if="twoMenu.meta.app && twoMenu.meta.app == plugMenuType"
-                                                class="!pl-[25px] text-[#333]" :index="String(twoMenu.name)"
-                                                @click="toLink(twoMenu)">
-                                                <template #title>
-                                                    <div v-if="twoMenu.meta.icon"
-                                                        class="w-[16px] h-[16px] relative flex items-center">
-                                                        <icon v-if="twoMenu.meta.icon" :name="twoMenu.meta.icon"
-                                                            class="absolute !w-auto" size="18px" />
-                                                    </div>
-                                                    <span class="ml-[11px] text-[15px]">{{ twoMenu.meta.title }}</span>
-                                                </template>
-                                            </el-menu-item>
-                                        </template>
-                                    </template>
+
                                 </el-sub-menu>
-                                <el-menu-item v-else-if="twoMenu.meta.attr == 'system' && !twoMenu.meta.app"
+
+                                <el-menu-item v-else-if="twoMenu.meta.show && twoMenu.meta.key != 'official_market'"
                                     class="!pl-[25px] text-[#333]" :index="String(twoMenu.name)" @click="toLink(twoMenu)">
                                     <template #title>
                                         <div v-if="twoMenu.meta.icon" class="w-[16px] h-[16px] relative flex items-center">
@@ -293,12 +159,165 @@
                                         <span class="ml-[11px] text-[15px]">{{ twoMenu.meta.title }}</span>
                                     </template>
                                 </el-menu-item>
+                                <div class="flex items-center !px-[25px] h-[56px] cursor-pointer text-[#333] el-menu-item"
+                                    v-else-if="twoMenu.meta.show && twoMenu.meta.key == 'official_market'"
+                                    @click="toLink(twoMenu)">
+                                    <div v-if="twoMenu.meta.icon" class="w-[16px] h-[16px] relative flex items-center">
+                                        <icon v-if="twoMenu.meta.icon" :name="twoMenu.meta.icon" class="absolute !w-auto"
+                                            size="18px" />
+                                    </div>
+                                    <span class="ml-[11px] text-[15px]">{{ twoMenu.meta.title }}</span>
+                                </div>
+                            </template>
+
+                            <!-- 系统菜单 -->
+                            <template
+                                v-if="applyTypeList.includes(localMenuKey) || otherTypeList.includes(localMenuKey) || floatMenuStyle">
+                                <div class="!border-0 !border-t-[1px] border-solid mx-[25px] bg-[#f7f7f7] my-[5px]"></div>
+                                <template v-for="(twoMenu, twoIndex) in menus">
+                                    <el-sub-menu :index="String(twoMenu.meta.title)"
+                                        v-if="twoMenu.meta.attr == 'system' && !twoMenu.meta.app && twoMenu.children">
+                                        <template #title>
+                                            <div class="w-[16px] h-[16px] relative flex items-center">
+                                                <icon v-if="twoMenu.meta.icon" :name="twoMenu.meta.icon"
+                                                    class="absolute !w-auto" size="18px" />
+                                            </div>
+                                            <span class="ml-[11px] text-[15px]">{{ twoMenu.meta.title }}</span>
+                                        </template>
+                                        <template v-for="(threeMenu, threeIndex) in twoMenu.children" :key="threeIndex">
+                                            <el-sub-menu :index="String(threeMenu.meta.title)"
+                                                v-if="threeMenu.meta.app && threeMenu.children">
+                                                <template #title>
+                                                    <div class="w-[16px] h-[16px] relative flex items-center">
+                                                        <icon v-if="threeMenu.meta.icon" :name="threeMenu.meta.icon"
+                                                            class="absolute !w-auto" size="18px" />
+                                                    </div>
+                                                    <span class="ml-[11px] text-[15px]">{{ threeMenu.meta.title }}</span>
+                                                </template>
+                                                <template v-for="(fourMenu, fourIndex) in threeMenu.children"
+                                                    :key="fourIndex">
+                                                    <!-- 三级菜单 -->
+                                                    <el-sub-menu :index="String(fourMenu.meta.title)"
+                                                        v-if="fourMenu.children && fourMenu.meta.show">
+                                                        <template #title>
+                                                            <div
+                                                                class="w-[16px] h-[16px] relative flex items-center justify-center">
+                                                                <span class="iconfont icondian !text-[25px]"></span>
+                                                            </div>
+                                                            <span class="ml-[11px] text-[15px]">{{ fourMenu.meta.title
+                                                            }}</span>
+                                                        </template>
+                                                        <template v-for="(fiveMenu, fiveIndex) in fourMenu.children"
+                                                            :key="fiveIndex">
+                                                            <el-menu-item v-if="fiveMenu.meta.show"
+                                                                class="!h-[52px] !pl-[55px]" :index="String(fiveMenu.name)"
+                                                                @click="toLink(fiveMenu)">
+                                                                <template #title>
+                                                                    <span class="text-[14px]">{{ fiveMenu.meta.title
+                                                                    }}</span>
+                                                                </template>
+                                                            </el-menu-item>
+                                                        </template>
+                                                    </el-sub-menu>
+                                                    <el-menu-item v-else-if="fourMenu.meta.show"
+                                                        class="!ml-[30px] !h-[52px] !pl-[35px]"
+                                                        :index="String(fourMenu.name)" @click="toLink(fourMenu)">
+                                                        <template #title>
+                                                            <span class="text-[14px]">{{ fourMenu.meta.title }}</span>
+                                                        </template>
+                                                    </el-menu-item>
+                                                </template>
+                                            </el-sub-menu>
+                                            <el-menu-item v-if="threeMenu.meta.show" class="!h-[52px] !pl-[52px]"
+                                                :index="String(threeMenu.name)" @click="toLink(threeMenu)">
+                                                <template #title>
+                                                    <span class="text-[14px]">{{ threeMenu.meta.title }}</span>
+                                                </template>
+                                            </el-menu-item>
+                                        </template>
+                                        <!-- 插件菜单 -->
+                                        <template v-if="otherTypeList.includes(localMenuKey) && plugMenuType">
+                                            <template v-for="(twoMenu, twoIndex) in menus">
+                                                <el-sub-menu :index="String(twoMenu.meta.title)"
+                                                    v-if="twoMenu.meta.app && twoMenu.meta.app == plugMenuType && twoMenu.children">
+                                                    <template #title>
+                                                        <div class="w-[16px] h-[16px] relative flex items-center">
+                                                            <icon v-if="twoMenu.meta.icon" :name="twoMenu.meta.icon"
+                                                                class="absolute !w-auto" size="18px" />
+                                                        </div>
+                                                        <span class="ml-[11px] text-[15px]">{{ twoMenu.meta.title }}</span>
+                                                    </template>
+                                                    <template v-for="(threeMenu, threeIndex) in twoMenu.children"
+                                                        :key="threeIndex">
+                                                        <!-- 三级菜单 -->
+                                                        <el-sub-menu :index="String(threeMenu.meta.title)"
+                                                            v-if="threeMenu.children && threeMenu.meta.show">
+                                                            <template #title>
+                                                                <div
+                                                                    class="w-[16px] h-[16px] relative flex items-center justify-center">
+                                                                    <span class="iconfont icondian !text-[25px]"></span>
+                                                                </div>
+                                                                <span class="ml-[11px] text-[15px]">{{ threeMenu.meta.title
+                                                                }}</span>
+                                                            </template>
+                                                            <template v-for="(fourMenu, fourIndex) in threeMenu.children"
+                                                                :key="fourIndex">
+                                                                <el-menu-item v-if="fourMenu.meta.show"
+                                                                    class="!h-[52px] !pl-[55px]"
+                                                                    :index="String(fourMenu.name)"
+                                                                    @click="toLink(fourMenu)">
+                                                                    <template #title>
+                                                                        <span class="text-[14px]">{{ fourMenu.meta.title
+                                                                        }}</span>
+                                                                    </template>
+                                                                </el-menu-item>
+                                                            </template>
+                                                        </el-sub-menu>
+                                                        <el-menu-item v-else-if="threeMenu.meta.show"
+                                                            class="!ml-[30px] !h-[52px] !pl-[35px]"
+                                                            :index="String(threeMenu.name)" @click="toLink(threeMenu)">
+                                                            <template #title>
+                                                                <span class="text-[14px]">{{ threeMenu.meta.title }}</span>
+                                                            </template>
+                                                        </el-menu-item>
+                                                    </template>
+                                                </el-sub-menu>
+                                                <el-menu-item
+                                                    v-else-if="twoMenu.meta.app && twoMenu.meta.app == plugMenuType"
+                                                    class="!pl-[25px] text-[#333]" :index="String(twoMenu.name)"
+                                                    @click="toLink(twoMenu)">
+                                                    <template #title>
+                                                        <div v-if="twoMenu.meta.icon"
+                                                            class="w-[16px] h-[16px] relative flex items-center">
+                                                            <icon v-if="twoMenu.meta.icon" :name="twoMenu.meta.icon"
+                                                                class="absolute !w-auto" size="18px" />
+                                                        </div>
+                                                        <span class="ml-[11px] text-[15px]">{{ twoMenu.meta.title }}</span>
+                                                    </template>
+                                                </el-menu-item>
+                                            </template>
+                                        </template>
+                                    </el-sub-menu>
+                                    <el-menu-item v-else-if="twoMenu.meta.attr == 'system' && !twoMenu.meta.app"
+                                        class="!pl-[25px] text-[#333]" :index="String(twoMenu.name)"
+                                        @click="toLink(twoMenu)">
+                                        <template #title>
+                                            <div v-if="twoMenu.meta.icon"
+                                                class="w-[16px] h-[16px] relative flex items-center">
+                                                <icon v-if="twoMenu.meta.icon" :name="twoMenu.meta.icon"
+                                                    class="absolute !w-auto" size="18px" />
+                                            </div>
+                                            <span class="ml-[11px] text-[15px]">{{ twoMenu.meta.title }}</span>
+                                        </template>
+                                    </el-menu-item>
+                                </template>
                             </template>
                         </template>
-
                         <!-- 浮动样式 -->
                         <template v-if="floatMenuStyle">
-                            <div class="!border-0 !border-t-[1px] border-solid mx-[25px] bg-[#f7f7f7] my-[5px]"></div>
+                            <div
+                                :class="['!border-0 border-solid mx-[25px] bg-[#f7f7f7] my-[5px]', floatMenuStyle && !applyTypeList.length ? '' : '!border-t-[1px]']">
+                            </div>
                             <template v-for="(twoMenu, twoIndex) in menus">
                                 <el-sub-menu :index="String(twoMenu.meta.title)"
                                     v-if="twoMenu.meta.attr == 'common' && !twoMenu.meta.app && twoMenu.children">
@@ -399,27 +418,25 @@ const userStore = useUserStore()
 const systemStore = useSystemStore()
 const route = useRoute()
 const router = useRouter()
-let globalAppKey = ref('') //菜单类型
-let localMenuKey = ref('') //菜单类型
+const globalAppKey = ref('') // 菜单类型
+const localMenuKey = ref('') // 菜单类型
 globalAppKey.value = storage.get('menuAppStorage')
 localMenuKey.value = storage.get('menuAppStorage')
 
 // 应用跳转 start
-let applyList = ref([]);
-let applyTypeList = ref([]);
-let otherTypeList = ref([]); // 存着插件\会员\应用管理
-let aaa = ref(false)
+const applyList = ref([])
+const applyTypeList = ref([])
+const otherTypeList = ref([]) // 存着插件\会员\应用管理
+// let aaa = ref(true)
 const getApplelist = async () => {
     const res = await getApply()
     applyList.value = applyList.value.concat(res.data)
     applyList.value.forEach((item, index) => {
-        if (item.type == 'app')
-            applyTypeList.value.push(item.key)
-        if (item.type == 'addon')
-            otherTypeList.value.push(item.key)
+        if (item.type == 'app') { applyTypeList.value.push(item.key) }
+        if (item.type == 'addon') { otherTypeList.value.push(item.key) }
     })
     otherTypeList.value = otherTypeList.value.concat(['member', 'overview'])
-    aaa.value = true;
+    // aaa.value = true;
 }
 getApplelist()
 const floatActive = ref(false)
@@ -437,13 +454,13 @@ const getAppLink = () => {
 }
 getAppLink()
 const appToLink = (addon: string) => {
-    globalAppKey.value = addon;
-    localMenuKey.value = addon;
+    globalAppKey.value = addon
+    localMenuKey.value = addon
 
     storage.set({ key: 'menuAppStorage', data: addon })
     storage.set({ key: 'plugMenuTypeStorage', data: '' })
 
-    let data = userStore.appMenuList
+    const data = userStore.appMenuList
     if (!data.length) {
         data.push(addon)
     } else if (!data.includes(addon)) {
@@ -453,10 +470,12 @@ const appToLink = (addon: string) => {
     userStore.setAppMenuList(data)
     floatActive.value = false
     router.push({ name: appLink.value[addon] })
-    
+}
+const homeClick = () => {
+    const key = storage.get('menuAppStorage')
+    key ? router.push({ name: appLink.value[key] }) : router.push({ path: '/' })
 }
 // 应用跳转 end
-
 
 const menus = computed(() => {
     const menus = []
@@ -483,34 +502,33 @@ const getAppInfo = (type) => {
     })
 }
 
-let currMetaAppType = "";
-let plugMenuType = ref(''); //插件类型
-let currentRoute = ref(''); // 当前路由
+let currMetaAppType = ''
+const plugMenuType = ref('') // 插件类型
+const currentRoute = ref('') // 当前路由
 watch(route, () => {
     plugMenuType.value = storage.get('plugMenuTypeStorage')
 
-    let data = route.matched[1]
-    currentRoute.value = route.matched[1];
-    localMenuKey.value = data.meta.key;
+    const data = route.matched[1]
+    currentRoute.value = route.matched[1]
+    localMenuKey.value = data.meta.key
 
-    data.meta.app = !data.meta.app && !data.meta.attr ? 'member' : data.meta.app;
+    data.meta.app = !data.meta.app && !data.meta.attr ? 'member' : data.meta.app
 
     // 等待applist加载完成
     setTimeout(() => {
         // 获取应用详情
         if (data.meta.app && (!currMetaAppType || currMetaAppType != data.meta.app)) {
-            appInfo.value = {};
-            currMetaAppType = data.meta.app;
-            let appInfoKey = otherTypeList.value.includes(data.meta.app) ? globalAppKey.value : data.meta.app;
+            appInfo.value = {}
+            currMetaAppType = data.meta.app
+            const appInfoKey = otherTypeList.value.includes(data.meta.app) ? globalAppKey.value : data.meta.app
             getAppInfo(appInfoKey)
         }
-    }, 800);
+    }, 800)
 
     systemStore.$patch(state => {
         state.menuDrawer = false
     })
 }, { immediate: true })
-
 
 // 跳转链接
 const toLink = (data) => {
@@ -527,20 +545,20 @@ const sidebar = computed(() => {
 })
 
 // 切换风格
-let floatMenuStyle = ref(false);
-floatMenuStyle.value = storage.get('floatMenuStyle') || false;
+const floatMenuStyle = ref(false)
+floatMenuStyle.value = storage.get('floatMenuStyle') || false
 const cutMenuStyleFn = () => {
-    floatMenuStyle.value = true;
-    storage.set({ key: 'floatMenuStyle', data: true });
-    location.reload();
+    floatMenuStyle.value = true
+    storage.set({ key: 'floatMenuStyle', data: true })
+    location.reload()
 }
-
 
 // 控制二级菜单的显示
 const isTwoMenuFn = (item) => {
     let bool = (otherTypeList.value.includes(localMenuKey.value) && globalAppKey.value == item.meta.app)
         || (floatMenuStyle.value && !applyTypeList.value.includes(localMenuKey.value) && !otherTypeList.value.includes(localMenuKey.value) && globalAppKey.value == item.meta.app)
         || (floatMenuStyle.value && applyTypeList.value.includes(localMenuKey.value) && (item.meta.key == localMenuKey.value || item.meta.app == localMenuKey.value))
+        || (floatMenuStyle.value && !applyTypeList.value.length && (item.meta.key == localMenuKey.value || item.meta.app == localMenuKey.value))
         || (!floatMenuStyle.value && !otherTypeList.value.includes(localMenuKey.value) && (item.meta.key == localMenuKey.value || item.meta.app == localMenuKey.value))
     return bool;
 }
@@ -606,11 +624,13 @@ const isTwoMenuFn = (item) => {
 
 .cut-style {
     color: #6d7278;
-    
+
 }
+
 .cut-style.qx {
     transform: translateX(-50%);
 }
+
 // 主题二
 .two-type {
     .logo-wrap {
@@ -668,7 +688,6 @@ const isTwoMenuFn = (item) => {
         color: #FFF;
     }
 }
-
 
 // 主题三
 .three-type {
@@ -738,5 +757,4 @@ const isTwoMenuFn = (item) => {
 
 .menus-wrap {
     height: calc(100vh - 64px);
-}
-</style>
+}</style>

@@ -35,9 +35,9 @@
                                     <span class="text-[14px] truncate w-[160px]">{{ item.title }}</span>
                                     <span class="text-xs text-gray-400 truncate w-[160px] mt-[4px]">{{ item.desc }}</span>
                                 </div>
-                                <span
-                                    class="w-max flex items-center plug-item-operate border rounded-2xl px-3.5 py-1.5 leading-none "
-                                    @click.stop="uninstallAddonFn(item.key)">{{ t('unload') }}</span>
+                                <el-button size="small" round class="!text-primary !border-primary !bg-transparent"
+                                    @click.stop="uninstallAddonFn(item.key)">{{ t('unload')
+                                    }}</el-button>
                             </div>
                         </div>
 
@@ -56,11 +56,10 @@
                                         <p class="app-text text-[12px] text-[#999] pl-2">{{ item.desc }}</p>
                                     </div>
                                     <div class="flex items-center pr-2">
-                                        <span
-                                            class="w-max flex items-center plug-item-operate border rounded-2xl px-2 py-1 leading-none mt-[10px]"
-                                            @click.stop="uninstallAddonFn(item.key)">{{ t('unload') }}</span>
+                                        <el-button size="small" round class="!text-primary !border-primary !bg-transparent"
+                                            @click.stop="uninstallAddonFn(item.key)">{{ t('unload')
+                                            }}</el-button>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -85,12 +84,14 @@
                                     <span class="text-[14px] truncate w-[160px]">{{ item.title }}</span>
                                     <span class="text-xs text-gray-400 truncate w-[160px] mt-[4px]">{{ item.desc }}</span>
                                 </div>
-                                <span v-if="item.is_download"
-                                    class="w-max flex items-center plug-item-operate border rounded-2xl px-3.5 py-1.5 leading-none"
-                                    @click.stop="installAddonFn(item.key)">{{ t('install') }}</span>
-                                <span v-else
-                                    class="w-max flex items-center plug-item-operate border rounded-2xl px-3.5 py-1.5 leading-none"
-                                    @click.stop="downEvent(item.key)">{{ t('down') }}</span>
+                                <el-button v-if="item.is_download" size="small" round
+                                    class="!text-primary !border-primary !bg-transparent"
+                                    @click.stop="installAddonFn(item.key)">{{ t('install')
+                                    }}</el-button>
+                                <el-button v-else size="small" :loading="downloading == item.key" :disabled="downloading"
+                                    round class="!text-primary !border-primary !bg-transparent"
+                                    @click.stop="downEvent(item)">{{ downloading == item.key ? t('downloading') : t('down')
+                                    }}</el-button>
                             </div>
                         </div>
 
@@ -112,12 +113,16 @@
                                         <p class="app-text text-[12px] text-[#999] pl-2">{{ item.desc }}</p>
                                     </div>
                                     <div class="flex items-center pr-2">
-                                        <span v-if="item.is_download"
-                                            class="w-max flex items-center plug-item-operate border rounded-2xl px-2 py-1 leading-none mt-[10px]"
-                                            @click.stop="installAddonFn(item.key)">{{ t('install') }}</span>
-                                        <span v-else
-                                            class="w-max flex items-center plug-item-operate border rounded-2xl px-2 py-1 leading-none mt-[10px]"
-                                            @click.stop="downEvent(item.key)">{{ t('down') }}</span>
+                                        <el-button v-if="item.is_download" size="small" round
+                                            class="!text-primary !border-primary !bg-transparent"
+                                            @click.stop="installAddonFn(item.key)">{{ t('install')
+                                            }}</el-button>
+                                        <el-button v-else size="small" :loading="downloading == item.key"
+                                            :disabled="downloading" round
+                                            class="!text-primary !border-primary !bg-transparent"
+                                            @click.stop="downEvent(item)">{{ downloading == item.key ? t('downloading') :
+                                                t('down')
+                                            }}</el-button>
                                     </div>
                                 </div>
                             </div>
@@ -143,15 +148,18 @@
                                     <span class="text-[14px] truncate w-[160px]">{{ item.title }}</span>
                                     <span class="text-xs text-gray-400 truncate w-[160px] mt-[4px]">{{ item.desc }}</span>
                                 </div>
-                                <span v-if="item.install_info && Object.keys(item.install_info)?.length"
-                                    class="w-max flex items-center plug-item-operate border rounded-2xl px-3.5 py-1.5 leading-none "
-                                    @click.stop="uninstallAddonFn(item.key)">{{ t('unload') }}</span>
-                                <span v-else-if="item.is_download && item.install_info <= 0"
-                                    class="w-max flex items-center plug-item-operate border rounded-2xl px-3.5 py-1.5 leading-none"
-                                    @click.stop="installAddonFn(item.key)">{{ t('install') }}</span>
-                                <span v-else
-                                    class="w-max flex items-center plug-item-operate border rounded-2xl px-3.5 py-1.5 leading-none"
-                                    @click.stop="downEvent(item.key)">{{ t('down') }}</span>
+                                <el-button v-if="item.install_info && Object.keys(item.install_info)?.length" size="small"
+                                    round class="!text-primary !border-primary !bg-transparent"
+                                    @click.stop="uninstallAddonFn(item.key)">{{ t('unload')
+                                    }}</el-button>
+                                <el-button v-else-if="item.is_download && item.install_info <= 0" size="small" round
+                                    class="!text-primary !border-primary !bg-transparent"
+                                    @click.stop="installAddonFn(item.key)">{{ t('install')
+                                    }}</el-button>
+                                <el-button v-else size="small" :loading="downloading == item.key" :disabled="downloading"
+                                    round class="!text-primary !border-primary !bg-transparent"
+                                    @click.stop="downEvent(item)">{{ downloading == item.key ? t('downloading') : t('down')
+                                    }}</el-button>
                             </div>
                         </div>
 
@@ -172,15 +180,19 @@
                                         <p class="app-text text-[12px] text-[#999] pl-2">{{ item.desc }}</p>
                                     </div>
                                     <div class="flex items-center pr-2">
-                                        <span v-if="item.install_info && Object.keys(item.install_info)?.length"
-                                            class="w-max flex items-center plug-item-operate border rounded-2xl px-3.5 py-1.5 leading-none "
-                                            @click.stop="uninstallAddonFn(item.key)">{{ t('unload') }}</span>
-                                        <span v-else-if="item.is_download && item.install_info <= 0"
-                                            class="w-max flex items-center plug-item-operate border rounded-2xl px-2 py-1 leading-none mt-[10px]"
-                                            @click.stop="installAddonFn(item.key)">{{ t('install') }}</span>
-                                        <span v-else
-                                            class="w-max flex items-center plug-item-operate border rounded-2xl px-2 py-1 leading-none mt-[10px]"
-                                            @click.stop="downEvent(item.key)">{{ t('down') }}</span>
+                                        <el-button v-if="item.install_info && Object.keys(item.install_info)?.length"
+                                            size="small" round class="!text-primary !border-primary !bg-transparent"
+                                            @click.stop="uninstallAddonFn(item.key)">{{ t('unload')
+                                            }}</el-button>
+                                        <el-button v-else-if="item.is_download && item.install_info <= 0" size="small" round
+                                            class="!text-primary !border-primary !bg-transparent"
+                                            @click.stop="installAddonFn(item.key)">{{ t('install')
+                                            }}</el-button>
+                                        <el-button v-else size="small" round :loading="downloading == item.key"
+                                            :disabled="downloading" class="!text-primary !border-primary !bg-transparent"
+                                            @click.stop="downEvent(item)">{{ downloading == item.key ? t('downloading') :
+                                                t('down')
+                                            }}</el-button>
                                     </div>
                                 </div>
                             </div>
@@ -326,10 +338,18 @@ const activeName = ref('installed')
 const loading = ref<Boolean>(false)
 const showType = ref('large')
 const mode = ref(import.meta.env.MODE)
+const downloading = ref('')
 
-const downEvent = (key: string) => {
-    downloadVersion(key).then(() => {
+const downEvent = (param: Record<string, any>) => {
+    if (downloading.value) return
+    downloading.value = param.key
+
+    downloadVersion({ addon: param.key, version: param.version }).then(() => {
+        installAddonFn(param.key)
         localListFn()
+        downloading.value = ''
+    }).catch(() => {
+        downloading.value = ''
     })
 }
 
@@ -454,7 +474,7 @@ const getInstallTask = (first: boolean = true) => {
             }, 2000)
         } else {
             if (!first) {
-                installStep.value += 2
+                installStep.value = 3
                 localListFn()
                 notificationEl.close()
             }
@@ -477,7 +497,7 @@ const handleInstall = () => {
     localInstalling.value = true
 
     installAddon({ addon: currAddon.value }).then(res => {
-        installStep.value += 2
+        installStep.value = 3
         localListFn()
         localInstalling.value = false
     }).catch((res) => {
@@ -494,7 +514,7 @@ const handleCloudInstall = () => {
     cloudInstalling.value = true
 
     cloudInstallAddon({ addon: currAddon.value }).then(res => {
-        installStep.value += 1
+        installStep.value = 1
         terminalApi.execute('my-terminal', 'clear')
         terminalApi.pushMessage('my-terminal', { content: '开始安装插件', class: 'info' })
         getInstallTask()

@@ -3,12 +3,13 @@ import { getToken, setToken, removeToken, getAppType } from '@/utils/common'
 import { login, getAuthMenus } from '@/app/api/auth'
 import storage from '@/utils/storage'
 import router from '@/router'
-import { formatRouters } from '@/router/routers'
+import { formatRouters, findFirstValidRoute } from '@/router/routers'
 
 interface User {
     token: string,
     userInfo: object,
     routers: any[],
+    addonIndexRoute: Record<string, symbol>,
     rules: any[],
     appMenuList: any[]
 }
@@ -19,6 +20,7 @@ const useSystemStore = defineStore('user', {
             token: getToken() || '',
             userInfo: storage.get('userinfo') || {},
             routers: [],
+            addonIndexRoute: {},
             rules: [],
             appMenuList: storage.get('appMenuList' + (storage.get('userinfo') ? storage.get('userinfo').username : '')) || []
         }
@@ -52,6 +54,16 @@ const useSystemStore = defineStore('user', {
                 getAuthMenus()
                     .then((res) => {
                         this.routers = formatRouters(res.data)
+                        // 获取插件的首个菜单
+                        this.routers.forEach((item, index) => {
+                            if (item.meta.app !== '') {
+                                if (item.children && item.children.length) {
+                                    this.addonIndexRoute[item.meta.app] = findFirstValidRoute(item.children)
+                                } else {
+                                    this.addonIndexRoute[item.meta.app] = item.name
+                                }
+                            }
+                        })
                         resolve(res)
                     })
                     .catch((error) => {

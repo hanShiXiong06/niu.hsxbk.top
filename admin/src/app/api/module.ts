@@ -11,7 +11,7 @@ export function getAuthinfo() {
  * 设置 授权配置
  */
 export function setAuthinfo(params: Record<string, any>) {
-    return request.post('niucloud/authinfo', params, {showSuccessMessage: true})
+    return request.post('niucloud/authinfo', params, { showSuccessMessage: true })
 }
 
 /**
@@ -43,6 +43,6 @@ export function getModuleVersion() {
  * @param addon
  * @returns
  */
-export function downloadVersion(addon) {
-    return request.post(`addon/download/${addon}`, {}, {showSuccessMessage: true})
+export function downloadVersion(params: Record<string, any>) {
+    return request.post(`addon/download/${params.addon}`, params, { showSuccessMessage: true })
 }

@@ -39,3 +39,9 @@ export function getLoginConfig() {
 export function setStarAddon(params: Record<string, any>) {
     return request.post('auth/appstar', params)
 }
+/**
+ * 获取默认页面应用列表
+ */
+export function getAuthaddon() {
+    return request.get(`auth/authaddon`)
+}

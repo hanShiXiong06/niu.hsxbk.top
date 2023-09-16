@@ -72,9 +72,6 @@ const setFormData = async (id: number = 0) => {
     webSite.value = await (await getWebConfig()).data
     storage.set({ key: 'siteInfo', data: webSite.value })
 }
-const routerList = ref({
-    tourism: "/tourism/index", vipcard: "/vipcard/index", cms: "/cms/article/list", shop: "/shop/hello_world"
-})
 setFormData()
 setWindowTitle(t('adminLogin'))
 
@@ -125,11 +122,8 @@ const handleLogin = async (formEl: FormInstance | undefined) => {
 const loginFn = (data = {}) => {
     loading.value = true
     userStore.login({ username: form.username, password: form.password, ...data }).then(res => {
-        // const { query: { redirect } } = route
-        // const path = typeof redirect === 'string' ? redirect : '/'
-        let key = storage.get('menuAppStorage')
-        if(!key) storage.set({key:'menuAppStorage',data:'tourism'})
-        let path = key&&key!=''?routerList.value[key]:'/tourism/index'
+        const { query: { redirect } } = route
+        const path = typeof redirect === 'string' ? redirect : '/'
         router.push(path)
     }).catch(() => {
         loading.value = false
@@ -172,4 +166,5 @@ const loginFn = (data = {}) => {
     .login-main-left {
         display: none;
     }
-}</style>
+}
+</style>

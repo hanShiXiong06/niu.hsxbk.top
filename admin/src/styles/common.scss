@@ -221,7 +221,7 @@ html.dark {
 .el-input__wrapper, .el-input-group__append, .el-textarea__inner{
     border-radius: 0 !important;
 }
-.el-button{
+.el-button:not(.is-round){
     border-radius: 2px !important;
 }
 

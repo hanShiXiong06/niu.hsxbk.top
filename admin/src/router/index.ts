@@ -39,7 +39,7 @@ router.beforeEach(async (to, from, next) => {
         // 如果已加载路由
         if (userStore.routers.length) {
             if (to.path === loginPath) {
-                next(`/${getAppType()}`)
+                next('/')
             } else {
                 next()
             }
@@ -47,14 +47,16 @@ router.beforeEach(async (to, from, next) => {
             try {
                 await userStore.getAuthMenus()
 
-                // 设置首页路由
+                // 设置首页路由 
+                const currApp = storage.get('menuAppStorage')
                 const firstRoute = findFirstValidRoute(userStore.routers)
-                ROOT_ROUTER.redirect = { name: firstRoute }
+                if (currApp) {
+                    ROOT_ROUTER.redirect = { name: userStore.addonIndexRoute[currApp] ?? firstRoute }
+                } else {
+                    ROOT_ROUTER.redirect = { name: firstRoute }
+                }
+                console.log(currApp, ROOT_ROUTER.redirect)
                 router.addRoute(ROOT_ROUTER)
-
-                // 设置应用首页路由
-                ADMIN_ROUTE.children[0].redirect = { name: firstRoute }
-                router.addRoute(ADMIN_ROUTE)
 
                 // 添加动态路由
                 userStore.routers.forEach(route => {

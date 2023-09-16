@@ -10,7 +10,7 @@
 
                 <el-main :class="['main-wrap h-full p-0',{'bg-page': dark}]">
                     <el-scrollbar>
-                        <div class="p-[10px]">
+                        <div>
                             <router-view v-slot="{ Component, route }" v-if="appStore.routeRefreshTag">
                                 <component :is="Component" :key="route.fullPath" />
                             </router-view>

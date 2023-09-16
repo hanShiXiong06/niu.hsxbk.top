@@ -39,5 +39,6 @@
 	"cloudInstall": "一键云安装",
 	"cloudInstallTips": "云安装可实现一键安装，安装后无需手动更新依赖和编译前端源码",
 	"installingTips": "有插件正在安装中请等待安装完成之后再进行其他操作，点击查看",
-	"installPercent": "安装进度"
+	"installPercent": "安装进度",
+	"downloading": "下载中"
 }
