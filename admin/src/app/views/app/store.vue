@@ -88,9 +88,10 @@
                                     class="!text-primary !border-primary !bg-transparent"
                                     @click.stop="installAddonFn(item.key)">{{ t('install')
                                     }}</el-button>
-                                <el-button v-else size="small" :loading="downloading == item.key" :disabled="downloading"
-                                    round class="!text-primary !border-primary !bg-transparent"
-                                    @click.stop="downEvent(item)">{{ downloading == item.key ? t('downloading') : t('down')
+                                <el-button v-else size="small" :loading="downloading == item.key"
+                                    :disabled="downloading != ''" round
+                                    class="!text-primary !border-primary !bg-transparent" @click.stop="downEvent(item)">{{
+                                        downloading == item.key ? t('downloading') : t('down')
                                     }}</el-button>
                             </div>
                         </div>
@@ -118,7 +119,7 @@
                                             @click.stop="installAddonFn(item.key)">{{ t('install')
                                             }}</el-button>
                                         <el-button v-else size="small" :loading="downloading == item.key"
-                                            :disabled="downloading" round
+                                            :disabled="downloading != ''" round
                                             class="!text-primary !border-primary !bg-transparent"
                                             @click.stop="downEvent(item)">{{ downloading == item.key ? t('downloading') :
                                                 t('down')
@@ -156,9 +157,10 @@
                                     class="!text-primary !border-primary !bg-transparent"
                                     @click.stop="installAddonFn(item.key)">{{ t('install')
                                     }}</el-button>
-                                <el-button v-else size="small" :loading="downloading == item.key" :disabled="downloading"
-                                    round class="!text-primary !border-primary !bg-transparent"
-                                    @click.stop="downEvent(item)">{{ downloading == item.key ? t('downloading') : t('down')
+                                <el-button v-else size="small" :loading="downloading == item.key"
+                                    :disabled="downloading != ''" round
+                                    class="!text-primary !border-primary !bg-transparent" @click.stop="downEvent(item)">{{
+                                        downloading == item.key ? t('downloading') : t('down')
                                     }}</el-button>
                             </div>
                         </div>
@@ -189,7 +191,8 @@
                                             @click.stop="installAddonFn(item.key)">{{ t('install')
                                             }}</el-button>
                                         <el-button v-else size="small" round :loading="downloading == item.key"
-                                            :disabled="downloading" class="!text-primary !border-primary !bg-transparent"
+                                            :disabled="downloading != ''"
+                                            class="!text-primary !border-primary !bg-transparent"
                                             @click.stop="downEvent(item)">{{ downloading == item.key ? t('downloading') :
                                                 t('down')
                                             }}</el-button>
