@@ -2,8 +2,21 @@
 return
     [
         [
-            'menu_name' => '应用中心',
+            'menu_name' => '概况',
             'menu_key' => 'overview',
+            'menu_type' => 1,
+            'icon' => 'element-Monitor',
+            'api_url' => '',
+            'router_path' => 'overview',
+            'view_path' => 'index/overview',
+            'methods' => '',
+            'sort' => 100,
+            'status' => 1,
+            'is_show' => 0,
+        ],
+        [
+            'menu_name' => '应用中心',
+            'menu_key' => 'app_center',
             'menu_type' => 0,
             'icon' => 'iconfont-icona-shouyediannao',
             'api_url' => '',

@@ -216,17 +216,20 @@ class CoreAddonCloudService extends CoreCloudBaseService
         ];
 
         // 获取文件大小
-        $response = (new CloudService())->request('HEAD','cloud/build_download?' . http_build_query($query), [
+        $response = (new CloudService())->request('HEAD','cloud/download?' . http_build_query($query), [
             'headers' => ['Range' => 'bytes=0-']
         ]);
         $length = $response->getHeader('Content-range');
+        $length = (int)explode("/", $length[0])[1];
 
         $temp_dir = runtime_path() . 'backup' . DIRECTORY_SEPARATOR . 'addon_download' . DIRECTORY_SEPARATOR . uniqid() . DIRECTORY_SEPARATOR;
+        dir_mkdir($temp_dir);
+
         $zip_file = $temp_dir . $addon . '.zip';
-        $zip_resource = fopen($zip_file, 'W');
+        $zip_resource = fopen($zip_file, 'w');
 
         $response = (new CloudService())->request('GET','cloud/download?' . http_build_query($query), [
-            'headers' => ['Range' => "bytes=0-${$length}"]
+            'headers' => ['Range' => "bytes=0-{$length}"]
         ]);
         fwrite($zip_resource, $response->getBody());
         fclose($zip_resource);

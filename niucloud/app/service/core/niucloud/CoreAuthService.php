@@ -32,7 +32,7 @@ class CoreAuthService extends BaseNiucloudClient
     {
         $auth_info = $this->httpGet('authinfo', ['code' => $this->code, 'secret' => $this->secret]);
         if(!empty($auth_info['data'])){
-            $auth_info['data']['address_type'] = $this->diffDomain($_SERVER['HTTP_HOST'], $auth_info['data']['site_address']);
+            $auth_info['data']['address_type'] = $this->diffDomain($auth_info['data']['site_address'], $_SERVER['HTTP_HOST']);
         }
         return $auth_info;
     }
@@ -40,9 +40,10 @@ class CoreAuthService extends BaseNiucloudClient
     public function diffDomain($domain, $child_domain){
         $child_domain = str_replace('http://', '', $child_domain);
         $child_domain = str_replace('https://', '', $child_domain);
+
         if($domain == $child_domain)
             return true;
-        if( strstr($child_domain, $domain) === false )
+        if(strstr($child_domain, $domain) === false )
             return false;
         return true;
     }
