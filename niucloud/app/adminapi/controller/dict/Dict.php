@@ -68,7 +68,6 @@ class Dict extends BaseAdminController
         $data = $this->request->params([
              ["name",""],
              ["key",""],
-             ["data",""],
              ["memo",""],
 
         ]);
