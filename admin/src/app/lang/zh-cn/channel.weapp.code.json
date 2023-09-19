@@ -35,5 +35,8 @@
 	"toBind": "绑定授权",
 	"toNiucloud": "去niucloud官网",
 	"failReason": "失败原因：",
-	"toSetting": "去配置"
+	"toSetting": "去配置",
+	"cloudRelease": "一键云端发布",
+	"localRelease": "本地发布",
+	"localInsertTips": "请先将uni-app编译成微信小程序，然后使用微信开发者工具进行上传"
 }

@@ -276,6 +276,7 @@ class WebEditPageGenerator extends BaseGenerator
 
     /**
      * 表单验证内容
+     *
      * @return string
      */
     public function getFormValidate()
@@ -283,7 +284,9 @@ class WebEditPageGenerator extends BaseGenerator
         $content = '';
         $isExist = [];
         $specDictType = ['input', 'textarea', 'editor'];
-
+        unset($this->tableColumn[1]);
+        unset($this->tableColumn[2]);
+        unset($this->tableColumn[3]);
         foreach ($this->tableColumn as $column) {
             if (!$column['is_insert'] || !$column['is_update'] ) {
                 continue;
@@ -315,8 +318,7 @@ class WebEditPageGenerator extends BaseGenerator
                 continue;
             }
 
-            $content .= $this->replaceFileText($old, $new, $vmPath) . ',' . PHP_EOL;
-
+            $content.= $this->replaceFileText($old, $new, $vmPath) . ',' . PHP_EOL;
             $isExist[] = $column['column_name'];
         }
         return substr($content, 0, -2);
@@ -353,6 +355,8 @@ class WebEditPageGenerator extends BaseGenerator
                     $content = '{ validator: (rule: any, value: string, callback: any) => { '.
                         ' if (value && !/^\d{'.$between.'}$/.test(value)) {'. " callback(new Error(t('".'generateBetween'."')))".'} else { callback() }}},';
                 }
+            }else{
+                $content = '';
             }
         }else{
             $content = '';

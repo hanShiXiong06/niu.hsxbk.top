@@ -205,7 +205,24 @@ class CoreAddonInstallService extends CoreAddonBaseService
                 $this->install_task['step'][] = $step;
                 $this->$step();
             }
-            if ($mode == 'cloud') Cache::set('install_task', $this->install_task);
+            if ($mode == 'cloud') {
+                Cache::set('install_task', $this->install_task);
+            } else {
+                // 配置文件
+                $package_path = $this->install_addon_path . 'package' . DIRECTORY_SEPARATOR;
+                $package_file = [];
+                search_dir($package_path, $package_file);
+                $package_file = array_map(function ($file) use ($package_path) {
+                    return str_replace($package_path . DIRECTORY_SEPARATOR, '', $file);
+                }, $package_file);
+
+                $tips = [get_lang('dict_addon.install_after_update')];
+                if (in_array('admin-package.json', $package_file)) $tips[] = get_lang('dict_addon.install_after_admin_update');
+                if (in_array('composer.json', $package_file)) $tips[] = get_lang('dict_addon.install_after_composer_update');
+                if (in_array('uni-app-package.json', $package_file)) $tips[] = get_lang('dict_addon.install_after_wap_update');
+                if (in_array('web-package.json', $package_file)) $tips[] = get_lang('dict_addon.install_after_web_update');
+                return $tips;
+            }
             return true;
         } catch (\Exception $e) {
             Cache::set('install_task', null);

@@ -42,7 +42,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 import useUserStore from '@/stores/modules/user'
 const userStore = useUserStore()
-const loading = ref(false)
+const loading = ref(true)
 const detail = reactive({
     appList: []
 })

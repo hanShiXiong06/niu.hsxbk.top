@@ -195,6 +195,7 @@ class Generate
         foreach ($this->getGenerator() as $item) {
             $generator = app()->make($item);
             $generator->init($table);
+
             $file_info = $generator->fileInfo();
             if(!empty($file_info))
             {

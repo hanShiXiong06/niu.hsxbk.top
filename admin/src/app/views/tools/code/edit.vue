@@ -52,7 +52,7 @@
                     <el-table :data="formData.table_column" size="large" ref="tableRef" :key="toggleIndex">
                         <el-table-column align="center" label="操作" width="80">
                             <template #default>
-                                <i class="iconfont iconfenlei vab-rank cursor-pointer"></i>
+                                <i class="iconfont iconfenlei vues-rank cursor-pointer"></i>
                             </template>
                         </el-table-column>
                         <el-table-column :label="t('columnName')" prop="column_name" min-width="130px" />
@@ -255,7 +255,7 @@
                         <el-button type="primary" class="w-[100px]" @click="addEvent(null, 0)">{{ t('insertAssociated')
                         }}</el-button>
                     </div>
-                    <el-table :data="formData.relations" size="large" ref="tableRef" :key="toggleIndex">
+                    <el-table :data="formData.relations" size="large">
                         <el-table-column :label="t('associatedType')" prop="type" min-width="130px" />
                         <el-table-column :label="t('associatedName')" prop="name" min-width="130px" />
                         <el-table-column :label="t('addons')" prop="addon" min-width="130px" />
@@ -404,6 +404,9 @@ const addonList = ref<Array<any>>([])
 const getAddonDevelopFn = (search: string) => {
     getAddonDevelop({ search }).then(res => {
         addonList.value = res.data
+        nextTick(() => {
+            rowDrop()
+        })
     })
 }
 //拖拽排序
@@ -412,7 +415,7 @@ const rowDrop = () => {
         '.el-table__body-wrapper tbody'
     )
     Sortable.create(tbody, {
-        handle: '.vab-rank',
+        handle: '.vues-rank',
         animation: 300,
         onEnd({ newIndex, oldIndex }) {
             const tableData = formData.table_column
@@ -426,7 +429,6 @@ const rowDrop = () => {
     })
 }
 onMounted(() => {
-    rowDrop()
     getAddonDevelopFn('')
 })
 //删除类型change

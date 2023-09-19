@@ -18,7 +18,8 @@
             </el-collapse>
 
             <div class="mt-[50px]">
-                <el-button type="primary" @click="insert" :loading="uploading">{{ t('codeDownTwoDesc') }}</el-button>
+                <el-button type="primary" @click="insert" :loading="uploading">{{ t('cloudRelease') }}</el-button>
+                <el-button @click="localInsert">{{ t('localRelease') }}</el-button>
             </div>
             <el-table class="mt-[15px]" :data="weappTableData.data" v-loading="weappTableData.loading" size="default">
                 <template #empty>
@@ -175,12 +176,18 @@ const insert = () => {
     })
 }
 
+const localInsert = () => {
+    ElMessageBox.alert(t('localInsertTips'), t('warning'), {
+        confirmButtonText: t('confirm')
+    })
+}
+
 const previewContent = ref('')
 const getWeappPreviewImage = () => {
     if (!authCode.value) return
     getWeappPreview()
         .then(res => {
-
+            if (res.data) previewContent.value = `<img src="${res.data}" class="w-[150px]">`
         })
         .catch()
 }
@@ -196,6 +203,7 @@ const getWeappUploadLogFn = (key: string) => {
             }
             if (last.code == 1 && last.percent == 100) {
                 getWeappVersionListFn()
+                getWeappPreviewImage()
                 return
             }
             setTimeout(() => {

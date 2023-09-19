@@ -55,6 +55,7 @@
                         <upload-file v-model="formData.upload_private_key" api="sys/document/wechat" />
                     </div>
                     <div class="form-tip">{{ t('uploadKeyTips') }}</div>
+                    <div class="form-tip">{{ t('uploadIpTips') }}{{ formData.upload_ip }}</div>
                 </el-form-item>
             </el-card>
 

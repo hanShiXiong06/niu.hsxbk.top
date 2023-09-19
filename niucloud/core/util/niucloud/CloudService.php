@@ -26,4 +26,8 @@ class CloudService
     public function request(string $method, string $url, array $options = []) {
         return (new Client(['base_uri' => $this->baseUri ]))->request($method, $url, $options);
     }
+
+    public function getUrl(string $url) {
+        return $this->baseUri . $url;
+    }
 }

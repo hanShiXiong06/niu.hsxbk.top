@@ -4347,6 +4347,7 @@ CREATE TABLE `weapp_version` (
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态',
   `update_time` int(11) NOT NULL DEFAULT '0',
   `fail_reason` VARCHAR(2000) NOT NULL DEFAULT '',
+  `task_key` varchar(20) NOT NULL DEFAULT '' COMMENT '上传任务key',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

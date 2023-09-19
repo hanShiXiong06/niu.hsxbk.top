@@ -30,18 +30,24 @@
             </el-aside>
         </div>
         <!-- 浮动样式的应用菜单 -->
-        <div v-if="!floatMenuStyle && floatActive && applyList.filter(el => { return el.type === 'app' }).length"
-            class="flex absolute bg-[#fff] w-[640px] px-[28px] py-[20px] flex-wrap left-0 top-[65px] z-50 box-border shadow-lg">
-            <template v-for="(item, index) in applyList" :key="index">
-                <div v-if="item.type == 'app'" @click="toLink(item)" class="flex items-center cursor-pointer text-[#6d7278] hover:bg-[#f1f2f6] whitespace-nowrap py-[10px] px-[15px] box-border w-[165px]">
-                    <img :src="img(item.icon)" class="w-[44px] h-[44px] rounded-full mr-[5px]" alt="" :title="item.title">
-                    <span>{{ item.title }}</span>
+        <div class="one-menus-float-style">
+            <el-dialog v-model="floatActive" :show-close="false">
+                <div v-if="!floatMenuStyle && applyList.filter(el => { return el.type === 'app' }).length"
+                    class="flex bg-[#fff] w-[640px] px-[28px] py-[20px] flex-wrap box-border shadow-lg one-menus-wrap">
+                    <template v-for="(item, index) in applyList" :key="index">
+                        <div v-if="item.type == 'app'" @click="toLink(item)" class="flex items-center cursor-pointer text-[#6d7278] hover:bg-[#f1f2f6] whitespace-nowrap py-[10px] px-[15px] box-border w-[165px]">
+                            <img :src="img(item.icon)" class="w-[44px] h-[44px] rounded-full mr-[5px]" alt="" :title="item.title">
+                            <span>{{ item.title }}</span>
+                        </div>
+                    </template>
+                    <div v-if="!applyList.length" class="flex-1 text-center">暂无安装应用</div>
                 </div>
-            </template>
+            </el-dialog>
         </div>
+        
         <!-- 二级菜单 -->
         <template v-for="(item, index) in menus" :key="index">
-            <div v-if="isTwoMenuFn(item)" class="w-[189px] box-border border-r-[1px] border-solid second-menu">
+            <div v-if="isTwoMenuFn(item)" :class="[(floatMenuStyle ? 'w-[210px]' : 'w-[189px]'),'box-border border-r-[1px] border-solid second-menu']">
                 <div
                     class="group flex flex-col items-center justify-center h-[64px] border-b-[1px] border-solid second-head cursor-pointer relative">
                     <div class="flex items-center">
@@ -64,6 +70,7 @@
                                 <span>{{ item.title }}</span>
                             </div>
                         </template>
+                        <div v-if="!applyList.length" class="flex-1 text-center">暂无安装应用</div>
                     </div>
                 </div>
 
@@ -723,4 +730,19 @@ const isTwoMenuFn = (item) => {
 
 .menus-wrap {
     height: calc(100vh - 64px);
-}</style>
+}
+</style>
+<style>
+.one-menus-float-style .el-overlay{
+    background-color: transparent;
+}
+.one-menus-float-style .el-dialog__header, .one-menus-float-style .el-dialog__body{
+    padding: 0;
+}
+.one-menus-float-style .one-menus-wrap{
+    position: fixed;
+    left: 0;
+    top: 65px;
+    z-index: 5555;
+}
+</style>

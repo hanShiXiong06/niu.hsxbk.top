@@ -355,6 +355,8 @@ class WebEditGenerator extends BaseGenerator
                     $content = '{ validator: (rule: any, value: string, callback: any) => { '.
                         ' if (value && !/^\d{'.$between.'}$/.test(value)) {'. " callback(new Error(t('".'generateBetween'."')))".'} else { callback() }}},';
                 }
+            }else{
+                $content = '';
             }
         }else{
             $content = '';

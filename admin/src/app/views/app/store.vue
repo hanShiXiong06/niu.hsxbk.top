@@ -306,11 +306,11 @@
                     :show-log-time="true" />
             </div>
             <div v-show="installStep == 3" class="h-[50vh] mt-[20px] flex flex-col">
+                <el-result icon="success" :title="t('addonInstallSuccess')"></el-result>
                 <!-- 提示信息 -->
-                <div v-for="item in installWarning" class="mb-[10px]">
+                <div v-for="item in installAfterTips" class="mb-[10px]">
                     <el-alert :title="item" type="warning" :closable="false" />
                 </div>
-                <el-result icon="success" :title="t('addonInstallSuccess')"></el-result>
             </div>
         </el-dialog>
     </div>
@@ -331,6 +331,7 @@ const activeName = ref('installed')
 const loading = ref<Boolean>(false)
 const showType = ref('large')
 const downloading = ref('')
+const installAfterTips = ref<string[]>([])
 
 const downEvent = (param: Record<string, any>) => {
     if (downloading.value) return
@@ -422,8 +423,6 @@ const installShowDialog = ref(false)
 const installStep = ref(1)
 // 安装检测结果
 const installCheckResult = ref({})
-// 安装警告
-const installWarning = ref<string[]>([])
 
 /**
  * 安装
@@ -431,9 +430,9 @@ const installWarning = ref<string[]>([])
  */
 const installAddonFn = (key: string) => {
     currAddon.value = key
-    installStep.value = 1
-    installWarning.value = []
+    installStep.value = 3
     installShowDialog.value = true
+    installAfterTips.value = []
 
     preInstallCheck(key).then(res => {
         installCheckResult.value = res.data
@@ -500,6 +499,7 @@ const handleInstall = () => {
         installStep.value = 3
         localListFn()
         localInstalling.value = false
+        if (res.data.length) installAfterTips.value = res.data
     }).catch((res) => {
         localInstalling.value = false
     })

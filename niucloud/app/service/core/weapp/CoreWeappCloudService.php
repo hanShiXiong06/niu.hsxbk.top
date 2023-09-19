@@ -128,7 +128,15 @@ class CoreWeappCloudService extends CoreCloudBaseService
         $query = [
             'authorize_code' => $this->auth_code,
         ];
-        return (new CloudService())->httpGet('cloud/get_weapp_preview?' . http_build_query($query));
+        $preview_url = (new CloudService())->getUrl('cloud/get_weapp_preview?' . http_build_query($query));
+
+        try {
+            $path = runtime_path() . uniqid() . '.jpg';
+            file_put_contents($path, file_get_contents($preview_url));
+            return image_to_base64($path, true);
+        } catch (\Exception $e) {
+            return '';
+        }
     }
 
     /**
