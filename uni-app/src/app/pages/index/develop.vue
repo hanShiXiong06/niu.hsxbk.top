@@ -1,7 +1,7 @@
 <template>
 	<view class="mt-[80rpx] px-[60rpx]">
 		<view class="font-bold text-xl mb-[80rpx]">{{t('developTitle')}}</view>
-		<view class="mb-[40rpx] flex flex-col">
+		<view class="mb-[40rpx] flex flex-col">  
 			<text class="mb-[10rpx]">{{ t('baseUrl') }}</text>
 			<text class="text-sm">{{formData.baseUrl}}</text>
 		</view>
