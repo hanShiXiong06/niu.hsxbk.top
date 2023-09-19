@@ -14,7 +14,7 @@
             </div>
             <div class="flex flex-wrap plug-list pb-10 plug-large" v-if="applyList.list.length">
                 <div v-for="(item, index) in applyList.list" :key="index + 'b'">
-                    <div v-if="appLink[item.key] && item.type == 'addon'" class="relative app-item cursor-pointer px-4 mr-4 mt-[20px] bg-[#f7f7f7] border-[1px] hover:border-primary">
+                    <div class="relative app-item cursor-pointer px-4 mr-4 mt-[20px] bg-[#f7f7f7] border-[1px] hover:border-primary">
                         <div @click="toLink(item.key)"  class="flex py-5 items-center">
                             <div class="flex justify-center items-center">
                                 <el-image class="w-[40px] h-[40px]" :src="img(item.icon)" fit="contain">
@@ -64,10 +64,12 @@ const applyList = reactive({
 let loading = ref(true)
 const getApplelist = async () => {
     const res = await getApply({title: applyList.search.title})
-    applyList.list = res.data
+    applyList.list = res.data.filter(el=>{
+        return appLink.value[el.key] &&el.type == 'addon'
+    })
     loading.value = false
 }
-getApplelist()
+
 
 const appLink = ref({})
 const getAppLink = () => {
@@ -80,6 +82,7 @@ const getAppLink = () => {
             }
         }
     })
+    getApplelist()
 }
 getAppLink()
 

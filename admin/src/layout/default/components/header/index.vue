@@ -29,7 +29,7 @@
                         <icon name="iconfont-iconqiehuan" :title="t('indexSwitch')" />
                     </div>
                     <!-- 切换语言 -->
-                    <div class="navbar-item flex items-center h-full cursor-pointer">
+                    <div class="navbar-item !px-[0] flex items-center h-full cursor-pointer">
                         <switch-lang />
                     </div>
                     <!-- 切换全屏 -->
@@ -38,7 +38,7 @@
                         <icon name="iconfont-iconquanping" v-else />
                     </div>
                     <!-- 布局设置 -->
-                    <div class="navbar-item flex items-center h-full cursor-pointer">
+                    <div class="navbar-item !px-[0] flex items-center h-full cursor-pointer">
                         <layout-setting />
                     </div>
                     <!-- 用户信息 -->

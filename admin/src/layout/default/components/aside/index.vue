@@ -1,23 +1,11 @@
 <template>
-    <div :class="['flex', { 'two-type': sidebar == 'twoType' }, { 'three-type': sidebar == 'threeType' }]">
+    <div :class="['flex', { 'two-type': sidebar == 'twoType' }, { 'three-type': sidebar == 'threeType' }]" v-if="isLoad">
 
         <div class="w-[65px] overflow-hidden" v-if="!floatMenuStyle">
             <el-aside
                 :class="['h-screen layout-aside w-[65px] pb-[30px] bg-[#F7F8FA] ease-in duration-200', { 'bright': !dark }]">
                 <!-- 一级菜单 -->
-                <div class="h-full flex flex-col relative">
-                    <!-- <el-header class="logo-wrap h-auto mb-[10px]">
-                        <div class="logo flex items-center m-auto max-w-[210px] h-[60px] justify-center"#19233C>
-                            <span class="iconfont iconyun text-[#999] !text-[36px]"></span>
-                        </div>
-                    </el-header> -->
-
-                    <!-- <template v-for="(item, index) in applyList" :key="index">
-                        <div v-if="item.type == 'app'" @click="appToLink(item.key)"
-                            class=" flex items-center justify-center h-[45px] mb-[5px] cursor-pointer text-[#6d7278] hover:bg-[#f1f2f6] menu-item hover:text-color whitespace-nowrap">
-                            <img :src="img(item.icon)" class="w-[35px] h-[35px] rounded-full" alt="" :title="item.title">
-                        </div>
-                    </template> -->
+                <div class="h-full flex flex-col relative">                    
                     <div class=" flex items-center justify-center h-[64px] cursor-pointer cut-style"
                         @click="floatActive = !floatActive">
                         <span class="iconfont icontuodong !text-[30px] "></span>
@@ -43,11 +31,9 @@
         </div>
         <!-- 浮动样式的应用菜单 -->
         <div v-if="!floatMenuStyle && floatActive && applyList.filter(el => { return el.type === 'app' }).length"
-            class="flex absolute bg-[#fff] w-[640px] px-[28px] py-[20px] flex-wrap left-0 top-[65px] z-10 box-border shadow-lg">
-
+            class="flex absolute bg-[#fff] w-[640px] px-[28px] py-[20px] flex-wrap left-0 top-[65px] z-50 box-border shadow-lg">
             <template v-for="(item, index) in applyList" :key="index">
-                <div v-if="item.type == 'app'" @click="appToLink(item.key)"
-                    class="flex items-center cursor-pointer text-[#6d7278] hover:bg-[#f1f2f6] whitespace-nowrap py-[10px] px-[15px]">
+                <div v-if="item.type == 'app'" @click="toLink(item)" class="flex items-center cursor-pointer text-[#6d7278] hover:bg-[#f1f2f6] whitespace-nowrap py-[10px] px-[15px] box-border w-[165px]">
                     <img :src="img(item.icon)" class="w-[44px] h-[44px] rounded-full mr-[5px]" alt="" :title="item.title">
                     <span>{{ item.title }}</span>
                 </div>
@@ -60,20 +46,19 @@
                     class="group flex flex-col items-center justify-center h-[64px] border-b-[1px] border-solid second-head cursor-pointer relative">
                     <div class="flex items-center">
                         <template v-if="floatMenuStyle">
-                            <img v-if="appInfo.icon" :src="img(appInfo.icon)" class="w-[40px] h-[40px] mr-[8px]" alt="">
-                            <div class="flex items-center justify-center w-[30px] h-[30px]"
-                                v-else-if="Object.keys(appInfo).length">
+                            <img v-if="item.meta.parentIcon" :src="img(item.meta.parentIcon)" class="w-[40px] h-[40px] mr-[8px]" alt="">
+                            <div class="flex items-center justify-center w-[30px] h-[30px]" v-else>
                                 <icon v-if="item.meta.icon" :name="item.meta.icon" class="!w-auto" size="24px" />
                             </div>
                         </template>
-                        <span>{{ item.meta.app ? appInfo.title : item.meta.title }}</span>
+                        <span>{{ item.meta.app ? item.meta.parentTitle : item.meta.title }}</span>
                     </div>
                     <!-- 浮动样式的应用菜单 -->
                     <div v-if="floatMenuStyle && applyList.filter(el => { return el.type === 'app' }).length"
-                        class="hidden group-hover:flex absolute bg-[#fff] w-[640px] px-[28px] py-[20px] flex-wrap left-0 top-[65px] z-10 box-border shadow-lg">
+                        class="hidden group-hover:flex absolute bg-[#fff] w-[640px] px-[28px] py-[20px] flex-wrap left-0 top-[65px] z-[5555] box-border shadow-lg">
                         <template v-for="(item, index) in applyList" :key="index">
-                            <div v-if="item.type == 'app'" @click="appToLink(item.key)"
-                                class="flex items-center justify-center cursor-pointer text-[#6d7278] hover:bg-[#f1f2f6] whitespace-nowrap py-[10px] px-[15px]">
+                            <div v-if="item.type == 'app'" @click="toLink(item)"
+                                class="flex items-center cursor-pointer text-[#6d7278] hover:bg-[#f1f2f6] whitespace-nowrap py-[10px] px-[15px] w-[165px] box-border">
                                 <img :src="img(item.icon)" class="w-[44px] h-[44px] rounded-full mr-[5px]" alt=""
                                     :title="item.title">
                                 <span>{{ item.title }}</span>
@@ -235,6 +220,7 @@
                                                 </template>
                                             </el-menu-item>
                                         </template>
+
                                         <!-- 插件菜单 -->
                                         <template v-if="otherTypeList.includes(localMenuKey) && plugMenuType">
                                             <template v-for="(twoMenu, twoIndex) in menus">
@@ -422,12 +408,12 @@ const globalAppKey = ref('') // 菜单类型
 const localMenuKey = ref('') // 菜单类型
 globalAppKey.value = storage.get('menuAppStorage')
 localMenuKey.value = storage.get('menuAppStorage')
+const isLoad = ref(false);
 
 // 应用跳转 start
 const applyList = ref([])
 const applyTypeList = ref([])
 const otherTypeList = ref([]) // 存着插件\会员\应用管理
-// let aaa = ref(true)
 const getApplelist = async () => {
     const res = await getApply()
     applyList.value = applyList.value.concat(res.data)
@@ -435,58 +421,43 @@ const getApplelist = async () => {
         if (item.type == 'app') { applyTypeList.value.push(item.key) }
         if (item.type == 'addon') { otherTypeList.value.push(item.key) }
     })
-    otherTypeList.value = otherTypeList.value.concat(['member', 'overview'])
-    // aaa.value = true;
+    otherTypeList.value = otherTypeList.value.concat(['member', 'app_center'])
+    isLoad.value = true;
 }
 getApplelist()
+
 const floatActive = ref(false)
-const appLink = ref({})
-const getAppLink = () => {
-    userStore.routers.forEach((item, index) => {
-        if (item.meta.app != '') {
-            if (item.children && item.children.length) {
-                appLink.value[item.meta.app] = findFirstValidRoute(item.children)
-            } else {
-                appLink.value[item.meta.app] = item.name
-            }
-        }
-    })
-}
-getAppLink()
-const appToLink = (addon: string) => {
-    globalAppKey.value = addon
-    localMenuKey.value = addon
-
-    storage.set({ key: 'menuAppStorage', data: addon })
-    storage.set({ key: 'plugMenuTypeStorage', data: '' })
-
-    const data = userStore.appMenuList
-    if (!data.length) {
-        data.push(addon)
-    } else if (!data.includes(addon)) {
-        data.push(addon)
-    }
-
-    userStore.setAppMenuList(data)
-    floatActive.value = false
-    router.push({ name: appLink.value[addon] })
-}
 const homeClick = () => {
     const key = storage.get('menuAppStorage')
     key ? router.push({ name: appLink.value[key] }) : router.push({ path: '/' })
 }
 // 应用跳转 end
 
+// 菜单
+const appLink = ref({})
 const menus = computed(() => {
     const menus = []
     userStore.routers.forEach((item, index) => {
         if (item.children && item.children.length) {
             item.name = findFirstValidRoute(item.children)
+            appLink.value[item.meta.app] = findFirstValidRoute(item.children)
             menus.push(item)
         } else {
+            appLink.value[item.meta.app] = item.name
             menus.push(item)
         }
     })
+
+    if(applyList.value && applyList.value.length){
+        applyList.value.forEach((item,index) =>{
+            menus.forEach((menuItem,menuIndex)=>{
+                if(item.key == menuItem.meta.key){
+                    menuItem.meta.parentTitle = item.title;
+                    menuItem.meta.parentIcon = item.icon;
+                }
+            })
+        })
+    }
     return menus
 })
 
@@ -494,14 +465,7 @@ const dark = computed(() => {
     return systemStore.dark
 })
 
-// 获取应用详情
-const appInfo = ref({})
-const getAppInfo = (type) => {
-    getAddonByKey(type).then(res => {
-        appInfo.value = res.data
-    })
-}
-
+// 监听路由
 let currMetaAppType = ''
 const plugMenuType = ref('') // 插件类型
 const currentRoute = ref('') // 当前路由
@@ -512,28 +476,29 @@ watch(route, () => {
     currentRoute.value = route.matched[1]
     localMenuKey.value = data.meta.key
 
-    data.meta.app = !data.meta.app && !data.meta.attr ? 'member' : data.meta.app
-
-    // 等待applist加载完成
-    setTimeout(() => {
-        // 获取应用详情
-        if (data.meta.app && (!currMetaAppType || currMetaAppType != data.meta.app)) {
-            appInfo.value = {}
-            currMetaAppType = data.meta.app
-            const appInfoKey = otherTypeList.value.includes(data.meta.app) ? globalAppKey.value : data.meta.app
-            getAppInfo(appInfoKey)
-        }
-    }, 800)
-
     systemStore.$patch(state => {
         state.menuDrawer = false
     })
 }, { immediate: true })
 
-// 跳转链接
 const toLink = (data) => {
-    if (data.meta.key != 'official_market') {
-        router.push({ name: data.name })
+    if (!data.meta && data.type == 'app' || data.meta.key != 'official_market') {
+        let name = data.name;
+        if(data.type == 'app'){
+            globalAppKey.value = data.key
+            localMenuKey.value = data.key
+
+            storage.set({ key: 'menuAppStorage', data: data.key })
+            storage.set({ key: 'plugMenuTypeStorage', data: '' })
+
+            const appMenuList = userStore.appMenuList
+            appMenuList.push(data.key)
+            userStore.setAppMenuList(appMenuList)
+            floatActive.value = false
+
+            name = appLink.value[data.key];
+        }
+        router.push({ name: name })
     } else {
         window.open('https://www.niucloud.com/product/', '_blank')
     }
@@ -560,6 +525,7 @@ const isTwoMenuFn = (item) => {
         || (floatMenuStyle.value && applyTypeList.value.includes(localMenuKey.value) && (item.meta.key == localMenuKey.value || item.meta.app == localMenuKey.value))
         || (floatMenuStyle.value && !applyTypeList.value.length && (item.meta.key == localMenuKey.value || item.meta.app == localMenuKey.value))
         || (!floatMenuStyle.value && !otherTypeList.value.includes(localMenuKey.value) && (item.meta.key == localMenuKey.value || item.meta.app == localMenuKey.value))
+    
     return bool;
 }
 </script>

@@ -9,7 +9,7 @@
             </div>
             <div class="flex flex-wrap mt-[28px]">
                 <template v-for="(item, index) in detail.appList" :key="index">
-                    <div class="app-item w-[284px] box-border p-[18px] pb-[24px] bg-[#fff] rounded-[8px] cursor-pointer mr-[24px]"
+                    <div class="app-item w-[284px] box-border p-[18px] pb-[24px] bg-[#fff] rounded-[8px] cursor-pointer mr-[24px] mb-[24px]"
                         @click="itemPath(item.key)">
                         <div class="flex items-center">
                             <el-image class="w-[40px] h-[40px]  rounded-[8px]" :src="img(item.icon)" fit="contain">
@@ -72,6 +72,10 @@ const itemPath = (key: any) => {
 </script>
 
 <style lang="scss" scoped>
+.main-container{
+    background: linear-gradient(180deg, rgba(253,253,253,0.24) 0%, #FAFAFA 100%);
+    min-height: calc(100vh - 63px);
+}
 .overview-top {
     background-image: url('@/app/assets/images/index/overview.png');
     background-repeat: no-repeat;

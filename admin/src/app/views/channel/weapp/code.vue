@@ -18,7 +18,7 @@
             </el-collapse>
 
             <div class="mt-[50px]">
-                <el-button type="primary" @click="insert">{{ t('codeDownTwoDesc') }}</el-button>
+                <el-button type="primary" @click="insert" :loading="uploading">{{ t('codeDownTwoDesc') }}</el-button>
             </div>
             <el-table class="mt-[15px]" :data="weappTableData.data" v-loading="weappTableData.loading" size="default">
                 <template #empty>
@@ -74,21 +74,22 @@
             </template>
         </el-dialog>
 
-        <el-dialog v-model="uploading" title="" width="300px" :show-close="false" :align-center="true"
+        <!-- <el-dialog v-model="uploading" title="" width="300px" :show-close="false" :align-center="true"
             :close-on-click-modal="false">
             <template #default>
                 <div v-loading="uploading" class="w-full h-[100px]" :element-loading-text="t('uploadingTips')"></div>
             </template>
-        </el-dialog>
+        </el-dialog> -->
     </div>
 </template>
 
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
-import { setWeappVersion, getWeappPreview, getWeappVersionList, addProcess } from '@/app/api/weapp'
+import { setWeappVersion, getWeappPreview, getWeappVersionList, getWeappUploadLog, getWeappConfig } from '@/app/api/weapp'
 import { t } from '@/lang'
 import { useRoute, useRouter } from 'vue-router'
 import { getAuthinfo } from '@/app/api/module'
+import { ElMessageBox } from 'element-plus'
 
 const route = useRoute()
 const router = useRouter()
@@ -115,6 +116,11 @@ getAuthinfo().then(res => {
 }).catch(() => {
 })
 
+const weappConfig = ref({})
+getWeappConfig().then(res => {
+    weappConfig.value = res.data
+})
+
 const activeName = ref('/website/channel/weapp/code')
 const handleClick = (val: any) => {
     router.push({ path: activeName.value })
@@ -135,19 +141,13 @@ const getWeappVersionListFn = (page: number = 1) => {
         weappTableData.loading = false
         weappTableData.data = res.data.data
         weappTableData.total = res.data.total
+        if (page == 1 && weappTableData.data.length && weappTableData.data[0].status == 0) getWeappUploadLogFn(weappTableData.data[0].task_key)
     }).catch(() => {
         weappTableData.loading = false
     })
 }
 // loadWeappTemplateList()
 getWeappVersionListFn()
-
-const open = () => {
-    form.value = {
-        desc: ''
-    }
-    dialogVisible.value = true
-}
 
 const handleClose = () => {
     ruleFormRef.value.clearValidate()
@@ -156,27 +156,18 @@ const handleClose = () => {
 const uploading = ref(false)
 const insert = () => {
     if (!authCode.value) {
-        ElMessageBox.confirm(
-            t('authTips'),
-            t('warning'),
-            {
-                distinguishCancelAndClose: true,
-                confirmButtonText: t('toBind'),
-                cancelButtonText: t('toNiucloud')
-            }
-        ).then(() => {
-            router.push({ path: '/app/authorize' })
-        }).catch((action: string) => {
-            if (action === 'cancel') {
-                window.open('https://www.niucloud.com/product')
-            }
-        })
+        authElMessageBox()
         return
     }
+    if (!weappConfig.value.app_id) {
+        configElMessageBox()
+        return
+    }
+
     if (uploading.value) return
     uploading.value = true
 
-    setWeappVersion(form.value).then(() => {
+    setWeappVersion(form.value).then(res => {
         getWeappVersionListFn()
         uploading.value = false
     }).catch(() => {
@@ -194,8 +185,56 @@ const getWeappPreviewImage = () => {
         .catch()
 }
 
-const processEvent = (item) => {
-    addProcess({ id: item.id })
+const getWeappUploadLogFn = (key: string) => {
+    getWeappUploadLog(key).then(res => {
+        const data = res.data.data ?? []
+        if (data[0] && data[0].length) {
+            const last = data[0][data[0].length - 1]
+            if (last.code == 0) {
+                getWeappVersionListFn()
+                return
+            }
+            if (last.code == 1 && last.percent == 100) {
+                getWeappVersionListFn()
+                return
+            }
+            setTimeout(() => {
+                getWeappUploadLogFn(key)
+            }, 2000)
+        }
+    })
+}
+
+const authElMessageBox = () => {
+    ElMessageBox.confirm(
+        t('authTips'),
+        t('warning'),
+        {
+            distinguishCancelAndClose: true,
+            confirmButtonText: t('toBind'),
+            cancelButtonText: t('toNiucloud')
+        }
+    ).then(() => {
+        router.push({ path: '/app/authorize' })
+    }).catch((action: string) => {
+        if (action === 'cancel') {
+            window.open('https://www.niucloud.com/product')
+        }
+    })
+}
+
+const configElMessageBox = () => {
+    ElMessageBox.confirm(
+        t('weappTips'),
+        t('warning'),
+        {
+            confirmButtonText: t('toSetting'),
+            cancelButtonText: t('cancel')
+        }
+    ).then(() => {
+        router.push({ path: '/website/channel/weapp/config' })
+    }).catch((action: string) => {
+    })
 }
 </script>
 

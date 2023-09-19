@@ -59,6 +59,16 @@ export function getWeappPreview() {
 export function getWeappVersionList(params: Record<string, any>) {
     return request.get('weapp/version', { params })
 }
+
+/**
+ * 获取微信小程序上传日志
+ * @param key 
+ * @returns 
+ */
+export function getWeappUploadLog(key: string) {
+    return request.get(`weapp/upload/${key}`)
+}
+
 /***************************************************** 管理端 ****************************************************/
 
 /**
@@ -113,22 +123,4 @@ export function editVersion(params: Record<string, any>) {
  */
 export function deleteVersion(id: string) {
     return request.delete(`applet/version/${id}`)
-}
-
-/**
- * 版本下载
- * @param params
- * @returns
- */
-export function versionDown(id: string) {
-    return request.get(`applet/version/download/${id}`, { "responseType": "blob" })
-}
-
-/**
- * 版本提交
- * @param params
- * @returns
- */
-export function addProcess(params: Record<string, any>) {
-    return request.post('weapp/examine', params, { showSuccessMessage: true })
 }

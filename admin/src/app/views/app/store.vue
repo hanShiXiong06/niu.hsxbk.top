@@ -91,8 +91,7 @@
                                 <el-button v-else size="small" :loading="downloading == item.key"
                                     :disabled="downloading != ''" round
                                     class="!text-primary !border-primary !bg-transparent" @click.stop="downEvent(item)">{{
-                                        downloading == item.key ? t('downloading') : t('down')
-                                    }}</el-button>
+                                        t('down') }}</el-button>
                             </div>
                         </div>
 
@@ -121,9 +120,7 @@
                                         <el-button v-else size="small" :loading="downloading == item.key"
                                             :disabled="downloading != ''" round
                                             class="!text-primary !border-primary !bg-transparent"
-                                            @click.stop="downEvent(item)">{{ downloading == item.key ? t('downloading') :
-                                                t('down')
-                                            }}</el-button>
+                                            @click.stop="downEvent(item)">{{ t('down') }}</el-button>
                                     </div>
                                 </div>
                             </div>
@@ -160,8 +157,7 @@
                                 <el-button v-else size="small" :loading="downloading == item.key"
                                     :disabled="downloading != ''" round
                                     class="!text-primary !border-primary !bg-transparent" @click.stop="downEvent(item)">{{
-                                        downloading == item.key ? t('downloading') : t('down')
-                                    }}</el-button>
+                                        t('down') }}</el-button>
                             </div>
                         </div>
 
@@ -193,9 +189,7 @@
                                         <el-button v-else size="small" round :loading="downloading == item.key"
                                             :disabled="downloading != ''"
                                             class="!text-primary !border-primary !bg-transparent"
-                                            @click.stop="downEvent(item)">{{ downloading == item.key ? t('downloading') :
-                                                t('down')
-                                            }}</el-button>
+                                            @click.stop="downEvent(item)">{{ t('down') }}</el-button>
                                     </div>
                                 </div>
                             </div>
@@ -231,14 +225,14 @@
         </el-dialog>
 
         <!-- 安装弹窗 -->
-        <el-dialog v-model="installShowDialog" :title="t('addonInstall')" width="60vw" :close-on-click-modal="false"
+        <el-dialog v-model="installShowDialog" :title="t('addonInstall')" width="850px" :close-on-click-modal="false"
             :close-on-press-escape="false" :before-close="installShowDialogClose">
             <el-steps :space="200" :active="installStep" finish-status="success" align-center>
                 <el-step :title="t('envCheck')" class="flex-1" />
                 <el-step :title="t('installProgress')" class="flex-1" />
                 <el-step :title="t('installComplete')" class="flex-1" />
             </el-steps>
-            <div v-show="installStep == 0" v-loading="!installCheckResult.dir">
+            <div v-show="installStep == 1" v-loading="!installCheckResult.dir">
                 <el-scrollbar max-height="50vh">
                     <div class="min-h-[150px]">
                         <div class="bg-[#fff] my-3" v-if="installCheckResult.dir">
@@ -292,7 +286,7 @@
                         </div>
                     </div>
                 </el-scrollbar>
-                <div class="flex justify-end" v-if="mode == 'development'">
+                <div class="flex justify-end">
                     <el-tooltip effect="dark" :content="t('installTips')" placement="top">
                         <el-button type="default" :disabled="!installCheckResult.is_pass || cloudInstalling"
                             :loading="localInstalling" @click="handleInstall">{{
@@ -306,18 +300,12 @@
                             }}</el-button>
                     </el-tooltip>
                 </div>
-                <div class="flex justify-end" v-else>
-                    <el-button type="primary" :disabled="!installCheckResult.is_pass" :loading="cloudInstalling"
-                        @click="handleCloudInstall">{{
-                            t('cloudInstall')
-                        }}</el-button>
-                </div>
             </div>
-            <div v-show="installStep == 1" class="h-[50vh] mt-[20px]">
+            <div v-show="installStep == 2" class="h-[50vh] mt-[20px]">
                 <terminal name="my-terminal" :context="currAddon" :init-log="null" :show-header="false"
                     :show-log-time="true" />
             </div>
-            <div v-show="installStep > 1" class="h-[50vh] mt-[20px] flex flex-col">
+            <div v-show="installStep == 3" class="h-[50vh] mt-[20px] flex flex-col">
                 <!-- 提示信息 -->
                 <div v-for="item in installWarning" class="mb-[10px]">
                     <el-alert :title="item" type="warning" :closable="false" />
@@ -332,15 +320,16 @@
 import { ref, watch, computed, h } from 'vue'
 import { t } from '@/lang'
 import { getAddonLocal, uninstallAddon, installAddon, preInstallCheck, cloudInstallAddon, getAddonInstalltask, getAddonCloudInstallLog } from '@/app/api/addon'
-import { downloadVersion } from '@/app/api/module'
+import { downloadVersion, getAuthinfo } from '@/app/api/module'
 import { TabsPaneContext, ElMessageBox, ElNotification } from 'element-plus'
 import { img } from '@/utils/common'
 import { Terminal, api as terminalApi } from 'vue-web-terminal'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const activeName = ref('installed')
 const loading = ref<Boolean>(false)
 const showType = ref('large')
-const mode = ref(import.meta.env.MODE)
 const downloading = ref('')
 
 const downEvent = (param: Record<string, any>) => {
@@ -372,6 +361,14 @@ const allLabel = computed(() => {
     let text = t('buyLabel')
     localList.value.all.length && (text += ` (${localList.value.all.length})`)
     return text
+})
+
+const authCode = ref('')
+getAuthinfo().then(res => {
+    if (res.data.data && res.data.data.auth_code) {
+        authCode.value = res.data.data.auth_code
+    }
+}).catch(() => {
 })
 
 /**
@@ -422,7 +419,7 @@ const currAddon = ref('')
 // 安装面板弹窗
 const installShowDialog = ref(false)
 // 安装步骤
-const installStep = ref(0)
+const installStep = ref(1)
 // 安装检测结果
 const installCheckResult = ref({})
 // 安装警告
@@ -434,7 +431,7 @@ const installWarning = ref<string[]>([])
  */
 const installAddonFn = (key: string) => {
     currAddon.value = key
-    installStep.value = 0
+    installStep.value = 1
     installWarning.value = []
     installShowDialog.value = true
 
@@ -488,7 +485,7 @@ getInstallTask()
 
 const checkInstallTask = () => {
     installShowDialog.value = true
-    installStep.value = 1
+    installStep.value = 2
 }
 
 const localInstalling = ref(false)
@@ -513,17 +510,40 @@ const cloudInstalling = ref(false)
  * 云安装插件
  */
 const handleCloudInstall = () => {
+    if (!authCode.value) {
+        authElMessageBox()
+        return
+    }
+
     if (!installCheckResult.value.is_pass || cloudInstalling.value) return
     cloudInstalling.value = true
 
     cloudInstallAddon({ addon: currAddon.value }).then(res => {
-        installStep.value = 1
+        installStep.value = 2
         terminalApi.execute('my-terminal', 'clear')
         terminalApi.pushMessage('my-terminal', { content: '开始安装插件', class: 'info' })
         getInstallTask()
         cloudInstalling.value = false
     }).catch((res) => {
         cloudInstalling.value = false
+    })
+}
+
+const authElMessageBox = () => {
+    ElMessageBox.confirm(
+        t('authTips'),
+        t('warning'),
+        {
+            distinguishCancelAndClose: true,
+            confirmButtonText: t('toBind'),
+            cancelButtonText: t('toNiucloud')
+        }
+    ).then(() => {
+        router.push({ path: '/app/authorize' })
+    }).catch((action: string) => {
+        if (action === 'cancel') {
+            window.open('https://www.niucloud.com/product')
+        }
     })
 }
 
@@ -576,7 +596,7 @@ const market = () => {
  * @param done
  */
 const installShowDialogClose = (done: () => {}) => {
-    if (installStep.value == 1) {
+    if (installStep.value == 2) {
         ElMessageBox.confirm(
             t('installShowDialogCloseTips'),
             t('warning'),

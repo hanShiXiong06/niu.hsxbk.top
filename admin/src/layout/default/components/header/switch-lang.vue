@@ -1,6 +1,9 @@
 <template>
-    <el-dropdown @command="switchLang" :tabindex="1">
-        <icon name="iconfont-iconfanyi" />
+    <el-dropdown @command="switchLang" :tabindex="1" class="h-[100%] w-[100%]">
+        <div class="h-[100%] w-[100%] flex items-center justify-center px-[8px]">
+           <icon name="iconfont-iconfanyi" /> 
+        </div>
+        
         <template #dropdown>
             <el-dropdown-menu>
                 <el-dropdown-item command="zh-cn" :disabled="systemStore.lang == 'zh-cn'">简体中文</el-dropdown-item>
