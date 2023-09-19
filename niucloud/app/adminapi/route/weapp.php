@@ -29,17 +29,14 @@ Route::group('weapp', function () {
     //同步订阅消息
     Route::put('template/sync', 'weapp.Template/sync');
     Route::get('template', 'weapp.Template/lists');
-
-    //上传版本包
-    Route::post('upload', 'weapp.Version/document');
     //添加版本
     Route::post('version', 'weapp.Version/add');
     //版本列表
     Route::get('version', 'weapp.Version/lists');
-    //版本 提交审核
-    Route::post('examine', 'weapp.Version/examine');
     //获取预览码
     Route::get('preview', 'weapp.Version/preview');
+    //获取小程序上传日志
+    Route::get('upload/:key', 'weapp.Version/uploadLog');
 })->middleware([
     AdminCheckToken::class,
     AdminCheckRole::class,

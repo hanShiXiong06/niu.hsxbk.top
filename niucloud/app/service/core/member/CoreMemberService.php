@@ -58,11 +58,11 @@ class CoreMemberService extends BaseCoreService
      * @param int $member_id
      * @return array
      */
-    public function getInfoByMemberId(int $member_id){
+    public function getInfoByMemberId(int $member_id, string $field = '*'){
         $where = array(
             ['member_id', '=', $member_id]
         );
-        return $this->model->where($where)->findOrEmpty()->toArray();
+        return $this->model->where($where)->field($field)->findOrEmpty()->toArray();
     }
 
     /**

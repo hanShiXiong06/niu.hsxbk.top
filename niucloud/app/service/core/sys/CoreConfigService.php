@@ -34,6 +34,7 @@ class CoreConfigService extends BaseCoreService
      */
     public function getConfig(string $key)
     {
+
         $where = array(
             ['config_key', '=', $key],
         );

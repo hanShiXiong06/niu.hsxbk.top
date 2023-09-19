@@ -71,10 +71,10 @@ return
             ]
         ],
         [
-            'menu_name' => '网站装修',
+            'menu_name' => '装修发布',
             'menu_key' => 'website',
             'menu_type' => 0,
-            'icon' => 'iconfont-iconwangzhan1',
+            'icon' => 'iconfont-iconicon_huojian',
             'api_url' => '',
             'router_path' => 'website',
             'view_path' => '',
@@ -183,7 +183,7 @@ return
                     'menu_name' => '渠道管理',
                     'menu_key' => 'channel',
                     'menu_type' => 0,
-                    'icon' => 'iconfont-iconqudaoguanli2',
+                    'icon' => 'iconfont-iconicon_huojian',
                     'api_url' => '',
                     'router_path' => 'channel',
                     'view_path' => '',

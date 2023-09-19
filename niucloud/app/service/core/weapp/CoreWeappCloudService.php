@@ -11,7 +11,9 @@
 
 namespace app\service\core\weapp;
 
+use app\dict\sys\CloudDict;
 use app\model\addon\Addon;
+use app\model\weapp\WeappVersion;
 use app\service\core\addon\CoreAddonDevelopDownloadService;
 use app\service\core\niucloud\CoreCloudBaseService;
 use core\exception\CommonException;
@@ -68,9 +70,10 @@ class CoreWeappCloudService extends CoreCloudBaseService
             'appid' => $config['app_id'],
             'version' => $data['version'] ?? '',
             'desc' => $data['desc'] ?? '',
-            'do' => 1
+            'do' => 1,
+            'timestamp' => time()
         ];
-        (new CloudService())->httpPost('cloud/wechat?' . http_build_query($query), [
+        (new CloudService())->httpPost('cloud/weapp?' . http_build_query($query), [
             'multipart' => [
                 [
                     'name'     => 'file',
@@ -83,7 +86,7 @@ class CoreWeappCloudService extends CoreCloudBaseService
         // 删除临时文件
         del_target_dir(runtime_path() . 'backup' . DIRECTORY_SEPARATOR . 'weapp', true);
 
-        return ['key' => $task_key];
+        return ['key' => $query['timestamp'] ];
     }
 
     /**
@@ -125,6 +128,31 @@ class CoreWeappCloudService extends CoreCloudBaseService
         $query = [
             'authorize_code' => $this->auth_code,
         ];
-        return (new CloudService())->httpGet('cloud/get_wechat_preview?' . http_build_query($query));
+        return (new CloudService())->httpGet('cloud/get_weapp_preview?' . http_build_query($query));
+    }
+
+    /**
+     * 获取小程序编译日志
+     * @param string $timestamp
+     * @return void
+     */
+    public function getWeappCompileLog(string $timestamp) {
+        $query = [
+            'authorize_code' => $this->auth_code,
+            'timestamp' => $timestamp
+        ];
+        $build_log = (new CloudService())->httpGet('cloud/get_weapp_logs?' . http_build_query($query));
+
+        if (isset($build_log['data']) && isset($build_log['data'][0]) && is_array($build_log['data'][0])) {
+            $last = end($build_log['data'][0]);
+            if ($last['code'] == 0) {
+                (new WeappVersion())->update(['status' => CloudDict::APPLET_UPLOAD_FAIL, 'fail_reason' => $last['msg'] ?? '', 'update_time' => time() ], ['task_key' => $timestamp]);
+                return $build_log;
+            }
+            if ($last['percent'] == 100) {
+                (new WeappVersion())->update(['status' => CloudDict::APPLET_UPLOAD_SUCCESS, 'update_time' => time() ], ['task_key' => $timestamp]);
+            }
+        }
+        return $build_log;
     }
 }

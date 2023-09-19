@@ -52,8 +52,7 @@ class Version extends BaseAdminController
         $data = $this->request->params([
             ['desc', '']
         ]);
-        $id = (new WeappVersionService())->add($data);
-        return success('ADD_SUCCESS');
+        return success(data:(new WeappVersionService())->add($data));
     }
 
     /**
@@ -78,35 +77,11 @@ class Version extends BaseAdminController
     }
 
     /**
-     * 设置状态
-     * @param int $id
-     * @param $status
+     * 获取小程序上传日志
+     * @param string $key
      * @return Response
      */
-    public function setStatus(int $id, $status)
-    {
-        (new WeappVersionService())->setStatus($id, $status);
-        return success('EDIT_SUCCESS');
-    }
-
-    /**
-     * 小程序包上传
-     * @return Response
-     * @throws Exception
-     */
-    public function document()
-    {
-        $data = $this->request->params([
-            ['file', 'file'],
-        ]);
-        return success(data: (new WeappVersionService())->document($data['file']));
-    }
-
-    public function examine()
-    {
-        $data = $this->request->params([
-            ['id', ''],
-        ]);
-        (new WeappVersionService())->weappExamine($data['id']);
+    public function uploadLog(string $key) {
+        return success(data: (new WeappVersionService())->getUploadLog($key));
     }
 }

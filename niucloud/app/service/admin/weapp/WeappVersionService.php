@@ -44,7 +44,7 @@ class WeappVersionService extends BaseAdminService
         $version_no += 1;
         $version = "1.0.{$version_no}";
 
-        (new CoreWeappCloudService())->uploadWeapp([
+        $upload_res = (new CoreWeappCloudService())->uploadWeapp([
             'version' => $version,
             'desc' => $data['desc'] ?? ''
         ]);
@@ -53,7 +53,8 @@ class WeappVersionService extends BaseAdminService
             'version' => $version,
             'version_no' => $version_no,
             'desc' => $data['desc'] ?? '',
-            'create_time' => time()
+            'create_time' => time(),
+            'task_key' => $upload_res['key']
         ]);
         return $res->id;
     }
@@ -73,7 +74,7 @@ class WeappVersionService extends BaseAdminService
      */
     public function getPage(array $where = [])
     {
-        $field = 'id, version, version_no, desc, create_time, status, fail_reason';
+        $field = 'id, version, version_no, desc, create_time, status, fail_reason, task_key';
         $order = 'version_no desc';
         $search_model = $this->model->field($field)->order($order)->append(['status_name']);
         return $this->pageQuery($search_model);
@@ -94,20 +95,6 @@ class WeappVersionService extends BaseAdminService
     }
 
     /**
-     * 文件上传
-     * @param $file
-     * @param string $type
-     * @return array
-     * @throws Exception
-     */
-    public function document($file){
-        $core_upload_service = new CoreUploadService();
-        $type = FileDict::APPLET;
-        $dir = '/applet/'.$type.'/version/';
-        return $core_upload_service->document($file, $type, $dir, StorageDict::LOCAL);
-    }
-
-    /**
      * 删除
      * @param int $id
      * @return true
@@ -117,20 +104,12 @@ class WeappVersionService extends BaseAdminService
         return true;
     }
 
-    public function weappExamine($id)
-    {
-        $info = $this->model->where([['id', '=', $id]])->findOrEmpty()->toArray();
-        if(empty($info)) return;
-
-        $url = 'http://127.0.0.1:36949/v2/upload?project='. $info['path'] .'&version=v'.$info['code'];
-//        $url = "http://www.example.com/api/getdata.php?id=12";
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $output = curl_exec($ch);
-        curl_close($ch);
-        echo $output;
-
-
+    /**
+     * 获取小程序上传日志
+     * @param string $key
+     * @return null
+     */
+    public function getUploadLog(string $key) {
+        return (new CoreWeappCloudService())->getWeappCompileLog($key);
     }
 }
