@@ -430,7 +430,7 @@ const installCheckResult = ref({})
  */
 const installAddonFn = (key: string) => {
     currAddon.value = key
-    installStep.value = 3
+    installStep.value = 1
     installShowDialog.value = true
     installAfterTips.value = []
 
