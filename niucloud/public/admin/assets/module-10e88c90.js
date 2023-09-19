@@ -1,0 +1,1 @@
+import{c as n}from"./index-e89181d8.js";function u(){return n.get("niucloud/authinfo")}function e(){return n.get("niucloud/admin/authinfo")}function d(o){return n.post(`addon/download/${o.addon}`,o,{showSuccessMessage:!0})}export{e as a,d,u as g};
