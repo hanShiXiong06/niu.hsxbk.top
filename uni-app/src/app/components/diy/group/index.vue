@@ -27,6 +27,39 @@
             <template v-if="component.componentName == 'Text'">
                 <diy-text :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-text>
             </template>
+            <template v-if="component.componentName == 'TourismHotel'">
+                <diy-tourism-hotel :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-tourism-hotel>
+            </template>
+            <template v-if="component.componentName == 'TourismTickets'">
+                <diy-tourism-tickets :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-tourism-tickets>
+            </template>
+            <template v-if="component.componentName == 'TourismTravel'">
+                <diy-tourism-travel :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-tourism-travel>
+            </template>
+            <template v-if="component.componentName == 'TourismHotel'">
+                <diy-tourism-hotel :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-tourism-hotel>
+            </template>
+            <template v-if="component.componentName == 'TourismTickets'">
+                <diy-tourism-tickets :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-tourism-tickets>
+            </template>
+            <template v-if="component.componentName == 'TourismTravel'">
+                <diy-tourism-travel :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-tourism-travel>
+            </template>
+            <template v-if="component.componentName == 'VipcardCard'">
+                <diy-vipcard-card :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-vipcard-card>
+            </template>
+            <template v-if="component.componentName == 'VipcardReserve'">
+                <diy-vipcard-reserve :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-vipcard-reserve>
+            </template>
+            <template v-if="component.componentName == 'VipcardStore'">
+                <diy-vipcard-store :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-vipcard-store>
+            </template>
+			<template v-if="component.componentName == 'GoodsList'">
+			    <diy-goods-list :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-goods-list>
+			</template>
+			<template v-if="component.componentName == 'Notice'">
+			    <diy-notice :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-notice>
+			</template>
         </view>
         <template v-if="diyStore.mode == '' && data.global.bottomTabBarSwitch">
             <view class="pt-[20rpx]"></view>
@@ -35,6 +68,12 @@
     </view>
 </template>
 <script lang="ts" setup>
+   import diyTourismHotel from '@/tourism/components/diy/tourism-hotel/index.vue';
+   import diyTourismTickets from '@/tourism/components/diy/tourism-tickets/index.vue';
+   import diyTourismTravel from '@/tourism/components/diy/tourism-travel/index.vue';
+   import diyVipcardCard from '@/vipcard/components/diy/vipcard-card/index.vue';
+   import diyVipcardReserve from '@/vipcard/components/diy/vipcard-reserve/index.vue';
+   import diyVipcardStore from '@/vipcard/components/diy/vipcard-store/index.vue';
    import useDiyStore from '@/app/stores/diy';
    import { onMounted, nextTick, computed, ref,watch } from 'vue';
    import Sortable from 'sortablejs';

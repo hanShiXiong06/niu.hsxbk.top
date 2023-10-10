@@ -83,3 +83,27 @@ export function getWeappTemplateId(keys : string) {
 export function getWapIndexList(data : AnyObject) {
 	return request.get('wap_index', data)
 }
+
+/**
+ * 获取下级地址列表
+ * @param pid
+ */
+export function getAreaListByPid(pid: number = 0) {
+    return request.get(`area/list_by_pid/${pid}`)
+}
+
+/**
+ * 获取地址树列表
+ * @param level
+ */
+export function getAreatree(level: number = 1) {
+    return request.get(`area/tree/${level}`)
+}
+
+/**
+ * 获取地址
+ * @param code
+ */
+export function getAreaByCode(code: number | string) {
+    return request.get(`area/code/${code}`)
+}

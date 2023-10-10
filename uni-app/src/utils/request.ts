@@ -50,7 +50,6 @@ class Request {
     public get(url: string, data: AnyObject = {}, config: RequestConfig = {}) {
         config.showSuccessMessage == undefined && (config.showSuccessMessage = false)
         Object.assign(this.config, config)
-        console.log('get request', url, data)
         return this.request('GET', url, data)
     }
 
