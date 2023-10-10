@@ -52,7 +52,8 @@
         "yunwuxin/think-cron": "v3.0.5",
         "nesbot/carbon": "2.66.0",
         "ext-zip": "*",
-        "tencentcloud/sms": "^3.0"
+        "tencentcloud/sms": "^3.0",
+        "mjaschen/phpgeo": "^4.2"
     },
     "require-dev": {
         "symfony/var-dumper": "v4.4.47",
