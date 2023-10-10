@@ -8,7 +8,8 @@ interface System {
     dark: boolean,
     theme: string,
     lang: string,
-    sidebar: string
+    sidebar: string,
+    sidebarStyle: string
 }
 
 const theme = storage.get('theme') ?? {}
@@ -21,6 +22,7 @@ const useSystemStore = defineStore('system', {
             dark: theme.dark ?? false,
             theme: theme.theme ?? '#273de3',
             sidebar: theme.sidebar ?? 'oneType',
+            sidebarStyle: theme.sidebarStyle ?? 'oneType',
             lang: storage.get('lang') ?? 'zh-cn'
         }
     },

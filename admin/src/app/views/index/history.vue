@@ -47,9 +47,6 @@
                                 <p class="app-text text-[14px] text-[#999] w-[200px]">{{ item.desc }}</p>
                             </div>
                         </div>
-                        <div class="with-ite absolute top-0 right-0 flex flex-col hidden">
-                            <span class="block pr-4 mt-3" :class="item.is_star == 2 ? 'text-primary' : 'text-[#999]'" @click.stop="withEvent(item.key)"><el-icon size="18px"><StarFilled /></el-icon></span>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -63,7 +60,6 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
 import { getApply } from '@/app/api/apply'
-import { setStarAddon } from '@/app/api/auth'
 import { img } from '@/utils/common'
 import { findFirstValidRoute } from '@/router/routers'
 import useUserStore from '@/stores/modules/user'
@@ -101,12 +97,6 @@ getAppLink()
 
 const toLink = (addon: string) => {
     router.push({ name: appLink.value[addon] })
-}
-
-const withEvent = (key: string) => {
-	setStarAddon({key: key}).then(() => {
-		getApplelist()
-	})
 }
 </script>
 

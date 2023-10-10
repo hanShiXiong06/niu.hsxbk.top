@@ -7,11 +7,13 @@ import useUserStore from '@/stores/modules/user'
 import storage from '@/utils/storage'
 
 interface RequestConfig extends AxiosRequestConfig {
-    showSuccessMessage?: boolean
+    showSuccessMessage?: boolean,
+    showErrorMessage?: boolean
 }
 
 interface InternalRequestConfig extends InternalAxiosRequestConfig {
-    showSuccessMessage?: boolean
+    showSuccessMessage?: boolean,
+    showErrorMessage?: boolean
 }
 
 interface requestResponse extends AxiosResponse {
@@ -48,18 +50,18 @@ class Request {
         // 全局响应拦截器
         this.instance.interceptors.response.use(
             (response: requestResponse) => {
-				if (response.request.responseType != 'blob') {
-					const res = response.data
-					if (res.code != 1) {
-					    this.handleAuthError(res.code)
-					    if (res.code != 401) ElMessage({ message: res.msg, type: 'error' })
-					    return Promise.reject(new Error(res.msg || 'Error'))
-					} else {
-					    if (response.config.showSuccessMessage) ElMessage({ message: res.msg, type: 'success' })
-					    return res
-					}
-				}
-				return response.data
+                if (response.request.responseType != 'blob') {
+                    const res = response.data
+                    if (res.code != 1) {
+                        this.handleAuthError(res.code)
+                        if (res.code != 401 && response.config.showErrorMessage !== false) ElMessage({ message: res.msg, type: 'error' })
+                        return Promise.reject(new Error(res.msg || 'Error'))
+                    } else {
+                        if (response.config.showSuccessMessage) ElMessage({ message: res.msg, type: 'success' })
+                        return res
+                    }
+                }
+                return response.data
             },
             (err: any) => {
                 this.handleNetworkError(err)

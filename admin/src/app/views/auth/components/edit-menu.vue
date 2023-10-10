@@ -71,6 +71,10 @@
                 </el-radio-group>
             </el-form-item>
 
+            <el-form-item :label="t('menuShortName')" >
+                <el-input v-model="formData.menu_short_name" :placeholder="t('menuShortNamePlaceholder')" class="input-width" />
+            </el-form-item>
+
             <el-form-item :label="t('sort')">
                 <el-input-number v-model="formData.sort" :min="0" />
             </el-form-item>
@@ -92,6 +96,7 @@ import type { FormInstance } from 'element-plus'
 import selectMenuItem from './select-menu-item.vue'
 import { addMenu, editMenu, getMenuInfo, getSystemMenu,getAddonMenu } from '@/app/api/sys'
 import { getAddonDevelop } from '@/app/api/tools'
+
 const showDialog = ref(false)
 const method = ref('post')
 const loading = ref(false)
@@ -115,7 +120,8 @@ const initialFormData = {
     is_show: 1,
     menu_key: '',
     app_type: '',
-    addon: ''
+    addon: '',
+    menu_short_name:''
 }
 const formData: Record<string, any> = reactive({ ...initialFormData })
 
@@ -168,23 +174,27 @@ const formRules = computed(() => {
         ]
     }
 })
+
 //获取插件列表
 const getAddonDevelopFn = async () => {
     let { data } = await getAddonDevelop({})
     addonLst.value = [{ title: "系统", key: "" }]
     addonLst.value.push(...data)
 }
+
 //获取系统菜单列表
 const getSystemMenuFn = async () => {
     let {data} = await getSystemMenu()
     sysMenuList.value = [{ menu_name: "顶级", menu_key: "" }]
     sysMenuList.value.push(...data)
 }
+
 //获取系统应用列表
 const getAddonMenuFn = async (key:any) => {
     let {data} = await getAddonMenu(key)
     addonMenuList.value = data
 }
+
 //选择应用
 const addonChange =async(val:any)=>{
     formData.parent_key = ''
@@ -193,6 +203,7 @@ const addonChange =async(val:any)=>{
         formData.parent_key = addonMenuList.value[0].menu_key
     }
 }
+
 const emit = defineEmits(['complete'])
 
 /**

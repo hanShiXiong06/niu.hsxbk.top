@@ -58,7 +58,3 @@ export function getTemplateList() {
 export function getBatchAcquisition(params: Record<string, any>) {
     return request.put('wechat/template/sync', params, {showSuccessMessage: true})
 }
-
-
-
-

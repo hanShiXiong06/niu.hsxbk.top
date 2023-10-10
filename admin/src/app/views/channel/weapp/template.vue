@@ -64,6 +64,7 @@ import { getTemplateList, getBatchAcquisition } from '@/app/api/weapp'
 import { editNoticeStatus } from '@/app/api/notice'
 import { ElLoading } from 'element-plus'
 import { useRoute,useRouter } from 'vue-router'
+
 const route = useRoute()
 const router = useRouter()
 const pageName = route.meta.title

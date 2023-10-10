@@ -3,6 +3,7 @@ import { getToken, setToken, removeToken, getAppType } from '@/utils/common'
 import { login, getAuthMenus } from '@/app/api/auth'
 import storage from '@/utils/storage'
 import router from '@/router'
+import { getApply } from '@/app/api/apply'
 import { formatRouters, findFirstValidRoute } from '@/router/routers'
 
 interface User {
@@ -11,10 +12,11 @@ interface User {
     routers: any[],
     addonIndexRoute: Record<string, symbol>,
     rules: any[],
-    appMenuList: any[]
+    appMenuList: any[],
+    globalAppKey: string
 }
 
-const useSystemStore = defineStore('user', {
+const useUserStore = defineStore('user', {
     state: (): User => {
         return {
             token: getToken() || '',
@@ -22,6 +24,7 @@ const useSystemStore = defineStore('user', {
             routers: [],
             addonIndexRoute: {},
             rules: [],
+            globalAppKey: '',
             appMenuList: storage.get('appMenuList' + (storage.get('userinfo') ? storage.get('userinfo').username : '')) || []
         }
     },
@@ -74,8 +77,33 @@ const useSystemStore = defineStore('user', {
         setAppMenuList(data: any) {
             this.appMenuList = data
             storage.set({ key: 'appMenuList' + (this.userInfo.username ? this.userInfo.username : ''), data })
+        },
+        getAppList() {
+            let applyList = [];
+            let applyTypeList = [];
+            let appKey = storage.get('menuAppStorage');
+            return new Promise((resolve, reject) => {
+                getApply()
+                    .then((res) => {
+                        applyList = applyList.concat(res.data);
+                        applyList.forEach((item, index) => {
+                            if (item.type == 'app') { applyTypeList.push(item.key) }
+                        });
+                        // 用于插件的卸载或安装
+                        if (!applyList.length) {
+                            this.globalAppKey = '';
+                        }
+                        if (applyList.length && !appKey) {
+                            this.globalAppKey = applyTypeList[0];
+                        }
+                        resolve(res)
+                    })
+                    .catch((error) => {
+                        reject(error)
+                    })
+            })
         }
     }
 })
 
-export default useSystemStore
+export default useUserStore

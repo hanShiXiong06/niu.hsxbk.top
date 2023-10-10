@@ -24,7 +24,7 @@
               <span class="text-[14px] flex items-center text-[#797979]">
                 <span>授权码</span>
                 <em class="ml-[12px] mr-[10px] text-[12px] text-[#222222]">{{ authinfo.auth_code ? (isCheck ? authinfo.auth_code : hideAuthCode(authinfo.auth_code)) : '--' }}</em>
-                <el-icon v-if="isCheck" @click="isCheck = !isCheck" class="text-[12px] cursor-pointer"><View/></el-icon>
+                <el-icon v-if="!isCheck" @click="isCheck = !isCheck" class="text-[12px] cursor-pointer"><View/></el-icon>
                 <el-icon v-else @click="isCheck = !isCheck" class="text-[12px] cursor-pointer"><Hide /></el-icon>
               </span>
             </div>
@@ -33,7 +33,7 @@
             <el-button class="w-[154px] !h-[48px] mt-[8px]" type="primary" @click="authCodeApproveFn">授权码认证</el-button>
             <el-popover ref="getAuthCodeDialog" placement="bottom" :width="478" trigger="click" class="mt-[8px]">
               <div class="px-[18px] py-[8px]">
-                <p class="leading-[32px] text-[18px]">您在官方应用市场购买任意一款应用，即可获得授权码。输入正确授权码认证通过后，即可支持在线升级和其它相关服务</p>
+                <p class="leading-[32px] text-[14px]">您在官方应用市场购买任意一款应用，即可获得授权码。输入正确授权码认证通过后，即可支持在线升级和其它相关服务</p>
                 <div class="flex justify-end mt-[36px]">
                   <el-button class="w-[182px] !h-[48px]" plain @click="market">去应用市场逛逛</el-button>
                   <el-button class="w-[100px] !h-[48px]" plain @click="getAuthCodeDialog.hide()">关闭</el-button>
@@ -44,7 +44,7 @@
               </template>
             </el-popover>
           </div>
-           <el-dialog v-model="authCodeApproveDialog" title="授权码认证" width="400px" :before-close="closeAuthCodeApproveDialogFn">
+           <el-dialog v-model="authCodeApproveDialog" title="授权码认证" width="400px">
             <el-form :model="formData" label-width="0" ref="formRef" :rules="formRules" class="page-form">
               <el-card class="box-card !border-none" shadow="never">
                   <el-form-item prop="auth_code">
@@ -96,12 +96,6 @@ const hideAuthCode = (res)=>{
 
 const authCodeApproveFn = ()=>{
   authCodeApproveDialog.value = true;
-  authinfo.value = "";
-}
-
-const closeAuthCodeApproveDialogFn = ()=>{
-  loading.value = true;
-  checkAppMange();
 }
 
 const authinfo = ref("");
@@ -138,14 +132,6 @@ const formRules = reactive<FormRules>({
     { required: true, message: t("authSecretPlaceholder"), trigger: "blur" },
   ],
 });
-
-const setFormData = async () => {
-  const data = await (await getAdminAuthinfo()).data;
-  Object.keys(formData).forEach((key: string) => {
-    if (data[key] != undefined) formData[key] = data[key];
-  });
-};
-setFormData();
 
 const save = async (formEl: FormInstance | undefined) => {
   if (saveLoading.value || !formEl) return;

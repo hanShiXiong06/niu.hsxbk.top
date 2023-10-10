@@ -1,12 +1,14 @@
 import request from '@/utils/request'
+
 /***************************************************** 插件开发 ****************************************************/
 /**
  * 获取插件列表
  * @returns
  */
 export function getAddonDevelop(params: Record<string, any>) {
-    return request.get(`addon_develop`,{params});
+    return request.get(`addon_develop`, {params});
 }
+
 /**
  * 获取插件类型配置
  * @returns
@@ -14,60 +16,70 @@ export function getAddonDevelop(params: Record<string, any>) {
 export function getAddontype() {
     return request.get(`addontype`);
 }
+
 /**
  * 获取插件详情
 
  * @returns
  */
-export function getAddonDevelopInfo(key:any) {
+export function getAddonDevelopInfo(key: any) {
     return request.get(`addon_develop/${key}`)
 }
+
 /**
  * 获取插件key是否存在
 
  * @returns
  */
-export function getAddonDevelopCheck(key:any) {
+export function getAddonDevelopCheck(key: any) {
     return request.get(`addon_develop/check/${key}`)
 }
+
 /**
  * 添加插件
+ * @param key
  * @param params
  * @returns
  */
-export function addAddonDevelop(key:any,params: Record<string, any>) {
+export function addAddonDevelop(key: any, params: Record<string, any>) {
     return request.post(`addon_develop/${key}`, params)
 }
+
 /**
  * 编辑插件
+ * @param key
  * @param params
  * @returns
  */
-export function editAddonDevelop(key:any,params: Record<string, any>) {
+export function editAddonDevelop(key: any, params: Record<string, any>) {
     return request.put(`addon_develop/${key}`, params)
 }
+
 /**
  * 删除插件
- * @param id
+ * @param key
  * @returns
  */
 export function deleteAddonDevelop(key: any) {
     return request.delete(`addon_develop/${key}`, {showSuccessMessage: true})
 }
+
 /**
  * 打包插件
  * @returns
  */
-export function addonDevelopBuild(key:any) {
+export function addonDevelopBuild(key: any) {
     return request.post(`addon_develop/build/${key}`)
 }
+
 /**
  * 下载插件
  * @returns
  */
-export function addonDevelopDownload(key:any) {
-    return request.post(`addon_develop/download/${key}`,{},{ "responseType": "blob" })
+export function addonDevelopDownload(key: any) {
+    return request.post(`addon_develop/download/${key}`, {}, {"responseType": "blob"})
 }
+
 /***************************************************** 代码生成 ****************************************************/
 
 /**
@@ -122,14 +134,16 @@ export function deleteGenerateTable(id: number) {
 export function generateCreate(params: Record<string, any>) {
     return request.post(`generator/download`, params)
 }
+
 /**
  * 代码生成预览
- * @param params
+ * @param id
  * @returns
  */
 export function generatePreview(id: number) {
     return request.get(`generator/preview/${id}`)
 }
+
 /**
  * 数据表
  */
@@ -143,21 +157,24 @@ export function generateTable() {
 export function getSystem() {
     return request.get(`sys/system`)
 }
+
 /**
  * 获取全部模型
  */
-export function getGeneratorAllModel(params:any) {
-    return request.get(`generator/all_model`,{params})
+export function getGeneratorAllModel(params: any) {
+    return request.get(`generator/all_model`, {params})
 }
+
 /**
  * 获取 表字段
  */
-export function getGeneratorTableColumn(params:any){
-    return request.get(`generator/table_column`,{params})
+export function getGeneratorTableColumn(params: any) {
+    return request.get(`generator/table_column`, {params})
 }
+
 /**
  * 同步校验
  */
-export function generatorCheckFile(params: Record<string, any>){
-    return request.get(`generator/check_file`,{params})
+export function generatorCheckFile(params: Record<string, any>) {
+    return request.get(`generator/check_file`, {params})
 }

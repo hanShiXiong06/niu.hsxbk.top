@@ -145,6 +145,7 @@ import { useRouter } from "vue-router";
 import { t } from "@/lang";
 import {img} from '@/utils/common'
 import { getWeappConfig } from '@/app/api/weapp'
+
 const router = useRouter();
 let activeName = ref("/website/channel/weapp");
 let active = ref(2);

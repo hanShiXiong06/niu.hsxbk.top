@@ -1,6 +1,6 @@
 <template>
-	<div class="main-container attachment-container" v-loading="loadingArr.server_load">
-		<el-card class="box-card !border-none" shadow="never" v-if="systemService">
+	<div class="main-container attachment-container min-h-[80vh]" v-loading="loadingArr.server_load">
+		<el-card class="box-card !border-none" shadow="never" v-if="systemService && !loadingArr.server_load">
 			<div class="flex justify-between items-center">
 				<span class="text-[20px]">{{ pageName }}</span>
 			</div>

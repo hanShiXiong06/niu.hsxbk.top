@@ -226,6 +226,7 @@ import { useRouter } from 'vue-router'
 import { t } from '@/lang'
 import {img} from '@/utils/common'
 import { getAliappConfig } from '@/app/api/aliapp'
+
 const router = useRouter()
 let activeName = ref("/website/channel/aliapp");
 let active = ref(2);

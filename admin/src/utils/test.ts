@@ -227,6 +227,12 @@ const test = {
      */
     regExp(o) {
         return o && Object.prototype.toString.call(o) === '[object RegExp]'
+    },
+    /**
+     * 验证必填
+     */
+    require(value: string) {
+        return /^\s*$/.test(value)
     }
 }
 

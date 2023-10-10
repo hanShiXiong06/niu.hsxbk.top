@@ -55,6 +55,7 @@ import { t } from '@/lang'
 import { getRoleList, deleteRole, edstatus } from '@/app/api/sys'
 import { ElMessageBox, FormInstance } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
+
 const route = useRoute()
 const router = useRouter()
 const pageName = route.meta.title;
@@ -106,9 +107,10 @@ const editRoleDialog: Record<string, any> | null = ref(null)
 const addEvent = () => {
     router.push({ path: '/setting/auth/role_edit' })
 }
+
 /**
  * 编辑角色
- * @param data
+ * @param role_id
  */
 const editEvent = (role_id: any) => {
     router.push({

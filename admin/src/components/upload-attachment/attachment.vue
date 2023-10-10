@@ -10,8 +10,8 @@
 						{{ t('selectPlaceholder') }}
 					</div>
 					<div class="group-item px-[10px] text-xs rounded cursor-pointer flex" v-for="(item, index) in attachmentCategory.data" :key="index" :class="{ active: attachmentParam.cate_id == item.id }">
-						<div class="flex-1 leading-none truncate py-[10px]" @click="attachmentParam.cate_id = item.id">{{item.name }}</div>
-						<div class="leading-none operate py-[10px]" v-if="scene == 'attachment' && prop.type !='icon' ">
+						<div class="flex-1 leading-none truncate py-[10px] h-[34px]" @click="attachmentParam.cate_id = item.id">{{item.name }}</div>
+						<div class="leading-none operate py-[10px] h-[34px]" v-if="scene == 'attachment' && prop.type !='icon' ">
 							<!-- 图片操作 -->
 							<el-dropdown :hide-on-click="false" v-if="scene == 'attachment'">
 								<icon name="element-MoreFilled" class="cursor-pointer ml-[10px]" size="14px"/>

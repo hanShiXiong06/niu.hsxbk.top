@@ -224,6 +224,10 @@ html.dark {
 .el-button:not(.is-round){
     border-radius: 2px !important;
 }
+// 修改表格中上传图片样式冲突的问题
+.el-table .el-table__cell{
+    position: inherit !important;
+}
 
 // /* 多行超出隐藏 */
 .multi-hidden {

@@ -45,7 +45,6 @@ const formData = reactive<Record<string, string | boolean>>({
 const formRef = ref<FormInstance>()
 const router = useRouter()
 
-
 /**
  * 获取pc域名
  */

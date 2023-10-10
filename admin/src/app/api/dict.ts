@@ -1,8 +1,5 @@
 import request from '@/utils/request'
 
-// USER_CODE_BEGIN -- sys_dict
-
-
 /**
  * 获取数据字典列表
  * @param params
@@ -32,7 +29,6 @@ export function addDict(params: Record<string, any>) {
 
 /**
  * 编辑数据字典
- * @param id
  * @param params
  * @returns
  */
@@ -42,7 +38,6 @@ export function addDictData(params: Record<string, any>) {
 
 /**
  * 编辑数据字典
- * @param id
  * @param params
  * @returns
  */
@@ -74,12 +69,10 @@ export function setDictData(id:number,params: Record<string, any>) {
 export function getDictAll() {
     return request.get(`dict/all`)
 }
-// USER_CODE_END -- sys_dict
 
 /**
  * 数据字典关键词查询
- * @param id
- * @param params
+ * @param type
  * @returns
  */
 export function useDictionary(type: string) {

@@ -75,6 +75,7 @@
     "layoutSetting": "主题设置",
     "darkMode": "黑暗模式",
     "sidebarMode": "主题风格",
+    "sidebarStyle": "主题样式",
     "themeColor": "主题颜色",
     "detectionLoginOperation": "确定",
     "detectionLoginContent": "已检测到有其他账号登录，需要刷新后才能继续操作。",
@@ -125,5 +126,6 @@
   "generateEmail":"请输入正确的邮箱号",
   "generateMax":"超过最多输入字符数",
   "generateMin":"少于最少输入字符数",
-  "generateBetween":"请输入正确的字符信息"
+  "generateBetween":"请输入正确的字符信息",
+  "emptyAppData":"暂无应用"
 }

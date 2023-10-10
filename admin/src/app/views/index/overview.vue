@@ -25,7 +25,14 @@
                         <div class="font-500 text-[13px] text-[#6D7278] mt-[14px]">{{ item.desc }}</div>
                     </div>
                 </template> 
-                <el-empty :description="t('noPlug')" v-if="!detail.appList.length && !loading" class="mx-auto" />
+                <el-empty v-if="!detail.appList.length && !loading" class="mx-auto overview-empty">
+                    <template #image>
+                        <div class="w-[230px] mx-auto"><img src="@/app/assets/images/index/apply_empty.png" class="max-w-full" alt=""></div>
+                    </template>
+                    <template #description>
+                        <p class="flex items-center"><span>{{ t('descriptionLeft') }}</span><el-link type="primary" @click="goRouter">{{ t('link') }}</el-link><span>{{ t('descriptionRight') }}</span></p>
+                    </template>
+                </el-empty>
             </div>
             
         </div>
@@ -69,12 +76,15 @@ const itemPath = (key: any) => {
     }
 
 }
+const goRouter = ()=>{
+    window.open('https://www.niucloud.com/product/')
+}
 </script>
 
 <style lang="scss" scoped>
 .main-container{
     background: linear-gradient(180deg, rgba(253,253,253,0.24) 0%, #FAFAFA 100%);
-    min-height: calc(100vh - 63px);
+    min-height: calc(100vh - 64px);
 }
 .overview-top {
     background-image: url('@/app/assets/images/index/overview.png');
@@ -84,5 +94,10 @@ const itemPath = (key: any) => {
 
 .app-item {
     box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.18);
+}
+</style>
+<style>
+.overview-empty .el-empty__image{
+    width: auto !important;
 }
 </style>

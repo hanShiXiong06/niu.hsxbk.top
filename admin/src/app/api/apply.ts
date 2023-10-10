@@ -7,3 +7,7 @@ import request from '@/utils/request'
 export function getApply(params: Record<string, any>) {
     return request.get(`auth/authaddon`, {params})
 }
+
+export function getAppManage(params: Record<string, any>) {
+    return request.get(`auth/app_manage`, {params})
+}

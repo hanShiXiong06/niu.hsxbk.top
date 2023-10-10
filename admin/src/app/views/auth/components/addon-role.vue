@@ -5,6 +5,7 @@
 <script lang="ts" setup>
 import { debounce } from '@/utils/common'
 import { ref, computed, onMounted, nextTick, } from 'vue'
+
 const prop = defineProps({
     data: {
         type: Object,
@@ -18,11 +19,9 @@ const prop = defineProps({
 let data = ref([])
 data.value.push(prop.data)
 
-
 const emit = defineEmits(['update:modelValue', 'change'])
 const value = computed({
     get() {
-        
         return prop.modelValue
     },
     set(value) {
@@ -30,6 +29,7 @@ const value = computed({
     }
 })
 const treeRef = ref(null)
+
 //选择控制
 onMounted(()=>{
     nextTick(()=>{

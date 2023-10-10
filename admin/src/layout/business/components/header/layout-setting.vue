@@ -5,6 +5,16 @@
         </div>
         <el-drawer v-model="drawer" :title="t('layout.layoutSetting')" size="300px">
             <el-scrollbar>
+                <div class="setting-item flex items-baseline justify-between mb-[10px]">
+                    <div class="title text-base text-tx-secondary whitespace-nowrap">{{ t('layout.sidebarStyle') }}</div>
+                    <div class="">
+                        <el-radio-group v-model="sidebarStyle" class="ml-4">
+                            <el-radio label="oneType" size="large">样式一</el-radio>
+                            <el-radio label="twoType" size="large">样式二</el-radio>
+                            <el-radio label="threeType" size="large">样式三</el-radio>
+                        </el-radio-group>
+                    </div>
+                </div>
                 <!-- 风格切换 -->
                 <div class="setting-item flex items-baseline justify-between mb-[10px]">
                     <div class="title text-base text-tx-secondary whitespace-nowrap">{{ t('layout.sidebarMode') }}</div>
@@ -72,6 +82,16 @@ const sidebar = computed({
     set(val) {
         systemStore.setTheme('sidebar', val)
         setThemeColor(systemStore.theme, systemStore.dark ? 'dark' : 'light')
+    }
+})
+
+
+const sidebarStyle = computed({
+    get() {
+        return systemStore.sidebarStyle
+    },
+    set(val) {
+        systemStore.setTheme('sidebarStyle', val)
     }
 })
 

@@ -44,7 +44,7 @@
 					</div>
 					<div class="flex flex-wrap">
 						<div class="flex flex-wrap" ref="shortcutModel" v-if="edit_menu">
-							<div v-for="(items, index) in shortcut_menu" :style="{backgroundColor : items.bg_color}" :key="items.id" class="design-field w-[180px] h-[120px] relative mt-[30px] rounded-[5px] mr-[30px] cursor-pointer">
+							<div v-for="(items, index) in shortcut_menu" :style="{backgroundColor : items.bg_color}" :key="items.id" class="design-field w-[180px] h-[120px] relative mt-[30px] rounded-[5px] mr-[30px] !cursor-move">
 								<div class="flex items-center h-[88px]" @click="editModel(items)">
 									<!-- <img class="ml-[24px] w-[40px]" :src="img(items.img)"/> -->
 									<div class="ml-[24px] w-[40px]">

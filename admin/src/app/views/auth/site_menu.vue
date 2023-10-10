@@ -55,8 +55,8 @@ import { getMenus, deleteMenu } from '@/app/api/sys'
 import { t } from '@/lang'
 import { ElMessageBox } from 'element-plus'
 import EditMenu from '@/app/views/auth/components/edit-menu.vue'
-
 import { useRoute } from 'vue-router'
+
 const route = useRoute()
 const pageName = route.meta.title
 

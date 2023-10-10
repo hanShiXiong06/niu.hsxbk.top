@@ -232,6 +232,7 @@ import { useRouter } from 'vue-router'
 import { t } from '@/lang'
 import {img} from '@/utils/common'
 import { getWechatConfig } from '@/app/api/wechat'
+
 const router = useRouter()
 let activeName = ref("/website/channel/wechat");
 let active = ref(2);

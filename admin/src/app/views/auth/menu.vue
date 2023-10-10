@@ -41,8 +41,8 @@
                             <el-table-column prop="sort" :label="t('sort')" min-width="100" />
                             <el-table-column :label="t('operation')" fixed="right"  align="right" width="130">
                                 <template #default="{ row }">
-                                    <el-button type="primary" link @click="editEvent(row)" v-if="row.source == 'generator' || row.source == 'create'">{{ t('edit') }}</el-button>
-                                    <el-button type="primary" link @click="deleteEvent(row.menu_key)"  v-if="row.source == 'generator' || row.source == 'create'">{{ t('delete') }}</el-button>
+                                    <el-button type="primary" link @click="editEvent(row)" >{{ t('edit') }}</el-button>
+                                    <el-button type="primary" link @click="deleteEvent(row.menu_key)" >{{ t('delete') }}</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -81,8 +81,8 @@
                             <el-table-column prop="sort" :label="t('sort')" min-width="100" />
                             <el-table-column :label="t('operation')" fixed="right"  align="right" width="130">
                                 <template #default="{ row }"> 
-                                    <el-button type="primary" link @click="editEvent(row)"  v-if="row.source == 'generator' || row.source == 'create'">{{ t('edit') }}</el-button>
-                                    <el-button type="primary" link @click="deleteEvent(row.menu_key)"  v-if="row.source == 'generator' || row.source == 'create'">{{ t('delete') }}</el-button>
+                                    <el-button v-if="row.menu_key.indexOf('1') ==-1" type="primary" link @click="editEvent(row)" >{{ t('edit') }}</el-button>
+                                    <el-button v-if="row.menu_key.indexOf('1') ==-1" type="primary" link @click="deleteEvent(row.menu_key)" >{{ t('delete') }}</el-button>
                                 </template>
                         </el-table-column>
                         </el-table>
@@ -102,6 +102,7 @@ import { t } from '@/lang'
 import EditMenu from '@/app/views/auth/components/edit-menu.vue'
 import { getSystem, getAddonList, deleteMenu, getMenus } from '@/app/api/sys'
 import { useRoute } from 'vue-router'
+
 const route = useRoute()
 const pageName = route.meta.title
 
@@ -112,7 +113,7 @@ const menusTableData = reactive({
     data:[],
     activeName: 'system'
 })
-console.log(menusTableData.applicationDate)
+
 /**
  * 获取菜单
  */

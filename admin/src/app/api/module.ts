@@ -40,7 +40,7 @@ export function getModuleVersion() {
 
 /**
  * 下载版本
- * @param addon
+ * @param params
  * @returns
  */
 export function downloadVersion(params: Record<string, any>) {

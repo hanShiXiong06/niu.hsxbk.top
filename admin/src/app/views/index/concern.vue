@@ -49,9 +49,6 @@
                         </p>
                     </div>
                 </div>
-                <div class="with-ite absolute top-0 right-0 flex flex-col hidden">
-                    <span class="block pr-4 mt-3 text-primary" @click.stop="withEvent(item.key)"><el-icon size="18px"><StarFilled /> </el-icon></span>
-                </div>
             </div>
         </div>
       </div>
@@ -65,7 +62,6 @@
 <script lang="ts" setup>
 import { ref, reactive } from "vue";
 import { getApply } from "@/app/api/apply";
-import { setStarAddon } from "@/app/api/auth";
 import { img } from "@/utils/common";
 import { findFirstValidRoute } from "@/router/routers";
 import useUserStore from "@/stores/modules/user";
@@ -107,12 +103,6 @@ const toLink = (addon: string) => {
   }
   userStore.setAppMenuList(data);
   router.push({ name: appLink.value[addon] });
-};
-
-const withEvent = (key: string) => {
-  setStarAddon({ key: key }).then(() => {
-    getApplelist();
-  });
 };
 </script>
 

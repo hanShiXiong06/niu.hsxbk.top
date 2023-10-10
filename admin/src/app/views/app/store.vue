@@ -1,14 +1,10 @@
 <template>
     <div class="main-container h-[500px] w-full p-5 bg-white" v-loading="loading">
-
-        <div class="flex mb-4">
-            <div class="border rounded-sm switch-btn active px-4 py-1 cursor-pointer flex items-center	">
-                <img src="@/app/assets/images/app_store/local_icon_select.png" class="mr-1.5 w-3.5 h-3.5 mb-0.5">
-                {{ t('localAppText') }}
-            </div>
+        <div class="flex justify-between items-center h-[32px] mb-4">
+            <span class="text-[20px]">{{ t('localAppText') }}</span>
         </div>
         <div class="relative">
-            <div class="absolute right-0 top-[2px] flex items-center cursor-pointer z-20 border	border-inherit">
+            <div class="absolute right-0 top-[2px] flex items-center cursor-pointer z-[4] border	border-inherit">
                 <div class="flex item-center justify-center px-[6px] py-[4px]"
                     :class="{ 'bg-slate-200': showType == 'small' }" @click="showType = 'small'">
                     <img src="@/app/assets/images/app_store/switch_icon_1.png" class=" w-[16px] h-[16px]">
@@ -325,6 +321,7 @@ import { TabsPaneContext, ElMessageBox, ElNotification } from 'element-plus'
 import { img } from '@/utils/common'
 import { Terminal, api as terminalApi } from 'vue-web-terminal'
 import { useRouter } from 'vue-router'
+import useUserStore from '@/stores/modules/user'
 
 const router = useRouter()
 const activeName = ref('installed')
@@ -332,6 +329,7 @@ const loading = ref<Boolean>(false)
 const showType = ref('large')
 const downloading = ref('')
 const installAfterTips = ref<string[]>([])
+const userStore = useUserStore()
 
 const downEvent = (param: Record<string, any>) => {
     if (downloading.value) return
@@ -475,6 +473,7 @@ const getInstallTask = (first: boolean = true) => {
             if (!first) {
                 installStep.value = 3
                 localListFn()
+                userStore.getAppList()
                 notificationEl.close()
             }
         }
@@ -498,6 +497,7 @@ const handleInstall = () => {
     installAddon({ addon: currAddon.value }).then(res => {
         installStep.value = 3
         localListFn()
+        userStore.getAppList()
         localInstalling.value = false
         if (res.data.length) installAfterTips.value = res.data
     }).catch((res) => {
@@ -581,6 +581,7 @@ watch(currAddon, (nval) => {
 const uninstallAddonFn = (key: string) => {
     uninstallAddon({ addon: key }).then(res => {
         localListFn()
+        userStore.getAppList()
         loading.value = false
     }).catch(() => {
         loading.value = false

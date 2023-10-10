@@ -29,14 +29,11 @@
                                 <p class="app-text w-[190px] text-[17px] text-[#222] pl-3">{{ item.title }}</p>
                             </div>
                         </div>
-                        <!-- <div class="with-ite absolute top-0 right-0 flex flex-col hidden">
-                            <span class="block pr-4 mt-3" :class="item.is_star == 2 ? 'text-primary' : 'text-[#999]'" @click.stop="withEvent(item.key)"><el-icon size="18px"><StarFilled /></el-icon></span>
-                        </div> -->
                     </div>
                 </div>
             </div>
 			<div class="empty flex items-center  justify-center" v-if="!loading&&!applyList.list.length" >
-			    <el-empty :description="t('emptyData')" />
+			    <el-empty :description="t('emptyAppData')" />
 			</div>
         </el-card>
 
@@ -46,24 +43,25 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
 import { getApply } from '@/app/api/apply'
-import { setStarAddon } from '@/app/api/auth'
 import { img } from '@/utils/common'
 import { findFirstValidRoute } from '@/router/routers'
 import useUserStore from '@/stores/modules/user'
 import { useRouter } from 'vue-router'
 import { t } from '@/lang'
 import storage from '@/utils/storage'
+var key = storage.get('menuAppStorage')
 const userStore = useUserStore()
 const router = useRouter()
 const applyList = reactive({
     list: [],
 	search: {
-		title: ""
+		title: "",
+        key: key
 	}
 })
 let loading = ref(true)
 const getApplelist = async () => {
-    const res = await getApply({title: applyList.search.title})
+    const res = await getApply({title: applyList.search.title,support_app:applyList.search.key})
     applyList.list = res.data.filter(el=>{
         return appLink.value[el.key] &&el.type == 'addon'
     })
@@ -96,12 +94,6 @@ const toLink = (addon: string) => {
     }
     userStore.setAppMenuList(data)
     router.push({ name: appLink.value[addon] })
-}
-
-const withEvent = (key: string) => {
-	setStarAddon({key: key}).then(() => {
-		getApplelist()
-	})
 }
 </script>
 

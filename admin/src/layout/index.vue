@@ -3,14 +3,24 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, markRaw, defineAsyncComponent } from 'vue'
-
+import { ref,computed, watch, markRaw, defineAsyncComponent } from 'vue'
+import useSystemStore from '@/stores/modules/system'
+const systemStore = useSystemStore()
 const modules = import.meta.glob('./*/index.vue')
-const siteLayout = 'default'
-const layout = ref<any>(null)
 
+// 主题样式
+let themeStyle = {
+    'oneType': 'standard',  
+    'twoType': 'profession',
+    'threeType': 'business'
+}
+
+watch(() =>systemStore.sidebarStyle, () => {location.reload();})
+
+const adminLayout = themeStyle[systemStore.sidebarStyle]
+const layout = ref<any>(null)
 Object.keys(modules).forEach(key => {
-    key.indexOf(siteLayout) !== -1 && (layout.value = markRaw(defineAsyncComponent(modules[key])))
+    key.indexOf(adminLayout) !== -1 && (layout.value = markRaw(defineAsyncComponent(modules[key])))
 })
 </script>
 

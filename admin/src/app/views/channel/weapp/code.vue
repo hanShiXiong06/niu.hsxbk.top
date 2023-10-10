@@ -9,17 +9,10 @@
             <el-tab-pane :label="t('weappRelease')" name="/website/channel/weapp/code" />
         </el-tabs>
         <el-card class="box-card !border-none" shadow="never">
-            <el-collapse v-model="activeNames">
-                <el-collapse-item :title="t('operatePrompt')" name="1">
-                    <div>
-                        <p class="indent-4">{{ t('operatePromptTipsTwo') }}</p>
-                    </div>
-                </el-collapse-item>
-            </el-collapse>
-
             <div class="mt-[50px]">
-                <el-button type="primary" @click="insert" :loading="uploading">{{ t('cloudRelease') }}</el-button>
-                <el-button @click="localInsert">{{ t('localRelease') }}</el-button>
+                <el-button type="primary" @click="insert" :loading="uploading" :disabled="weappTableData.loading">{{
+                    t('cloudRelease') }}</el-button>
+                <el-button @click="localInsert" :disabled="weappTableData.loading">{{ t('localRelease') }}</el-button>
             </div>
             <el-table class="mt-[15px]" :data="weappTableData.data" v-loading="weappTableData.loading" size="default">
                 <template #empty>
@@ -36,10 +29,9 @@
                 <el-table-column prop="create_time" :label="t('createTime')" align="center" />
                 <el-table-column :label="t('operation')" fixed="right" align="right" min-width="120">
                     <template #default="{ row, $index }">
-                        <div class="">
+                        <div class="" v-if="previewContent && $index == 0 && row.status == 1 && weappTableData.page == 1">
                             <el-tooltip :content="previewContent" raw-content effect="light">
-                                <el-button type="primary" link
-                                    v-if="previewContent && $index == 0 && weappTableData.page == 1">
+                                <el-button type="primary" link>
                                     {{ t('preview') }}</el-button>
                             </el-tooltip>
                         </div>
@@ -74,13 +66,6 @@
                 </span>
             </template>
         </el-dialog>
-
-        <!-- <el-dialog v-model="uploading" title="" width="300px" :show-close="false" :align-center="true"
-            :close-on-click-modal="false">
-            <template #default>
-                <div v-loading="uploading" class="w-full h-[100px]" :element-loading-text="t('uploadingTips')"></div>
-            </template>
-        </el-dialog> -->
     </div>
 </template>
 
@@ -147,7 +132,7 @@ const getWeappVersionListFn = (page: number = 1) => {
         weappTableData.loading = false
     })
 }
-// loadWeappTemplateList()
+
 getWeappVersionListFn()
 
 const handleClose = () => {
@@ -168,8 +153,11 @@ const insert = () => {
     if (uploading.value) return
     uploading.value = true
 
+    previewContent.value = ''
+
     setWeappVersion(form.value).then(res => {
         getWeappVersionListFn()
+        getWeappPreviewImage()
         uploading.value = false
     }).catch(() => {
         uploading.value = false

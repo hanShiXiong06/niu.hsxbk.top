@@ -4,7 +4,7 @@
 			<div class="flex justify-between items-center mb-4">
                 <span class="text-[20px]">素材管理</span>
             </div>
-			<el-tabs v-model="type" class="">
+			<el-tabs v-model="type">
 				<el-tab-pane :label="t(tab)" v-for="(tab, index) in attachmentType" :name="tab" :key="index">
 					<attachment scene="attachment" :type="tab" />
 				</el-tab-pane>
@@ -27,7 +27,7 @@
 <style lang="scss">
 	.attachment-container {
 		.el-card__body {
-			height: 100%;
+			height: 96%;
 		}
 
 		.el-tabs {

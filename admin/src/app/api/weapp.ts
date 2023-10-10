@@ -44,7 +44,6 @@ export function setWeappVersion(params: Record<string, any>) {
 
 /**
  * 微信小程序预览码
- * @param params
  * @returns
  */
 export function getWeappPreview() {
@@ -100,7 +99,7 @@ export function getVersionList(params: Record<string, any>) {
 
 /**
  * 版本详情
- * @param params
+ * @param id
  * @returns
  */
 export function getVersionInfo(id: string) {
@@ -118,7 +117,7 @@ export function editVersion(params: Record<string, any>) {
 
 /**
  * 版本删除
- * @param params
+ * @param id
  * @returns
  */
 export function deleteVersion(id: string) {

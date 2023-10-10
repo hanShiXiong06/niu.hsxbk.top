@@ -52,7 +52,7 @@
                     <el-table :data="formData.table_column" size="large" ref="tableRef" :key="toggleIndex">
                         <el-table-column align="center" label="操作" width="80">
                             <template #default>
-                                <i class="iconfont iconfenlei vues-rank cursor-pointer"></i>
+                                <i class="iconfont icontuodong vues-rank cursor-move"></i>
                             </template>
                         </el-table-column>
                         <el-table-column :label="t('columnName')" prop="column_name" min-width="130px" />

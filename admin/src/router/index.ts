@@ -55,7 +55,7 @@ router.beforeEach(async (to, from, next) => {
                 } else {
                     ROOT_ROUTER.redirect = { name: firstRoute }
                 }
-                console.log(currApp, ROOT_ROUTER.redirect)
+                // console.log(currApp, ROOT_ROUTER.redirect)
                 router.addRoute(ROOT_ROUTER)
 
                 // 添加动态路由

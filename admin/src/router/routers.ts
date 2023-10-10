@@ -67,6 +67,7 @@ const addonModules = import.meta.glob('@/**/views/**/*.vue')
 
 interface Route {
     menu_name: string,
+    menu_short_name: string,
     router_path: string,
     view_path: string
     menu_type: number,
@@ -93,6 +94,7 @@ const createRoute = function (route: Route, parentRoute: RouteRecordRaw | null =
         name: route.menu_key,
         meta: {
             title: route.menu_name,
+            shortTitle: route.menu_short_name,
             icon: route.icon,
             type: route.menu_type,
             show: route.is_show,

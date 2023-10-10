@@ -33,13 +33,6 @@ export function getLoginConfig() {
 }
 
 /**
- * 设置加星应用
- * @returns
- */
-export function setStarAddon(params: Record<string, any>) {
-    return request.post('auth/appstar', params)
-}
-/**
  * 获取默认页面应用列表
  */
 export function getAuthaddon() {

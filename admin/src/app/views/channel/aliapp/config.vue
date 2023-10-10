@@ -120,7 +120,6 @@ const formData = reactive<Record<string, string>>({
 
 const formRef = ref<FormInstance>()
 
-
 /**
  * 获取支付宝配置
  */
@@ -134,7 +133,6 @@ getAliappConfig().then(res => {
 getAliappStatic().then(res => {
     formData.request_url = res.data.domain
 })
-
 
 /**
  * 复制

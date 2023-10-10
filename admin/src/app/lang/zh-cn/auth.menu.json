@@ -24,5 +24,7 @@
     "viewPathPlaceholder": "请输入组件路径",
     "authIdPlaceholder": "请输入api路径",
     "selectIconPlaceholder": "请选择菜单图标",
-    "topLevel": "顶级"
+    "topLevel": "顶级",
+    "menuShortName":"菜单短标题",
+    "menuShortNamePlaceholder":"请输入菜单短标题"
 }

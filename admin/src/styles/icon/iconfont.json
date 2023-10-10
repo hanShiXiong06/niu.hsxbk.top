@@ -6,6 +6,76 @@
   "description": "系统图标",
   "glyphs": [
     {
+      "icon_id": "37443500",
+      "name": "展开",
+      "font_class": "zhankai",
+      "unicode": "e67b",
+      "unicode_decimal": 59003
+    },
+    {
+      "icon_id": "37443497",
+      "name": "箭头",
+      "font_class": "jiantou",
+      "unicode": "e67a",
+      "unicode_decimal": 59002
+    },
+    {
+      "icon_id": "37440097",
+      "name": "插件",
+      "font_class": "chajian1",
+      "unicode": "e679",
+      "unicode_decimal": 59001
+    },
+    {
+      "icon_id": "37401589",
+      "name": "icon_火箭",
+      "font_class": "icon_huojian",
+      "unicode": "e677",
+      "unicode_decimal": 58999
+    },
+    {
+      "icon_id": "37396974",
+      "name": "安装",
+      "font_class": "anzhuang",
+      "unicode": "e676",
+      "unicode_decimal": 58998
+    },
+    {
+      "icon_id": "37394752",
+      "name": "首页",
+      "font_class": "shouye",
+      "unicode": "e675",
+      "unicode_decimal": 58997
+    },
+    {
+      "icon_id": "2023693",
+      "name": "首页-首页",
+      "font_class": "shouye-shouye",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
+      "icon_id": "4933869",
+      "name": "点",
+      "font_class": "dian",
+      "unicode": "ec1e",
+      "unicode_decimal": 60446
+    },
+    {
+      "icon_id": "5387931",
+      "name": "箭头_向左两次_o",
+      "font_class": "jiantou_xiangzuoliangci_o",
+      "unicode": "eb93",
+      "unicode_decimal": 60307
+    },
+    {
+      "icon_id": "781940",
+      "name": "分类",
+      "font_class": "fenlei",
+      "unicode": "e6c3",
+      "unicode_decimal": 59075
+    },
+    {
       "icon_id": "37134174",
       "name": "切换",
       "font_class": "qiehuan2",
