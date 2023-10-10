@@ -484,7 +484,9 @@ class  Index extends BaseInstall
 
         if (!empty($addon_files)) {
             foreach ($addon_files as $addon) {
-                (new CoreAddonInstallService())->install($addon);
+                $service = (new coreAddonInstallService($addon));
+                $service->installCheck();
+                $service->install();
             }
         }
     }
