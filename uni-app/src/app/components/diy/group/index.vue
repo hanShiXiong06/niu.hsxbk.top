@@ -27,6 +27,9 @@
             <template v-if="component.componentName == 'Text'">
                 <diy-text :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-text>
             </template>
+			<template v-if="component.componentName == 'Notice'">
+			    <diy-notice :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-notice>
+			</template>
         </view>
         <template v-if="diyStore.mode == '' && data.global.bottomTabBarSwitch">
             <view class="pt-[20rpx]"></view>
