@@ -49,8 +49,6 @@ class ApiCheckToken
         if (!empty($token_info)) {
             $request->memberId($token_info[ 'member_id' ]);
         }
-        //校验会员和站点
-        ( new AuthService() )->checkAuth($request);
         return $next($request);
     }
 }

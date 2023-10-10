@@ -34,7 +34,6 @@ class MenuService extends BaseAdminService
     public function __construct()
     {
         parent::__construct();
-        $this->model = new SysMenu();
     }
 
     /**
@@ -47,7 +46,7 @@ class MenuService extends BaseAdminService
         $menu = $this->find($data['menu_key']);
         if(!$menu->isEmpty()) throw new AdminException('validate_menu.exit_menu_key');//创建失败
         $data['source'] = MenuDict::CREATE;
-        $res = $this->model->create($data);
+        $res = (new SysMenu())->create($data);
         if(!$res) throw new AdminException('ADD_FAIL');//创建失败
 
         Cache::tag(self::$cache_tag_name)->clear();
@@ -71,7 +70,7 @@ class MenuService extends BaseAdminService
         );
 
         //校验菜单是否可以修改
-        $res = $this->model->update($data, $where);
+        $res = (new SysMenu())->update($data, $where);
         Cache::tag(self::$cache_tag_name)->clear();
         return $res;
     }
@@ -82,7 +81,7 @@ class MenuService extends BaseAdminService
      * @return array
      */
     public function get(string $menu_key){
-        return $this->model->where([['menu_key', '=', $menu_key]])->findOrEmpty()->toArray();
+        return (new SysMenu())->where([['menu_key', '=', $menu_key]])->findOrEmpty()->toArray();
     }
 
     /**
@@ -93,7 +92,7 @@ class MenuService extends BaseAdminService
         $where = array(
             ['menu_key', '=', $menu_key]
         );
-        $menu = $this->model->where($where)->findOrEmpty();
+        $menu = (new SysMenu())->where($where)->findOrEmpty();
         return $menu;
     }
 
@@ -108,7 +107,7 @@ class MenuService extends BaseAdminService
         $menu = $this->find($menu_key);
         if ($menu->isEmpty())
             throw new AdminException('MENU_NOT_EXIST');
-        if($this->model->where([['parent_key', '=', $menu_key]])->count() > 0)
+        if((new SysMenu())->where([['parent_key', '=', $menu_key]])->count() > 0)
             throw new AdminException('MENU_NOT_ALLOW_DELETE');
 
         $res = $menu->delete();
@@ -138,7 +137,7 @@ class MenuService extends BaseAdminService
                 if($addon != 'all'){
                     $where[] = ['addon', '=', $addon];
                 }
-                return $this->model->where($where)->order('sort', 'desc')->select()->toArray();
+                return (new SysMenu())->where($where)->order('sort', 'desc')->select()->toArray();
             },
             self::$cache_tag_name
         );
@@ -179,7 +178,7 @@ class MenuService extends BaseAdminService
                 if ($status != 'all') {
                     $where[] = ['status', '=', $status];
                 }
-                return $this->model->where($where)->order('sort desc')->select()->toArray();
+                return (new SysMenu())->where($where)->order('sort desc')->select()->toArray();
             },
             self::$cache_tag_name
         );
@@ -241,7 +240,7 @@ class MenuService extends BaseAdminService
                     ['menu_key', 'in', $menu_keys],
                     ['menu_type', '=', MenuTypeDict::BUTTON]
                 ];
-                return $this->model->where($where)->order('sort', 'desc')->column('menu_key');
+                return (new SysMenu())->where($where)->order('sort', 'desc')->column('menu_key');
             },
             self::$cache_tag_name
         );
@@ -264,7 +263,7 @@ class MenuService extends BaseAdminService
                 if ($status != 'all') {
                     $where[] = ['status', '=', $status];
                 }
-                $menu_list = $this->model->where($where)->order('sort', 'desc')->column('methods, api_url');
+                $menu_list = (new SysMenu())->where($where)->order('sort', 'desc')->column('methods, api_url');
                 $auth_menu_list = [];
                 foreach ($menu_list as $v) {
                     $auth_menu_list[$v['methods']][] = $v['api_url'];
@@ -290,7 +289,7 @@ class MenuService extends BaseAdminService
                 if ($status != 'all') {
                     $where[] = ['status', '=', $status];
                 }
-                return $this->model->where($where)->order('sort desc')->column('menu_key');
+                return (new SysMenu())->where($where)->order('sort desc')->column('menu_key');
             },
             self::$cache_tag_name
         );
@@ -313,7 +312,7 @@ class MenuService extends BaseAdminService
                 if ($status != 'all') {
                     $where[] = ['status', '=', $status];
                 }
-                return $this->model->where($where)->order('sort', 'desc')->column('menu_key');
+                return (new SysMenu())->where($where)->order('sort', 'desc')->column('menu_key');
             },
             self::$cache_tag_name
         );
@@ -366,7 +365,7 @@ class MenuService extends BaseAdminService
      * @return string
      */
     public function getFullRouterPath($menu_key){
-        $menu = $this->model->where([['menu_key', '=', $menu_key]])->findOrEmpty($menu_key);
+        $menu = (new SysMenu())->where([['menu_key', '=', $menu_key]])->findOrEmpty($menu_key);
         if($menu->isEmpty()) return '';
         $parents = [];
         $this->getParentDirectory($menu, $parents);
@@ -388,7 +387,7 @@ class MenuService extends BaseAdminService
      */
     public function getParentDirectory(SysMenu $menu, &$parents){
         if(!$menu->isEmpty() && !empty($menu['parent_key'])){
-            $parent_menu = $this->model->where([['menu_key', '=', $menu['parent_key']]])->findOrEmpty();
+            $parent_menu = (new SysMenu())->where([['menu_key', '=', $menu['parent_key']]])->findOrEmpty();
             if(!empty($parent_menu)){
                 if(!empty($parent_menu['router_path'])) $parents[] = $parent_menu['router_path'];
                 $this->getParentDirectory($parent_menu, $parents);
@@ -411,7 +410,7 @@ class MenuService extends BaseAdminService
             $where[] = ['status', '=', $status];
         }
         $where[] = [ 'addon', '=',''];
-        $menu_list = $this->model->where($where)->order('sort desc')->select()->toArray();
+        $menu_list = (new SysMenu())->where($where)->order('sort desc')->select()->toArray();
         foreach ($menu_list as &$v)
         {
             $lang_menu_key = 'dict_menu_admin' . '.'. $v['menu_key'];
@@ -439,7 +438,7 @@ class MenuService extends BaseAdminService
             $where[] = ['status', '=', $status];
         }
         $where[] = [ 'addon', '=',$app_key];
-        $menu_list = $this->model->where($where)->select()->toArray();
+        $menu_list = (new SysMenu())->where($where)->select()->toArray();
 //        foreach ($menu_list as &$v)
 //        {
 //            $lang_menu_key = 'dict_menu_admin' . '.'. $v['menu_key'];

@@ -37,15 +37,6 @@ class AppManageListener
                 "cover" => "static/resource/images/app/message_cover.png",
                 "url" => "/setting/notice/template"
             ],
-            [
-                "addon" => "",
-                "title" => get_lang('dict_app_manage.member_recharge'),
-                "category" => "basic",
-                "desc" => get_lang('dict_app_manage.member_recharge'),
-                "icon" => "static/resource/images/app/recharge_icon.png",
-                "cover" => "static/resource/images/app/recharge_cover.png",
-                "url" => "/order/recharge/order"
-            ],
         ];
     }
 }

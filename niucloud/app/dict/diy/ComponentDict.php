@@ -256,6 +256,37 @@ class ComponentDict
                             'list' => []
                         ],
                     ],
+                    'GoodsList' => [
+                        'title' => '商品列表',
+                        'icon' => 'iconfont-iconshangpinliebiao',
+                        'path' => 'edit-goods-list',
+                        'support_page' => [],
+                        'uses' => 0,
+                        'sort' => 10009,
+                        'value' => [
+                            'list' => []
+                        ],
+                    ],
+                    'Notice' => [
+                        'title' => '公告',
+                        'icon' => 'iconfont-icongonggao',
+                        'path' => 'edit-notice',
+                        'support_page' => [],
+                        'uses' => 0,
+                        'sort' => 10009,
+                        'value' => [
+                            "list" => [
+                                "link" => [
+                                    "name" => ""
+                                ],
+                                "text" => ""
+                            ],
+                            "iconType" => "system",
+                            "systemIcon" => "style_01",
+                            "showType" => "popup",
+                            "imageUrld" => ""
+                        ],
+                    ]
                 ],
             ],
         ];

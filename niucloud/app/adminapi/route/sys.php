@@ -145,6 +145,8 @@ Route::group('sys', function () {
     //获取地址位置信息
     Route::get('area/get_info', 'sys.Area/addressInfo');
     Route::get('area/contrary', 'sys.Area/contraryAddress');
+    // 获取省市县数据根据地址id
+    Route::get('area/code/:code', 'sys.Area/areaByAreaCode');
 
     /***************************************************** 渠道管理 ****************************************************/
     Route::get('channel', 'sys.Channel/getChannelType');

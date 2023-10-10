@@ -89,7 +89,7 @@ class CoreSysConfigService extends BaseCoreService
 //                unset($index_list[ $k ]);
 //            } else {
 //            }
-            $index_list[ $k ][ 'icon' ] = addon_resource($v[ 'key' ], 'icon.png');
+//            $index_list[ $k ][ 'icon' ] = addon_resource($v[ 'key' ], 'icon.png');
         }
 
         $index_list = array_values($index_list);

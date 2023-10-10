@@ -31,6 +31,6 @@ Route::group('{key}', function() {
 Route::group('{key}', function() {
 
 })->middleware(ApiChannel::class)
-    ->middleware(ApiCheckToken::class) //表示验证登录
+    ->middleware(ApiCheckToken::class, true) //表示验证登录
     ->middleware(ApiLog::class);
 

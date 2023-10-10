@@ -37,7 +37,7 @@ Route::group(function() {
     //获取授权地址
     Route::get('wechat/codeurl', 'wechat.Wechat/getCodeUrl');
 
-    //公众号通过code登录
+    //公众号通过code登录s
     Route::post('wechat/login', 'wechat.Wechat/login');
     //公众号通过code注册
     Route::post('wechat/register', 'wechat.Wechat/register');
@@ -83,6 +83,14 @@ Route::group(function() {
     Route::get('scene_domain', 'sys.Config/getSceneDomain');
     // 获取手机端首页列表
     Route::get('wap_index', 'sys.Config/getWapIndexList');
+
+    /***************************************************** 地区管理 ****************************************************/
+    //通过pid获取列表
+    Route::get('area/list_by_pid/:pid', 'sys.Area/listByPid');
+    //通过层级获取列表
+    Route::get('area/tree/:level', 'sys.Area/tree');
+    // 获取省市县数据根据地址id
+    Route::get('area/code/:code', 'sys.Area/areaByAreaCode');
 })->middleware(ApiChannel::class)
     ->middleware(ApiCheckToken::class)
     ->middleware(ApiLog::class);

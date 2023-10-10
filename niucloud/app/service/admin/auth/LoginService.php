@@ -32,7 +32,6 @@ class LoginService extends BaseAdminService
     public function __construct()
     {
         parent::__construct();
-        $this->model = new SysUser();
     }
 
     /**

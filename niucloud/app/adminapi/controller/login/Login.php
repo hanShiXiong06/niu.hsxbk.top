@@ -62,6 +62,6 @@ class Login extends BaseAdminController
     }
 
     public function test() {
-        (new CoreMenuService())->refreshAddonMenu('recharge');
+
     }
 }

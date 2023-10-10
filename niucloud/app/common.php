@@ -58,7 +58,7 @@ function get_lang($str,$vars = [])
 
 /**
  * 把返回的数据集转换成Tree
- * @param $list 要转换的数据集
+ * @param array $list
  * @param string $pk
  * @param string $pid
  * @param string $child
@@ -193,7 +193,7 @@ function del_target_dir($path, $delDir)
 function system_name(?string $key = '')
 {
     $params = [
-        'admin_token_name' => env('system.admin_token_name', 'token'),///todo !!! 注意  header参数  不能包含_ , 会自动转成 -
+        'admin_token_name' => env('system.admin_token_name', 'token'),// todo !!! 注意  header参数  不能包含_ , 会自动转成 -
         'api_token_name' => env('system.api_token_name', 'token'),
         'channel_name' => env('system.channel_name', 'channel'),
     ];
@@ -360,7 +360,7 @@ function filter($string)
  * @return string
  * @throws Exception
  */
-function create_no(string $prefix = '', string $tag = '')
+function create_no(string|int $prefix = '', string|int $tag = '')
 {
     $data_center_id = 1;
     $machine_id = 2;
@@ -453,7 +453,7 @@ function check_event_result($result)
 function array_merge2(array $array1, array $array2)
 {
     foreach ($array2 as $array2_k => $array2_v) {
-        if (array_key_exists($array2_k, $array1)) {
+        if (array_key_exists($array2_k, $array1) && is_array($array2_v)) {
             foreach ($array2_v as $array2_kk => $array2_vv) {
                 if (array_key_exists($array2_kk, $array1[ $array2_k ])) {
                     if (is_array($array2_vv)) {

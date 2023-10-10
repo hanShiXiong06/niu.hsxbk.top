@@ -151,7 +151,9 @@ class CoreAddonService extends CoreAddonBaseService
             'desc' => $desc,
             'icon' => $icon,
             'key' => $key,
-            'compile' => $params['compile'] ?? []
+            'compile' => $params['compile'] ?? [],
+            'type' => $params['type'],
+            'support_app' => $params['support_app'] ?? ''
         );
         if ($addon->isEmpty()) {
             $data['install_time'] = time();

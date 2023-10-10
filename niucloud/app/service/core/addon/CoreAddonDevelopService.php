@@ -41,7 +41,6 @@ class CoreAddonDevelopService extends CoreAddonBaseService
                     ]
                 ]
             ],
-            'src' => [],
             'views' => [
                 'hello_world' => [
                     [
@@ -236,6 +235,23 @@ class CoreAddonDevelopService extends CoreAddonBaseService
                     'name' => 'routes.ts',
                     'vm' => 'web' . DIRECTORY_SEPARATOR . 'routes.vm',
                 ],
+            ],
+        ],
+        'compile' => [
+            'admin' => [
+
+            ],
+            'wap' => [
+
+            ],
+            'weapp' => [
+
+            ],
+            'web' => [
+
+            ],
+            'aliapp' => [
+
             ],
         ],
         [

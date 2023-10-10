@@ -38,10 +38,11 @@ class Auth extends BaseAdminController
         $data = $this->request->params([
             ['type', ''],
             ['title', ''],
+            ['support_app','']
         ]);
-
         return success((new AuthService())->getAuthAddonList($data));
     }
+
 
     /**
      * 获取登录用户信息

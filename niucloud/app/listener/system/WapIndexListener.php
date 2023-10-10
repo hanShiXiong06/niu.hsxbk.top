@@ -23,7 +23,8 @@ class WapIndexListener
                 'key' => 'app',
                 "title" => get_lang("dict_wap_index.system"),
                 'desc' => get_lang("dict_wap_index.system_desc"),
-                "url" => "/app/pages/index/index"
+                "url" => "/app/pages/index/index",
+                'icon' => 'static/resource/images/system/icon.png'
             ]
         ];
     }

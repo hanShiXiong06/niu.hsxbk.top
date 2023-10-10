@@ -40,7 +40,6 @@ class LoginService extends BaseApiService
     public function __construct()
     {
         parent::__construct();
-        $this->model = new Member();
     }
 
     /**

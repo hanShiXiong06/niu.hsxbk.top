@@ -82,6 +82,7 @@ class InstallSystemService extends BaseAdminService
             foreach ($tree as $key => $value) {
                 $item = [
                     'menu_name' => $value[ 'menu_name' ],
+                    'menu_short_name' => $value[ 'menu_short_name' ] ?? '',
                     'menu_key' => $value[ 'menu_key' ],
                     'parent_key' => $value[ 'parent_key' ] ?? $parent_key,
                     'menu_type' => $value[ 'menu_type' ],

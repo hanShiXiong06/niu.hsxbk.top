@@ -5,14 +5,16 @@ namespace app\install\controller;
 
 use app\model\sys\SysUser;
 use app\service\admin\install\InstallSystemService;
+use app\service\core\addon\CoreAddonInstallService;
 use app\service\core\schedule\CoreScheduleInstallService;
+use app\service\admin\sys\ConfigService;
 use Exception;
 use think\facade\Cache;
 use think\facade\View;
 use think\Response;
 
 
-class Index extends BaseInstall
+class  Index extends BaseInstall
 {
 
     /**
@@ -206,8 +208,6 @@ class Index extends BaseInstall
 
     public function install()
     {
-
-
         set_time_limit(300);
         Cache::delete('install_data');
         Cache::set('install_status', 0);//进行中
@@ -246,6 +246,8 @@ class Index extends BaseInstall
                 $this->setSuccessLog([ $res[ 'msg' ], 'error' ]);
                 return fail($res[ 'msg' ]);
             }
+            //安装插件
+            $this->installAddon();
 
             Cache::set('install_status', 1);//成功
             return success();
@@ -294,6 +296,26 @@ class Index extends BaseInstall
                     'is_admin'=>1
                 ]);
             }
+
+            $data = [
+                'site_name' => $admin_name,
+                'logo' => '',
+                'keywords' => '',
+                'desc' => '',
+                'latitude' => '',
+                'longitude' => '',
+                'province_id' => 0,
+                'city_id' => 0,
+                'district_id' => 0,
+                'address' => '',
+                'full_address' => '',
+                'phone' => '',
+                'business_hours' => '',
+                'front_end_name' => '',
+                'front_end_logo' => '',
+                'icon' => '',
+            ];
+            ( new ConfigService() )->setWebSite($data);
 
             $fp = fopen($this->lock_file, 'wb');
             if (!$fp) {
@@ -439,6 +461,32 @@ class Index extends BaseInstall
         $this->setSuccessLog([ '写入配置', 'success' ]);
 
         return success();
+    }
+
+    /**
+     * 安装插件
+     * @return void
+     */
+    public function installAddon() {
+        $addon_path = root_path() . 'addon' . DIRECTORY_SEPARATOR;
+        $addon_files = [];
+
+        $fp = dir($addon_path);
+        while ($file = $fp->read()) {
+            if ($file != '.' && $file != '..') {
+                if (is_dir($addon_path . $file)) {
+                    if (file_exists($addon_path . $file . DIRECTORY_SEPARATOR . 'info.json'))
+                        $addon_files[] = $file;
+                }
+            }
+        }
+        $fp->close();
+
+        if (!empty($addon_files)) {
+            foreach ($addon_files as $addon) {
+                (new CoreAddonInstallService())->install($addon);
+            }
+        }
     }
 
     public function getInstallInfo()
