@@ -4,7 +4,7 @@ import request from '@/utils/request'
  * 获取授权信息
  */
 export function getAuthinfo() {
-    return request.get('niucloud/authinfo')
+    return request.get('niucloud/authinfo', { showErrorMessage: false })
 }
 
 /**

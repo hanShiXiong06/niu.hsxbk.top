@@ -43,5 +43,6 @@
 	"downloading": "下载中",
 	"authTips": "云安装需先绑定授权码，如果已有授权请先进行绑定，没有授权可到niucloud官网购买云服务之后再进行操作",
 	"toBind": "绑定授权",
-	"toNiucloud": "去niucloud官网"
+	"toNiucloud": "去niucloud官网",
+	"addonUninstall": "插件卸载"
 }

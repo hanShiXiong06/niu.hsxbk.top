@@ -76,3 +76,12 @@ export function getAddonInstalltask() {
 export function getAddonCloudInstallLog(addon: string) {
     return request.get(`addon/cloudinstall/${addon}`)
 }
+
+/**
+ * 插件卸载前检测
+ * @param addon
+ * @returns
+ */
+export function preUninstallCheck(addon: string) {
+    return request.get(`addon/uninstall/check/${addon}`, { timeout: 30 * 1000 })
+}

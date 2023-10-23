@@ -1,7 +1,7 @@
 <template>
     <el-container class="h-[60px] bg-[#2B303B] flex items-center justify-between px-[15px] text-white">
-        <div class="flex items-center text-[14px]">
-            <span class="iconfont icontuodong !text-[24px] mr-[6px]"></span>
+        <div class="flex items-center text-[14px]  leading-[1]">
+            <span class="iconfont icontuodong !text-[25px] mr-[6px]"></span>
             <span class="cursor-pointer" @click="goAppManage">{{ t('appMarketPlace') }}</span>
             <template v-if="app_debug">
                 <span class="mx-2 text-[#4F5563] mx-[15px]">|</span>

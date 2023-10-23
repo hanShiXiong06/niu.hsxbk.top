@@ -310,13 +310,68 @@
             </div>
         </el-dialog>
 
+        <el-dialog v-model="uninstallShowDialog" :title="t('addonUninstall')" width="850px" :close-on-click-modal="false"
+            :close-on-press-escape="false">
+            <el-scrollbar max-height="50vh">
+                <div class="min-h-[150px]">
+                    <div class="bg-[#fff] my-3" v-if="uninstallCheckResult.dir">
+                        <p class="pt-[20px] pl-[20px] ">{{ t('dirPermission') }}</p>
+                        <div class="px-[20px] pt-[10px] text-[14px]">
+                            <el-row class="py-[10px] items table-head-bg pl-[15px] mb-[10px]">
+                                <el-col :span="12">
+                                    <span>{{ t('path') }}</span>
+                                </el-col>
+                                <el-col :span="6">
+                                    <span>{{ t('demand') }}</span>
+                                </el-col>
+                                <el-col :span="6">
+                                    <span>{{ t('status') }}</span>
+                                </el-col>
+                            </el-row>
+                            <el-row class="pb-[10px] items pl-[15px]" v-for="item in uninstallCheckResult.dir.is_readable">
+                                <el-col :span="12">
+                                    <span>{{ item.dir }}</span>
+                                </el-col>
+                                <el-col :span="6">
+                                    <span>{{ t('readable') }}</span>
+                                </el-col>
+                                <el-col :span="6">
+                                    <span v-if="item.status"><el-icon color="green"><Select /></el-icon></span>
+                                    <span v-else>
+                                        <el-icon color="red">
+                                            <CloseBold />
+                                        </el-icon>
+                                    </span>
+                                </el-col>
+                            </el-row>
+                            <el-row class="pb-[10px] items pl-[15px]" v-for="item in uninstallCheckResult.dir.is_write">
+                                <el-col :span="12">
+                                    <span>{{ item.dir }}</span>
+                                </el-col>
+                                <el-col :span="6">
+                                    <span>{{ t('write') }}</span>
+                                </el-col>
+                                <el-col :span="6">
+                                    <span v-if="item.status"><el-icon color="green"><Select /></el-icon></span>
+                                    <span v-else>
+                                        <el-icon color="red">
+                                            <CloseBold />
+                                        </el-icon>
+                                    </span>
+                                </el-col>
+                            </el-row>
+                        </div>
+                    </div>
+                </div>
+            </el-scrollbar>
+        </el-dialog>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, watch, computed, h } from 'vue'
 import { t } from '@/lang'
-import { getAddonLocal, uninstallAddon, installAddon, preInstallCheck, cloudInstallAddon, getAddonInstalltask, getAddonCloudInstallLog } from '@/app/api/addon'
+import { getAddonLocal, uninstallAddon, installAddon, preInstallCheck, cloudInstallAddon, getAddonInstalltask, getAddonCloudInstallLog, preUninstallCheck } from '@/app/api/addon'
 import { downloadVersion, getAuthinfo } from '@/app/api/module'
 import { TabsPaneContext, ElMessageBox, ElNotification } from 'element-plus'
 import { img } from '@/utils/common'
@@ -582,17 +637,30 @@ watch(currAddon, (nval) => {
     installCheckResult.value = {}
 })
 
+// 卸载面板弹窗
+const uninstallShowDialog = ref(false)
+
+// 卸载环境检测结果
+const uninstallCheckResult = ref({})
+
 /**
  * 卸载
  * @param key
  */
 const uninstallAddonFn = (key: string) => {
-    uninstallAddon({ addon: key }).then(res => {
-        localListFn()
-        userStore.getAppList()
-        loading.value = false
-    }).catch(() => {
-        loading.value = false
+    preUninstallCheck(key).then(({ data }) => {
+        if (data.is_pass) {
+            uninstallAddon({ addon: key }).then(res => {
+                localListFn()
+                userStore.getAppList()
+                loading.value = false
+            }).catch(() => {
+                loading.value = false
+            })
+        } else {
+            uninstallCheckResult.value = data
+            uninstallShowDialog.value = true
+        }
     })
 }
 
