@@ -2,6 +2,7 @@
 return [
     //充值成功通知，站点端发送
     'recharge_success' => [
+        'addon' => 'hello_world',
         'key' => 'recharge_success',
         'receiver_type' => 1,
         'name' => '充值成功通知',
