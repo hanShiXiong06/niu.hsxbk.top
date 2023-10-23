@@ -247,7 +247,7 @@ class  Index extends BaseInstall
                 return fail($res[ 'msg' ]);
             }
             //安装插件 todo
-            $this->installAddon();
+//            $this->installAddon();
 
             Cache::set('install_status', 1);//成功
             return success();

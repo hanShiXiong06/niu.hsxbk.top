@@ -463,13 +463,13 @@ const localListFn = () => {
 localListFn()
 
 const handleClick = (tab: TabsPaneContext, event: Event) => {
-    if (tab.paneName == 'buy' && localList.value.error != '') {
-        ElMessage({
-            message: localList.value.error,
-            grouping: true,
-            type: 'error'
-        })
-    }
+    // if (tab.paneName == 'buy' && localList.value.error != '') {
+    //     ElMessage({
+    //         message: localList.value.error,
+    //         grouping: true,
+    //         type: 'error'
+    //     })
+    // }
 }
 
 const currAddon = ref('')
