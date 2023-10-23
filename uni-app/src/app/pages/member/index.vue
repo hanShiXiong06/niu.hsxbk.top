@@ -8,14 +8,14 @@
 			<view class="diy-template-wrap bg-index" v-if="data.pageMode != 'fixed'"
 				:style="{ backgroundColor: data.global.pageBgColor,minHeight: 'calc(100vh - 50px)',backgroundImage : data.global.bgUrl ? 'url(' +  img(data.global.bgUrl) + ')' : '' }">
 
-				<diy-group :data="data" :pullDownRefresh="pullDownRefresh"></diy-group>
+				<diy-group :data="data" :pullDownRefreshCount="pullDownRefreshCount"></diy-group>
 
 			</view>
 
 			<!-- 固定模板渲染 -->
 			<view class="fixed-template-wrap" v-if="data.pageMode == 'fixed'">
 
-				<fixed-group :data="data" :pullDownRefresh="pullDownRefresh"></fixed-group>
+				<fixed-group :data="data" :pullDownRefreshCount="pullDownRefreshCount"></fixed-group>
 
 			</view>
 
@@ -33,7 +33,7 @@
 
 	const loading = ref(true);
 	const diyStore = useDiyStore();
-	const pullDownRefresh = ref(0)
+	const pullDownRefreshCount = ref(0)
 	const name = ref('DIY_MEMBER_INDEX')
 
 	// 自定义页面 数据
@@ -64,7 +64,7 @@
 
 	// 监听下拉刷新事件
 	onPullDownRefresh(() => {
-		pullDownRefresh.value++;
+		pullDownRefreshCount.value++;
 		uni.stopPullDownRefresh();
 	})
 
@@ -115,5 +115,8 @@
 		box-sizing: border-box;
 		background-size: 100% !important;
 		background-repeat: no-repeat !important;
+	}
+	:deep(.u-tabbar__placeholder) {
+		display: none !important;
 	}
 </style>

@@ -2,24 +2,29 @@
 	<view>
 		<u-loading-page :loading="loading" loadingText="" bg-color="#f7f7f7"></u-loading-page>
 
-		<view v-show="!loading"> 
+		<view v-show="!loading">
 
 			<!-- 自定义模板渲染 -->
 			<view class="diy-template-wrap bg-index" v-if="data.pageMode != 'fixed'"
 				:style="{ backgroundColor: data.global.pageBgColor,minHeight: 'calc(100vh - 50px)',backgroundImage : data.global.bgUrl ? 'url(' +  img(data.global.bgUrl) + ')' : '' }">
 
-				<diy-group :data="data" :pullDownRefresh="pullDownRefresh"></diy-group>
+				<diy-group :data="data" :pullDownRefreshCount="pullDownRefreshCount"></diy-group>
 
 			</view>
 
 			<!-- 固定模板渲染 -->
 			<view class="fixed-template-wrap" v-if="data.pageMode == 'fixed'">
 
-				<fixed-group :data="data" :pullDownRefresh="pullDownRefresh"></fixed-group>
+				<fixed-group :data="data" :pullDownRefreshCount="pullDownRefreshCount"></fixed-group>
 
 			</view>
 
 		</view>
+
+		<!-- #ifdef MP-WEIXIN -->
+		<!-- 小程序隐私协议 -->
+		<wx-privacy-popup ref="wxPrivacyPopup"></wx-privacy-popup>
+		<!-- #endif -->
 	</view>
 </template>
 
@@ -32,12 +37,9 @@
 	import { img, redirect } from '@/utils/common';
 
 	const { setShare, onShareAppMessage, onShareTimeline } = useShare()
-	onShareAppMessage()
-	onShareTimeline()
-
 	const loading = ref(true);
 	const diyStore = useDiyStore();
-	const pullDownRefresh = ref(0)
+	const pullDownRefreshCount = ref(0)
 
 	const id = ref(0)
 	const name = ref('')
@@ -59,6 +61,10 @@
 		}
 	})
 
+	onShareAppMessage()
+	onShareTimeline()
+
+	// 监听页面加载
 	onLoad(option => {
 		// #ifdef H5
 		// 装修模式
@@ -68,16 +74,11 @@
 		}
 		// #endif
 		id.value = option.id || '';
-		name.value = option.name || '';
 		template.value = option.template || '';
+		name.value = option.name;
 	});
 
-	// 监听下拉刷新事件
-	onPullDownRefresh(() => {
-		pullDownRefresh.value++;
-		uni.stopPullDownRefresh();
-	})
-
+	// 监听页面显示
 	onShow(() => {
 		// 装修模式
 		if (diyStore.mode == 'decorate') {
@@ -111,8 +112,9 @@
 					});
 					loading.value = false;
 
-					let share = res.data.share ? JSON.parse(res.data.share) : null;
+					let share = data.share ? JSON.parse(data.share) : null;
 					setShare(share);
+
 				} else if (data.mode == 'other') {
 					// 跳转到其他页面
 					redirect({ url: data.page })
@@ -122,13 +124,13 @@
 		}
 
 	});
+
+	// 监听下拉刷新事件
+	onPullDownRefresh(() => {
+		pullDownRefreshCount.value++;
+		uni.stopPullDownRefresh();
+	})
 </script>
 <style lang="scss" scoped>
-	.bg-index {
-		width: 100%;
-		height: 100%;
-		box-sizing: border-box;
-		background-size: 100% !important;
-		background-repeat: no-repeat !important;
-	}
+	@import '@/styles/diy.scss';
 </style>

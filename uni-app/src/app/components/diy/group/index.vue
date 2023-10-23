@@ -4,32 +4,32 @@
         @click="diyStore.changeCurrentIndex(index, component)" class="draggable-element relative cursor-move"
         :class="{ selected: diyStore.currentIndex == index,decorate : diyStore.mode == 'decorate' }" :style="component.pageStyle">
             <template v-if="component.componentName == 'AddonList'">
-                <diy-addon-list :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-addon-list>
+                <diy-addon-list :component="component" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount"></diy-addon-list>
             </template>
             <template v-if="component.componentName == 'GraphicNav'">
-                <diy-graphic-nav :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-graphic-nav>
+                <diy-graphic-nav :component="component" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount"></diy-graphic-nav>
             </template>
             <template v-if="component.componentName == 'HorzBlank'">
-                <diy-horz-blank :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-horz-blank>
+                <diy-horz-blank :component="component" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount"></diy-horz-blank>
             </template>
             <template v-if="component.componentName == 'HotArea'">
-                <diy-hot-area :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-hot-area>
+                <diy-hot-area :component="component" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount"></diy-hot-area>
             </template>
             <template v-if="component.componentName == 'ImageAds'">
-                <diy-image-ads :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-image-ads>
+                <diy-image-ads :component="component" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount"></diy-image-ads>
             </template>
             <template v-if="component.componentName == 'MemberInfo'">
-                <diy-member-info :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-member-info>
+                <diy-member-info :component="component" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount"></diy-member-info>
+            </template>
+            <template v-if="component.componentName == 'Notice'">
+                <diy-notice :component="component" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount"></diy-notice>
             </template>
             <template v-if="component.componentName == 'RubikCube'">
-                <diy-rubik-cube :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-rubik-cube>
+                <diy-rubik-cube :component="component" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount"></diy-rubik-cube>
             </template>
             <template v-if="component.componentName == 'Text'">
-                <diy-text :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-text>
+                <diy-text :component="component" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount"></diy-text>
             </template>
-			<template v-if="component.componentName == 'Notice'">
-			    <diy-notice :component="component" :index="index" :pullDownRefresh="props.pullDownRefresh"></diy-notice>
-			</template>
         </view>
         <template v-if="diyStore.mode == '' && data.global.bottomTabBarSwitch">
             <view class="pt-[20rpx]"></view>
@@ -42,7 +42,7 @@
    import { onMounted, nextTick, computed, ref,watch } from 'vue';
    import Sortable from 'sortablejs';
    import { range } from 'lodash-es';
-   const props = defineProps(['data','pullDownRefresh']);
+   const props = defineProps(['data','pullDownRefreshCount']);
    const diyStore = useDiyStore();
 
    const data = computed(() => {

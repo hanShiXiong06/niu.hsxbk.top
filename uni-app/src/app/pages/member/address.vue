@@ -1,34 +1,46 @@
 <template>
     <scroll-view scroll-y="true" v-if="!loading">
-        <view class="border-0 !border-b !border-[#eee] border-solid">
+        <view class="border-0 !border-b !border-[#eee] border-solid" v-if="!type">
             <u-tabs :list="tabs" @click="switchTab" :current="current" itemStyle="width:50%;height:88rpx;box-sizing: border-box;"></u-tabs>
         </view>
-        <view class="p-[30rpx]" v-show="current == 0">
-            <view v-for="item in addressList" class="border-0 !border-b !border-[#f5f5f5] border-solid pb-[30rpx] flex items-center">
-                <view class="flex-1">
-                    <view class="text-xs text-gray-subtitle">{{ item.full_address.replace(item.address, '') }}</view>
-                    <view class="font-bold my-[10rpx]">{{ item.address }}</view>
-                    <view class="text-sm">{{ item.name }} <text class="text-[26rpx] text-gray-subtitle">{{ mobileHide(item.mobile) }}</text></view>
+        <uni-swipe-action>
+            <view class="p-[30rpx]" v-show="current == 0">
+                <uni-swipe-action-item :right-options="addressOptions" @click="swipeClick" v-for="item in addressList">
+                    <view class="border-0 !border-b !border-[#f5f5f5] border-solid pb-[30rpx] flex items-center">
+                        <view class="flex-1" @click="selectAddress(item)">
+                            <view class="font-bold my-[10rpx] text-sm">{{ item.full_address }}</view>
+                            <view class="text-sm flex items-center">
+                                {{ item.name }} 
+                                <text class="text-[26rpx] text-gray-subtitle">{{ mobileHide(item.mobile) }}</text>
+                                <view class="bg-primary text-white text-xs px-[10rpx] leading-none flex items-center h-[32rpx] ml-[10rpx] rounded" v-if="item.is_default == 1">{{ t('default') }}</view>
+                            </view>
+                        </view>
+                        <text class="iconfont iconbianji" @click="editAddress(item.id)"></text>
+                    </view>
+                </uni-swipe-action-item>
+                <view v-if="!addressList.length" class="pt-[20vh]">
+                    <u-empty mode="address" :icon="img('static/resource/images/empty.png')"/>
                 </view>
-                <text class="iconfont iconbianji" @click="editAddress(item.id)"></text>
             </view>
-            <view v-if="!addressList.length" class="pt-[20vh]">
-                <u-empty mode="address" :icon="img('/static/resource/images/empty.png')"/>
-            </view>
-        </view>
-        <view class="p-[30rpx]" v-show="current == 1">
-            <view v-for="item in locationAddressList" class="border-0 !border-b !border-[#f5f5f5] border-solid pb-[30rpx] flex items-center">
-                <view class="flex-1">
-                    <view class="text-xs text-gray-subtitle">{{ item.full_address.replace(item.address, '') }}</view>
-                    <view class="font-bold my-[10rpx]">{{ item.address }}</view>
-                    <view class="text-sm">{{ item.name }} <text class="text-[26rpx] text-gray-subtitle">{{ mobileHide(item.mobile) }}</text></view>
+            <view class="p-[30rpx]" v-show="current == 1">
+                <uni-swipe-action-item :right-options="addressOptions" @click="swipeClick" v-for="item in locationAddressList">
+                    <view class="border-0 !border-b !border-[#f5f5f5] border-solid pb-[30rpx] flex items-center">
+                        <view class="flex-1" @click="selectAddress(item)">
+                            <view class="font-bold my-[10rpx] text-sm">{{ item.full_address }}</view>
+                            <view class="text-sm flex items-center">
+                                {{ item.name }} 
+                                <text class="text-[26rpx] text-gray-subtitle">{{ mobileHide(item.mobile) }}</text>
+                                <view class="bg-primary text-white text-xs px-[10rpx] leading-none flex items-center h-[32rpx] ml-[10rpx] rounded" v-if="item.is_default == 1">{{ t('default') }}</view>
+                            </view>
+                        </view>
+                        <text class="iconfont iconbianji" @click="editAddress(item.id)"></text>
+                    </view>
+                </uni-swipe-action-item>
+                <view v-if="!locationAddressList.length" class="pt-[15vh]">
+                    <u-empty mode="address" :icon="img('static/resource/images/empty.png')"/>
                 </view>
-                <text class="iconfont iconbianji" @click="editAddress(item.id)"></text>
             </view>
-            <view v-if="!locationAddressList.length" class="pt-[15vh]">
-                <u-empty mode="address" :icon="img('/static/resource/images/empty.png')"/>
-            </view>
-        </view>
+        </uni-swipe-action>
         <u-tabbar :fixed="true" :safeAreaInsetBottom="true" :border="false">
             <view class="p-[24rpx] pt-0 w-full">
                 <u-button type="primary" shape="circle" :text="t('createAddress')" @click="addAddress"></u-button>
@@ -39,8 +51,9 @@
 
 <script setup lang="ts">
     import { ref, reactive, computed, watch } from 'vue'
-    import { redirect, img } from '@/utils/common'
-    import { getAddressList } from '@/app/api/member'
+    import { onLoad } from '@dcloudio/uni-app'
+    import { redirect, img, mobileHide } from '@/utils/common'
+    import { getAddressList, deleteAddress } from '@/app/api/member'
     import { t } from '@/locale'
     
     const loading = ref(true)
@@ -51,6 +64,12 @@
     ])
     const addressList = ref<object[]>([])
     const locationAddressList = ref<object[]>([])
+    const type = ref('')
+    
+    onLoad((data) => {
+        type.value = data.type || ''
+        if (data.type) current.value = data.type == 'address' ? 0 : 1
+    })
     
     getAddressList({})
         .then(({ data }) => {
@@ -72,16 +91,46 @@
     
     const addAddress = ()=> {
         const url = `/app/pages/member/${tabs.value[ current.value ].key}_edit`
-        redirect({ url })
+        redirect({ url, param: { type: type.value } })
     }
     
     const editAddress = (id: number)=> {
         const url = `/app/pages/member/${tabs.value[ current.value ].key}_edit`
-        redirect({ url, param: { id } })
+        redirect({ url, param: { id, type: type.value } })
     }
     
-    const mobileHide = (mobile: string) => {
-        return mobile.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
+    const addressOptions = ref([
+        {
+            text: t('delete'),
+            style: {
+                backgroundColor: '#F56C6C'
+            }
+        }
+    ])
+    
+    const selectAddress = (data: object) => {
+        const selectAddress = uni.getStorageSync('selectAddressCallback')
+        if (selectAddress) {
+            selectAddress.address_id = data.id
+            
+            uni.setStorage({
+                key: 'selectAddressCallback',
+                data: selectAddress,
+                success() {
+                    redirect({url: selectAddress.back })
+                }
+            })
+        }
+    }
+    
+    const swipeClick = (event: any) => {
+        const list = current.value ? locationAddressList : addressList
+        const data = list.value[event.index]
+        
+        deleteAddress(data.id)
+            .then(()=>{
+                list.value.splice(event.index, 1)
+            }).catch()
     }
 </script>
 

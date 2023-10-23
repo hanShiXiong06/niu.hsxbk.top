@@ -1,7 +1,7 @@
 <template>
 	<view :style="warpCss">
-		<view class="flex items-center justify-between py-[30rpx] px-[32rpx]">
-			<view v-if="diyComponent.navTitle" class="text-[30rpx]"
+		<view class="flex items-center justify-between py-[30rpx] px-[32rpx]" v-if="diyComponent.navTitle">
+			<view class="text-[30rpx]"
 				:style="{fontWeight: diyComponent.font.weight,color:diyComponent.font.color}">
 				{{diyComponent.navTitle}}
 			</view>
@@ -14,28 +14,29 @@
 		<view v-if="diyComponent.layout == 'vertical'" class="graphic-nav">
 			<view class="graphic-nav-item" v-for="(item, index) in diyComponent.list" :key="item.id">
 
-				<app-link :data="item.link" class="flex items-center justify-between  py-[30rpx] px-[32rpx]"
+				<app-link :data="item.link" 
 					:class="[index == 0 ? 'border-t-0':'border-t']">
-
-					<view class="graphic-img relative flex items-center w-10 h-10 mr-[20rpx]"
-						v-if="diyComponent.mode != 'text'"
-						:style="{ width: diyComponent.imageSize * 2 + 'rpx', height: diyComponent.imageSize * 2 + 'rpx' }">
-						<image :src="img(item.imageUrl)" mode="aspectFill"
-							:style="{ maxWidth: diyComponent.imageSize * 2 + 'rpx', maxHeight: diyComponent.imageSize * 2 + 'rpx', borderRadius: diyComponent.aroundRadius * 2 + 'rpx' }">
-						</image>
-						<text v-if="item.label.control"
-							class="tag absolute -top-[10rpx] -right-[24rpx] text-white rounded-[24rpx] rounded-bl-none transform scale-80 py-1 px-2 text-xs"
-							:style="{ color: item.label.textColor, backgroundImage: 'linear-gradient(' + item.label.bgColorStart + ',' + item.label.bgColorEnd + ')' }">
-							{{ item.label.text }}
+					<view class="flex items-center justify-between py-[30rpx] px-[32rpx]">
+						<view class="graphic-img relative flex items-center  w-10 h-10 mr-[20rpx]"
+							v-if="diyComponent.mode != 'text'"
+							:style="{ width: diyComponent.imageSize * 2 + 'rpx', height: diyComponent.imageSize * 2 + 'rpx'}">
+						
+							<image :src="img(item.imageUrl)" mode="aspectFill"
+								:style="{ maxWidth: diyComponent.imageSize * 2 + 'rpx', maxHeight: diyComponent.imageSize * 2 + 'rpx', borderRadius: diyComponent.aroundRadius * 2 + 'rpx' }">
+							</image>
+							<text v-if="item.label.control"
+								class="tag absolute -top-[10rpx] -right-[24rpx] text-white rounded-[24rpx] rounded-bl-none transform scale-80 py-1 px-2 text-xs"
+								:style="{ color: item.label.textColor, backgroundImage: 'linear-gradient(' + item.label.bgColorStart + ',' + item.label.bgColorEnd + ')' }">
+								{{ item.label.text }}
+							</text>
+						</view>
+						
+						<text v-if="diyComponent.mode != 'img'" class="graphic-text w-full truncate leading-normal"
+							:style="{ fontSize: diyComponent.font.size * 2 + 'rpx', fontWeight: diyComponent.font.weight, color: diyComponent.font.color }">
+							{{ item.title }}
 						</text>
+						<view><u-icon name="arrow-right" color="#CACACA"></u-icon></view>
 					</view>
-
-					<text v-if="diyComponent.mode != 'img'" class="graphic-text w-full truncate leading-normal"
-						:style="{ fontSize: diyComponent.font.size * 2 + 'rpx', fontWeight: diyComponent.font.weight, color: diyComponent.font.color }">
-						{{ item.title }}
-					</text>
-					<u-icon name="arrow-right" color="#CACACA"></u-icon>
-
 				</app-link>
 
 			</view>
@@ -53,7 +54,6 @@
 						v-if="swiperCondition(index,numItem)" :style="{ width: 100 / diyComponent.rowCount + '%' }">
 
 						<app-link :data="item.link" class="flex flex-col items-center box-border py-2">
-
 							<view class="graphic-img relative flex items-center justify-center w-10 h-10"
 								v-if="diyComponent.mode != 'text'"
 								:style="{ width: diyComponent.imageSize * 2 + 'rpx', height: diyComponent.imageSize * 2 + 'rpx' }">
@@ -91,9 +91,9 @@
 				<view class="graphic-nav-item" :class="{'flex-shrink-0' : diyComponent.showStyle == 'singleSlide'}"
 					v-for="(item, index) in diyComponent.list" :key="item.id"
 					:style="{ width: 100 / diyComponent.rowCount + '%' }">
-
+					
 					<app-link :data="item.link" class="flex flex-col items-center box-border py-2">
-						<view class="graphic-img relative flex items-center justify-center w-10 h-10"
+						<view class="graphic-img relative flex items-center justify-center w-10 h-10 mx-[auto]"
 							v-if="diyComponent.mode != 'text'"
 							:style="{ width: diyComponent.imageSize * 2 + 'rpx', height: diyComponent.imageSize * 2 + 'rpx' }">
 							<image :src="img(item.imageUrl)" mode="aspectFill"
@@ -131,7 +131,7 @@
 	import useDiyStore from '@/app/stores/diy';
 	import { useLogin } from '@/hooks/useLogin';
 
-	const props = defineProps(['component', 'index', 'pullDownRefresh']);
+	const props = defineProps(['component', 'index', 'pullDownRefreshCount']);
 
 	const diyStore = useDiyStore();
 
@@ -154,7 +154,7 @@
 	})
 
 	watch(
-		() => props.pullDownRefresh,
+		() => props.pullDownRefreshCount,
 		(newValue, oldValue) => {
 			// 处理下拉刷新业务
 		}

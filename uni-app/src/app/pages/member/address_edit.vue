@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, reactive, computed, watch } from 'vue'
+    import { ref, computed } from 'vue'
     import { onLoad } from '@dcloudio/uni-app'
     import { redirect } from '@/utils/common'
     import { t } from '@/locale'
@@ -61,6 +61,10 @@
         type: 'address'
     })
     
+    const areaRef = ref()
+    const formRef = ref(null)
+    const type = ref('')
+    
     onLoad((data) => {
         if (data.id) {
             getAddressInfo(data.id)
@@ -69,10 +73,8 @@
                 })
                 .catch()
         }
+        type.value = data.type || ''
     })
-    
-    const areaRef = ref()
-    const formRef = ref(null)
     
     const rules = computed(() => {
         return {
@@ -124,7 +126,7 @@
     
     const operateLoading = ref(false)
     const save = ()=> {
-        const save = formData.id ? editAddress : addAddress
+        const save = formData.value.id ? editAddress : addAddress
         
         formRef.value.validate().then(() => {
             if (operateLoading.value) return
@@ -134,6 +136,9 @@
         
             save(formData.value).then((res) => {
                 operateLoading.value = false
+                setTimeout(()=> {
+                    redirect({ url: '/app/pages/member/address', param: { type: type.value } })
+                }, 1000)
             }).catch(() => {
                 operateLoading.value = false
             })

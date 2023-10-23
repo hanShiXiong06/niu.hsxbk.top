@@ -27,7 +27,7 @@
 	import { img } from '@/utils/common';
 	import useDiyStore from '@/app/stores/diy';
 
-	const props = defineProps(['component', 'index', 'pullDownRefresh']);
+	const props = defineProps(['component', 'index', 'pullDownRefreshCount']);
 
 	const diyStore = useDiyStore();
 
@@ -55,7 +55,7 @@
 	})
 
 	watch(
-		() => props.pullDownRefresh,
+		() => props.pullDownRefreshCount,
 		(newValue, oldValue) => {
 			// 处理下拉刷新业务
 		}
