@@ -101,6 +101,15 @@ class AddonService extends BaseAdminService
     }
 
     /**
+     * @param string $addon
+     * @return void
+     */
+    public function uninstallCheck(string $addon) {
+        $data = ( new CoreAddonInstallService($addon) )->uninstallCheck();
+        return success('SUCCESS', $data);
+    }
+
+    /**
      * 卸载插件
      * @param string $addon
      * @return true

@@ -43,6 +43,8 @@ Route::group(function () {
     //插件类型
     Route::get('addontype', 'addon.Addon/getType');
 
+    //卸载插件环境检测
+    Route::get('addon/uninstall/check/:addon', 'addon.Addon/uninstallCheck');
     //卸载插件
     Route::post('addon/uninstall/:addon', 'addon.Addon/uninstall');
     //应用列表(...)

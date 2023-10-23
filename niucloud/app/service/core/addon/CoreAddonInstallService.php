@@ -464,6 +464,43 @@ class CoreAddonInstallService extends CoreAddonBaseService
     }
 
     /**
+     * 插件卸载环境检测
+     * @param string $addon
+     * @return void
+     */
+    public function uninstallCheck() {
+        $data = [
+            // 目录检测
+            'dir' => [
+                // 要求可读权限
+                'is_readable' => [],
+                // 要求可写权限
+                'is_write' => []
+            ]
+        ];
+
+        // 将要删除的根目录
+        $to_admin_dir = $this->root_path . 'admin' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . $this->addon . DIRECTORY_SEPARATOR;
+        $to_web_dir = $this->root_path . 'web' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . $this->addon . DIRECTORY_SEPARATOR;
+        $to_wap_dir = $this->root_path . 'uni-app' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . $this->addon . DIRECTORY_SEPARATOR;
+        $to_resource_dir = public_path() . 'addon' . DIRECTORY_SEPARATOR . $this->addon . DIRECTORY_SEPARATOR;
+
+        if (is_dir($to_admin_dir)) $data['dir']['is_write'][] = ['dir' => str_replace(project_path(), '', $to_admin_dir), 'status' => is_write($to_admin_dir)];
+        if (is_dir($to_web_dir)) $data['dir']['is_write'][] = ['dir' => str_replace(project_path(), '', $to_web_dir), 'status' => is_write($to_web_dir)];
+        if (is_dir($to_wap_dir)) $data['dir']['is_write'][] = ['dir' => str_replace(project_path(), '', $to_wap_dir), 'status' => is_write($to_wap_dir)];
+        if (is_dir($to_resource_dir)) $data['dir']['is_write'][] = ['dir' => str_replace(project_path(), '', $to_resource_dir), 'status' => is_write($to_resource_dir)];
+
+        $check_res = array_merge(
+            array_column($data['dir']['is_readable'], 'status'),
+            array_column($data['dir']['is_write'], 'status')
+        );
+
+        // 是否通过校验
+        $data['is_pass'] = !in_array(false, $check_res);
+        return $data;
+    }
+
+    /**
      * 卸载插件
      * @return true
      */

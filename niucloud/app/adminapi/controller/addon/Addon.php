@@ -86,6 +86,16 @@ class Addon extends BaseAdminController
     }
 
     /**
+     * 插件安装环境检测
+     * @param $addon
+     * @return Response
+     */
+    public function uninstallCheck($addon)
+    {
+        return (new AddonService())->uninstallCheck($addon);
+    }
+
+    /**
      * 插件列表
      * @return Response
      */
