@@ -35,7 +35,6 @@ class UserService extends BaseAdminService
     public function __construct()
     {
         parent::__construct();
-       $this->model = new SysUser();
     }
 
     /**
@@ -54,7 +53,7 @@ class UserService extends BaseAdminService
         if (!empty($where['role'])) {
             $search['role_ids'] = $where['role'];
         }
-        $search_model = $this->model->withSearch(['username', 'realname', 'create_time', 'role_ids'], $search)->field($field)->order('uid desc')->append(['status_name']);
+        $search_model = (new SysUser())->withSearch(['username', 'realname', 'create_time', 'role_ids'], $search)->field($field)->order('uid desc')->append(['status_name']);
         return $this->pageQuery($search_model, function ($item, $key) {
             $role_ids = $item['role_ids'] ?? [];
             $item->role_data = $this->getRoleByUserRoleIds($role_ids);
@@ -72,7 +71,7 @@ class UserService extends BaseAdminService
             ['uid', '=', $uid],
         );
         $field = 'uid, username, head_img, real_name, last_ip, last_time, create_time, login_count, status, delete_time, update_time, role_ids, is_admin';
-        $user = $this->model->where($where)->field($field)->findOrEmpty();
+        $user = (new SysUser())->where($where)->field($field)->findOrEmpty();
         if ($user->isEmpty())
             return [];
 
@@ -103,7 +102,7 @@ class UserService extends BaseAdminService
             'is_admin' => $data['is_admin'],
             'role_ids' => $data['role_ids'],
         ];
-        $user = $this->model->create($user_data);
+        $user = (new SysUser())->create($user_data);
         return $user?->uid;
     }
 
@@ -188,7 +187,7 @@ class UserService extends BaseAdminService
      */
     public function checkUsername($username)
     {
-        $count = $this->model->where([['username', '=', $username]])->count();
+        $count = (new SysUser())->where([['username', '=', $username]])->count();
         if($count > 0)
         {
             return true;
@@ -203,7 +202,7 @@ class UserService extends BaseAdminService
      */
     public function find(int $uid){
 
-        $user = $this->model->findOrEmpty($uid);
+        $user = (new SysUser())->findOrEmpty($uid);
         if ($user->isEmpty())
             throw new AdminException('USER_NOT_EXIST');
         return $user;
@@ -266,7 +265,7 @@ class UserService extends BaseAdminService
         $where = [
             ['uid', '=', $uid]
         ];
-        $this->model->where($where)->delete();
+        (new SysUser())->where($where)->delete();
         return true;
 
     }
@@ -277,7 +276,7 @@ class UserService extends BaseAdminService
      * @return SysUser|array|mixed|Model
      */
     public function getUserInfoByUsername(string $username){
-        return $this->model->where([['username', '=',$username]])->findOrEmpty();
+        return (new SysUser())->where([['username', '=',$username]])->findOrEmpty();
     }
 
     /**
@@ -294,7 +293,7 @@ class UserService extends BaseAdminService
                     ['uid', '=', $uid],
                 );
                 $field = 'uid, username, head_img, real_name, last_ip, last_time, create_time, login_count, status, delete_time, update_time, role_ids, is_admin';
-                $user = $this->model->where($where)->field($field)->append(['status_name'])->findOrEmpty();
+                $user = (new SysUser())->where($where)->field($field)->append(['status_name'])->findOrEmpty();
                 return $user->toArray();
             },
             [self::$cache_tag_name, RoleService::$cache_tag_name]

@@ -185,7 +185,7 @@ class  Index extends BaseInstall
     public function getSqlQuery($sql_data)
     {
         $this->checkLock();
-        $sql_data = preg_replace("/TYPE=(InnoDB|MyISAM|MEMORY)( DEFAULT CHARSET=[^; ]+)?/", "ENGINE=\\1 DEFAULT CHARSET=utf8", $sql_data);
+        $sql_data = preg_replace("/TYPE=(InnoDB|MyISAM|MEMORY)( DEFAULT CHARSET=[^; ]+)?/", "ENGINE=\\1 DEFAULT CHARSET=utf8mb4", $sql_data);
 
         $sql_data = str_replace("\r", "\n", $sql_data);
         $sql_query = [];
@@ -246,7 +246,7 @@ class  Index extends BaseInstall
                 $this->setSuccessLog([ $res[ 'msg' ], 'error' ]);
                 return fail($res[ 'msg' ]);
             }
-            //安装插件
+            //安装插件 todo
             $this->installAddon();
 
             Cache::set('install_status', 1);//成功
@@ -484,7 +484,7 @@ class  Index extends BaseInstall
 
         if (!empty($addon_files)) {
             foreach ($addon_files as $addon) {
-                $service = (new coreAddonInstallService($addon));
+                $service = (new CoreAddonInstallService($addon));
                 $service->installCheck();
                 $service->install();
             }

@@ -223,8 +223,12 @@ class PagesDict
                                     "bottom" => 6,
                                     "both" => 16
                                 ],
+                                "style" => "style-1",
+                                "styleName" => "风格1",
                                 "textColor" => "#FFFFFF",
-                                "bgUrl" => "static/resource/images/diy/member_style1_bg.png"
+                                "bgUrl" => "static/resource/images/diy/member_style1_bg.png",
+                                "bgColorStart" => "",
+                                "bgColorEnd" => ""
                             ],
                             [
                                 "path" => "edit-graphic-nav",
@@ -558,7 +562,11 @@ class PagesDict
                                     "both" => 0
                                 ],
                                 "textColor" => "#FFFFFF",
-                                "bgUrl" => ""
+                                "bgUrl" => "",
+                                "style" => "style-1",
+                                "styleName" => "风格1",
+                                "bgColorStart" => "",
+                                "bgColorEnd" => ""
                             ],
                             [
                                 "path" => "edit-graphic-nav",
@@ -822,18 +830,7 @@ class PagesDict
 
                         ]
                     ]
-                ],
-//                'recharge' => [
-//                    "title" => "旅游", // 页面名称
-//                    'cover' => 'static/resource/images/diy/template/tourism_member_index_cover.png', // 页面封面图
-//                    'preview' => '', // 页面预览图
-//                    'desc' => '酒店旅游住宿门票景点', // 页面描述
-//                    'mode' => 'fixed', // 页面模式：diy：自定义，fixed：固定
-//                    'data' => [
-//                        'component' => 'recharge-member', // 模板组件名称
-//                        'link' => '' // 装修链接
-//                    ]
-//                ]
+                ]
             ]
         ];
 

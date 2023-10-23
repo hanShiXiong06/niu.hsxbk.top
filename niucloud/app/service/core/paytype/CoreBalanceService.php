@@ -66,7 +66,7 @@ class CoreBalanceService extends BaseCoreService
                 break;
         }
         return [
-            'status' => PayDict::STATUS_ED,
+            'status' => PayDict::STATUS_FINISH,
             'out_trade_no' => $out_trade_no,
         ];
         //业务主体id

@@ -68,9 +68,6 @@ Route::group('diy', function() {
     // 编辑自定义页面分享内容
     Route::put('diy/share', 'diy.Diy/modifyShare');
 
-    // 获取页面预览数据
-    Route::put('preview', 'diy.Diy/getPreviewData');
-
     /***************************************************** 配置相关 *****************************************************/
 
     // 底部导航查询

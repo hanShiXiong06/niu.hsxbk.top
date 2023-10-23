@@ -62,9 +62,11 @@ class MenuService extends BaseAdminService
      */
     public function edit(string $menu_key, array $data)
     {
-//        $menu = $this->find($menu_key);
-//        if($menu->isEmpty()) throw new AdminException();
-//        if($menu['source'] != MenuDict::CREATE) throw new AdminException('');
+//        if($menu_key != $data['menu_key'])
+//        {
+//            $menu = $this->find($data['menu_key']);
+//            if(!$menu->isEmpty()) throw new AdminException('validate_menu.exit_menu_key');//创建失败
+//        }
         $where = array(
             ['menu_key', '=', $menu_key]
         );
@@ -107,10 +109,31 @@ class MenuService extends BaseAdminService
         $menu = $this->find($menu_key);
         if ($menu->isEmpty())
             throw new AdminException('MENU_NOT_EXIST');
-        if((new SysMenu())->where([['parent_key', '=', $menu_key]])->count() > 0)
-            throw new AdminException('MENU_NOT_ALLOW_DELETE');
 
-        $res = $menu->delete();
+        if($menu['addon'] != '')
+        {
+            $where[] = ['addon','=',$menu['addon']];
+            $count = (new SysMenu())->where([['addon','=',$menu['addon']]])->group('parent_key')->count();
+        }else{
+            $count = (new SysMenu())->where([['addon','=','']])->group('parent_key')->count();
+        }
+        if($count == 0)
+        {
+            $menu_where[] = ['menu_key','=',$menu_key];
+        }else{
+            for ($i = 0; $i<= $count; $i++)
+            {
+                $key[$i] = [$menu_key];
+
+                $where[] = ['parent_key','in',$key[$i]];
+                $chilren[$i] = (new SysMenu())->where($where)->field('menu_key')->select()->toArray();
+                $chilren_key[$i] = array_column($chilren[$i],'menu_key');
+                $key = array_merge($key[$i],$chilren_key[$i]);
+                $key = array_unique($key);
+            }
+            $menu_where[] = ['menu_key','in',$key];
+        }
+        $res = (new SysMenu())->where($menu_where)->delete();
         Cache::tag(self::$cache_tag_name)->clear();
         return  $res;
     }

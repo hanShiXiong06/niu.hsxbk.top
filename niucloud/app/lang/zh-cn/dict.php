@@ -158,7 +158,7 @@ return [
 
         'status_wait' => '待支付',
         'status_ing' => '支付中',
-        'status_ed' => '已支付',
+        'status_finish' => '已支付',
         'status_cancle' => '已取消',
         'status_audit' => '待审核',
         'pay' => '收款',
@@ -211,6 +211,7 @@ return [
         'member_my_point' => '我的积分',
         'member_my_commission' => '我的佣金',
         'member_my_personal' => '个人资料',
+        'member_my_address' => '收货地址',
 
         'diy_page' => '自定义页面',
         'diy_link' => '自定义链接'
@@ -270,6 +271,7 @@ return [
         'unipay' => '银联原路退款',
         'offline' => '线下退款',
         'balance' => '退款到余额',
+        'back' => '原路退款',
     ],
     'dict_order_refund' => [
         'refunding' => '退款中',

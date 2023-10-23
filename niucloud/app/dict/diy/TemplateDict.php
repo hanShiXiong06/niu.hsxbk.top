@@ -26,17 +26,17 @@ class TemplateDict
         $system_pages = [
             'DIY_INDEX' => [
                 'title' => get_lang('dict_diy.page_index'),
-                'page' => 'app/pages/index/index',
+                'page' => '/app/pages/index/index',
                 'action' => 'decorate' // 页面是否装修标识，为空标识不装修，decorate：装修
             ],
             'DIY_MEMBER_INDEX' => [
                 'title' => get_lang('dict_diy.page_member_index'),
-                'page' => 'app/pages/member/index',
+                'page' => '/app/pages/member/index',
                 'action' => 'decorate'
             ],
             'DIY_PAGE' => [
                 'title' => get_lang('dict_diy.page_diy'),
-                'page' => 'app/pages/index/diy',
+                'page' => '/app/pages/index/diy',
                 'action' => ''
             ]
         ];

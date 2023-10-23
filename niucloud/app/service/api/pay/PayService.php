@@ -90,7 +90,16 @@ class PayService extends BaseApiService
         return $this->core_pay_service->getInfoByOutTradeNo($out_trade_no, $this->channel);
     }
 
-    public function getInfoByTrade(string $trade_type, int $trade_id){
+    /**
+     * 支付信息
+     * @param string $trade_type
+     * @param int $trade_id
+     * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     */
+    public function getInfoByTrade(string $trade_type, $trade_id){
         return $this->core_pay_service->getInfoByTrade($trade_type, $trade_id, $this->channel);
     }
 

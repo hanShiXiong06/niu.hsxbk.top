@@ -31,9 +31,9 @@ class CoreAuthService extends BaseNiucloudClient
     public function getAuthInfo()
     {
         $auth_info = $this->httpGet('authinfo', ['code' => $this->code, 'secret' => $this->secret]);
-        if(!empty($auth_info['data'])){
-            $auth_info['data']['address_type'] = $this->diffDomain($auth_info['data']['site_address'], $_SERVER['HTTP_HOST']);
-        }
+//        if(!empty($auth_info['data'])){
+//            $auth_info['data']['address_type'] = $this->diffDomain($auth_info['data']['site_address'], $_SERVER['HTTP_HOST']);
+//        }
         return $auth_info;
     }
 

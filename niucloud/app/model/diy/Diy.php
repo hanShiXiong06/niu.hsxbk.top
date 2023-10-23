@@ -47,6 +47,20 @@ class Diy extends BaseModel
      * @param $data
      * @return mixed
      */
+    public function getTypePageAttr($value, $data)
+    {
+        if (!empty($data[ 'type' ])) {
+            return TemplateDict::getTemplate([ 'type' => [ $data[ 'type' ] ] ])[ $data[ 'type' ] ][ 'page' ] ?? '';
+        }
+        return '';
+    }
+
+    /**
+     * 状态字段转化
+     * @param $value
+     * @param $data
+     * @return mixed
+     */
     public function getTypeNameAttr($value, $data)
     {
         if (!empty($data[ 'type' ])) {

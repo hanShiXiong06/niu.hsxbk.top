@@ -39,9 +39,9 @@ class CoreMemberAddressService extends BaseCoreService
      * @param int $member_id
      * @return array
      */
-   public function getDefaultAddressByMemberId(int $member_id){
+   public function getDefaultAddressByMemberId(int $member_id, $type = 'address'){
         $field = 'id,member_id,name,mobile,province_id,city_id,district_id,address,full_address,lng,lat,is_default,type';
-        return $this->model->where([['member_id', '=', $member_id]])->field($field)->findOrEmpty()->toArray();
+        return $this->model->where([['member_id', '=', $member_id], ['type', '=', $type] ])->field($field)->order('is_default desc')->findOrEmpty()->toArray();
    }
 
     /**

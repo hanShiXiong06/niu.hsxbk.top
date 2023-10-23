@@ -33,7 +33,7 @@ class LinkDict
                         'title' => get_lang('dict_diy.system_link_index'),
                         'url' => '/app/pages/index/index',
                         'is_share' => 1,
-                        'action' => '' // 默认空，decorate 表示支持装修
+                        'action' => 'decorate' // 默认空，decorate 表示支持装修
                     ],
                 ]
             ],
@@ -47,7 +47,7 @@ class LinkDict
                         'title' => get_lang('dict_diy.member_index'),
                         'url' => '/app/pages/member/index',
                         'is_share' => 1,
-                        'action' => ''
+                        'action' => 'decorate'
                     ],
                     [
                         'name' => 'MEMBER_PERSONAL',
@@ -74,6 +74,13 @@ class LinkDict
                         'name' => 'MEMBER_COMMISSION',
                         'title' => get_lang('dict_diy.member_my_commission'),
                         'url' => '/app/pages/member/commission',
+                        'is_share' => 1,
+                        'action' => ''
+                    ],
+                    [
+                        'name' => 'MEMBER_ADDRESS',
+                        'title' => get_lang('dict_diy.member_my_address'),
+                        'url' => '/app/pages/member/address',
                         'is_share' => 1,
                         'action' => ''
                     ]

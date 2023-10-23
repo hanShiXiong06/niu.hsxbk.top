@@ -368,9 +368,9 @@ abstract class BaseGenerator
         } elseif (str_starts_with($type, 'timestamp')) {
             $result = time();
         } elseif (str_starts_with($type, 'datetime')) {
-            $result = date('Y-m-d H:i:s');
+            $result = '"'.date('Y-m-d H:i:s').'"';
         } elseif (str_starts_with($type, 'date')) {
-            $result = date('Y-m-d H:i:s');
+            $result = '"'.date('Y-m-d H:i:s').'"';
         } else {
             $result = '""';
         }

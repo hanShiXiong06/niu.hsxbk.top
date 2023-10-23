@@ -45,6 +45,9 @@ class  CoreDiyConfigService extends BaseCoreService
 
             $info = [
                 'backgroundColor' => '#ffffff',
+                'textColor' => '#606266',
+                'textHoverColor' => '#007aff',
+                'type' => 1,
                 'list' => [
                     [
                         "text" => "首页",
@@ -68,10 +71,7 @@ class  CoreDiyConfigService extends BaseCoreService
                         "iconPath" => "static/resource/images/tabbar/my.png",
                         "iconSelectPath" => "static/resource/images/tabbar/my-selected.png"
                     ]
-                ],
-                'textColor' => '#606266',
-                'textHoverColor' => '#007aff',
-                'type' => 1
+                ]
             ];
         }
         return $info;

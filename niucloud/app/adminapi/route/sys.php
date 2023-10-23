@@ -158,8 +158,8 @@ Route::group('sys', function () {
     Route::get('job', 'sys.System/checkJob');
     //校验计划任务
     Route::get('schedule', 'sys.System/checkSchedule');
-
-
+    //环境变量
+    Route::get('env', 'sys.System/getEnvInfo');
     /***************************************************** 计划任务 ****************************************************/
     //计划任务列表
     Route::get('schedule/list', 'sys.Schedule/lists');

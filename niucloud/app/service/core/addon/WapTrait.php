@@ -59,7 +59,7 @@ trait WapTrait
                     $file_name = 'diy-' . $path;
 
                     $content .= "            <template v-if=\"component.componentName == '{$name}'\">\n";
-                    $content .= "                <$file_name :component=\"component\" :index=\"index\" :pullDownRefresh=\"props.pullDownRefresh\"></$file_name>\n";
+                    $content .= "                <$file_name :component=\"component\" :index=\"index\" :pullDownRefreshCount=\"props.pullDownRefreshCount\"></$file_name>\n";
                     $content .= "            </template>\n";
                 }
             }
@@ -97,7 +97,7 @@ trait WapTrait
                         $file_name = 'diy-' . $path;
 
                         $content .= "            <template v-if=\"component.componentName == '{$name}'\">\n";
-                        $content .= "                <$file_name :component=\"component\" :index=\"index\" :pullDownRefresh=\"props.pullDownRefresh\"></$file_name>\n";
+                        $content .= "                <$file_name :component=\"component\" :index=\"index\" :pullDownRefreshCount=\"props.pullDownRefreshCount\"></$file_name>\n";
                         $content .= "            </template>\n";
 
                         $addon_import_content .= "   import diy{$name} from '@/" . $v . "/components/diy/{$path}/index.vue';\n";
@@ -125,7 +125,7 @@ trait WapTrait
         $content .= "   import Sortable from 'sortablejs';\n";
         $content .= "   import { range } from 'lodash-es';\n";
 
-        $content .= "   const props = defineProps(['data','pullDownRefresh']);\n";
+        $content .= "   const props = defineProps(['data','pullDownRefreshCount']);\n";
         $content .= "   const diyStore = useDiyStore();\n\n";
 
         $content .= "   const data = computed(() => {\n";
@@ -200,7 +200,7 @@ trait WapTrait
                     $file_name = 'fixed-' . $path;
 
                     $content .= "        <template v-if=\"props.data.global.component == '{$path}'\">\n";
-                    $content .= "            <$file_name :data=\"props.data\" :pullDownRefresh=\"props.pullDownRefresh\"></$file_name>\n";
+                    $content .= "            <$file_name :data=\"props.data\" :pullDownRefreshCount=\"props.pullDownRefreshCount\"></$file_name>\n";
                     $content .= "        </template>\n";
                 }
             }
@@ -239,7 +239,7 @@ trait WapTrait
                         $file_name = 'fixed-' . $path;
 
                         $content .= "        <template v-if=\"props.data.global.component == '{$path}'\">\n";
-                        $content .= "            <$file_name :data=\"props.data\" :pullDownRefresh=\"props.pullDownRefresh\"></$file_name>\n";
+                        $content .= "            <$file_name :data=\"props.data\" :pullDownRefreshCount=\"props.pullDownRefreshCount\"></$file_name>\n";
                         $content .= "        </template>\n";
 
                         $addon_import_content .= "   import fixed{$name} from '@/" . $v . "/components/fixed/{$path}/index.vue';\n";
@@ -255,7 +255,7 @@ trait WapTrait
         if (!empty($addon_import_content)) {
             $content .= $addon_import_content;
         }
-        $content .= "   const props = defineProps(['data','pullDownRefresh']);\n";
+        $content .= "   const props = defineProps(['data','pullDownRefreshCount']);\n";
         $content .= "</script>\n";
 
         $content .= "<style lang=\"scss\" scoped>\n";

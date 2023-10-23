@@ -205,17 +205,4 @@ class Diy extends BaseAdminController
         return success(( new DiyService() )->changeTemplate($data));
     }
 
-    /**
-     * 获取页面预览数据
-     */
-    public function getPreviewData()
-    {
-        $data = $this->request->params([
-            [ "id", "" ],
-            [ 'name', '' ]
-        ]);
-        $res = ( new DiyService() )->getPreviewData($data);
-        return success($res);
-    }
-
 }

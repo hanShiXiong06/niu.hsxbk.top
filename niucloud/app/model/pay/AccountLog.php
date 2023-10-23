@@ -57,8 +57,8 @@ class AccountLog extends BaseModel
     {
         return match ($data['type']) {
             'pay' => (new Pay())->where([['out_trade_no', '=', $data['trade_no']]])->append(['type_name'])->findOrEmpty()->toArray(),
-            'refund' => (new Refund())->where([['refund_no', '=', $data['trade_no']]])->findOrEmpty()->toArray(),
-            'transfer' => (new Transfer())->where([['transfer_no', '=', $data['trade_no']]])->findOrEmpty()->toArray(),
+            'refund' => (new Refund())->where([['refund_no', '=', $data['trade_no']]])->append(['type_name'])->findOrEmpty()->toArray(),
+            'transfer' => (new Transfer())->where([['transfer_no', '=', $data['trade_no']]])->append(['transfer_type_name'])->findOrEmpty()->toArray(),
             default => [],
         };
     }

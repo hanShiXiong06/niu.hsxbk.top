@@ -177,13 +177,14 @@ return [
     'SITE_CLOSE_NOT_ALLOW' => '站点已停止',
 
     //支付相关(todo  注意:7段不共享)
-    'ALIPAY_TRANSACTION_NO_NOT_EXIST' => '无效的支付交易号',
+    'PAY_TRANSACTION_NO_NOT_EXIST' => '无效的支付交易号',
     'PAYMENT_METHOD_NOT_SUPPORT' => '您选择到支付方式不受业务支持',
     'PAYMENT_LOCK' => '支付中,请稍后再试',
     'PAY_SUCCESS' => '当前支付已完成',
     'PAY_IS_REMOVE' => '当前支付已取消',
+    'PAY_NOT_FOUND_TRADE' => '找不到可支付的交易',
     'PAYMENT_METHOD_NOT_EXIST' => '你选择的支付方式未启用',
-    'PAYMENT_METHOD_NOT_SCENE'=> '你选择的支付方式不适用于当前场景',
+    'PAYMENT_METHOD_NOT_SCENE' => '你选择的支付方式不适用于当前场景',
     'TREAT_PAYMENT_IS_OPEN' => '只有待支付时可以关闭',
     'TRANFER_STATUS_NOT_IN_WAIT_TANSFER' => '当前转账未处于待转账状态',
     'TRANSFER_ORDER_INVALID' => '无效的转账单据',

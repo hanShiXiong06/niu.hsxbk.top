@@ -50,7 +50,7 @@ class DiyService extends BaseAdminService
     {
         $field = 'id,title,name,template,type,mode,is_default,share,visit_count,create_time,update_time';
         $order = "update_time desc";
-        $search_model = $this->model->withSearch([ "title", "type", 'mode' ], $where)->field($field)->order($order)->append([ 'type_name' ]);
+        $search_model = $this->model->withSearch([ "title", "type", 'mode' ], $where)->field($field)->order($order)->append([ 'type_name', 'type_page' ]);
         return $this->pageQuery($search_model);
     }
 
@@ -185,7 +185,8 @@ class DiyService extends BaseAdminService
             $data = $this->getInfoByName($params[ 'name' ]);
         } elseif (!empty($params[ 'url' ])) {
             foreach ($template as $k => $v) {
-                if ($params[ 'url' ] == '/' . $v[ 'page' ]) {
+
+                if ($params[ 'url' ] == $v[ 'page' ]) {
                     $params[ 'name' ] = $k;
                     $params[ 'type' ] = $k;
                 }
@@ -197,7 +198,11 @@ class DiyService extends BaseAdminService
             if (isset($template[ $data[ 'type' ] ])) {
                 $page = $template[ $data[ 'type' ] ];
                 $data[ 'type_name' ] = $page[ 'title' ];
-                $data[ 'page' ] = $page[ 'page' ];
+                if ($data[ 'is_default' ] == 1) {
+                    $data[ 'page' ] = $page[ 'page' ];
+                } else {
+                    $data[ 'page' ] = $template[ 'DIY_PAGE' ][ 'page' ];
+                }
             }
         } else {
 
@@ -473,12 +478,12 @@ class DiyService extends BaseAdminService
                 if (!empty($page_data)) {
                     if ($info[ 'is_change' ] == 1) {
                         // 修改过模板，预览实际内容
-                        $use_template[ 'url' ] = '/' . $v[ 'page' ] . '?id=' . $info[ 'id' ];
+                        $use_template[ 'url' ] = $v[ 'page' ] . '?id=' . $info[ 'id' ];
                     } else {
                         $use_template[ 'cover' ] = $page_data[ 'cover' ]; // 默认图
                         $use_template[ 'desc' ] = $page_data[ 'desc' ];
                         if (empty($page_data[ 'cover' ])) {
-                            $use_template[ 'url' ] = '/' . $v[ 'page' ] . '?id=' . $info[ 'id' ];
+                            $use_template[ 'url' ] = $v[ 'page' ] . '?id=' . $info[ 'id' ];
                         }
                     }
                 } else {
@@ -512,7 +517,7 @@ class DiyService extends BaseAdminService
 
             // 如果没有预览图，并且没有地址，则赋值
             if (empty($use_template[ 'cover' ]) && empty($use_template[ 'url' ])) {
-                $use_template[ 'url' ] = '/' . $v[ 'page' ];
+                $use_template[ 'url' ] = $v[ 'page' ];
             }
 
             $template[ $k ][ 'use_template' ] = $use_template;
@@ -525,7 +530,6 @@ class DiyService extends BaseAdminService
      * 切换模板
      * @param array $params
      * @return array
-     * @throws Exception
      */
     public function changeTemplate(array $params = [])
     {
@@ -632,40 +636,6 @@ class DiyService extends BaseAdminService
         $diy_config_service = new DiyConfigService();
         $diy_config_service->setStartUpPageConfig($start_up_page_data);
         return $info;
-    }
-
-    /**
-     * 获取页面预览数据
-     * @param array $params
-     * @return array
-     */
-    public function getPreviewData(array $params = [])
-    {
-        $info = [];
-        if (!empty($params[ 'id' ])) {
-            $info = $this->getInfo($params[ 'id' ]);
-        } elseif (!empty($params[ 'name' ])) {
-            $info = $this->getInfoByName($params[ 'name' ]);
-        }
-
-        $res = [
-            'page' => $this->getTemplate([ 'type' => [ 'DIY_PAGE' ] ])[ 'DIY_PAGE' ][ 'page' ]
-        ];
-
-        if (!empty($info)) {
-            if ($info[ 'is_default' ] == 1) {
-                $template = $this->getTemplate([ 'type' => [ $info[ 'type' ] ] ])[ $info[ 'type' ] ];
-                $res[ 'page' ] = $template[ 'page' ] . '?id=' . $info[ 'id' ];
-            } else {
-                $res[ 'page' ] .= '?id=' . $info[ 'id' ];
-            }
-        } elseif ($params[ 'name' ]) {
-            // 表里没有数据，查询默认页面数据
-            $template = $this->getTemplate([ 'type' => [ $params[ 'name' ] ] ])[ $params[ 'name' ] ];
-            $res[ 'page' ] = $template[ 'page' ];
-        }
-
-        return $res;
     }
 
 }

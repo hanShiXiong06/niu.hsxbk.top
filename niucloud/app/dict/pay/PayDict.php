@@ -19,7 +19,7 @@ class PayDict
     public const ALIPAY = 'alipay';//支付宝支付
     //const UNIPAY = 'unipay';//银联
     public const OFFLINEPAY = 'offlinepay';//线下支付
-    public const BALANCEPAY = 'balancepay';//线下支付
+    public const BALANCEPAY = 'balancepay';//余额支付
 
 
     public const ON = '1';
@@ -38,13 +38,14 @@ class PayDict
     //支付状态
     public const STATUS_WAIT = '0';//待支付
     public const STATUS_ING = '1';//支付中
-    public const STATUS_ED = '2';//已支付
+    public const STATUS_FINISH = '2';//已支付
 
     public const STATUS_AUDIT = '3';//待审核
     public const STATUS_CALCLE = '-1';//已取消
 
+    //操作人类型
     public const MEMBER = 'member';
-    public const USER = 'user';
+    public const STORE = 'store';
 
     /**
      * 支付类型
@@ -102,7 +103,7 @@ class PayDict
         return [
             self::STATUS_WAIT => get_lang('dict_pay.status_wait'),
             self::STATUS_ING => get_lang('dict_pay.status_ing'),
-            self::STATUS_ED => get_lang('dict_pay.status_ed'),
+            self::STATUS_FINISH => get_lang('dict_pay.status_finish'),
             self::STATUS_CALCLE => get_lang('dict_pay.status_cancle'),
             self::STATUS_AUDIT => get_lang('dict_pay.status_audit')
         ];

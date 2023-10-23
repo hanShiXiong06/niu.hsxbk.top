@@ -39,7 +39,7 @@ class AccountLogService extends BaseAdminService
     {
 
         $field = 'id, type, money, trade_no, create_time';
-        $search_model = $this->model->withSearch([ 'create_time', 'type' ], $where)->field($field)->append([ 'type_name', 'pay_info', 'money' ])->order('create_time desc');
+        $search_model = $this->model->withSearch([ 'create_time', 'type' ], $where)->field($field)->append([ 'type_name', 'money', 'pay_info' ])->order('create_time desc');
         return $this->pageQuery($search_model);
     }
 
@@ -51,8 +51,7 @@ class AccountLogService extends BaseAdminService
     public function getInfo(int $id)
     {
         $field = 'id, type, money, trade_no, create_time';
-        return $this->model->where([ ['id', '=', $id]])->field($field)->append([ 'type_name', 'pay_info' ])->findOrEmpty()->toArray();
-
+        return $this->model->where([ [ 'id', '=', $id ] ])->field($field)->append([ 'type_name', 'pay_info' ])->findOrEmpty()->toArray();
     }
 
     /**
@@ -62,9 +61,9 @@ class AccountLogService extends BaseAdminService
     public function stat()
     {
         return [
-            'pay' => $this->model->where([ ['type', '=', 'pay']])->sum("money")*1,
-            'refund' => $this->model->where([ ['type', '=', 'refund']])->sum("money")*-1,
-            'transfer' => $this->model->where([['type', '=', 'transfer']])->sum("money")*-1,
+            'pay' => $this->model->where([ [ 'type', '=', 'pay' ] ])->sum("money") * 1,
+            'refund' => $this->model->where([ [ 'type', '=', 'refund' ] ])->sum("money") * -1,
+            'transfer' => $this->model->where([ [ 'type', '=', 'transfer' ] ])->sum("money") * -1,
         ];
     }
 

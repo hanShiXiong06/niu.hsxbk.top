@@ -34,17 +34,14 @@ class Address extends BaseValidate
        protected $message = [
             'name.require' => ['common_validate.require', ['name']],
             'mobile.require' => ['common_validate.require', ['mobile']],
-            'province_id.require' => ['common_validate.require', ['province_id']],
-            'city_id.require' => ['common_validate.require', ['city_id']],
-            'district_id.require' => ['common_validate.require', ['district_id']],
             'address.require' => ['common_validate.require', ['address']],
             'full_address.require' => ['common_validate.require', ['full_address']],
             'type.require' => ['common_validate.require', ['type']],
         ];
 
        protected $scene = [
-            "add" => ['name', 'mobile', 'province_id', 'city_id', 'district_id', 'address', 'full_address', 'lng', 'lat', 'type'],
-            "edit" => ['name', 'mobile', 'province_id', 'city_id', 'district_id', 'address', 'full_address', 'lng', 'lat', 'type']
+            "add" => ['name', 'mobile', 'address', 'full_address', 'lng', 'lat', 'type'],
+            "edit" => ['name', 'mobile', 'address', 'full_address', 'lng', 'lat', 'type']
         ];
 
 }
