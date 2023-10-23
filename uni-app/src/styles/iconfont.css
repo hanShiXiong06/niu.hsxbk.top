@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3952239 */
-  src: url('//at.alicdn.com/t/c/font_3952239_lebf98cnvzb.woff2?t=1696920277771') format('woff2'),
-       url('//at.alicdn.com/t/c/font_3952239_lebf98cnvzb.woff?t=1696920277771') format('woff'),
-       url('//at.alicdn.com/t/c/font_3952239_lebf98cnvzb.ttf?t=1696920277771') format('truetype');
+  src: url('//at.alicdn.com/t/c/font_3952239_f0q7yowswnd.woff2?t=1697615836482') format('woff2'),
+       url('//at.alicdn.com/t/c/font_3952239_f0q7yowswnd.woff?t=1697615836482') format('woff'),
+       url('//at.alicdn.com/t/c/font_3952239_f0q7yowswnd.ttf?t=1697615836482') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,26 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.iconzanwuwuliuxinxi:before {
+  content: "\e674";
+}
+
+.iconzhaoxiangji:before {
+  content: "\e664";
+}
+
+.icongouwuche1:before {
+  content: "\e682";
+}
+
+.iconshoucang_shoucang:before {
+  content: "\e607";
+}
+
+.icona-shoucang-weishoucang:before {
+  content: "\e6f2";
 }
 
 .iconbianji:before {

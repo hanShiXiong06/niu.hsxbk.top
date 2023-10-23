@@ -4,7 +4,7 @@
 		<view class="flex flex-col h-[75vh]" v-if="payInfo">
 			<view class="head">
 				<view class="text-center py-[26rpx]">{{ t('pay.payTitle') }}</view>
-				<view class="flex items-end justify-center w-full text-xl font-bold py-[20rpx]">
+				<view class="flex items-end justify-center w-full text-xl font-bold py-[20rpx] price-font">
 					<view class="text-base mr-[4rpx]">{{ t('currency') }}</view>
 					{{ moneyFormat(payInfo.money) }}
 				</view>
