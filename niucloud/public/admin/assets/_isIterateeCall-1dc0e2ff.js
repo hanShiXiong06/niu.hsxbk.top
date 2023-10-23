@@ -1,1 +1,0 @@
-import{b7 as i,aH as t,bj as f}from"./base-06478700.js";import{s as n}from"./event-10eba222.js";function p(e,s,r){if(!i(r))return!1;var a=typeof s;return(a=="number"?n(r)&&t(s,r.length):a=="string"&&s in r)?f(r[s],e):!1}export{p as i};

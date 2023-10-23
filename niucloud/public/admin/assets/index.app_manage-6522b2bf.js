@@ -1,1 +1,0 @@
-const t="应用管理",n="暂无安装任何应用，马上去",o="插件管理",i="逛逛",p="Niucloud官网",c="插件管理",e={app:t,descriptionLeft:n,link:o,descriptionRight:i,niucloud:p,appStore:c};export{t as app,c as appStore,e as default,n as descriptionLeft,i as descriptionRight,o as link,p as niucloud};
