@@ -3,7 +3,7 @@ return [
     [
         'menu_name' => '应用管理',
         'menu_key' => 'app_manage',
-        'menu_type' => 1,
+        'menu_type' => 0,
         'icon' => 'element-Monitor',
         'api_url' => '',
         'router_path' => 'app_manage', 
