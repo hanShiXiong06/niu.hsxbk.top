@@ -1,21 +1,21 @@
 <template>
     <div :class="['flex', { 'two-type': sidebar == 'twoType' }, { 'three-type': sidebar == 'threeType' }]" v-if="isLoad">
-        
+
         <template v-for="(item, index) in menus" :key="index">
             <div v-if="isTwoMenuFn(item)" class="w-[210px] box-border border-r-[1px] border-solid second-menu">
                 <div class="group flex flex-col items-center justify-center h-[64px] border-b-[1px] border-solid second-head cursor-pointer relative"  @mouseenter="twofloatMenuHover">
                     <div class="flex items-center">
-                        <img v-if="item.meta.parentIcon" :src="img(item.meta.parentIcon)" class="w-[40px] h-[40px] mr-[8px]" alt="">
+                        <img v-if="item.meta.parentIcon" :src="img(item.meta.parentIcon)" class="w-[40px] h-[40px] mr-[8px] rounded-full" alt="">
                         <div class="flex items-center justify-center w-[30px] h-[30px]" v-else>
                             <icon v-if="item.meta.icon" :name="item.meta.icon" class="!w-auto" size="24px" />
                         </div>
                         <span>{{ item.meta.app ? item.meta.parentTitle : item.meta.title }}</span>
                     </div>
-                    <app-menu :isShowHover="twofloatMenu" :data="applyList" @child-click="toLink" hoverType='twofloatMenu'></app-menu>
+<!--                    <app-menu :isShowHover="twofloatMenu" :data="applyList" @child-click="toLink" hoverType='twofloatMenu'></app-menu>-->
                 </div>
 
                 <el-scrollbar class="overflow-y-auto menus-wrap">
-                    <el-menu class="apply-menu !border-0" :router="true" unique-opened="true" :default-active="String(route.name)">
+                    <el-menu class="apply-menu !border-0" :router="true" :unique-opened="true" :default-active="String(route.name)">
                         <template v-if="applyTypeList.length">
                             <template v-for="(twoMenu, twoIndex) in item.children">
                                 <el-sub-menu :index="String(twoMenu.meta.title)" v-if="twoMenu.children && twoMenu.meta.show">
@@ -472,6 +472,7 @@ const isTwoMenuFn = (item) => {
         || (!applyTypeList.value.length && (item.meta.key == localMenuKey.value || item.meta.app == localMenuKey.value))
     return bool;
 }
+
 </script>
 
 <style lang="scss">

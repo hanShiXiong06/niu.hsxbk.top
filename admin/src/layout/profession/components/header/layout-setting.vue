@@ -9,14 +9,20 @@
                     <div class="title text-base text-tx-secondary whitespace-nowrap">{{ t('layout.sidebarStyle') }}</div>
                     <div class="">
                         <el-radio-group v-model="sidebarStyle" class="ml-4">
-                            <el-radio label="oneType" size="large">样式一</el-radio>
-                            <el-radio label="twoType" size="large">样式二</el-radio>
-                            <el-radio label="threeType" size="large">样式三</el-radio>
+                            <el-radio label="oneType" size="large">
+                                <img class="w-[35px] h-[35px]" src="@/app/assets/images/one_type.png" alt="">
+                            </el-radio>
+                            <el-radio label="twoType" size="large">
+                                <img class="w-[35px] h-[35px]" src="@/app/assets/images/two_type.png" alt="">
+                            </el-radio>
+                            <el-radio label="threeType" size="large">
+                                <img class="w-[35px] h-[35px]" src="@/app/assets/images/three_type.png" alt="">
+                            </el-radio>
                         </el-radio-group>
                     </div>
                 </div>
                 <!-- 风格切换 -->
-                <div class="setting-item flex items-baseline justify-between mb-[10px]">
+                <!-- <div class="setting-item flex items-baseline justify-between mb-[10px]">
                     <div class="title text-base text-tx-secondary whitespace-nowrap">{{ t('layout.sidebarMode') }}</div>
                     <div class="">
                         <el-radio-group v-model="sidebar" class="ml-4">
@@ -31,7 +37,7 @@
                             </el-radio>
                         </el-radio-group>
                     </div>
-                </div>
+                </div> -->
                 <!-- 黑暗模式 -->
                 <div class="setting-item flex items-center justify-between mb-[10px]">
                     <div class="title text-base text-tx-secondary">{{ t('layout.darkMode') }}</div>

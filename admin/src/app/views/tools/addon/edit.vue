@@ -133,7 +133,7 @@ const validKey = (rule, value, callback) => {
 }
 const validVersion = (rule, value, callback) => {
     if (value !== '') {
-        const reg = /^([1-9]\d|[1-9])(\.([0-9]){1}){2}$/;
+        const reg = /^([0-9]\d|[0-9])(\.([0-9]){1}){2}$/;
         if (!reg.test(value)) {
             return callback(new Error(t('versionPlaceholderErr')));
         } else {

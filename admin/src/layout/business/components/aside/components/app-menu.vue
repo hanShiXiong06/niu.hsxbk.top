@@ -14,8 +14,8 @@
 <script lang="ts" setup>
 import { ref, watch, computed } from 'vue'
 import { img } from '@/utils/common'
+
 const props = defineProps(['isShowHover','data','hoverType'])
-console.log();
 let data = ref([]);
 if(props.data){
     props.data.forEach((item,index) => {

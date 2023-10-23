@@ -323,6 +323,16 @@ export function getIconList(params: Record<string, any>) {
     return request.get(`sys/attachment/icon`, {params})
 }
 
+
+/**
+ * 获取evn
+ * @param params
+ * @returns
+ */
+export function getEnv() {
+    return request.get(`sys/env`)
+}
+
 /***************************************************** 地址管理 ****************************************************/
 
 /**

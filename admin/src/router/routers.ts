@@ -1,7 +1,10 @@
-import { RouteRecordRaw, RouterView } from 'vue-router'
+import {RouteRecordRaw, RouterView} from 'vue-router'
 import Default from '@/layout/index.vue'
 import Decorate from '@/layout/decorate/index.vue'
-import { Key } from '@element-plus/icons-vue'
+import Preview from '@/layout/preview/index.vue'
+import AppManage from '@/layout/app_manage/index.vue'
+import Tools from '@/layout/tools/index.vue'
+import {Key} from '@element-plus/icons-vue'
 
 // 静态路由
 export const STATIC_ROUTES: Array<RouteRecordRaw> = [
@@ -15,7 +18,7 @@ export const STATIC_ROUTES: Array<RouteRecordRaw> = [
     },
     {
         path: '/user',
-        component: Default,
+        component: AppManage,
         children: [
             {
                 path: 'center',
@@ -24,6 +27,14 @@ export const STATIC_ROUTES: Array<RouteRecordRaw> = [
                     title: '个人中心'
                 },
                 component: () => import('@/app/views/index/personal.vue')
+            },
+            {
+                path: 'edit_center',
+                meta: {
+                    type: 1,
+                    title: '编辑个人中心'
+                },
+                component: () => import('@/app/views/index/edit_personal.vue')
             }
         ]
     }
@@ -62,6 +73,29 @@ export const DECORATE_ROUTER: RouteRecordRaw = {
     children: []
 }
 
+// 页面预览路由
+export const PREVIEW_ROUTER: RouteRecordRaw = {
+    path: '/preview',
+    component: Preview,
+    name: Symbol('preview'),
+    children: []
+}
+
+// 切换应用路由
+export const APP_MANAGE_ROUTER: RouteRecordRaw = {
+    path: '/app_manage',
+    component: AppManage,
+    name: Symbol('app_manage'),
+    children: []
+}
+
+// 切换应用路由
+export const TOOL_ROUTER: RouteRecordRaw = {
+    path: '/tools',
+    component: Tools,
+    name: Symbol('tools'),
+    children: []
+}
 const modules = import.meta.glob('@/app/views/**/*.vue')
 const addonModules = import.meta.glob('@/**/views/**/*.vue')
 

@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3883393 */
-  src: url('//at.alicdn.com/t/c/font_3883393_yevzijodb3.woff2?t=1695808853045') format('woff2'),
-       url('//at.alicdn.com/t/c/font_3883393_yevzijodb3.woff?t=1695808853045') format('woff'),
-       url('//at.alicdn.com/t/c/font_3883393_yevzijodb3.ttf?t=1695808853045') format('truetype');
+  src: url('//at.alicdn.com/t/c/font_3883393_t7tf6zkctc.woff2?t=1697534072773') format('woff2'),
+       url('//at.alicdn.com/t/c/font_3883393_t7tf6zkctc.woff?t=1697534072773') format('woff'),
+       url('//at.alicdn.com/t/c/font_3883393_t7tf6zkctc.ttf?t=1697534072773') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,126 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.iconfapiaoguanli:before {
+  content: "\e683";
+}
+
+.iconhuishouzhan:before {
+  content: "\e6d7";
+}
+
+.iconshangpinliebiao1:before {
+  content: "\e6d8";
+}
+
+.iconshangpinfenlei:before {
+  content: "\e6d9";
+}
+
+.iconfenleishezhi:before {
+  content: "\e6da";
+}
+
+.iconluxianguanli:before {
+  content: "\e6db";
+}
+
+.iconjiudianguanli:before {
+  content: "\e6dc";
+}
+
+.iconshangjiadizhiku:before {
+  content: "\e6dd";
+}
+
+.iconkaxiangguanli:before {
+  content: "\e6de";
+}
+
+.iconjiudiandingdan:before {
+  content: "\e6df";
+}
+
+.iconjingdianguanli:before {
+  content: "\e6e0";
+}
+
+.icondingdanshezhi:before {
+  content: "\e6e3";
+}
+
+.iconjiaoyishezhi:before {
+  content: "\e6e4";
+}
+
+.icondingdanhexiao:before {
+  content: "\e6e5";
+}
+
+.icondingdanweiquan:before {
+  content: "\e6e6";
+}
+
+.icona-dingdanliebiao:before {
+  content: "\e6e7";
+}
+
+.iconyuyuexiangmu:before {
+  content: "\e68e";
+}
+
+.iconshangpinpinpai:before {
+  content: "\e6c9";
+}
+
+.iconyuyueshezhi:before {
+  content: "\e6cb";
+}
+
+.iconxiangmuguanli:before {
+  content: "\e6cc";
+}
+
+.iconyouhuiquan:before {
+  content: "\e6cd";
+}
+
+.iconpaisongshezhi:before {
+  content: "\e685";
+}
+
+.icontuikuanweiquan:before {
+  content: "\e6ce";
+}
+
+.iconyingxiaozhongxin:before {
+  content: "\e6cf";
+}
+
+.iconjishiguanli:before {
+  content: "\e684";
+}
+
+.iconxiangmufenlei:before {
+  content: "\e6d0";
+}
+
+.iconwuliugenzong:before {
+  content: "\e6d1";
+}
+
+.iconshangpinbiaoqian:before {
+  content: "\e6d2";
+}
+
+.iconshangpinpinglun:before {
+  content: "\e6d3";
+}
+
+.iconshangpinfuwu:before {
+  content: "\e6d4";
 }
 
 .icongonggao:before {

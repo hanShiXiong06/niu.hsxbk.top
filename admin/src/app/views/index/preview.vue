@@ -1,8 +1,9 @@
 <template>
-	<div class="main-container w-[375px] mx-auto my-[20px] relative">
+	<div class="main-container w-[375px] mx-auto mt-[20px] mb-[40px] relative">
 
 		<div class="flex h-full">
-			<iframe v-show="loadingIframe" class="w-[375px]" :src="wapPreview" frameborder="0" id="previewIframe"></iframe>
+			<iframe v-show="loadingIframe" class="w-[375px]" :src="wapPreview" frameborder="0"
+			        id="previewIframe"></iframe>
 			<div v-show="loadingDev" class="w-[375px] border border-slate-100 bg-body pt-[20px] px-[20px]">
 				<div class="font-bold text-xl mb-[40px]">{{t('developTitle')}}</div>
 				<div class="mb-[20px] flex flex-col">
@@ -22,7 +23,8 @@
 						<el-form-item :label="t('link')" v-show="wapPreview">
 							<el-input readonly :value="wapPreview">
 								<template #append>
-									<el-button @click="copyEvent(wapPreview)" class="bg-primary copy">{{ t('copy') }}</el-button>
+									<el-button @click="copyEvent(wapPreview)" class="bg-primary copy">{{ t('copy') }}
+									</el-button>
 								</template>
 							</el-input>
 						</el-form-item>
@@ -63,7 +65,6 @@
     import {img} from '@/utils/common'
     import QRCode from "qrcode";
     import storage from '@/utils/storage'
-    import {getPreviewData} from '@/app/api/diy'
 
     const wapUrl = ref('')
     const wapDomain = ref('')
@@ -77,9 +78,7 @@
 
     var time = new Date().getTime();
     const route = useRoute();
-    route.query.id = route.query.id || 0;
-    route.query.name = route.query.name || '';
-    route.query.url = route.query.url || ''; // 路径优先级最高
+    route.query.page = route.query.page || ''; // 页面路径
 
     getUrl().then((res: any) => {
         wapUrl.value = res.data.wap_url;
@@ -120,8 +119,9 @@
     }
 
     const setDomain = () => {
-        if (route.query.url) {
-            wapPreview.value = `${wapUrl.value}${route.query.url}`;
+        if (route.query.page) {
+            wapPreview.value = `${wapUrl.value}${route.query.page}`;
+            // errorCorrectionLevel：密度容错率L（低）H(高)
             QRCode.toDataURL(wapPreview.value, {errorCorrectionLevel: 'L', margin: 0, width: 100}).then(url => {
                 wapImage.value = url
             })
@@ -129,25 +129,6 @@
             setTimeout(() => {
                 if (difference.value == 0) initLoad();
             }, 1000 * 2);
-        } else {
-            getPreviewData({
-                id: route.query.id,
-                name: route.query.name,
-            }).then((res: any) => {
-                let data = res.data;
-                wapPreview.value = `${wapUrl.value}/${data.page}`;
-
-                QRCode.toDataURL(wapPreview.value, {errorCorrectionLevel: 'L', margin: 0, width: 100}).then(url => {
-                    wapImage.value = url
-                })
-                timeIframe.value = new Date().getTime();
-                postMessage();
-                setTimeout(() => {
-                    if (difference.value == 0) {
-                        initLoad();
-                    }
-                }, 1000 * 2);
-            })
         }
     }
 
@@ -155,7 +136,7 @@
     window.addEventListener('message', (event) => {
         try {
             let data = JSON.parse(event.data);
-            if(['appOnLaunch','appOnReady'].indexOf(data.type) != -1){
+            if (['appOnLaunch', 'appOnReady'].indexOf(data.type) != -1) {
                 loadingDev.value = false;
                 loadingIframe.value = true;
                 var loadTime = new Date().getTime();
@@ -168,7 +149,7 @@
     }, false);
 
     // 将数据发送到uniapp
-    const postMessage = ()=> {
+    const postMessage = () => {
         let data = JSON.stringify({
             type: 'appOnReady',
             message: '加载完成'
@@ -177,7 +158,7 @@
     };
 
     // 初始化加载状态
-    const initLoad = ()=>{
+    const initLoad = () => {
         loadingDev.value = true;
         loadingIframe.value = false;
         wapPreview.value = '';

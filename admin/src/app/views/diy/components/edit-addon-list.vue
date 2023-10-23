@@ -74,10 +74,10 @@
     // 组件验证
     diyStore.editComponent.verify = (index: number) => {
         var res = {code: true, message: ''};
-        if (diyStore.value[index].list.length === 0) {
-            res.code = false;
-            res.message = t('selectAddonTips');
-        }
+        // if (diyStore.value[index].list.length === 0) {
+        //     res.code = false;
+        //     res.message = t('selectAddonTips');
+        // }
         return res;
     };
 

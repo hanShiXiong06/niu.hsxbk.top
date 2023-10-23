@@ -65,7 +65,7 @@ const getAuthaddonFn = () => {
 }
 getAuthaddonFn()
 const installApp = () => {
-    router.push('app/app_store')
+    router.push('tools/app_store')
 }
 const itemPath = (key: any) => {
     let name = userStore.addonIndexRoute[key]

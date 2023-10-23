@@ -10,7 +10,7 @@ const modules = import.meta.glob('./*/index.vue')
 
 // 主题样式
 let themeStyle = {
-    'oneType': 'standard',  
+    'oneType': 'default',  
     'twoType': 'profession',
     'threeType': 'business'
 }

@@ -2,21 +2,21 @@
     <div :class="['flex', { 'two-type': sidebar == 'twoType' }, { 'three-type': sidebar == 'threeType' }]" v-if="isLoad">
         <div class="w-[124px] overflow-hidden">
             <!-- , { 'bright': !dark } -->
-            <el-aside :class="['h-screen layout-aside w-[124px] pb-[30px] px-[8px] bg-[#202033] ease-in duration-200']">
+            <el-aside :class="['h-screen layout-aside w-[124px] pb-[30px] px-[8px] bg-[#282c34] ease-in duration-200']">
                 <div class="h-full flex flex-col relative">      
                     <div class="group flex items-center justify-center h-[64px] cursor-pointer" v-if="!globalAppKey" @mouseenter="threefloatMenuHover">
                         <span class="iconfont iconyun1 !text-[32px] !w-auto text-[#fff]"></span>
-                        <app-menu :isShowHover="threefloatMenu" :data="applyList" @child-click="toLink" hoverType='threefloatMenu'></app-menu>
+<!--                        <app-menu :isShowHover="threefloatMenu" :data="applyList" @child-click="toLink" hoverType='threefloatMenu'></app-menu>-->
                     </div>
 
                     <template v-for="(item, index) in menus" :key="index">
                         <template v-if="globalAppKey == item.meta.app && item.meta.parentTitle">
                             <div class="group flex items-center justify-center h-[64px] cursor-pointer" @mouseenter="threefloatMenuHover">
-                                <img v-if="item.meta.parentIcon" :src="img(item.meta.parentIcon)" class="w-[40px] h-[40px]" alt="">
+                                <img v-if="item.meta.parentIcon" :src="img(item.meta.parentIcon)" class="w-[40px] h-[40px] rounded-full" alt="">
                                 <div class="flex items-center justify-center w-[30px] h-[30px]" v-else>
                                     <icon v-if="item.meta.icon" :name="item.meta.icon" class="!w-auto" size="24px" />
                                 </div>
-                                <app-menu :isShowHover="threefloatMenu" :data="applyList" @child-click="toLink" hoverType='threefloatMenu'></app-menu>
+<!--                                <app-menu :isShowHover="threefloatMenu" :data="applyList" @child-click="toLink" hoverType='threefloatMenu'></app-menu>-->
                             </div>
                             <div v-for="(appItem, appIndex) in item.children" :key="appIndex" @click="toLink(appItem)"
                                 :class="['rounded-sm flex items-center px-[8px] mb-[4px] h-[40px] cursor-pointer text-[#b9b9bf] hover:bg-[var(--el-color-primary)] hover:!text-[#fff] menu-item hover:text-color whitespace-nowrap', { 'bg-[var(--el-color-primary)] !text-[#fff] menu-item-active ': localMenuKey == appItem.meta.key}]">
@@ -122,7 +122,7 @@
                                         <el-sub-menu :index="String(threeMenu.meta.title)"
                                             v-if="threeMenu.children && threeMenu.meta.show">
                                             <template #title>
-                                                <span class="text-[14px]">{{ threeMenu.meta.title }}</span>
+                                                <span class="text-[14px] !pl-[10px]">{{ threeMenu.meta.title }}</span>
                                             </template>
                                             <template v-for="(fourMenu, fourIndex) in threeMenu.children"
                                                 :key="fourIndex">
@@ -348,6 +348,7 @@ const isTwoMenuFn = (item) => {
 
     return bool;
 }
+
 </script>
 
 <style lang="scss">
@@ -524,7 +525,6 @@ const isTwoMenuFn = (item) => {
 
         .el-sub-menu__title:hover {
             background-color: var(--el-color-primary);
-            ;
         }
 
         .el-sub-menu__title {

@@ -1,10 +1,13 @@
 <template>
 	<div class="flex flex-wrap">
-		<div class="page-item relative bg-no-repeat ml-[20px] mr-[40px] mt-[20px] bg-[#f7f7f7] w-[300px] pt-[80px] pb-[20px]" :class="{ 'cursor-pointer' : !item.isDisabledPop }" v-for="(item,key) in page" :key="key">
-			<p class="absolute top-[46px] left-[50%] translate-x-[-50%] text-[14px] truncate w-[130px] text-center">{{item.use_template.title}}</p>
+		<div class="page-item relative bg-no-repeat ml-[20px] mr-[40px] mt-[20px] bg-[#f7f7f7] w-[300px] pt-[80px] pb-[20px]"
+		     :class="{ 'cursor-pointer' : !item.isDisabledPop }" v-for="(item,key) in page" :key="key">
+			<p class="absolute top-[46px] left-[50%] translate-x-[-50%] text-[14px] truncate w-[130px] text-center">
+				{{item.use_template.title}}</p>
 
 			<div v-show="item.use_template.url" class="w-[282px] h-[493px] mx-auto">
-				<iframe :id="'previewIframe_' + key" v-show="item.loadingIframe" class="w-[282px] h-[493px] mx-auto" :src="item.use_template.wapPreview" frameborder="0"></iframe>
+				<iframe :id="'previewIframe_' + key" v-show="item.loadingIframe" class="w-[282px] h-[493px] mx-auto"
+				        :src="item.use_template.wapPreview" frameborder="0"></iframe>
 				<div v-show="item.loadingDev" class="w-[282px] h-[493px] mx-auto bg-body pt-[20px] px-[20px]">
 					<div class="font-bold text-xl mb-[40px]">{{t('developTitle')}}</div>
 					<div class="mb-[20px] flex flex-col">
@@ -19,12 +22,17 @@
 				<img class="max-w-full" v-if="item.use_template.cover" :src="img(item.use_template.cover)"/>
 			</div>
 
-			<p class="text-[12px] text-[#999] mt-[10px] mx-auto truncate text-center w-[250px]">{{item.use_template.desc}}</p>
+			<p class="text-[12px] text-[#999] mt-[10px] mx-auto truncate text-center w-[250px]">
+				{{item.use_template.desc}}</p>
 
-			<div class="item-hide absolute inset-x-0 inset-y-0 bg-black bg-opacity-50 text-center" :class="{ 'disabled' : item.isDisabledPop }">
+			<div class="item-hide absolute inset-x-0 inset-y-0 bg-black bg-opacity-50 text-center"
+			     :class="{ 'disabled' : item.isDisabledPop }">
 				<div class="item-btn-box absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] flex flex-col flex-wrap">
 					<el-button @click="show(key,item)">{{ t('changePage') }}</el-button>
-					<el-button @click="toDecorate(item.use_template)" v-show="item.use_template.mode != 'other' || item.use_template.action == 'decorate'">{{ t('decorate') }}</el-button>
+					<el-button @click="toDecorate(item.use_template)"
+					           v-show="item.use_template.mode != 'other' || item.use_template.action == 'decorate'">{{
+						t('decorate') }}
+					</el-button>
 					<el-button @click="toPreview(item.use_template)">{{ t('preview') }}</el-button>
 				</div>
 			</div>
@@ -32,16 +40,19 @@
 		</div>
 	</div>
 
-	<el-dialog v-model="showDialog" :title="t('changeTemplate')" width="400px" :close-on-press-escape="false" :destroy-on-close="true" :close-on-click-modal="false">
+	<el-dialog v-model="showDialog" :title="t('changeTemplate')" width="400px" :close-on-press-escape="false"
+	           :destroy-on-close="true" :close-on-click-modal="false">
 
 		<el-form :model="form" label-width="0px" v-if="formData.type">
 			<el-form-item label="">
-				<div>{{t('hopeBeforeTip')}}<span class="text-primary px-[5px]">{{ page[formData.type].title }}</span>{{t('hopeAfterTip')}}</div>
+				<div>{{t('hopeBeforeTip')}}<span class="text-primary px-[5px]">{{ page[formData.type].title }}</span>{{t('hopeAfterTip')}}
+				</div>
 			</el-form-item>
 
 			<el-form-item label="">
 				<el-select v-model="hope" class="w-full">
-					<el-option :label="t('changeTemplateTip') + ' ' + page[formData.type].title + ' ' + t('template')" value="template"/>
+					<el-option :label="t('changeTemplateTip') + ' ' + page[formData.type].title + ' ' + t('template')"
+					           value="template"/>
 					<el-option :label="t('changeMyPageTip') + ' ' + page[formData.type].title" value="diy"/>
 					<el-option :label="t('changeOtherPageTip') + ' ' + page[formData.type].title" value="other"/>
 				</el-select>
@@ -55,7 +66,8 @@
 
 			<el-form-item label="" v-show="hope == 'diy'">
 				<el-select v-model="formData.id" class="w-full">
-					<el-option v-for="(item, index) in page[formData.type].my_page" :label="item.title" :value="item.id"/>
+					<el-option v-for="(item, index) in page[formData.type].my_page" :label="item.title"
+					           :value="item.id"/>
 				</el-select>
 				<div class="mt-[10px]">
 					<span class="cursor-pointer text-primary mr-[10px]" @click="toDiyList">{{ t('createPage') }}</span>
@@ -65,7 +77,8 @@
 
 			<el-form-item label="" v-show="hope == 'other'">
 				<el-select v-model="formData.page" class="w-full">
-					<el-option v-for="(item, index) in page[formData.type].other_page" :label="item.title" :value="item.page"/>
+					<el-option v-for="(item, index) in page[formData.type].other_page" :label="item.title"
+					           :value="item.page"/>
 				</el-select>
 			</el-form-item>
 
@@ -85,8 +98,8 @@
     import {reactive, ref, watch} from 'vue'
     import {t} from '@/lang'
     import {img} from '@/utils/common'
-    import { useRouter } from 'vue-router'
-    import { ElMessage } from 'element-plus'
+    import {useRouter} from 'vue-router'
+    import {ElMessage} from 'element-plus'
     import {getDecoratePage, getDiyList, changeTemplate} from '@/app/api/diy'
     import storage from '@/utils/storage'
 
@@ -134,7 +147,7 @@
 
                     if (import.meta.env.MODE == 'development') {
                         // 开发模式情况下，并且未配置wap域名，则获取缓存域名
-                        if (wapDomain.value){
+                        if (wapDomain.value) {
                             page[key].wapUrl = wapDomain.value + '/wap';
                             setDomain(key);
                         }
@@ -157,7 +170,7 @@
     window.addEventListener('message', (event) => {
         try {
             let data = JSON.parse(event.data);
-            if(['appOnLaunch','appOnReady'].indexOf(data.type) != -1){
+            if (['appOnLaunch', 'appOnReady'].indexOf(data.type) != -1) {
                 for (let key in page) {
                     page[key].loadingDev = false; // 禁用开发环境配置
                     page[key].loadingIframe = true; // 加载iframe
@@ -175,7 +188,7 @@
     }, false);
 
     // 将数据发送到uniapp
-    const postMessage = (key:string)=> {
+    const postMessage = (key: string) => {
         var diyData = JSON.stringify({
             type: 'appOnReady',
             message: '加载完成'
@@ -267,17 +280,17 @@
 
     // 跳转去预览
     const toPreview = (data: any) => {
-        let query: any = {};
-        if (data.id) {
-            query.id = data.id;
-        } else if (data.name) {
-            query.name = data.name;
-        }else if(data.url){
-            query.url = data.url;
+        let page = data.page;
+        if (data.url) {
+            page = data.url;
+        } else if (data.id) {
+            page += '?id=' + data.id;
         }
         let url = router.resolve({
-            path: '/decorate/preview',
-            query
+            path: '/preview/wap',
+            query: {
+                page
+            }
         });
         window.open(url.href);
     }

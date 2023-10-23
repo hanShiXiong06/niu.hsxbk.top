@@ -150,12 +150,3 @@ export function getDecoratePage(params: Record<string, any>) {
 export function changeTemplate(params: Record<string, any>) {
     return request.put(`diy/change`, params, {showSuccessMessage: true})
 }
-
-/**
- * 获取预览数据
- * @param params
- * @returns
- */
-export function getPreviewData(params: Record<string, any>) {
-    return request.put(`diy/preview`, params, {showSuccessMessage: false})
-}

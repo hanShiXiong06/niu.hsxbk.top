@@ -17,7 +17,7 @@
 							<img class="w-[50px] h-[50px] inline-block" v-if="formData.headimg" :src="img(formData.headimg)" alt="">
 							<img class="w-[50px] h-[50px] inline-block" v-else src="@/app/assets/images/default_headimg.png" alt="">
 							<el-icon @click="editMemberInfo('headimg')" class="-bottom-[2px] -right-[4px] cursor-pointer">
-								<EditPen color="#273CE2" />
+								<EditPen :color="theme.theme" />
 							</el-icon>
 						</span>
 					</div>
@@ -40,7 +40,7 @@
 											</span>
 											<el-tooltip effect="dark" :content="t('adjust')" placement="top">
 												<el-icon @click="adjustPoint(formData)" class="ml-2 cursor-pointer" :size="12">
-													<EditPen color="#273CE2" />
+													<EditPen :color="theme.theme" />
 												</el-icon>
 											</el-tooltip>
 											<el-tooltip effect="dark" :content="t('detail')" placement="top">
@@ -71,7 +71,7 @@
 											</span>
 											<el-tooltip effect="dark" :content="t('adjust')" placement="top">
 												<el-icon @click="adjustBalance(formData)" class="ml-2 cursor-pointer" :size="12">
-													<EditPen color="#273CE2" />
+													<EditPen :color="theme.theme" />
 												</el-icon>
 											</el-tooltip>
 											<el-tooltip effect="dark" :content="t('detail')" placement="top">
@@ -172,7 +172,7 @@
 				<span class="text-[14px] w-[130px] text-right mr-[20px]">{{ t('memberLabel') }}</span>
 				<span class="text-[14px] text-[#666666]">
 					{{ formData.member_label_name.toString() || t('notAvailable') }}<el-icon @click="editMemberInfo('member_label')" class="-bottom-[2px] -right-[4px] cursor-pointer">
-						<EditPen color="#273CE2" />
+						<EditPen :color="theme.theme" />
 					</el-icon>
 				</span>
 			</div>
@@ -180,7 +180,7 @@
 				<span class="text-[14px] w-[130px] text-right mr-[20px]">{{ t('birthday') }}</span>
 				<span class="text-[14px] text-[#666666]">
 					{{ formData.birthday || t('notAvailable') }}<el-icon @click="editMemberInfo('birthday')" class="-bottom-[2px] -right-[4px] cursor-pointer">
-						<EditPen color="#273CE2" />
+						<EditPen :color="theme.theme" />
 					</el-icon>
 				</span>
 			</div>
@@ -188,7 +188,7 @@
 				<span class="text-[14px] w-[130px] text-right mr-[20px]">{{ t('sex') }}</span>
 				<span class="text-[14px] text-[#666666]">
 					{{ formData.sex == 1 && t('manSex') || formData.sex == 2 && t('girlSex') || t('secrecySex') }}<el-icon @click="editMemberInfo('sex')" class="-bottom-[2px] -right-[4px] cursor-pointer">
-						<EditPen color="#273CE2" />
+						<EditPen :color="theme.theme" />
 					</el-icon>
 				</span>
 			</div>
@@ -248,6 +248,9 @@ import BalanceEdit from '@/app/views/member/components/member-balance-edit.vue'
 import EditMember from '@/app/views/member/components/edit-member.vue'
 import colorGradient from '../../../../uniapp/src/uni_modules/vk-uview-ui/libs/function/colorGradient'
 import useAppStore from '@/stores/modules/app'
+import storage from '@/utils/storage'
+const theme = storage.get('theme') ?? {}
+console.log(theme)
 
 const route = useRoute()
 const pageName = route.meta.title

@@ -4,7 +4,7 @@
             <span class="text-[20px]">{{ t('localAppText') }}</span>
         </div>
         <div class="relative">
-            <div class="absolute right-0 top-[2px] flex items-center cursor-pointer z-[4] border	border-inherit">
+            <div class="absolute right-0 top-[2px] flex items-center cursor-pointer z-[4] border border-inherit">
                 <div class="flex item-center justify-center px-[6px] py-[4px]"
                     :class="{ 'bg-slate-200': showType == 'small' }" @click="showType = 'small'">
                     <img src="@/app/assets/images/app_store/switch_icon_1.png" class=" w-[16px] h-[16px]">
@@ -14,8 +14,8 @@
                     <img src="@/app/assets/images/app_store/switch_icon_2.png" class="w-[16px] h-[16px] ">
                 </div>
             </div>
-            <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
 
+            <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
                 <el-tab-pane :label="installLabel" name="installed">
                     <div class="flex flex-wrap px-2 plug-list pb-10">
                         <div v-for="(item, index) in localList.installed" :key="index + 'a'"
@@ -309,6 +309,7 @@
                 </div>
             </div>
         </el-dialog>
+
     </div>
 </template>
 
@@ -379,6 +380,7 @@ const localList = ref({
     all: [],
     error: ''
 })
+
 const localListFn = () => {
     loading.value = true
     getAddonLocal({}).then(res => {
@@ -402,6 +404,7 @@ const localListFn = () => {
         loading.value = false
     })
 }
+
 localListFn()
 
 const handleClick = (tab: TabsPaneContext, event: Event) => {
@@ -415,10 +418,13 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
 }
 
 const currAddon = ref('')
+
 // 安装面板弹窗
 const installShowDialog = ref(false)
+
 // 安装步骤
 const installStep = ref(1)
+
 // 安装检测结果
 const installCheckResult = ref({})
 
@@ -479,6 +485,7 @@ const getInstallTask = (first: boolean = true) => {
         }
     })
 }
+
 getInstallTask()
 
 const checkInstallTask = () => {
@@ -506,6 +513,7 @@ const handleInstall = () => {
 }
 
 const cloudInstalling = ref(false)
+
 /**
  * 云安装插件
  */

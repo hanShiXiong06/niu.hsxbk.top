@@ -1,4 +1,4 @@
-import { nextTick } from 'vue'
+import {nextTick} from 'vue'
 
 class Language {
     private i18n: any;
@@ -39,6 +39,18 @@ class Language {
             Object.keys(messages.default).forEach(key => {
                 data[`${file}.${key}`] = messages.default[key]
             })
+
+            // 查询插件的公共语言包
+            if (app) {
+                try {
+                    var messagesCommon = await import( `@/${app}/lang/${locale}/common.json`)
+                    Object.keys(messagesCommon.default).forEach(key => {
+                        data[`${file}.${key}`] = messagesCommon.default[key]
+                    })
+                } catch (e) {
+                    // console.log('未找到插件公共语言包')
+                }
+            }
 
             this.i18n.global.mergeLocaleMessage(locale, data)
             this.setI18nLanguage(locale)

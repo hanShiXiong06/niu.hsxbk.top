@@ -19,10 +19,10 @@
                 <div class="right-panel h-full flex items-center justify-end">
                     <!-- 预览 只有站点时展示-->
 
-                    <i class="iconfont iconlingdang-xianxing cursor-pointer px-[8px]" :title="t('newInfo')" v-if="appType == 'site'"></i>
-                    <!-- 切换首页 -->
-                    <div class="navbar-item flex items-center h-full cursor-pointer" v-if="appType == 'site'" @click="checkIndexList">
-                        <icon name="iconfont-iconqiehuan" :title="t('indexSwitch')" />
+                    <i class="iconfont iconlingdang-xianxing cursor-pointer px-[8px]" :title="t('newInfo')" ></i>
+                    <!-- 切换应用 -->
+                    <div class="navbar-item flex items-center h-full cursor-pointer" @click="changeApp">
+                        <icon name="iconfont-iconqiehuan" :title="t('changeApp')" class="!text-xs" />
                     </div>
                     <!-- 切换语言 -->
                     <div class="navbar-item !px-[0] flex items-center h-full cursor-pointer">
@@ -119,6 +119,9 @@ watch(screenWidth, () => {
     }
 })
 
+const changeApp = ()=>{
+    router.push({ path: '/app_manage' })
+}
 // 菜单栏展开折叠
 const toggleMenuCollapse = () => {
     systemStore.$patch((state) => {
@@ -178,6 +181,7 @@ const submitIndex = () => {
 .layout-header {
     position: relative;
     z-index: 5;
+    height: 60px;
     box-shadow: 0px 0px 4px 0px rgba(0, 145, 255, 0.1);
 }
 

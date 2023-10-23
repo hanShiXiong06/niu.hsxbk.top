@@ -1,33 +1,22 @@
 <template>
-    <div class="main-container attachment-container"  v-loading="loading">
+    <div class="main-container w-full p-5 bg-white"  v-loading="loading">
+        <div class="flex justify-between items-center h-[32px] mb-4">
+            <span class="text-[20px]">{{ t('personal') }}</span>
+            <span class="text-[14px] text-[#999] cursor-pointer" @click="toEditPersonal">{{ t('editPersonal') }}</span>
+        </div>
         <el-card class="box-card !border-none" shadow="never">
-            <el-form :model="saveInfo" label-width="90px" ref="formRef" :rules="formRules" class="page-form">
+            <el-form :model="saveInfo" label-width="90px" ref="formRef" class="page-form">
                 <el-form-item :label="t('headImg')">
-                    <upload-image v-model="saveInfo.head_img" :limit="1" />
+                    <el-image class="w-[70px] h-[70px]" :src="img(saveInfo.head_img)" fit="contain" />
                 </el-form-item>
 				<el-form-item :label="t('userName')">
-				    <el-input v-model="saveInfo.username" clearable class="input-width" :readonly="true"/>
+				    <div>{{saveInfo.username}}</div>
 				</el-form-item>
                 <el-form-item :label="t('realName')">
-                    <el-input v-model="saveInfo.real_name" :placeholder="t('realNamePlaceholder')" clearable class="input-width" />
-                </el-form-item>
-                <el-form-item :label="t('originalPassword')">
-                    <el-input v-model="saveInfo.original_password" type="password" :placeholder="t('originalPasswordPlaceholder')" clearable class="input-width" />
-                </el-form-item>
-                <el-form-item :label="t('password')">
-                    <el-input v-model="saveInfo.password" type="password" :placeholder="t('passwordPlaceholder')" clearable class="input-width" />
-                    <div class="form-tip">{{t('passwordTip')}}</div>
-                </el-form-item>
-                <el-form-item :label="t('passwordCopy')">
-                    <el-input v-model="saveInfo.password_copy" type="password" :placeholder="t('passwordPlaceholder')" clearable class="input-width" />
+                    <div>{{saveInfo.real_name}}</div>
                 </el-form-item>
             </el-form>
         </el-card>
-        <div class="fixed-footer-wrap">
-            <div class="fixed-footer">
-                <el-button type="primary" @click="submitForm(formRef)">{{ t('save') }}</el-button>
-            </div>
-        </div>
     </div>
 </template>
 
@@ -37,7 +26,9 @@ import { t } from '@/lang'
 import type { FormInstance, FormRules, ElNotification } from 'element-plus'
 import { img } from '@/utils/common'
 import { getUserInfo,setUserInfo } from '@/app/api/personal'
+import { useRoute, useRouter } from 'vue-router'
 
+const router = useRouter()
 // 提交信息
 let saveInfo = reactive({
         head_img: '',
@@ -72,35 +63,11 @@ const getUserInfoFn = () => {
 }
 getUserInfoFn();
 
-const submitForm = (formEl: FormInstance | undefined) => {
-    if (loading.value || !formEl) return
-    formEl.validate((valid) => {
-        if (valid) {
-            let msg = "";
-            if (saveInfo.password && !saveInfo.original_password) msg = t('originalPasswordHint');
-            if (saveInfo.password && saveInfo.original_password && !saveInfo.password_copy) msg = t('newPasswordHint');
-            if (saveInfo.password && saveInfo.original_password && saveInfo.password_copy && saveInfo.password != saveInfo.password_copy) msg = t('doubleCipherHint');
-            if (msg) {
-                ElNotification({
-                    type: 'error',
-                    message: msg,
-                })
-                return;
-            }
 
-            loading.value = true;
-
-            setUserInfo(saveInfo).then((res: any) => {
-                loading.value = false;
-            }).catch((err: any) => {
-                loading.value = false
-            })
-        } else {
-            return false
-        }
-    });
+// 跳转至开发者
+const toEditPersonal = () => {
+    router.push('/user/edit_center')
 }
-
 </script>
 
 <style lang="scss" scoped>

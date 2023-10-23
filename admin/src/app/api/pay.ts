@@ -34,3 +34,38 @@ export function getAccountStat() {
 export function getAccountType() {
     return request.get(`pay/account/type`)
 }
+
+/***************************************************** 退款信息 **************************************************/
+
+/**
+ * 退款列表
+ * @param params
+ * @returns
+ */
+export function getPayRefundPages(params: Record<string, any>) {
+    return request.get(`pay/refund`, {params})
+}
+
+/**
+ * 获取退款详情
+ * @param id
+ */
+export function getPayRefundInfo(refund_no: string) {
+    return request.get(`pay/refund/${refund_no}`)
+}
+
+/**
+ * 退款方式
+ * @param id
+ */
+export function getRefundType() {
+    return request.get(`pay/refund/type`)
+}
+
+/**
+ * 退款转账
+ * @param id
+ */
+export function getRefundTransfer(params: Record<string, any>) {
+    return request.post(`pay/refund/transfer`, params, {showSuccessMessage: true})
+}

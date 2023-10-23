@@ -19,7 +19,7 @@
 		<el-dialog v-model="showDialog" :title="t('selectLinkTips')" width="40%" :close-on-press-escape="false" :destroy-on-close="true" :close-on-click-modal="false">
 
 			<div class="flex items-start">
-				<el-scrollbar class="w-[140px] border-r h-[350px]">
+				<el-scrollbar class="w-[140px] border-r" height="360px">
 					<div v-for="(item,index) in link" :key="index"
 					     class="h-[40px] leading-[40px] cursor-pointer hover:bg-primary-light-9 px-[10px] hover:text-primary"
 					     :class="[ item.name == parentLinkName ? 'bg-primary-light-9 text-primary' : '' ]"

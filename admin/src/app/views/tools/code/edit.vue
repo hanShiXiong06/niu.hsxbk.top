@@ -534,7 +534,7 @@ const onSave = async (code: number) => {
         if (!['select', 'radio', 'checkbox'].includes(el.view_type)) el.dict_type = ''
         return el
     }))
-    console.log(JSON.parse(data.table_column))
+
     data.relations = JSON.stringify(data.relations)
     loading.value = true
     editGenerateTable(data).then((res: any) => {

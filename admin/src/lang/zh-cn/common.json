@@ -36,6 +36,7 @@
   "copy": "复制",
   "complete": "完成",
   "copySuccess": "复制成功",
+  "changeApp": "切换应用",
   "notSupportCopy": "浏览器不支持一键复制，请手动进行复制",
   "selectPlaceholder": "全部",
   "provincePlaceholder": "请选择省",
@@ -127,5 +128,20 @@
   "generateMax":"超过最多输入字符数",
   "generateMin":"少于最少输入字符数",
   "generateBetween":"请输入正确的字符信息",
-  "emptyAppData":"暂无应用"
+  "emptyAppData":"暂无应用",
+
+  "appMarketPlace": "应用",
+  "developerCenter": "开发",
+  "niucloud": "Niucloud官网",
+  "exit": "退出",
+
+  "originalPassword": "原始密码",
+  "newPassword": "新密码",
+  "passwordCopy": "确认密码",
+  "passwordTip": "修改密码时必填.不修改密码时留空",
+  "originalPasswordPlaceholder": "请输入原始密码",
+  "passwordPlaceholder": "请输入新密码",
+  "originalPasswordHint": "原始密码不能为空",
+  "newPasswordHint": "请输入确认密码",
+  "doubleCipherHint": "两次新密码不同"
 }
