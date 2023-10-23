@@ -18,7 +18,9 @@ export default defineConfig({
             },
             colors: {
                 primary: {
-                    DEFAULT: 'var(--primary-color)'
+                    DEFAULT: 'var(--primary-color)',
+                    dark: 'var(--primary-color-dark)',
+                    light: 'var(--primary-color-light)'
                 },
                 red: {
                     DEFAULT: '#ED1B26',
@@ -50,7 +52,8 @@ export default defineConfig({
                 white: '#FFFFFF',
                 background: '#282828',
                 border: 'rgba(117, 117, 117, 0.1)',
-                page: 'var(--page-bg-color)'
+                page: 'var(--page-bg-color)',
+                price: '#fc5227'
             },
             spacing: {
                 half: '50%',
