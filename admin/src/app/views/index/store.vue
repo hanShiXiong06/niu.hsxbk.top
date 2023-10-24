@@ -383,7 +383,7 @@
                 <el-result icon="success" :title="t('addonInstallSuccess')"></el-result>
                 <!-- 提示信息 -->
                 <div v-for="item in installAfterTips" class="mb-[10px]">
-                    <el-alert :title="item" type="warning" :closable="false" />
+                    <el-alert :title="item" type="error" :closable="false" />
                 </div>
             </div>
         </el-dialog>
@@ -892,5 +892,10 @@ const goRouter = () => {
 
 html.dark .table-head-bg {
     background: #141414;
+}
+
+.el-alert .el-alert__title{
+    font-size: 16px;
+    line-height: 18px;
 }
 </style>

@@ -47,6 +47,7 @@ return [
     'ZIP_FILE_NOT_FOUND' => '找不到可用的压缩文件',
     'DOWNLOAD_SUCCESS' => '下载成功',
     'ADDON_INFO_FILE_NOT_EXIST' => '未找到插件info.json配置文件',
+    'AUTH_BIND_SUCCESS' => '授权绑定成功',
     //登录注册重置账号....
 
     'LOGIN_SUCCESS' => '登录成功',
