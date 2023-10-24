@@ -258,7 +258,7 @@ return [
         'install_after_composer_update' => '该插件引用了新的composer依赖需在项目根目录下niucloud目录执行 composer update 更新依赖',
         'install_after_wap_update' => '该插件wap端引用了新的依赖需在项目根目录下uni-app目录执行 npm install 更新依赖',
         'install_after_web_update' => '该插件web端引用了新的依赖需在项目根目录下web目录执行 npm install 更新依赖',
-        'install_after_update' => '安装完成更新完依赖后需还手动编译admin web wap 端的源码',
+        'install_after_update' => '本地安装成功后会将admin，web，wap端的插件代码进行安装，但是不会进行编译，请手动编译对应admin，web，wap端的代码',
     ],
     // 退款支付状态
     'dict_pay_refund' => [
