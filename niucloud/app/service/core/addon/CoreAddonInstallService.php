@@ -157,7 +157,7 @@ class CoreAddonInstallService extends CoreAddonBaseService
 
         // 是否通过校验
         $data['is_pass'] = !in_array(false, $check_res);
-        Cache::set($this->cache_key . '_install_check', $data['is_pass'], 120);
+        Cache::set($this->cache_key . '_install_check', $data['is_pass']);
         return $data;
     }
 

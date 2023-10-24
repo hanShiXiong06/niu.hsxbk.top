@@ -13,6 +13,7 @@ namespace app\service\core\addon;
 
 use app\model\addon\AddonDevelop;
 use app\service\core\niucloud\CoreCloudBaseService;
+use app\service\core\niucloud\CoreModuleService;
 use core\exception\CommonException;
 use core\util\niucloud\CloudService;
 use GuzzleHttp\Client;
@@ -71,7 +72,7 @@ class CoreAddonCloudService extends CoreCloudBaseService
                 'authorize_code' => $this->auth_code,
                 'timestamp' => $install_task['timestamp']
             ];
-            (new CloudService())->httpPost('cloud/build?' . http_build_query($query), [
+            $response = (new CloudService())->httpPost('cloud/build?' . http_build_query($query), [
                 'multipart' => [
                     [
                         'name'     => 'file',
@@ -80,6 +81,7 @@ class CoreAddonCloudService extends CoreCloudBaseService
                     ]
                 ],
             ]);
+            if (isset($response['code']) && $response['code'] == 0) throw new CommonException($response['msg']);
 
             // 删除临时文件
             del_target_dir($temp_dir, true);
@@ -212,7 +214,8 @@ class CoreAddonCloudService extends CoreCloudBaseService
         $query = [
             'authorize_code' => $this->auth_code,
             'addon_name' => $addon,
-            'addon_version' => $version
+            'addon_version' => $version,
+//            'token' => (new CoreModuleService())->getActionToken('download', ['app_key' => $addon, 'version' => $version])
         ];
 
         // 获取文件大小

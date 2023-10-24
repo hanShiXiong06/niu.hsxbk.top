@@ -24,9 +24,9 @@ const prop = defineProps({
         type: String,
         default: 'sys/document/document'
     },
-    accept:{
+    accept: {
         type: String,
-        default: '.doc,.docx,.xml,.txt,.pem,.zip,.rar,.7z,.crt'
+        default: '.doc,.docx,.xml,.txt,.pem,.zip,.rar,.7z,.crt,.key'
     }
 })
 

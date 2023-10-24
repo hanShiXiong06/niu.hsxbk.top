@@ -613,9 +613,8 @@ const getInstallTask = (first: boolean = true) => {
         } else {
             if (!first) {
                 installStep.value = 3
-                userStore.clearRouters()
                 localListFn()
-                userStore.getAppList()
+                userStore.clearRouters()
                 notificationEl.close()
             }
         }
@@ -733,7 +732,7 @@ const uninstallAddonFn = (key: string) => {
         if (data.is_pass) {
             uninstallAddon({ addon: key }).then(res => {
                 localListFn()
-                userStore.getAppList()
+                userStore.clearRouters()
                 loading.value = false
             }).catch(() => {
                 loading.value = false
