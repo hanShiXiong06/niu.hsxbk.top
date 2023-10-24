@@ -44,6 +44,9 @@ const useUserStore = defineStore('user', {
                     })
             })
         },
+        clearRouters() {
+            this.routers = []
+        },
         logout() {
             this.token = ''
             this.userInfo = {}

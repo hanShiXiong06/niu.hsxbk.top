@@ -64,20 +64,22 @@ class CoreAddonService extends CoreAddonBaseService
         } catch ( Throwable $e ) {
             $error = $e->getMessage();
         }
-        $files = get_files_by_dir($this->addon_path);
-        if (!empty($files)) {
-            foreach ($files as $path) {
-                $data = $this->getAddonConfig($path);
-                if (isset($data['key'])) {
-                    $data['icon'] = is_file($data['icon']) ? image_to_base64($data['icon']) : '';
-                    $data['cover'] = is_file($data['cover']) ? image_to_base64($data['cover']) : '';
-                    $key = $data['key'];
-                    $data['install_info'] = $install_addon_list[$key] ?? [];
-                    $data['is_download'] = true;
-                    $data['is_local'] = in_array($data['key'], $online_app_list) ? false : true;
-                    $list[$key] = $data;
-                }
+        if(is_dir($this->addon_path)){
+            $files = get_files_by_dir($this->addon_path);
+            if (!empty($files)) {
+                foreach ($files as $path) {
+                    $data = $this->getAddonConfig($path);
+                    if (isset($data['key'])) {
+                        $data['icon'] = is_file($data['icon']) ? image_to_base64($data['icon']) : '';
+                        $data['cover'] = is_file($data['cover']) ? image_to_base64($data['cover']) : '';
+                        $key = $data['key'];
+                        $data['install_info'] = $install_addon_list[$key] ?? [];
+                        $data['is_download'] = true;
+                        $data['is_local'] = in_array($data['key'], $online_app_list) ? false : true;
+                        $list[$key] = $data;
+                    }
 
+                }
             }
         }
         return ['list' => $list, 'error' => $error ?? ''];

@@ -22,7 +22,7 @@ const useSystemStore = defineStore('system', {
             dark: theme.dark ?? false,
             theme: theme.theme ?? '#273de3',
             sidebar: theme.sidebar ?? 'oneType',
-            sidebarStyle: theme.sidebarStyle ?? 'oneType',
+            sidebarStyle: theme.sidebarStyle ?? 'threeType',
             lang: storage.get('lang') ?? 'zh-cn'
         }
     },

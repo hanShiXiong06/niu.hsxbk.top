@@ -48,7 +48,7 @@
 	"descriptionLeft": "暂无任何应用，马上去",
 	"link": "官方应用市场",
 	"descriptionRight": "逛逛",
-	"installed-empty": "暂无安装任何应用，请先安装",
+	"installed-empty": "暂未安装任何应用，请先安装",
 	
 	"siteAddressTips": "授权域名不匹配",
 	"authCodePlaceholder": "请输入授权码",

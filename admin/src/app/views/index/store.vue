@@ -574,6 +574,7 @@ const installAddonFn = (key: string) => {
 
     preInstallCheck(key).then(res => {
         installCheckResult.value = res.data
+        userStore.clearRouters()
     }).catch(() => { })
 }
 
@@ -612,6 +613,7 @@ const getInstallTask = (first: boolean = true) => {
         } else {
             if (!first) {
                 installStep.value = 3
+                userStore.clearRouters()
                 localListFn()
                 userStore.getAppList()
                 notificationEl.close()
@@ -822,11 +824,12 @@ const save = async (formEl: FormInstance | undefined) => {
             setAuthinfo(formData)
                 .then(() => {
                     saveLoading.value = false
-                    checkAppMange()
+                    setTimeout(() => {
+                       location.reload(); 
+                    }, 1000);
                 })
                 .catch(() => {
                     saveLoading.value = false
-                    authCodeApproveDialog.value = false
                 })
         }
     })

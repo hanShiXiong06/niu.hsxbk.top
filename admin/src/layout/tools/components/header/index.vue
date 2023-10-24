@@ -8,7 +8,7 @@
                 <span class="cursor-pointer" @click="goDeveloperCenter">{{ t('developerCenter') }}</span>
             </template>
         </div>
-        <div class="flex items-center mr-[20px] min-w-[200px] text-[14px]">
+        <div class="flex items-center min-w-[180px] text-[14px]">
             <span class="cursor-pointer mr-[15px]" @click="goNiucloud">{{ t('niucloud') }}</span>
             <el-dropdown>
                 <div class="userinfo flex h-full items-center">
@@ -18,14 +18,13 @@
                 </div>
                 <template #dropdown>
                     <el-dropdown-menu>
-                        <el-dropdown-item command="usercenter"><router-link to="/user/center">账号设置</router-link></el-dropdown-item>
-                        <el-dropdown-item command="usercenter"><router-link to="/tools/authorize">授权信息</router-link></el-dropdown-item>
-                        <el-dropdown-item command="usercenter" @click="changePasswordDialog=true">修改密码</el-dropdown-item>
+                        <el-dropdown-item><router-link to="/user/center">账号设置</router-link></el-dropdown-item>
+                        <el-dropdown-item><router-link to="/tools/authorize">授权信息</router-link></el-dropdown-item>
+                        <el-dropdown-item @click="changePasswordDialog=true">修改密码</el-dropdown-item>
+                        <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </template>
             </el-dropdown>
-            <span class="mx-2 text-[#4F5563]">|</span>
-            <span class="cursor-pointer" @click="logout">{{t('exit')}}</span>
         </div>
         <el-dialog v-model="changePasswordDialog" title="修改密码" :before-close="handleClose">
             <div>

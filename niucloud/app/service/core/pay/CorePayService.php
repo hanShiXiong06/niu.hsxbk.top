@@ -308,7 +308,6 @@ class CorePayService extends BaseCoreService
     {
         $pay = $this->findPayInfoByOutTradeNo($out_trade_no);
         if ($pay->isEmpty()) throw new PayException('PAY_TRANSACTION_NO_NOT_EXIST');
-//        if (empty($pay->type)) throw new PayException('TREAT_PAYMENT_IS_OPEN');
 
         if($pay['status'] == PayDict::STATUS_CALCLE) return true;
         if (!in_array($pay['status'], [

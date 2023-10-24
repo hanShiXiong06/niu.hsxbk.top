@@ -354,6 +354,10 @@ class CoreAddonDevelopService extends CoreAddonBaseService
             return true;
         }
         $file = $dir . $name;
+
+        if (!is_dir($dir) && !mkdir($dir, 0777, true) && !is_dir($dir)) {
+            throw new AddonException(sprintf('Directory "%s" was not created', $dir));
+        }
         if (strpos($name, 'png') || strpos($name, 'jpg')) {
             $file_name = explode('.', $name)[0] ?? '';
             if (empty($file_name)) return true;
@@ -361,14 +365,12 @@ class CoreAddonDevelopService extends CoreAddonBaseService
             if (empty($image)) return true;
             if (check_file_is_remote($image)) {
                 try {
-
                     (new CoreFetchService())->setRootPath($dir)->setRename($name)->image($image, '', FileDict::LOCAL);
                 } catch ( UploadFileException $e ) {
                     return true;
                 }
-
             } else {
-                copy($image, $file);
+                @copy($image, $file);
             }
         } else {
             //创建路由文件
