@@ -165,7 +165,7 @@ class CoreAddonCloudService extends CoreCloudBaseService
                 $end = min($end, $cache['length']);
 
                 $response = (new CloudService())->request('GET','cloud/build_download?' . http_build_query($query), [
-                    'headers' => ['Range' => "bytes={$start}-${end}"]
+                    'headers' => ['Range' => "bytes={$start}-{$end}"]
                 ]);
                 fwrite($zip_resource, $response->getBody());
                 fclose($zip_resource);
