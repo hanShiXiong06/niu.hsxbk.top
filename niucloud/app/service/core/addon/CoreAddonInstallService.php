@@ -182,7 +182,7 @@ class CoreAddonInstallService extends CoreAddonBaseService
 
         set_time_limit(0);
 
-        $install_step = ['installDir','installSql','installMenu','installSchedule','installWap','installDepend'];
+        $install_step = ['installDir','installWap','installDepend'];
 
         if (!empty($install_data['compile']) || $mode == 'cloud') {
             // 备份前端目录
@@ -225,7 +225,8 @@ class CoreAddonInstallService extends CoreAddonBaseService
             }
             return true;
         } catch (\Exception $e) {
-            Cache::set('install_task', null);
+            Cache::set('install_task', $this->install_task);
+            $this->installExceptionHandle();
             throw new CommonException($e->getMessage());
         }
     }
@@ -241,8 +242,8 @@ class CoreAddonInstallService extends CoreAddonBaseService
             @$this->uninstallDir();
         }
 
-        if (in_array('installMenu', $install_task['step'])) {
-            @$this->uninstallMenu();
+        if (in_array('installWap', $install_task['step'])) {
+            @$this->uninstallWap();
         }
 
         if ($install_task['mode'] == 'cloud') {
@@ -376,6 +377,13 @@ class CoreAddonInstallService extends CoreAddonBaseService
      */
     public function handleAddonInstall()
     {
+        // 执行安装sql
+        $this->installSql();
+        // 安装菜单
+        $this->installMenu();
+        // 安装计划任务
+        $this->installSchedule();
+
         $core_addon_service = new CoreAddonService();
         $install_data = $this->getAddonConfig($this->addon);
         $install_data['icon'] = 'addon/' . $this->addon . '/icon.png';
@@ -735,92 +743,6 @@ class CoreAddonInstallService extends CoreAddonBaseService
     {
         (new CoreScheduleInstallService())->installAddonSchedule($this->addon);
         $this->state = self::SCHEDULE_INSTALLED;
-        return true;
-    }
-
-    /**
-     * 编译admin端
-     * @return true
-     */
-    public function buildAdmin()
-    {
-        $result = Terminal::execute(root_path() . '../admin/', 'npm run build');
-        if ($result !== true) {
-            throw new CommonException($result);
-        }
-        return $result;
-    }
-
-    /**
-     * 覆盖admin端
-     * @return true
-     */
-    public function coverAdmin()
-    {
-        // admin编译后文件目录
-        $dist_dir = $this->root_path . "admin" . DIRECTORY_SEPARATOR . 'dist' . DIRECTORY_SEPARATOR;
-        // admin端代码目录
-        $target_dir = public_path() . "admin";
-
-        dir_copy($dist_dir, $target_dir);
-        return true;
-    }
-
-    /**
-     * 编译wap端
-     * @return true
-     */
-    public function buildWap()
-    {
-        $result = Terminal::execute(root_path() . '../uni-app/', 'npm run build:h5');
-        if ($result !== true) {
-            throw new CommonException($result);
-        }
-        return $result;
-    }
-
-    /**
-     * 覆盖admin端
-     * @return true
-     */
-    public function coverWap()
-    {
-        // admin编译后文件目录
-        $dist_dir = $this->root_path . "uni-app" . DIRECTORY_SEPARATOR . 'dist' . DIRECTORY_SEPARATOR;
-        // admin端代码目录
-        $target_dir = public_path() . "wap";
-
-        dir_copy($dist_dir, $target_dir);
-        return true;
-    }
-
-    /**
-     * 编译web端
-     * @return true
-     */
-    public function buildWeb()
-    {
-        $result = Terminal::execute(root_path() . '../web/', 'npm run generate');
-        if ($result !== true) {
-            throw new CommonException($result);
-        }
-        return $result;
-    }
-
-    /**
-     * 覆盖admin端
-     * @return true
-     */
-    public function coverWeb()
-    {
-        // admin编译后文件目录
-        $dist_dir = $this->root_path . "web" . DIRECTORY_SEPARATOR . '.output' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR;
-        // admin端代码目录
-        $target_dir = public_path() . "web";
-
-        dir_copy($dist_dir, $target_dir);
-        del_target_dir($target_dir, true);
-
         return true;
     }
 }

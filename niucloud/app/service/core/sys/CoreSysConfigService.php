@@ -47,7 +47,7 @@ class CoreSysConfigService extends BaseCoreService
      */
     public function getCopyright()
     {
-        $info = ( new CoreConfigService() )->getConfig(0, 'COPYRIGHT');
+        $info = ( new CoreConfigService() )->getConfig('COPYRIGHT');
         if (empty($info)) {
             $info = [];
             $info[ 'value' ] = [
