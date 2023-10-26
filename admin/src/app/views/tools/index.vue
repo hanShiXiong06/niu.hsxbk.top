@@ -84,15 +84,14 @@
 		router.push(link)
 	}
     const goRouter = () => {
-        window.open('https://www.niucloud.com/product')
+        window.open('https://www.niucloud.com/app')
     }
 </script>
 
 <style lang="scss" scoped></style>
 <style>
 	.tools-item-shadow{
-		box-shadow: 0px 0px 6px rgba(183, 183, 175, 1);
-		
+		box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2);
 	}
 	/* 多行超出隐藏 */
 	.multi-hidden {

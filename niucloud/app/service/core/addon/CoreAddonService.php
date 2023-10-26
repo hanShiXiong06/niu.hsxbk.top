@@ -49,7 +49,7 @@ class CoreAddonService extends CoreAddonBaseService
                     'desc' => $v['app']['app_desc'],
                     'key' => $v['app']['app_key'] ?? '',
                     'version' => $v['version'] ?? '',
-                    'author' => $v['app']['app_name'],
+                    'author' => $v['site_name'],
                     'type' => $v['app']['app_type'],
                     'support_app' => $v['app']['support_channel'] ?? [],
                     'is_download' => false,

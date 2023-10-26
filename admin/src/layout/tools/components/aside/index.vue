@@ -1,7 +1,19 @@
 <template>
     <div class="mt-[20px] mb-[15px] mx-[10px] app-aside-wrap bg-[#fff]">
+        <!-- <el-menu :router="true" unique-opened="true" :default-active="String(route.name)">
+            <template v-for="(item, index) in menus" :key="index">
+                <el-menu-item v-if="item.meta.key != 'official_market'" @click="toLink(item)"  :index="String(item.name)">
+                    <icon v-if="item.meta.icon" :name="item.meta.icon" class="!w-auto mr-[6px]" size="16px" :title="item.meta.title" />
+                    <span>{{ item.meta.title }}</span>
+                </el-menu-item>
+                <div class="el-menu-item" v-else @click="toLink(item)">
+                    <icon v-if="item.meta.icon" :name="item.meta.icon" class="!w-auto mr-[6px]" size="16px" :title="item.meta.title" />
+                    <span class="text-[14px]">{{ item.meta.title }}</span>
+                </div>
+            </template>
+        </el-menu> -->
         <div class="flex flex-wrap items-center">
-            <div v-for="(item, index) in menus" :key="index" :class="['border-[1px] border-solid my-[5px] border-[#E0E0E0] rounded-full py-[5px] px-[10px] cursor-pointer',{'mr-[20px]': index != menus.length-1},{'text-[#fff] bg-[#000] border-[#000]': item.name == route.name}]"  @click="toLink(item)">
+            <div v-for="(item, index) in menus" :key="index" :class="['border-[1px] border-solid my-[5px] border-[#E0E0E0] rounded-full py-[5px] px-[10px] mr-[24px] cursor-pointer',{'text-[#fff] bg-[#000] border-[#000]': item.name == route.name}]"  @click="toLink(item)">
                 <icon v-if="item.meta.icon" :name="item.meta.icon" class="!w-auto mr-[4px]" size="14px" :title="item.meta.title" />
                 <span class="text-[14px]">{{ item.meta.title }}</span>
             </div>
@@ -40,7 +52,7 @@ import useUserStore from '@/stores/modules/user'
         if(data.meta.key != 'official_market'){
     		router.push({ name: data.name })
         }else{
-            window.open('https://www.niucloud.com/product/', '_blank')
+            window.open('https://www.niucloud.com/app', '_blank')
         }
 	}
 </script>

@@ -27,7 +27,7 @@
                 </template>
             </el-dropdown>
         </div>
-        <el-dialog v-model="changePasswordDialog" width="450px" title="修改密码" :before-close="handleClose">
+        <el-dialog v-model="changePasswordDialog" title="修改密码" :before-close="handleClose">
             <div>
                 <el-form :model="saveInfo" label-width="90px" ref="formRef" :rules="formRules" class="page-form">
                     <el-form-item :label="t('originalPassword')" prop="original_password">
@@ -53,6 +53,7 @@
 </template>
 
 <script lang="ts" setup>
+import { UserFilled } from '@element-plus/icons-vue'
 import { computed, reactive, ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { FormInstance, FormRules, ElNotification } from 'element-plus'
@@ -77,7 +78,7 @@ const getEnvFn = () => {
 getEnvFn();
 
 const goRouter = () => {
-    window.open('https://www.niucloud.com/product')
+    window.open('https://www.niucloud.com/app')
 }
 
 // 跳转至开发者

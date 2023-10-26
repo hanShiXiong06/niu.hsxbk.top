@@ -81,7 +81,7 @@
                             <template #description>
                                 <span class="text-[#999]">{{ t("describe3") }}</span>
                                 <div class="mt-[20px] mb-[40px] h-[32px]">
-                                    <el-button type="primary" plain>{{t("btn3") }}</el-button>
+                                    <el-button type="primary" plain @click="linkEvent('https://www.kancloud.cn/niushop/niucloud-admin-app/3199825')">{{t("btn3") }}</el-button>
                                 </div>
                             </template>
                         </el-step>
@@ -134,7 +134,7 @@
                                 <span class="text-[#999]">{{ t("describe5") }}</span>
                                 <div class="mt-[20px] mb-[40px] h-[32px]">
                                     <el-button type="primary" plain
-                                        @click="linkEvent('https://www.niucloud.com/product')">{{t("btn5") }}</el-button>
+                                        @click="linkEvent('https://www.niucloud.com/app')">{{t("btn5") }}</el-button>
                                 </div>
                             </template>
                         </el-step>

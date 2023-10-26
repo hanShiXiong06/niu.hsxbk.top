@@ -78,8 +78,6 @@ const searchFormRef = ref<FormInstance>()
 // 选中数据
 const selectData = ref<any[]>([])
 
-// 字典数据
-
 /**
  * 获取商品标签列表
  */

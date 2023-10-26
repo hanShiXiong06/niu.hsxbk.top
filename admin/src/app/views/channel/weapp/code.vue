@@ -214,7 +214,7 @@ const authElMessageBox = () => {
         router.push({ path: '/app/authorize' })
     }).catch((action: string) => {
         if (action === 'cancel') {
-            window.open('https://www.niucloud.com/product')
+            window.open('https://www.niucloud.com/app')
         }
     })
 }

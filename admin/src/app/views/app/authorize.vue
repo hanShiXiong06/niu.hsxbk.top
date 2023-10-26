@@ -40,7 +40,7 @@
 					<div class="flex flex-1  flex-wrap justify-end relative">
 						<el-button class="w-[154px] !h-[48px] mt-[8px]" type="primary"
 							@click="authCodeApproveFn">授权码认证</el-button>
-						<el-popover ref="getAuthCodeDialog" placement="bottom-start" :width="478" trigger="click"
+						<el-popover ref="getAuthCodeDialog" placement="bottom" :width="478" trigger="click"
 							class="mt-[8px]">
 							<div class="px-[18px] py-[8px]">
 								<p class="leading-[32px] text-[14px]">您在官方应用市场购买任意一款应用，即可获得授权码。输入正确授权码认证通过后，即可支持在线升级和其它相关服务
@@ -166,13 +166,14 @@ const save = async (formEl: FormInstance | undefined) => {
 				})
 				.catch(() => {
 					saveLoading.value = false
+					authCodeApproveDialog.value = false
 				})
 		}
 	})
 }
 
 const market = () => {
-	window.open('https://www.niucloud.com/product')
+	window.open('https://www.niucloud.com/app')
 }
 
 const versions = ref('')

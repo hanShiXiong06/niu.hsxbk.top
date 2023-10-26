@@ -6,7 +6,7 @@
         </div>
         <div v-if="!data.length" class="flex-1 flex flex-col justify-center items-center pb-[30px]">
             <div class="w-[130px]"><img src="@/app/assets/images/index/apply_empty.png" class="max-w-full" alt=""></div>
-            <div class="text-[14px] text-[#909399]">暂无安装任何应用或插件，马上去<a href="https://www.niucloud.com/product/" target="_blank" class="text-[var(--el-color-primary)]">官方应用市场</a>逛逛</div>
+            <div class="text-[14px] text-[#909399]">暂无安装任何应用或插件，马上去<a href="https://www.niucloud.com/app" target="_blank" class="text-[var(--el-color-primary)]">官方应用市场</a>逛逛</div>
         </div>
     </div>
 </template>

@@ -1,164 +1,168 @@
 <template>
-	<div class="box-border pt-[68px] px-[76px] overview-top" v-loading="loading">
-		<div class="flex justify-between items-center">
-			<div>
-                <div class="font-[600] text-[26px] text-[#222] leading-[37px]">{{ t('app') }}</div>
-                <div class="font-[500] text-[14px] text-[#222] leading-[20px] mt-[12px]">{{ t('versionInfo') }}&nbsp;{{ t('currentVersion') }}&nbsp;{{ versions }}</div>
+    <div class="box-border pt-[68px] px-[76px] overview-top" v-loading="loading">
+        <div v-if="detail.appList && !loading">
+            <div class="flex justify-between items-center">
+                <div>
+                    <div class="font-[600] text-[26px] text-[#222] leading-[37px]">{{ t('app') }}</div>
+                    <div class="font-[500] text-[14px] text-[#222] leading-[20px] mt-[12px]">{{ t('versionInfo') }}&nbsp;{{
+                        t('currentVersion') }}&nbsp;{{ versions }}</div>
+                </div>
+                <el-button @click="toAppStore" class="px-[15px]">
+                    <div class="mr-[9px] text-[#3F3F3F] iconfont iconxiazai01"></div>
+                    <span class="font-[600] text-[14px] text-[#222] leading-[20px]">{{ t('appStore') }}</span>
+                </el-button>
             </div>
-            <el-button @click="toAppStore" class="px-[15px]">
-                <div class="mr-[9px] text-[#3F3F3F] iconfont iconxiazai01"></div>
-                <span class="font-[600] text-[14px] text-[#222] leading-[20px]">{{t('appStore')}}</span>
-            </el-button>
-		</div>
-		<div class="flex flex-wrap mt-[40px]">
-			<template v-for="(item, index) in detail.appList" :key="index">
-				<div class="app-item w-[280px] box-border py-[42px] px-[32px] bg-[#fff] rounded-[8px] cursor-pointer mr-[20px] mb-[20px] "
-						@click="itemPath(item)">
-					<div class="flex items-center">
-						<el-image class="w-[44px] h-[44px]  rounded-[8px]" :src="img(item.icon)" fit="contain">
-							<template #error>
-								<div class="image-slot">
-									<img class="w-[40px] h-[40px] rounded-[8px]"
-											src="@/app/assets/images/app_store/app_store_default.png"/>
-								</div>
-							</template>
-						</el-image>
-						<div class="ml-[12px] flex-1">
-                            <div class="font-[600] text-[14px] text-[#222] leading-[20px]">{{ item.title }}</div>
-                            <div class="font-[500] text-[13px] text-[#6D7278] leading-[18px] mt-[6px] w-[160px] truncate">{{ item.desc }}</div>
+            <div class="flex flex-wrap mt-[40px]">
+                <template v-for="(item, index) in detail.appList" :key="index">
+                    <div class="app-item w-[280px] box-border py-[42px] px-[32px] bg-[#fff] rounded-[8px] cursor-pointer mr-[20px] mb-[20px] "
+                        @click="itemPath(item)">
+                        <div class="flex items-center">
+                            <el-image class="w-[44px] h-[44px]  rounded-[8px]" :src="img(item.icon)" fit="contain">
+                                <template #error>
+                                    <div class="image-slot">
+                                        <img class="w-[40px] h-[40px] rounded-[8px]"
+                                            src="@/app/assets/images/app_store/app_store_default.png" />
+                                    </div>
+                                </template>
+                            </el-image>
+                            <div class="ml-[12px] flex-1">
+                                <div class="font-[600] text-[14px] text-[#222] leading-[20px]">{{ item.title }}</div>
+                                <el-tooltip class="box-item" effect="light" :content="item.desc" placement="bottom-start">
+                                    <div
+                                        class="font-[500] text-[13px] text-[#6D7278] leading-[18px] mt-[6px] w-[160px] truncate">
+                                        {{
+                                            item.desc }}</div>
+                                </el-tooltip>
+                            </div>
                         </div>
-					</div>
-				</div>
-			</template>
+                    </div>
+                </template>
+                <el-empty class="mx-auto overview-empty" v-if="!detail.appList.length && !loading">
+                    <template #image>
+                        <div class="w-[230px] mx-auto">
+                            <img src="@/app/assets/images/index/apply_empty.png" class="max-w-full" alt="">
+                        </div>
+                    </template>
+                    <template #description>
+                        <p class="flex items-center">
+                            <span>{{ t('descriptionLeft') }}</span>
+                            <el-link type="primary" @click="toAppStore" class="mx-[5px]">{{ t('link') }}</el-link>
+                            <span>{{ t('descriptionRight') }}</span>
+                        </p>
+                    </template>
+                </el-empty>
 
-			<el-empty  class="mx-auto overview-empty" v-if="!detail.appList.length && !loading">
-				<template #image>
-					<div class="w-[230px] mx-auto">
-						<img src="@/app/assets/images/index/apply_empty.png" class="max-w-full" alt="">
-					</div>
-				</template>
-				<template #description>
-					<p class="flex items-center">
-						<span>{{ t('descriptionLeft') }}</span>
-						<el-link type="primary" @click="toAppStore" class="mx-[5px]">{{ t('link') }}</el-link>
-						<span>{{ t('descriptionRight') }}</span>
-					</p>
-				</template>
-			</el-empty>
-
-		</div>
-
-	</div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script lang="ts" setup>
-    import { reactive, ref, onMounted , computed} from 'vue'
-    import { t } from '@/lang'
-    import { getAuthaddon, getVersions} from '@/app/api/auth'
-    import { img} from '@/utils/common'
-    import {useRouter} from 'vue-router'
-    import storage from '@/utils/storage'
-    import {findFirstValidRoute} from '@/router/routers'
-    import {UserFilled} from '@element-plus/icons-vue'
-    import useUserStore from '@/stores/modules/user'
-    const router = useRouter()
+import { reactive, ref, onMounted, computed } from 'vue'
+import { t } from '@/lang'
+import { getAuthaddon, getVersions } from '@/app/api/auth'
+import { img } from '@/utils/common'
+import { useRouter } from 'vue-router'
+import storage from '@/utils/storage'
+import { findFirstValidRoute } from '@/router/routers'
+import { UserFilled } from '@element-plus/icons-vue'
+import useUserStore from '@/stores/modules/user'
+const router = useRouter()
 
-    const userStore = useUserStore()
-    const loading = ref(true)
-    const detail = reactive({
-        appList: []
+const userStore = useUserStore()
+const loading = ref(true)
+const detail = reactive({
+    appList: []
+})
+const appLink: any = ref({})
+
+const getAuthaddonFn = () => {
+    loading.value = true
+    getAuthaddon().then(res => {
+        res.data.forEach((item: any, index) => {
+            if (item.type == 'app') {
+                detail.appList.push(item)
+            }
+        })
+        userStore.routers.forEach((item, index) => {
+            if (item.children && item.children.length) {
+                item.name = findFirstValidRoute(item.children)
+                appLink.value[item.meta.app] = findFirstValidRoute(item.children)
+            } else {
+                appLink.value[item.meta.app] = item.name
+            }
+        })
+        loading.value = false
+    }).catch(() => {
+        loading.value = false
+
     })
-    const appLink: any = ref({})
+}
 
-    const getAuthaddonFn = () => {
-        loading.value = true
-        getAuthaddon().then(res => {
-            res.data.forEach((item: any, index) => {
-                if (item.type == 'app') {
-                    detail.appList.push(item)
-                }
-            })
+getAuthaddonFn()
 
-            userStore.routers.forEach((item, index) => {
-                if (item.children && item.children.length) {
-                    item.name = findFirstValidRoute(item.children)
-                    appLink.value[item.meta.app] = findFirstValidRoute(item.children)
-                } else {
-                    appLink.value[item.meta.app] = item.name
-                }
-            })
-            loading.value = false
-        }).catch(() => {
-            loading.value = false
+const itemPath = (data: any) => {
+    console.log(appLink.value)
+    storage.set({ key: 'menuAppStorage', data: data.key })
+    storage.set({ key: 'plugMenuTypeStorage', data: '' })
+    const appMenuList = userStore.appMenuList
+    appMenuList.push(data.key)
+    userStore.setAppMenuList(appMenuList)
+    console.log(appLink.value)
+    let name: any = appLink.value[data.key]
+    console.log(name)
+    router.push({ name: name })
+}
 
-        })
-    }
+const goAppManage = () => {
+    router.push('/app_manage')
+}
 
-    getAuthaddonFn()
+const goRouter = () => {
+    window.open('https://www.niucloud.com/app')
+}
 
-    const itemPath = (data: any) => {
-        storage.set({key: 'menuAppStorage', data: data.key})
-        storage.set({key: 'plugMenuTypeStorage', data: ''})
+// 跳转至开发者
+const toAppStore = () => {
+    router.push('/app_manage/app_store')
+}
 
-        const appMenuList = userStore.appMenuList
-        appMenuList.push(data.key)
-        userStore.setAppMenuList(appMenuList)
+const goNiucloud = () => {
+    window.open('https://www.niucloud.com')
+}
 
-        let name: any = appLink.value[data.key];
+const logout = () => {
+    userStore.logout();
+}
 
-        router.push({name: name})
-
-    }
-
-    const goAppManage = () => {
-        router.push('/app_manage')
-    }
-
-    const goRouter = () => {
-        window.open('https://www.niucloud.com/product')
-    }
-
-    // 跳转至开发者
-    const toAppStore = () => {
-        router.push('/app_manage/app_store')
-    }
-
-    const goNiucloud = () => {
-        window.open('https://www.niucloud.com')
-    }
-
-    const logout = () => {
-        userStore.logout();
-    }
-
-    const versions = ref('')
-    const getVersionsInfo = () =>{
-        getVersions().then(res =>{
-            versions.value = res.data.version.version
-        })
-    }
-    getVersionsInfo()
+const versions = ref('')
+const getVersionsInfo = () => {
+    getVersions().then(res => {
+        versions.value = res.data.version.version
+    })
+}
+getVersionsInfo()
 </script>
 
 <style lang="scss" scoped>
-	.main-container {
-		background: linear-gradient(180deg, rgba(253, 253, 253, 0.24) 0%, #FAFAFA 100%);
-		min-height: calc(100vh - 64px);
-	}
+.main-container {
+    background: linear-gradient(180deg, rgba(253, 253, 253, 0.24) 0%, #FAFAFA 100%);
+    min-height: calc(100vh - 64px);
+}
 
-	.overview-top{
-		background-image: url('@/app/assets/images/index/overview.png');
-		background-repeat: no-repeat;
-		background-size: cover;
-        height: calc(100vh - 120px);
-	}
-    
-	.app-item {
-		box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.18);
-	}
+.overview-top {
+    background-image: url('@/app/assets/images/index/overview.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: calc(100vh - 120px);
+}
+
+.app-item {
+    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.18);
+}
 </style>
 <style>
-	.overview-empty .el-empty__image {
-		width: auto !important;
-	}
+.overview-empty .el-empty__image {
+    width: auto !important;
+}
 </style>

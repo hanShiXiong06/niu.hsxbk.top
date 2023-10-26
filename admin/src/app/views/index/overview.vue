@@ -77,7 +77,7 @@ const itemPath = (key: any) => {
 
 }
 const goRouter = ()=>{
-    window.open('https://www.niucloud.com/product/')
+    window.open('https://www.niucloud.com/app')
 }
 </script>
 

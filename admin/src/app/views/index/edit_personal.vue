@@ -1,5 +1,5 @@
 <template>
-    <div class="main-container w-full p-5 bg-white"  v-loading="loading">
+    <div class="main-container w-full px-[64px] pt-[64px] bg-white"  v-loading="loading">
         <div class="flex justify-between items-center h-[32px] mb-4">
             <span class="text-[20px]">{{ t('editPersonal') }}</span>
         </div>
@@ -9,7 +9,7 @@
                     <upload-image v-model="saveInfo.head_img" :limit="1" />
                 </el-form-item>
 				<el-form-item :label="t('userName')">
-				    <el-input v-model="saveInfo.username" clearable class="input-width" :readonly="true"/>
+                    <span>{{saveInfo.username}}</span>
 				</el-form-item>
                 <el-form-item :label="t('realName')">
                     <el-input v-model="saveInfo.real_name" :placeholder="t('realNamePlaceholder')" clearable class="input-width" />

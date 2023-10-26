@@ -80,7 +80,7 @@ getEnvFn();
 
 
 const goRouter = () => {
-    window.open('https://www.niucloud.com/product')
+    window.open('https://www.niucloud.com/app')
 }
 
 // 跳转至开发者

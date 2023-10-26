@@ -339,7 +339,7 @@ const toLink = (data, type) => {
         }
         router.push({ name: name })
     } else {
-        window.open('https://www.niucloud.com/product/', '_blank')
+        window.open('https://www.niucloud.com/app', '_blank')
     }
 }
 

@@ -605,7 +605,7 @@ const authElMessageBox = () => {
         router.push({ path: '/app/authorize' })
     }).catch((action: string) => {
         if (action === 'cancel') {
-            window.open('https://www.niucloud.com/product')
+            window.open('https://www.niucloud.com/app')
         }
     })
 }
@@ -665,7 +665,7 @@ const uninstallAddonFn = (key: string) => {
 }
 
 const market = () => {
-    window.open('https://www.niucloud.com/product')
+    window.open('https://www.niucloud.com/app')
 }
 
 /**
