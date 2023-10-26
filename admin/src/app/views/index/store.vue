@@ -1,280 +1,165 @@
 <template>
-    <div class="main-container w-full p-5 bg-white" v-loading="loading">
+    <div class="pt-[64px] px-[90px] app-store" v-loading="loading">
         <div class="flex justify-between items-center h-[32px] mb-4">
-            <span class="text-[20px]">{{ t('localAppText') }}</span>
+            <span class="text-[26px] text-[#222] font-600">{{ t('localAppText') }}</span>
+            <el-input class="w-[247px]" :placeholder="t('search')" v-model="search_name" @keyup.enter="query">
+                <template #suffix>
+                    <el-icon class="el-input__icon  cursor-pointer" size="14px" @click="query">
+                        <search />
+                    </el-icon>
+                </template>
+            </el-input>
+
         </div>
-        <div class="relative">
-            <!-- <div class="absolute right-0 top-[2px] flex items-center cursor-pointer z-[4] border border-inherit">
-                <div class="flex item-center justify-center px-[6px] py-[4px]"
-                    :class="{ 'bg-slate-200': showType == 'small' }" @click="showType = 'small'">
-                    <img src="@/app/assets/images/app_store/switch_icon_1.png" class=" w-[16px] h-[16px]">
-                </div>
-                <div class="flex item-center justify-center px-[6px] py-[4px]"
-                    :class="{ 'bg-slate-200': showType == 'large' }" @click="showType = 'large'">
-                    <img src="@/app/assets/images/app_store/switch_icon_2.png" class="w-[16px] h-[16px] ">
-                </div>
-            </div> -->
-
-            <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
-                <el-tab-pane :label="installLabel" name="installed">
-                    <div class="flex flex-wrap px-2 plug-list pb-10">
-                        <div v-for="(item, index) in localList.installed" :key="index + 'a'"
-                            class="flex items-center cursor-pointer  w-[295px] relative plug-item mr-4 mb-4"
-                            @click="getAddonDetialFn(item)" v-if="showType == 'small'">
-                            <div class="p-3">
-                                <img class="w-[44px] h-[44px] rounded-sm" v-if="item.icon" :src="item.icon" alt="">
-                                <img class="w-[44px] h-[44px] rounded-sm" v-else src="@/app/assets/images/icon-addon.png"
-                                    alt="">
-                            </div>
-                            <div class="flex items-center w-[220px] border-b py-3 justify-between">
-                                <div class="flex flex-col">
-                                    <span class="text-[14px] truncate w-[160px]">{{ item.title }}</span>
-                                    <span class="text-xs text-gray-400 truncate w-[160px] mt-[4px]">{{ item.desc }}</span>
-                                </div>
-                                <el-button size="small" round class="!text-primary !border-primary !bg-transparent"
-                                    @click.stop="uninstallAddonFn(item.key)">{{ t('unload')
-                                    }}</el-button>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-wrap plug-list pb-10 plug-large" v-if="showType == 'large'">
-                            <div class="app-item cursor-pointer mr-4 mt-[20px] pb-2 bg-[#f7f7f7]"
-                                v-for="(item, index) in localList.installed" :key="index + 'a'"
-                                @click="getAddonDetialFn(item)">
-                                <div class="flex justify-center items-center">
-                                    <img class="w-[240px] h-[120px]" v-if="item.cover" :src="item.cover" />
-                                    <img v-else class="w-[240px] h-[120px]"
-                                        src="@/app/assets/images/app_store/app_store_default.png" />
-                                </div>
-                                <div class="flex w-[240px] h-[46px]">
-                                    <div class="text-left mt-2 w-[190px]">
-                                        <p class="app-text text-[14px] text-[#222] pl-2">{{ item.title }}</p>
-                                        <p class="app-text text-[12px] text-[#999] pl-2">{{ item.desc }}</p>
-                                    </div>
-                                    <div class="flex items-center pr-2">
-                                        <el-button size="small" round class="!text-primary !border-primary !bg-transparent"
-                                            @click.stop="uninstallAddonFn(item.key)">{{ t('unload')
-                                            }}</el-button>
-                                    </div>
-                                </div>
+        <div class="flex mt-[24px]">
+            <div :class="{ '!bg-[#000] !border-0 !text-[#fff]': activeName === 'installed' }"
+                class="w-[78px] h-[30rpx] text-[14px] text-[#242424] text-center rounded-[15px] leading-[30px] bg-[#F0F0F0] border-solid border-1 border-[#E0E0E0] cursor-pointer mr-[24px]"
+                @click="activeName = 'installed'">
+                {{ t('installLabel') }}
+            </div>
+            <div :class="{ '!bg-[#000] !border-0 !text-[#fff]': activeName === 'uninstalled' }"
+                class="w-[78px] h-[30rpx] text-[14px] text-[#242424] text-center rounded-[15px] leading-[30px] bg-[#F0F0F0] border-solid border-1 border-[#E0E0E0] cursor-pointer mr-[24px]"
+                @click="activeName = 'uninstalled'">
+                {{ t('uninstalledLabel') }}
+            </div>
+            <div :class="{ '!bg-[#000] !border-0 !text-[#fff]': activeName === 'all' }"
+                class="w-[78px] h-[30rpx] text-[14px] text-[#242424] text-center rounded-[15px] leading-[30px] bg-[#F0F0F0] border-solid border-1 border-[#E0E0E0] cursor-pointer mr-[24px]"
+                @click="activeName = 'all'">
+                {{ t('buyLabel') }}
+            </div>
+        </div>
+        <div class="mt-[32px]">
+            <el-table v-if="localList[activeName].length" :data="info[activeName]" size="large" class="pt-[5px]">
+                <template #empty>
+                    <span>{{ t('noAddon') }}</span>
+                </template>
+                <el-table-column :label="t('appName')" align="left" min-width="200">
+                    <template #default="{ row }">
+                        <div class="flex items-center">
+                            <el-image class="w-[54px] h-[54px] flex-shrink-0" :src="row.icon" fit="contain">
+                                <template #error>
+                                    <img class="w-[54px] h-[54px]" src="@/app/assets/images/icon-addon.png" alt="">
+                                </template>
+                            </el-image>
+                            <div class="flex flex-col justify-center pl-[20px] text-[#222] font-500 text-[13px]">
+                                <div class="multi-hidden leading-[20px]">{{ row.title }}</div>
+                                <div class="leading-[18px] mt-[6px]">{{ row.version }}</div>
                             </div>
                         </div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="" :label="t('introduction')" align="left" min-width="200">
+                    <template #default="{ row }">
+                        <span class="text-[#222] font-500 text-[13px] multi-hidden">{{ row.desc }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column :label="t('type')" align="left" width="100">
+                    <template #default="{ row }">
+                        <span class="text-[#222] font-500 text-[13px]">{{ row.type === 'app' ? t('app') : t('addon')
+                        }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="" :label="t('author')" align="left" min-width="200">
+                    <template #default="{ row }">
+                        <span class="text-[#222] font-500 text-[13px] multi-hidden">{{ row.author }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column :label="t('operation')" align="right" width="180">
+                    <template #default="{ row }">
 
-                        <el-empty class="mx-auto overview-empty" v-if="!localList.installed.length && !loading">
-                            <template #image>
-                                <div class="w-[230px] mx-auto">
-                                    <img src="@/app/assets/images/index/apply_empty.png" class="max-w-full" alt="">
-                                </div>
-                            </template>
-                            <template #description>
-                                <p class="flex items-center">{{ t('installed-empty') }}</p>
-                            </template>
-                        </el-empty>
+                        <el-button class="!text-[13px]" v-if="row.install_info && Object.keys(row.install_info)?.length"
+                            type="primary" link @click="uninstallAddonFn(row.key)">{{ t('unload') }}</el-button>
+
+                        <el-button class="!text-[13px]" v-else-if="row.is_download && row.install_info <= 0" type="primary"
+                            link @click="installAddonFn(row.key)">{{ t('install')
+                            }}</el-button>
+                        <el-button class="!text-[13px]" v-else :loading="downloading == row.key"
+                            :disabled="downloading != ''" type="primary" link @click.stop="downEvent(row)">{{
+                                t('down') }}</el-button>
+                        <el-button class="!text-[13px]" type="primary" link @click="getAddonDetialFn(row)">{{ t('detail')
+                        }}</el-button>
+
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-empty class="mx-auto overview-empty"
+                v-if="!localList.installed.length && !loading && activeName == 'installed'">
+                <template #image>
+                    <div class="w-[230px] mx-auto">
+                        <img src="@/app/assets/images/index/apply_empty.png" class="max-w-full" alt="">
                     </div>
-                </el-tab-pane>
-                <el-tab-pane :label="uninstalledLabel" name="uninstalled">
-                    <div class="flex flex-wrap px-2 plug-list pb-10">
-
-                        <div v-for="(item, index) in localList.uninstalled" :key="index + 'a'"
-                            class="flex items-center cursor-pointer  w-[295px] relative plug-item mr-4 mb-4"
-                            @click="getAddonDetialFn(item)" v-if="showType == 'small'">
-                            <div class="p-3">
-                                <img v-if="item.icon" class="w-[44px] h-[44px] rounded-sm" :src="item.icon" alt="">
-                                <img v-else class="w-[44px] h-[44px] rounded-sm" src="@/app/assets/images/icon-addon.png"
-                                    alt="">
-                            </div>
-                            <div class="flex items-center w-[220px] border-b py-3 justify-between">
-                                <div class="flex flex-col">
-                                    <span class="text-[14px] truncate w-[160px]">{{ item.title }}</span>
-                                    <span class="text-xs text-gray-400 truncate w-[160px] mt-[4px]">{{ item.desc }}</span>
-                                </div>
-                                <el-button v-if="item.is_download" size="small" round
-                                    class="!text-primary !border-primary !bg-transparent"
-                                    @click.stop="installAddonFn(item.key)">{{ t('install')
-                                    }}</el-button>
-                                <el-button v-else size="small" :loading="downloading == item.key"
-                                    :disabled="downloading != ''" round
-                                    class="!text-primary !border-primary !bg-transparent" @click.stop="downEvent(item)">{{
-                                        t('down') }}</el-button>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-wrap plug-list pb-10 plug-large" v-if="showType == 'large'">
-                            <div class="app-item cursor-pointer mr-4 mt-[20px] pb-2 bg-[#f7f7f7]"
-                                v-for="(item, index) in localList.uninstalled" :key="index + 'a'"
-                                @click="getAddonDetialFn(item)">
-                                <div class="flex justify-center items-center">
-                                    <img v-if="item.cover && !item.is_download" class="w-[240px] h-[120px]"
-                                        :src="img(item.cover)" />
-                                    <img v-else-if="item.cover && item.is_download" class="w-[240px] h-[120px]"
-                                        :src="item.cover" />
-                                    <img v-else class="w-[240px] h-[120px]"
-                                        src="@/app/assets/images/app_store/app_store_default.png" />
-                                </div>
-                                <div class="flex w-[240px] h-[46px]">
-                                    <div class="text-left mt-2 w-[190px]">
-                                        <p class="app-text text-[14px] text-[#222] pl-2">{{ item.title }}</p>
-                                        <p class="app-text text-[12px] text-[#999] pl-2">{{ item.desc }}</p>
-                                    </div>
-                                    <div class="flex items-center pr-2">
-                                        <el-button v-if="item.is_download" size="small" round
-                                            class="!text-primary !border-primary !bg-transparent"
-                                            @click.stop="installAddonFn(item.key)">{{ t('install')
-                                            }}</el-button>
-                                        <el-button v-else size="small" :loading="downloading == item.key"
-                                            :disabled="downloading != ''" round
-                                            class="!text-primary !border-primary !bg-transparent"
-                                            @click.stop="downEvent(item)">{{ t('down') }}</el-button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <el-empty class="mx-auto overview-empty" v-if="!localList.uninstalled.length && !loading">
-                            <template #image>
-                                <div class="w-[230px] mx-auto">
-                                    <img src="@/app/assets/images/index/apply_empty.png" class="max-w-full" alt="">
-                                </div>
-                            </template>
-                            <template #description>
-                                <p class="flex items-center">
-                                    <span>{{ t('descriptionLeft') }}</span>
-                                    <el-link type="primary" @click="goRouter" class="mx-[5px]">{{ t('link') }}</el-link>
-                                    <span>{{ t('descriptionRight') }}</span>
-                                </p>
-                            </template>
-                        </el-empty>
+                </template>
+                <template #description>
+                    <p class="flex items-center">{{ t('installed-empty') }}</p>
+                </template>
+            </el-empty>
+            <el-empty class="mx-auto overview-empty"
+                v-if="!localList.uninstalled.length && !loading && activeName == 'uninstalled'">
+                <template #image>
+                    <div class="w-[230px] mx-auto">
+                        <img src="@/app/assets/images/index/apply_empty.png" class="max-w-full" alt="">
                     </div>
-                </el-tab-pane>
-                <el-tab-pane :label="allLabel" name="buy">
-
-                    <div class="flex flex-wrap px-2 plug-list pb-10">
-
-                        <template v-if="authinfo">
-                            <div v-for="(item, index) in localList.all" :key="index + 'a'"
-                                class="flex items-center cursor-pointer  w-[295px] relative plug-item mr-4 mb-4"
-                                @click="getAddonDetialFn(item)" v-if="showType == 'small'">
-                                <div class="p-3">
-                                    <img v-if="item.icon" class="w-[44px] h-[44px] rounded-sm" :src="item.icon" alt="">
-                                    <img v-else class="w-[44px] h-[44px] rounded-sm"
-                                        src="@/app/assets/images/icon-addon.png" alt="">
-                                </div>
-                                <div class="flex items-center w-[220px] border-b py-3 justify-between">
-                                    <div class="flex flex-col">
-                                        <span class="text-[14px] truncate w-[160px]">{{ item.title }}</span>
-                                        <span class="text-xs text-gray-400 truncate w-[160px] mt-[4px]">{{ item.desc
-                                        }}</span>
-                                    </div>
-                                    <el-button v-if="item.install_info && Object.keys(item.install_info)?.length"
-                                        size="small" round class="!text-primary !border-primary !bg-transparent"
-                                        @click.stop="uninstallAddonFn(item.key)">{{ t('unload')
-                                        }}</el-button>
-                                    <el-button v-else-if="item.is_download && item.install_info <= 0" size="small" round
-                                        class="!text-primary !border-primary !bg-transparent"
-                                        @click.stop="installAddonFn(item.key)">{{ t('install')
-                                        }}</el-button>
-                                    <el-button v-else size="small" :loading="downloading == item.key"
-                                        :disabled="downloading != ''" round
-                                        class="!text-primary !border-primary !bg-transparent"
-                                        @click.stop="downEvent(item)">{{
-                                            t('down') }}</el-button>
-                                </div>
+                </template>
+                <template #description>
+                    <p class="flex items-center">
+                        <span>{{ t('descriptionLeft') }}</span>
+                        <el-link type="primary" @click="goRouter" class="mx-[5px]">{{ t('link') }}</el-link>
+                        <span>{{ t('descriptionRight') }}</span>
+                    </p>
+                </template>
+            </el-empty>
+            <div v-if="!localList.all.length && !loading && !authinfo && activeName == 'all'"
+                class="mx-auto overview-empty flex flex-col items-center pt-14 pb-6">
+                <div class="mb-[20px] text-sm text-[#888]">检测到当前账号尚未绑定授权，请先绑定授权！</div>
+                <div class="flex flex-1  flex-wrap justify-center relative">
+                    <el-button class="w-[154px] !h-[48px] mt-[8px]" type="primary"
+                        @click="authCodeApproveFn">授权码认证</el-button>
+                    <el-popover ref="getAuthCodeDialog" placement="bottom" :width="478" trigger="click" class="mt-[8px]">
+                        <div class="px-[18px] py-[8px]">
+                            <p class="leading-[32px] text-[14px]">
+                                您在官方应用市场购买任意一款应用，即可获得授权码。输入正确授权码认证通过后，即可支持在线升级和其它相关服务</p>
+                            <div class="flex justify-end mt-[36px]">
+                                <el-button class="w-[182px] !h-[48px]" plain @click="market">去应用市场逛逛</el-button>
+                                <el-button class="w-[100px] !h-[48px]" plain
+                                    @click="getAuthCodeDialog.hide()">关闭</el-button>
                             </div>
-
-                            <div class="flex flex-wrap plug-list pb-10 plug-large" v-if="showType == 'large'">
-                                <div class="app-item cursor-pointer mr-4 mt-[20px] pb-2 bg-[#f7f7f7]"
-                                    v-for="(item, index) in localList.all" :key="index + 'a'"
-                                    @click="getAddonDetialFn(item)">
-                                    <div class="flex justify-center items-center">
-                                        <img v-if="item.icon && !item.is_download" class="w-[240px] h-[120px]"
-                                            :src="img(item.icon)" />
-                                        <img v-else-if="item.icon && item.is_download" class="w-[240px] h-[120px]"
-                                            :src="item.icon" />
-                                        <img v-else class="w-[240px] h-[120px]"
-                                            src="@/app/assets/images/app_store/app_store_default.png" />
-                                    </div>
-                                    <div class="flex w-[240px] h-[46px]">
-                                        <div class="text-left mt-2 w-[190px]">
-                                            <p class="app-text text-[14px] text-[#222] pl-2">{{ item.title }}</p>
-                                            <p class="app-text text-[12px] text-[#999] pl-2">{{ item.desc }}</p>
-                                        </div>
-                                        <div class="flex items-center pr-2">
-                                            <el-button v-if="item.install_info && Object.keys(item.install_info)?.length"
-                                                size="small" round class="!text-primary !border-primary !bg-transparent"
-                                                @click.stop="uninstallAddonFn(item.key)">{{ t('unload')
-                                                }}</el-button>
-                                            <el-button v-else-if="item.is_download && item.install_info <= 0" size="small"
-                                                round class="!text-primary !border-primary !bg-transparent"
-                                                @click.stop="installAddonFn(item.key)">{{ t('install')
-                                                }}</el-button>
-                                            <el-button v-else size="small" round :loading="downloading == item.key"
-                                                :disabled="downloading != ''"
-                                                class="!text-primary !border-primary !bg-transparent"
-                                                @click.stop="downEvent(item)">{{ t('down') }}</el-button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        </div>
+                        <template #reference>
+                            <el-button
+                                class="w-[154px] !h-[48px] mt-[8px] !text-[var(--el-color-primary)] hover:!text-[var(--el-color-primary)] !bg-transparent"
+                                plain type="primary">如何获取授权码?</el-button>
                         </template>
-
-                        <div v-if="!localList.all.length && !loading && !authinfo"
-                            class="mx-auto overview-empty flex flex-col items-center pt-14 pb-6">
-                            <div class="mb-[20px] text-sm text-[#888]">检测到当前账号尚未绑定授权，请先绑定授权！</div>
-                            <div class="flex flex-1  flex-wrap justify-center relative">
-                                <el-button class="w-[154px] !h-[48px] mt-[8px]" type="primary"
-                                    @click="authCodeApproveFn">授权码认证</el-button>
-                                <el-popover ref="getAuthCodeDialog" placement="bottom" :width="478" trigger="click"
-                                    class="mt-[8px]">
-                                    <div class="px-[18px] py-[8px]">
-                                        <p class="leading-[32px] text-[14px]">
-                                            您在官方应用市场购买任意一款应用，即可获得授权码。输入正确授权码认证通过后，即可支持在线升级和其它相关服务</p>
-                                        <div class="flex justify-end mt-[36px]">
-                                            <el-button class="w-[182px] !h-[48px]" plain @click="market">去应用市场逛逛</el-button>
-                                            <el-button class="w-[100px] !h-[48px]" plain
-                                                @click="getAuthCodeDialog.hide()">关闭</el-button>
-                                        </div>
-                                    </div>
-                                    <template #reference>
-                                        <el-button
-                                            class="w-[154px] !h-[48px] mt-[8px] !text-[var(--el-color-primary)] hover:!text-[var(--el-color-primary)] !bg-transparent"
-                                            plain type="primary">如何获取授权码?</el-button>
-                                    </template>
-                                </el-popover>
-                            </div>
-                        </div>
-                        <el-dialog v-model="authCodeApproveDialog" title="授权码认证" width="400px">
-                            <el-form :model="formData" label-width="0" ref="formRef" :rules="formRules" class="page-form">
-                                <el-card class="box-card !border-none" shadow="never">
-                                    <el-form-item prop="auth_code">
-                                        <el-input v-model="formData.auth_code" :placeholder="t('authCodePlaceholder')"
-                                            class="input-width" clearable size="large" />
-                                    </el-form-item>
-
-                                    <div class="mt-[20px]">
-                                        <el-form-item prop="auth_secret">
-                                            <el-input v-model="formData.auth_secret" clearable
-                                                :placeholder="t('authSecretPlaceholder')" class="input-width"
-                                                size="large" />
-                                        </el-form-item>
-                                    </div>
-
-                                    <div class="text-sm mt-[10px] text-info">{{ t('authInfoTips') }}</div>
-
-                                    <div class="mt-[20px]">
-                                        <el-button type="primary" class="w-full" size="large" :loading="saveLoading"
-                                            @click="save(formRef)">{{ t('confirm') }}</el-button>
-                                    </div>
-                                    <div class="mt-[10px] text-right">
-                                        <el-button type="primary" link @click="market">{{ t('notHaveAuth') }}</el-button>
-                                    </div>
-                                </el-card>
-                            </el-form>
-                        </el-dialog>
-                    </div>
-                </el-tab-pane>
-            </el-tabs>
+                    </el-popover>
+                </div>
+            </div>
         </div>
+        <el-dialog v-model="authCodeApproveDialog" title="授权码认证" width="400px">
+            <el-form :model="formData" label-width="0" ref="formRef" :rules="formRules" class="page-form">
+                <el-card class="box-card !border-none" shadow="never">
+                    <el-form-item prop="auth_code">
+                        <el-input v-model="formData.auth_code" :placeholder="t('authCodePlaceholder')" class="input-width"
+                            clearable size="large" />
+                    </el-form-item>
 
+                    <div class="mt-[20px]">
+                        <el-form-item prop="auth_secret">
+                            <el-input v-model="formData.auth_secret" clearable :placeholder="t('authSecretPlaceholder')"
+                                class="input-width" size="large" />
+                        </el-form-item>
+                    </div>
+
+                    <div class="text-sm mt-[10px] text-info">{{ t('authInfoTips') }}</div>
+
+                    <div class="mt-[20px]">
+                        <el-button type="primary" class="w-full" size="large" :loading="saveLoading"
+                            @click="save(formRef)">{{ t('confirm') }}</el-button>
+                    </div>
+                    <div class="mt-[10px] text-right">
+                        <el-button type="primary" link @click="market">{{ t('notHaveAuth') }}</el-button>
+                    </div>
+                </el-card>
+            </el-form>
+        </el-dialog>
         <!-- 详情 -->
         <el-dialog v-model="appStoreShowDialog" :title="t('plugDetail')" width="500px" :destroy-on-close="true">
             <el-form :model="appStoreInfo" label-width="120px" ref="formRef" class="page-form">
@@ -447,21 +332,18 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watch, computed, h } from 'vue'
+import { ref, reactive, watch, h } from 'vue'
 import { t } from '@/lang'
 import { getAddonLocal, uninstallAddon, installAddon, preInstallCheck, cloudInstallAddon, getAddonInstalltask, getAddonCloudInstallLog, preUninstallCheck } from '@/app/api/addon'
 import { downloadVersion, getAuthinfo, setAuthinfo } from '@/app/api/module'
-import { TabsPaneContext, ElMessageBox, ElNotification, FormInstance, FormRules } from 'element-plus'
+import { ElMessageBox, ElNotification, FormInstance, FormRules } from 'element-plus'
 import { img } from '@/utils/common'
 import { Terminal, api as terminalApi } from 'vue-web-terminal'
 import { useRouter } from 'vue-router'
 import useUserStore from '@/stores/modules/user'
-import storage from '@/utils/storage'
-
 const router = useRouter()
 const activeName = ref('installed')
 const loading = ref<Boolean>(false)
-const showType = ref('small')
 const downloading = ref('')
 const installAfterTips = ref<string[]>([])
 const userStore = useUserStore()
@@ -479,24 +361,6 @@ const downEvent = (param: Record<string, any>) => {
     })
 }
 
-const installLabel = computed(() => {
-    let text = t('installLabel')
-    localList.value.installed.length && (text += ` (${localList.value.installed.length})`)
-    return text
-})
-
-const uninstalledLabel = computed(() => {
-    let text = t('uninstalledLabel')
-    localList.value.uninstalled.length && (text += ` (${localList.value.uninstalled.length})`)
-    return text
-})
-
-const allLabel = computed(() => {
-    let text = t('buyLabel')
-    localList.value.all.length && (text += ` (${localList.value.all.length})`)
-    return text
-})
-
 const authCode = ref('')
 getAuthinfo().then(res => {
     if (res.data.data && res.data.data.auth_code) {
@@ -508,6 +372,27 @@ getAuthinfo().then(res => {
 /**
  * 本地下载的插件列表
  */
+//input 筛选
+const search_name = ref('')
+//表格展示数据
+const info = ref({
+    installed: [],
+    uninstalled: [],
+    all: [],
+})
+const query = () => {
+    if (search_name.value == '' || search_name.value == null) {
+        info.value.installed = localList.value.installed
+        info.value.uninstalled = localList.value.uninstalled
+        info.value.all = localList.value.all
+        return false
+    }
+    info.value.installed = localList.value.installed.filter((el: any) => el.title.indexOf(search_name.value) != -1)
+    info.value.uninstalled = localList.value.uninstalled.filter((el: any) => el.title.indexOf(search_name.value) != -1)
+    info.value.all = localList.value.all.filter((el: any) => el.title.indexOf(search_name.value) != -1)
+
+
+}
 const localList = ref({
     installed: [],
     uninstalled: [],
@@ -532,7 +417,7 @@ const localListFn = () => {
                 if (data[i].is_download == true) localList.value.uninstalled.push(data[i])
             }
         }
-
+        query()
         loading.value = false
     }).catch(() => {
         loading.value = false
@@ -540,17 +425,6 @@ const localListFn = () => {
 }
 
 localListFn()
-
-const handleClick = (tab: TabsPaneContext, event: Event) => {
-    // if (tab.paneName == 'buy' && localList.value.error != '') {
-    //     ElMessage({
-    //         message: localList.value.error,
-    //         grouping: true,
-    //         type: 'error'
-    //     })
-    // }
-}
-
 const currAddon = ref('')
 
 // 安装面板弹窗
@@ -682,7 +556,7 @@ const authElMessageBox = () => {
             cancelButtonText: t('toNiucloud')
         }
     ).then(() => {
-        router.push({ path: '/app/authorize' })
+        authCodeApproveFn()
     }).catch((action: string) => {
         if (action === 'cancel') {
             window.open('https://www.niucloud.com/product')
@@ -765,6 +639,8 @@ const installShowDialogClose = (done: () => {}) => {
         ).then(() => {
             done()
         }).catch(() => { })
+    } else if(installStep.value == 3){
+        location.reload();
     } else done()
 }
 
@@ -824,7 +700,7 @@ const save = async (formEl: FormInstance | undefined) => {
                 .then(() => {
                     saveLoading.value = false
                     setTimeout(() => {
-                       location.reload(); 
+                        location.reload();
                     }, 1000);
                 })
                 .catch(() => {
@@ -840,6 +716,17 @@ const goRouter = () => {
 </script>
 
 <style lang="scss" scoped>
+/* 多行超出隐藏 */
+.multi-hidden {
+    white-space: normal;
+    word-break: break-all;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
 .demo-tabs>.el-tabs__content {
     padding: 32px;
     color: #6b778c;
@@ -893,8 +780,13 @@ html.dark .table-head-bg {
     background: #141414;
 }
 
-.el-alert .el-alert__title{
+.el-alert .el-alert__title {
     font-size: 16px;
     line-height: 18px;
+}
+
+.app-store {
+    height: calc(100vh - 120px);
+    box-sizing: border-box;
 }
 </style>

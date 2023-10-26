@@ -3,10 +3,10 @@
 		<el-header class="h-[60px]">
 			<layout-header></layout-header>
 		</el-header>
-		<el-container class="overview-top">
+		<el-container class="flex flex-col px-[64px]">
 			<layout-aside></layout-aside>
 
-			<el-main class="p-0 box-shadow w-[1200px] m-[25px] ml-0 bg-[#fff]">
+			<el-main class="p-0 ml-0">
 				<el-scrollbar class="main-height">
 					<router-view></router-view>
 				</el-scrollbar>
@@ -30,9 +30,6 @@ import layoutAside from './components/aside/index.vue'
 	background-size: cover;
 }
 .main-height{
-	height: calc(100vh - 120px);
-}
-.box-shadow{
-    box-shadow: 0 0 10px 1px rgba(151, 151, 151, 0.1);
+	height: calc(100vh - 175px);
 }
 </style>

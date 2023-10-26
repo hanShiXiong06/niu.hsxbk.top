@@ -43,7 +43,7 @@
                     <upload-image v-model="formData.front_end_logo" />
                 </el-form-item>
             </el-card> -->
-			<el-card class="box-card !border-none" shadow="never" v-if="app_type == 'admin' ">
+			<el-card class="box-card !border-none" shadow="never" v-if="app_type == 'admin'">
 			    <h3 class="panel-title !text-sm">{{ t('serviceInformation') }}</h3>
 				<el-form-item :label="t('contactsTel')">
 				    <el-input v-model="formData.tel" :placeholder="t('contactsTelPlaceholder')" class="input-width" clearable maxlength="20" />
@@ -95,9 +95,9 @@ const formData = reactive<Record<string, string>>({
     front_end_name: '',
     front_end_logo: '',
     icon: '',
-	wechat_code: '',
-	enterprise_wechat: '',
-	tel: ''
+	tel: '',
+    wechat_code: '',
+    enterprise_wechat: ''
 })
 
 const setFormData = async (id: number = 0) => {

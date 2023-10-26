@@ -38,3 +38,9 @@ export function getLoginConfig() {
 export function getAuthaddon() {
     return request.get(`auth/authaddon`)
 }
+/**
+ * 获取当前版本信息
+ */
+export function getVersions() {
+    return request.get(`sys/info`)
+}

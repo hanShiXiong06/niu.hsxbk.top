@@ -1,33 +1,70 @@
 <template>
-	<div class="box-border px-[30px] pt-[60px]" v-loading="loading">
-		<div class="flex justify-between items-center">
-			<div class="font-600 text-[20px] text-[#222]">工具管理</div>
-		</div>
+	<div class="box-border px-[64px] pt-[64px]">
+		<div class="font-600 text-[22px] text-[#222] mb-[32px] pl-[14px]">工具管理</div>
 		<div class="flex flex-wrap mt-[28px]">
-			<template v-for="(item, index) in menus" :key="index">
-				<div class="app-item w-[284px] box-border p-[15px] bg-[#fff] rounded-[8px] cursor-pointer mr-[24px] mb-[24px]" @click="toLink(item)">
-					<div class="flex items-center">
-						<icon v-if="item.meta.icon" :name="item.meta.icon" class="!w-auto" size="40px" :title="item.meta.title" />
-						<img v-else class="w-[40px] h-[40px] rounded-[8px]" src="@/app/assets/images/app_store/app_store_default.png"/>
-						<div class="flex-1 font-600 text-[14px] text-[#222] ml-[12px]">{{ item.meta.title }}</div>
-					</div>
+			<div class="w-[256px] h-[260px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer" @click="toLink('/tools/addon')">
+				<div class="flex-1 py-[19px] px-[24px] flex flex-col">
+					<span class="text-[16px] text-[#222] font-bold">插件开发</span>
+					<p class="text-[13px] text-[#666] mt-[8px] multi-hidden">点击新建插件，生成插件后系统会生成对应插</p>
 				</div>
-			</template>
-
-			<el-empty v-if="!menus.length && !loading" class="mx-auto overview-empty">
-				<template #image>
-					<div class="w-[230px] mx-auto">
-						<img src="@/app/assets/images/index/apply_empty.png" class="max-w-full" alt="">
-					</div>
-				</template>
-				<template #description>
-					<p class="flex items-center">
-						<span>{{ t('descriptionLeft') }}</span>
-						<el-link type="primary" @click="goRouter" class="mx-[5px]">{{ t('link') }}</el-link>
-						<span>{{ t('descriptionRight') }}</span>
-					</p>
-				</template>
-			</el-empty>
+				<img src="@/app/assets/images/tools/addon_develop.png" class="w-[256px] h-[148px]" />
+			</div>
+			<div class="w-[256px] h-[260px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer" @click="toLink('/tools/code')">
+				<div class="flex-1 py-[19px] px-[24px] flex flex-col">
+					<span class="text-[16px] text-[#222] font-bold">代码生成</span>
+					<p class="text-[13px] text-[#666] mt-[8px] multi-hidden">代码生成</p>
+				</div>
+				<img src="@/app/assets/images/tools/code.png" class="w-[256px] h-[148px]" />
+			</div>
+			<div class="w-[256px] h-[260px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer" @click="toLink('/tools/list')">
+				<div class="flex-1 py-[19px] px-[24px] flex flex-col">
+					<span class="text-[16px] text-[#222] font-bold">数据字典</span>
+					<p class="text-[13px] text-[#666] mt-[8px] multi-hidden">数据字典</p>
+				</div>
+				<img src="@/app/assets/images/tools/sys_dict_list.png" class="w-[256px] h-[148px]" />
+			</div>
+			<div class="w-[256px] h-[260px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer" @click="toLink('/tools/update')">
+				<div class="flex-1 py-[19px] px-[24px] flex flex-col">
+					<span class="text-[16px] text-[#222] font-bold">更新缓存</span>
+					<p class="text-[13px] text-[#666] mt-[8px] multi-hidden">更新缓存</p>
+				</div>
+				<img src="@/app/assets/images/tools/tools_Update_cache.png" class="w-[256px] h-[148px]" />
+			</div>
+			<div class="w-[256px] h-[260px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer" @click="toLink('/tools/detection')">
+				<div class="flex-1 py-[19px] px-[24px] flex flex-col">
+					<span class="text-[16px] text-[#222] font-bold">环境监测</span>
+					<p class="text-[13px] text-[#666] mt-[8px] multi-hidden">环境监测</p>
+				</div>
+				<img src="@/app/assets/images/tools/tools_check_environment.png" class="w-[256px] h-[148px] cursor-pointer" />
+			</div>
+			<div class="w-[256px] h-[260px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer" @click="toLink('/tools/schedule')">
+				<div class="flex-1 py-[19px] px-[24px] flex flex-col">
+					<span class="text-[16px] text-[#222] font-bold">计划任务</span>
+					<p class="text-[13px] text-[#666] mt-[8px] multi-hidden">计划任务</p>
+				</div>
+				<img src="@/app/assets/images/tools/tools_schedule.png" class="w-[256px] h-[148px]" />
+			</div>
+			<div class="w-[256px] h-[260px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer" @click="toLink('/tools/admin')">
+				<div class="flex-1 py-[19px] px-[24px] flex flex-col">
+					<span class="text-[16px] text-[#222] font-bold">菜单管理</span>
+					<p class="text-[13px] text-[#666] mt-[8px] multi-hidden">菜单管理</p>
+				</div>
+				<img src="@/app/assets/images/tools/auth_menu.png" class="w-[256px] h-[148px]" />
+			</div>
+			<div class="w-[256px] h-[260px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer" @click="toLink('/tools/authorize')">
+				<div class="flex-1 py-[19px] px-[24px] flex flex-col">
+					<span class="text-[16px] text-[#222] font-bold">授权信息</span>
+					<p class="text-[13px] text-[#666] mt-[8px] multi-hidden">查看授权信息及重新认证授权</p>
+				</div>
+				<img src="@/app/assets/images/tools/app_auth.png" class="w-[256px] h-[148px]" />
+			</div>
+			<div class="w-[256px] h-[260px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer" @click="goRouter">
+				<div class="flex-1 py-[19px] px-[24px] flex flex-col">
+					<span class="text-[16px] text-[#222] font-bold">官方市场</span>
+					<p class="text-[13px] text-[#666] mt-[8px] multi-hidden">官方市场</p>
+				</div>
+				<img src="@/app/assets/images/tools/official_market.png" class="w-[256px] h-[148px]" />
+			</div>
 		</div>
 	</div>
 </template>
@@ -41,60 +78,29 @@
     import storage from '@/utils/storage'
     import {findFirstValidRoute} from '@/router/routers'
     import {UserFilled} from '@element-plus/icons-vue'
-
     const router = useRouter()
-    import useUserStore from '@/stores/modules/user'
 
-    const userStore = useUserStore()
-    const loading = ref(true)
-    const detail = reactive({
-        appList: []
-    })
-	const appLink: any = ref({})
-		
-	const menus = computed(() => {
-        let obj = []
-        loading.value = true;
-		userStore.routers.forEach((item, index) => {
-			if (item.meta.key == 'tool' && item.children && item.children.length) {
-				item.children.forEach((childItem,childIndex) => {
-					if(childItem.meta.show == 1){
-						obj.push(childItem);
-					}
-				});
-			} 
-        })
-        loading.value = false;
-		return obj
-	})
-
-	const toLink = (data)=>{
-		router.push({ name: data.name })
+	const toLink = (link)=>{
+		router.push(link)
 	}
-
     const goRouter = () => {
         window.open('https://www.niucloud.com/product')
     }
 </script>
 
-<style lang="scss" scoped>
-	.main-container {
-		background: linear-gradient(180deg, rgba(253, 253, 253, 0.24) 0%, #FAFAFA 100%);
-		min-height: calc(100vh - 64px);
-	}
-
-	.overview-top {
-		background-image: url('@/app/assets/images/index/overview.png');
-		background-repeat: no-repeat;
-		background-size: cover;
-	}
-
-	.app-item {
-		box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.18);
-	}
-</style>
+<style lang="scss" scoped></style>
 <style>
-	.overview-empty .el-empty__image {
-		width: auto !important;
+	.tools-item-shadow{
+		box-shadow: 0px 0px 6px rgba(183, 183, 175, 1);
+		
+	}
+	/* 多行超出隐藏 */
+	.multi-hidden {
+		word-break: break-all;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
 	}
 </style>

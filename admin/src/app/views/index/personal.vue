@@ -1,5 +1,5 @@
 <template>
-    <div class="main-container w-full p-5 bg-white"  v-loading="loading">
+    <div class="main-container w-full p-[64px] bg-white"  v-loading="loading">
         <div class="flex justify-between items-center h-[32px] mb-4">
             <span class="text-[20px]">{{ t('personal') }}</span>
             <span class="text-[14px] text-[#999] cursor-pointer" @click="toEditPersonal">{{ t('editPersonal') }}</span>
@@ -7,7 +7,13 @@
         <el-card class="box-card !border-none" shadow="never">
             <el-form :model="saveInfo" label-width="90px" ref="formRef" class="page-form">
                 <el-form-item :label="t('headImg')">
-                    <el-image class="w-[70px] h-[70px]" :src="img(saveInfo.head_img)" fit="contain" />
+                    <el-image class="w-[70px] h-[70px] rounded-full" :src="img(saveInfo.head_img)" fit="contain">
+                        <template #error>
+                            <div class="image-slot w-[70px] h-[70px] bg-[#c0c4cc] flex items-center justify-center">
+                                <el-icon class="text-[45px] text-[#fff]"><UserFilled /></el-icon>
+                            </div>
+                        </template>
+                    </el-image>
                 </el-form-item>
 				<el-form-item :label="t('userName')">
 				    <div>{{saveInfo.username}}</div>
@@ -21,6 +27,7 @@
 </template>
 
 <script lang="ts" setup>
+import { UserFilled } from '@element-plus/icons-vue'
 import { reactive, ref } from 'vue'
 import { t } from '@/lang'
 import type { FormInstance, FormRules, ElNotification } from 'element-plus'

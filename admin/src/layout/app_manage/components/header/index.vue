@@ -12,7 +12,8 @@
             <span class="cursor-pointer mr-[15px]" @click="goNiucloud">{{ t('niucloud') }}</span>
             <el-dropdown>
                 <div class="userinfo flex h-full items-center">
-                    <el-avatar :size="25" :icon="UserFilled" />
+                    <el-avatar :size="25" :icon="UserFilled" v-if="!userStore.userInfo.head_img" />
+                    <el-avatar :size="25" v-else :src="img(userStore.userInfo.head_img)" />
                     <div class="user-name pl-[8px] text-[#fff]">{{ userStore.userInfo.username }}</div>
                     <icon name="element-ArrowDown" class="ml-[5px] !text-[#fff]" />
                 </div>
@@ -53,10 +54,12 @@
 </template>
 
 <script lang="ts" setup>
+import { UserFilled } from '@element-plus/icons-vue'
 import { computed, reactive, ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { FormInstance, FormRules, ElNotification } from 'element-plus'
 import { t } from '@/lang'
+import { img } from '@/utils/common'
 import {getEnv} from '@/app/api/sys'
 import { setUserInfo } from '@/app/api/personal'
 import useUserStore from '@/stores/modules/user'
@@ -82,7 +85,7 @@ const goRouter = () => {
 
 // 跳转至开发者
 const goDeveloperCenter = () => {
-    router.push('/tools/addon')
+    router.push('/app_manage/tools')
 }
 
 const goNiucloud = () => {

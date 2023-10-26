@@ -1,17 +1,11 @@
 <template>
-    <div class="m-[25px] w-[200px] bg-[#fff] aside-shadow app-aside-wrap">
-        <el-menu  :router="true" unique-opened="true" :default-active="String(route.name)">
-            <template v-for="(item, index) in menus" :key="index">
-                <el-menu-item v-if="item.meta.key != 'official_market'" @click="toLink(item)"  :index="String(item.name)">
-                    <icon v-if="item.meta.icon" :name="item.meta.icon" class="!w-auto mr-[6px]" size="16px" :title="item.meta.title" />
-                    <span>{{ item.meta.title }}</span>
-                </el-menu-item>
-                <div class="el-menu-item" v-else @click="toLink(item)">
-                    <icon v-if="item.meta.icon" :name="item.meta.icon" class="!w-auto mr-[6px]" size="16px" :title="item.meta.title" />
-                    <span class="text-[14px]">{{ item.meta.title }}</span>
-                </div>
-            </template>
-        </el-menu>
+    <div class="mt-[20px] mb-[15px] mx-[10px] app-aside-wrap bg-[#fff]">
+        <div class="flex flex-wrap items-center">
+            <div v-for="(item, index) in menus" :key="index" :class="['border-[1px] border-solid my-[5px] border-[#E0E0E0] rounded-full py-[5px] px-[10px] cursor-pointer',{'mr-[20px]': index != menus.length-1},{'text-[#fff] bg-[#000] border-[#000]': item.name == route.name}]"  @click="toLink(item)">
+                <icon v-if="item.meta.icon" :name="item.meta.icon" class="!w-auto mr-[4px]" size="14px" :title="item.meta.title" />
+                <span class="text-[14px]">{{ item.meta.title }}</span>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -52,9 +46,6 @@ import useUserStore from '@/stores/modules/user'
 </script>
 
 <style lang="scss">
-.aside-shadow{
-    box-shadow: 0 0 10px 1px rgba(0,0,0,0.1);
-}
 .app-aside-wrap{
     .el-menu-item{
         border-bottom: 1px solid #f1f1f1;

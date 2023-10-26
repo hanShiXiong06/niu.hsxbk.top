@@ -2,7 +2,8 @@
     <div>
         <el-dropdown @command="clickEvent" :tabindex="1">
             <div class="userinfo flex h-full items-center">
-                <el-avatar :size="25" :icon="UserFilled" />
+                <el-avatar :size="25" :icon="UserFilled" v-if="!userStore.userInfo.head_img" />
+                <el-avatar :size="25" v-else :src="img(userStore.userInfo.head_img)" />
                 <div class="user-name pl-[8px]">{{ userStore.userInfo.username }}</div>
                 <icon name="element-ArrowDown" class="ml-[5px]" />
             </div>
@@ -40,6 +41,7 @@
 </template>
 
 <script lang="ts" setup>
+import { img } from '@/utils/common'
 import { UserFilled } from '@element-plus/icons-vue'
 import { computed, reactive, ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'

@@ -1,11 +1,11 @@
 <template>
-	<div class="flex border-t border-b main-wrap border-color w-full" :class="scene == 'select' ? 'h-[40vh]' : 'h-full'">
+	<div class="flex border-t border-b main-wrap border-color w-full" :class="scene == 'select' ? 'h-[430px]' : 'h-full'">
 		<!-- 分组 -->
 		<div class="group-wrap w-[180px] p-[15px] h-full border-r border-color flex flex-col">
 
 			<el-input v-model="categoryParam.name" class="m-0" :placeholder="t('upload.attachmentCategoryPlaceholder')" clearable prefix-icon="Search" @input="getAttachmentCategoryList()"/>
 			<div class="group-list flex-1 my-[10px]">
-				<el-scrollbar>
+				<el-scrollbar height="300px">
 					<div class="group-item p-[10px] leading-none text-xs rounded cursor-pointer" :class="{ active: attachmentParam.cate_id == 0 }" @click="attachmentParam.cate_id = 0">
 						{{ t('selectPlaceholder') }}
 					</div>

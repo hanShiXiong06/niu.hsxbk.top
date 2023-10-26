@@ -1,18 +1,21 @@
 <template>
-	<div class="h-[480px] box-border pt-[20px] px-[20px]" v-loading="loading">
+	<div class="box-border pt-[68px] px-[76px] overview-top" v-loading="loading">
 		<div class="flex justify-between items-center">
-			<div class="font-600 text-[20px] text-[#222]">{{ t('app') }}</div>
-            <el-button @click="toAppStore">
-                <el-icon class="mr-[2px]"><Download /></el-icon>
-                <span>{{t('appStore')}}</span>
+			<div>
+                <div class="font-[600] text-[26px] text-[#222] leading-[37px]">{{ t('app') }}</div>
+                <div class="font-[500] text-[14px] text-[#222] leading-[20px] mt-[12px]">{{ t('versionInfo') }}&nbsp;{{ t('currentVersion') }}&nbsp;{{ versions }}</div>
+            </div>
+            <el-button @click="toAppStore" class="px-[15px]">
+                <div class="mr-[9px] text-[#3F3F3F] iconfont iconxiazai01"></div>
+                <span class="font-[600] text-[14px] text-[#222] leading-[20px]">{{t('appStore')}}</span>
             </el-button>
 		</div>
-		<div class="flex flex-wrap mt-[28px]">
+		<div class="flex flex-wrap mt-[40px]">
 			<template v-for="(item, index) in detail.appList" :key="index">
-				<div class="app-item w-[284px] box-border p-[18px] pb-[24px] bg-[#fff] rounded-[8px] cursor-pointer mr-[24px] mb-[24px]"
+				<div class="app-item w-[280px] box-border py-[42px] px-[32px] bg-[#fff] rounded-[8px] cursor-pointer mr-[20px] mb-[20px] "
 						@click="itemPath(item)">
 					<div class="flex items-center">
-						<el-image class="w-[40px] h-[40px]  rounded-[8px]" :src="img(item.icon)" fit="contain">
+						<el-image class="w-[44px] h-[44px]  rounded-[8px]" :src="img(item.icon)" fit="contain">
 							<template #error>
 								<div class="image-slot">
 									<img class="w-[40px] h-[40px] rounded-[8px]"
@@ -20,9 +23,11 @@
 								</div>
 							</template>
 						</el-image>
-						<div class="flex-1 font-600 text-[14px] text-[#222] ml-[12px]">{{ item.title }}</div>
+						<div class="ml-[12px] flex-1">
+                            <div class="font-[600] text-[14px] text-[#222] leading-[20px]">{{ item.title }}</div>
+                            <div class="font-[500] text-[13px] text-[#6D7278] leading-[18px] mt-[6px] w-[160px] truncate">{{ item.desc }}</div>
+                        </div>
 					</div>
-					<div class="font-500 text-[13px] text-[#6D7278] mt-[14px]">{{ item.desc }}</div>
 				</div>
 			</template>
 
@@ -47,10 +52,10 @@
 </template>
 
 <script lang="ts" setup>
-    import {reactive, ref, onMounted, computed} from 'vue'
-    import {t} from '@/lang'
-    import {getAuthaddon} from '@/app/api/auth'
-    import {img} from '@/utils/common'
+    import { reactive, ref, onMounted , computed} from 'vue'
+    import { t } from '@/lang'
+    import { getAuthaddon, getVersions} from '@/app/api/auth'
+    import { img} from '@/utils/common'
     import {useRouter} from 'vue-router'
     import storage from '@/utils/storage'
     import {findFirstValidRoute} from '@/router/routers'
@@ -126,6 +131,13 @@
         userStore.logout();
     }
 
+    const versions = ref('')
+    const getVersionsInfo = () =>{
+        getVersions().then(res =>{
+            versions.value = res.data.version.version
+        })
+    }
+    getVersionsInfo()
 </script>
 
 <style lang="scss" scoped>
@@ -134,12 +146,13 @@
 		min-height: calc(100vh - 64px);
 	}
 
-	.overview-top {
+	.overview-top{
 		background-image: url('@/app/assets/images/index/overview.png');
 		background-repeat: no-repeat;
 		background-size: cover;
+        height: calc(100vh - 120px);
 	}
-
+    
 	.app-item {
 		box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.18);
 	}
