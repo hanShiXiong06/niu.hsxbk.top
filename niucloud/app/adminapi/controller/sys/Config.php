@@ -49,6 +49,9 @@ class Config extends BaseAdminController
             [ 'front_end_name', '' ],
             [ 'front_end_logo', '' ],
             [ 'icon', '' ],
+            [ 'tel', '' ],
+            [ 'wechat_code', '' ],
+            [ 'enterprise_wechat', '' ],
         ]);
         $this->validate($data, 'app\validate\site\Site.edit');
         ( new ConfigService() )->setWebSite($data);

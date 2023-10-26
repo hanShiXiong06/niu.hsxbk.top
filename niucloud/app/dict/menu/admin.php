@@ -36,6 +36,19 @@ return [
                 'sort' => 20,
                 'status' => 1,
                 'is_show' => 1
+            ],
+            [
+                'menu_name' => '工具管理',
+                'menu_key' => 'app_manage_tool',
+                'menu_type' => 1,
+                'icon' => 'iconfont-iconchajian1',
+                'api_url' => '',
+                'router_path' => 'tools',
+                'view_path' => 'tools/index',
+                'methods' => 'get',
+                'sort' => 30,
+                'status' => 1,
+                'is_show' => 1
             ]
         ]
     ],
