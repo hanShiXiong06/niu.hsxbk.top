@@ -37,8 +37,6 @@
                         <el-date-picker v-model="memberTableData.searchParam.create_time" type="datetimerange" value-format="YYYY-MM-DD HH:mm:ss" :start-placeholder="t('startDate')" :end-placeholder="t('endDate')" />
                     </el-form-item>
 
-                    
-
                     <el-form-item>
                         <el-button type="primary" @click="loadMemberList()">{{ t('search') }}</el-button>
                         <el-button @click="resetForm(searchFormRef)">{{ t('reset') }}</el-button>
@@ -134,7 +132,7 @@
 import { reactive, ref } from 'vue'
 import { t } from '@/lang'
 import { img } from '@/utils/common'
-import { addMember, getRegisterChannelType, getMemberList, getMemberLabelAll, editMemberStatus,deleteMember } from '@/app/api/member'
+import { getRegisterChannelType, getMemberList, getMemberLabelAll, editMemberStatus,deleteMember } from '@/app/api/member'
 import { ElMessageBox, FormInstance } from 'element-plus'
 import { useRouter } from 'vue-router'
 import AddMember from '@/app/views/member/components/add-member.vue'
@@ -175,7 +173,6 @@ const getMemberLabelAllFn = async () => {
     labelSelectData.value = await (await getMemberLabelAll()).data
 }
 getMemberLabelAllFn();
-
 
 const resetForm = (formEl: FormInstance | undefined)=>{
     if (!formEl) return

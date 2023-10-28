@@ -1,11 +1,11 @@
 <template>
     <div class="main-container w-full bg-white" v-loading="loading">
-        <el-card class="box-card !border-none" shadow="never" v-if="applyList.list.length">
+        <el-card class="box-card !border-none" shadow="never" v-if="appList.list.length">
             <div class="flex justify-between items-center">
                 <span class="text-[20px]">应用管理</span>
             </div>
             <div class="flex flex-wrap plug-list pb-10 plug-large">
-                <!-- <div v-for="(item, index) in applyList.list" :key="index + 'b'"
+                <!-- <div v-for="(item, index) in appList.list" :key="index + 'b'"
                     class="app-item cursor-pointer mr-4 mt-[20px] pb-2 bg-[#f7f7f7]" @click="toLink(item.key)">
                     <div class="flex justify-center items-center">
                         <el-image class="w-[240px] h-[120px]" :src="img(item.icon)" fit="contain">
@@ -24,7 +24,7 @@
                         </div>
                     </div>
                 </div> -->
-                <div v-for="(item, index) in applyList.list" :key="index + 'b'">
+                <div v-for="(item, index) in appList.list" :key="index + 'b'">
                     <div v-if="appLink[item.key]"
                         class="relative app-item cursor-pointer px-4 mr-4 mt-[20px] bg-[#f7f7f7] border-[1px] hover:border-primary">
                         <div @click="toLink(item.key)">
@@ -40,7 +40,6 @@
                                 </div>
                                 <div class="flex flex-col justify-between text-left w-[190px]">
                                     <p class="app-text w-[190px] text-[17px] text-[#222] pl-3">{{ item.title }}</p>
-
                                 </div>
                             </div>
                             <div class="border-t-[1px] border-[#e8e9eb] py-3">
@@ -51,7 +50,7 @@
                 </div>
             </div>
         </el-card>
-        <div class="empty flex items-center  justify-center" v-if="!loading&&!applyList.list.length" >
+        <div class="empty flex items-center  justify-center" v-if="!loading&&!appList.list.length" >
             <el-empty :description="t('emptyData')" />
         </div>
     </div>
@@ -65,21 +64,22 @@ import { findFirstValidRoute } from '@/router/routers'
 import useUserStore from '@/stores/modules/user'
 import { useRouter } from 'vue-router'
 import { t } from '@/lang'
+
 const userStore = useUserStore()
 const router = useRouter()
-const applyList = reactive({
+const appList = reactive({
     list: []
 })
 let loading = ref(true)
-const getApplelist = async () => {
+const getAppList = async () => {
     const res = await getApply({})
     let data = userStore.appMenuList
-    applyList.list = res.data.filter(el=>{
+    appList.list = res.data.filter(el=>{
         return data.includes(el.key)
     })
     loading.value = false
 }
-getApplelist()
+getAppList()
 
 const appLink = ref({})
 const getAppLink = () => {

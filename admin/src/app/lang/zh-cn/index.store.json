@@ -30,7 +30,7 @@
 	"installComplete": "安装完成",
 	"localAppText":"插件管理",
 	"marketAppText":"官方市场",
-	"installShowDialogCloseTips": "安装任务尚未完成，关闭任务仍会执行，确定要继续关闭吗？",
+	"installShowDialogCloseTips": "安装任务尚未完成，关闭将取消安装任务，是否要继续关闭？",
 	"marketDevelopMessage":"官方市场正在开发中！",
 	"jobError": "任务队列未启动 请在服务端源码部署目录打开终端执行 php think queue:listen",
 	"conflictFiles": "冲突文件",

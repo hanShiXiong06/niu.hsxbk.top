@@ -80,7 +80,6 @@ const verifyRef = ref(null)
 const success = (params) => {
     loginFn({ captcha_code: params.captchaVerification })
 }
-// 验证码 - end
 
 const form = reactive({
     username: '',

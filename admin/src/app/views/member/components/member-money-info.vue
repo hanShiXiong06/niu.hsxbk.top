@@ -68,7 +68,6 @@ const initialFormData = {
     nickname:'',
     related_id:'',
     username:''
-
 }
 const formData: Record<string, any> = reactive({ ...initialFormData })
 

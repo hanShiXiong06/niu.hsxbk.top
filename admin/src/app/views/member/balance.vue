@@ -162,7 +162,6 @@ let memberAccountLogTableData = reactive({
       create_time:"",
       mobile:"",
       member_id,
-
     },
 	balance_type: ""
 })

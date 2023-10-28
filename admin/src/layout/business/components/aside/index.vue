@@ -6,7 +6,7 @@
                 <div class="h-full flex flex-col relative">      
                     <div class="group flex items-center justify-center h-[64px] cursor-pointer" v-if="!globalAppKey" @mouseenter="threefloatMenuHover">
                         <span class="iconfont iconyun1 !text-[32px] !w-auto text-[#fff]"></span>
-<!--                        <app-menu :isShowHover="threefloatMenu" :data="applyList" @child-click="toLink" hoverType='threefloatMenu'></app-menu>-->
+<!--                        <app-menu :isShowHover="threefloatMenu" :data="appList" @child-click="toLink" hoverType='threefloatMenu'></app-menu>-->
                     </div>
 
                     <template v-for="(item, index) in menus" :key="index">
@@ -16,7 +16,7 @@
                                 <div class="flex items-center justify-center w-[30px] h-[30px]" v-else>
                                     <icon v-if="item.meta.icon" :name="item.meta.icon" class="!w-auto" size="24px" />
                                 </div>
-<!--                                <app-menu :isShowHover="threefloatMenu" :data="applyList" @child-click="toLink" hoverType='threefloatMenu'></app-menu>-->
+<!--                                <app-menu :isShowHover="threefloatMenu" :data="appList" @child-click="toLink" hoverType='threefloatMenu'></app-menu>-->
                             </div>
                             <div v-for="(appItem, appIndex) in item.children" :key="appIndex" @click="toLink(appItem)"
                                 :class="['rounded-sm flex items-center px-[8px] mb-[4px] h-[40px] cursor-pointer text-[#b9b9bf] hover:bg-[var(--el-color-primary)] hover:!text-[#fff] menu-item hover:text-color whitespace-nowrap', { 'bg-[var(--el-color-primary)] !text-[#fff] menu-item-active ': localMenuKey == appItem.meta.key}]">
@@ -188,19 +188,19 @@ const isLoad = ref(false);
 
 
 // 应用跳转 start
-const applyList = ref([])
-const applyTypeList = ref([])
+const appList = ref([])
+const appTypeList = ref([])
 const otherTypeList = ref([]) // 存着插件\会员\应用管理
-const getApplelist = async () => {
+const getAppList = async () => {
     const res = await getApply()
-    applyList.value = applyList.value.concat(res.data)
-    applyList.value.forEach((item, index) => {
-        if (item.type == 'app') { applyTypeList.value.push(item.key) }
+    appList.value = appList.value.concat(res.data)
+    appList.value.forEach((item, index) => {
+        if (item.type == 'app') { appTypeList.value.push(item.key) }
         if (item.type == 'addon') { otherTypeList.value.push(item.key) }
     })
     isLoad.value = true;
 }
-getApplelist()
+getAppList()
 
 // 应用跳转 end
 
@@ -219,8 +219,8 @@ const menus = computed(() => {
         }
     })
     
-    if(applyList.value && applyList.value.length){
-        applyList.value.forEach((item,index) =>{
+    if(appList.value && appList.value.length){
+        appList.value.forEach((item,index) =>{
             menus.forEach((menuItem,menuIndex)=>{
                 if(item.key == menuItem.meta.key){
                     menuItem.meta.parentTitle = item.title;
@@ -231,13 +231,13 @@ const menus = computed(() => {
     }
 
     // 用于插件的卸载或安装
-    if(!applyList.value.length && !globalAppKey.value){
+    if(!appList.value.length && !globalAppKey.value){
         storage.set({ key: 'menuAppStorage', data: '' })
         globalAppKey.value = ""
     }
-    if(applyList.value.length && !globalAppKey.value){
-        storage.set({ key: 'menuAppStorage', data: applyTypeList.value[0] })
-        globalAppKey.value = applyTypeList.value[0]
+    if(appList.value.length && !globalAppKey.value){
+        storage.set({ key: 'menuAppStorage', data: appTypeList.value[0] })
+        globalAppKey.value = appTypeList.value[0]
     }
     menus.forEach((item,index)=>{
         if(globalAppKey.value && item.meta.app == globalAppKey.value){
@@ -262,7 +262,7 @@ const dark = computed(() => {
 
 // 用于插件的卸载或安装
 watch(() =>userStore.globalAppKey, (val,old) => {
-    getApplelist();
+    getAppList();
 },{deep: true})
 
 

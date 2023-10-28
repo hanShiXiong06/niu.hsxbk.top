@@ -89,8 +89,6 @@ const setFormData = async (id: number = 0) => {
 }
 setFormData()
 
-
-
 const minRules = (rule: any, value: any, callback: any) => {
   if (Number(value) < 0.01) {
     callback(new Error(t('cashWithdrawalAmountHint')))

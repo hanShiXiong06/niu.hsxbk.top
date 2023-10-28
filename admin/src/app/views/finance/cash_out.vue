@@ -274,7 +274,6 @@ const operationBtn = ref({
     }
 });
 
-
 const orderTableData = reactive({
     page: 1,
     limit: 10,
@@ -383,7 +382,6 @@ const transferFn = (data)=>{
  * 详情
  * @param data
  */
-
 let cashOutShowDialog = ref(false);
 let cashOutInfo = ref({});
 let cashOutLoading = ref(true);
@@ -427,7 +425,6 @@ const confirm = ()=>{
 const infoEvent = (data: any) => {
     router.push(`/finance/recharge/detail?order_id=${data.order_id}`)
 }
-
 
 /**
  * 会员详情

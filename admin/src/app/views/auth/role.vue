@@ -26,8 +26,8 @@
                     <el-table-column prop="role_name" :label="t('roleName')" />
                     <el-table-column :label="t('status')">
                         <template #default="{ row }">
-                            <el-tag class="cursor-pointer" type="success" v-if="row.status == 1" @click="edstatusFn(row)">{{ row.status_name }}</el-tag>
-                            <el-tag class="cursor-pointer" type="error" v-if="row.status == 0" @click="edstatusFn(row)">{{ row.status_name }}</el-tag>
+                            <el-tag class="cursor-pointer" type="success" v-if="row.status == 1" @click="edStatusFn(row)">{{ row.status_name }}</el-tag>
+                            <el-tag class="cursor-pointer" type="error" v-if="row.status == 0" @click="edStatusFn(row)">{{ row.status_name }}</el-tag>
                         </template>
                     </el-table-column>
                     <el-table-column prop="create_time" :label="t('createTime')"></el-table-column>
@@ -121,7 +121,7 @@ const editEvent = (role_id: any) => {
     })
 }
 // 修改状态
-const edstatusFn=(row:any)=>{
+const edStatusFn=(row:any)=>{
     roleTableData.loading = true
     let obj={
         role_id:row.role_id,

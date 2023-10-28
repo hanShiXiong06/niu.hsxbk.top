@@ -32,7 +32,6 @@
                         <div>
                             <el-checkbox v-model="checkAll" :label="t('selectAll')" />
                         </div>
-
                     </div>
                     <!-- :check-strictly="checkStrictly" -->
                     <el-tree :data="menusData" :props="{ label: 'menu_name' }" show-checkbox @check-change="handleCheckChange" :expand-on-click-node="false" node-key="menu_key" ref="treeRef" />
@@ -106,13 +105,6 @@ onMounted(async () => {
     if (route.query.role_id) { getRoleInfoFn(route.query.role_id) } else { loading.value = false }
 })
 
-// const getSystemFn = () => {
-//     getSystem().then(res => {
-//         state.menusData = res.data
-//         if (route.query.role_id) getRoleInfoFn(route.query.role_id)
-//     })
-// }
-// getSystemFn()
 //获取分组详情
 const getRoleInfoFn = (id: any) => {
     getRoleInfo(id).then(res => {

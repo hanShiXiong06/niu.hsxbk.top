@@ -328,10 +328,6 @@
     const selectImg = (url:string)=> {
         handleHeight(true);
 	};
-	
-	
-
-
 
     // 处理高度
     const handleHeight = (isCalcHeight:boolean = false)=> {
@@ -346,9 +342,7 @@
     }
 
 	defineExpose({})
-	
 
-	
 	/**
 	 * 魔方：单行多个，平分宽度
 	 * 公式：
@@ -493,7 +487,6 @@
 
 		rubikCubeList.value.forEach((item, index) => {
 			item.imgWidth += 'px';
-			item.imgHeight;
 		});
 	}
 

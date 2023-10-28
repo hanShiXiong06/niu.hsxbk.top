@@ -8,7 +8,7 @@
             </template>
 
             <div class="flex flex-wrap plug-list pb-10 plug-large">
-                <div v-for="(item, index) in applyList.list" :key="index + 'b'" class="app-item cursor-pointer mr-4 mt-[20px] pb-2 bg-[#f7f7f7]" @click="toLink(item.key)">
+                <div v-for="(item, index) in appList.list" :key="index + 'b'" class="app-item cursor-pointer mr-4 mt-[20px] pb-2 bg-[#f7f7f7]" @click="toLink(item.key)">
                     <div class="flex justify-center items-center">
                         <el-image class="w-[240px] h-[120px]" :src="img(item.icon)" fit="contain">
                             <template #error>
@@ -41,15 +41,15 @@ import { useRouter } from 'vue-router'
 
 const userStore = useUserStore()
 const router = useRouter()
-const applyList = reactive({
+const appList = reactive({
     list: []
 })
 
-const getApplelist = async () => {
+const getAppList = async () => {
     const res = await getApply({})
-    applyList.list = res.data
+    appList.list = res.data
 }
-getApplelist()
+getAppList()
 
 const appLink = ref({})
 const getAppLink = () => {

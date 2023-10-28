@@ -51,21 +51,15 @@ const formRef = ref<FormInstance>()
 // 表单验证规则
 const formRules = computed(() => {
     return {
-    name: [
-        { required: true, message: t('namePlaceholder'), trigger: 'blur' }
-        
-    ]
-,
-    key: [
-        { required: true, message: t('keyPlaceholder'), trigger: 'blur' }
-        
-    ]
-,
-    data: [
-        { required: true, message: t('dataPlaceholder'), trigger: 'blur' }
-        
-    ]
-,
+        name: [
+            {required: true, message: t('namePlaceholder'), trigger: 'blur'}
+        ],
+        key: [
+            {required: true, message: t('keyPlaceholder'), trigger: 'blur'}
+        ],
+        data: [
+            {required: true, message: t('dataPlaceholder'), trigger: 'blur'}
+        ]
     }
 })
 

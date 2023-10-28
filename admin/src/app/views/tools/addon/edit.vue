@@ -100,6 +100,7 @@ import { getAddontype, addAddonDevelop, editAddonDevelop, getAddonDevelopInfo, g
 import { getAddonList} from '@/app/api/sys'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
+
 const route = useRoute()
 const router = useRouter()
 const pageName = route.meta.title;

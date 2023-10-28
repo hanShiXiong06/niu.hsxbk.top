@@ -67,7 +67,6 @@ const setFormData = async (agreement_key: string = '') => {
 }
 if (agreement_key) setFormData(agreement_key)
 
-
 const formRef = ref<FormInstance>()
 
 // 表单验证规则

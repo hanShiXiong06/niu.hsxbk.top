@@ -98,7 +98,7 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { t } from '@/lang'
-// import { ElMessageBox } from 'element-plus'
+import { ElMessageBox } from 'element-plus'
 import EditMenu from '@/app/views/auth/components/edit-menu.vue'
 import { getSystem, getAddonList, deleteMenu, getMenus } from '@/app/api/sys'
 import { useRoute } from 'vue-router'

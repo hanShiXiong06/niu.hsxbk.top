@@ -66,7 +66,6 @@ const formRules = computed(() => {
             { required: true, message: t('memberNoPlaceholder'), trigger: 'blur' },
             { validator: memberNoVerify, trigger: 'blur' }
         ],
-
         mobile: [
             { required: true, message: t('mobilePlaceholder'), trigger: 'blur' },
             { validator: mobileVerify, trigger: 'blur' }

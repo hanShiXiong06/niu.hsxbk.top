@@ -82,22 +82,22 @@ const useUserStore = defineStore('user', {
             storage.set({ key: 'appMenuList' + (this.userInfo.username ? this.userInfo.username : ''), data })
         },
         getAppList() {
-            let applyList = [];
-            let applyTypeList = [];
+            let appList:any = [];
+            let appTypeList:any = [];
             let appKey = storage.get('menuAppStorage');
             return new Promise((resolve, reject) => {
                 getApply()
                     .then((res) => {
-                        applyList = applyList.concat(res.data);
-                        applyList.forEach((item, index) => {
-                            if (item.type == 'app') { applyTypeList.push(item.key) }
+                        appList = appList.concat(res.data);
+                        appList.forEach((item, index) => {
+                            if (item.type == 'app') { appTypeList.push(item.key) }
                         });
                         // 用于插件的卸载或安装
-                        if (!applyList.length) {
+                        if (!appList.length) {
                             this.globalAppKey = '';
                         }
-                        if (applyList.length && !appKey) {
-                            this.globalAppKey = applyTypeList[0];
+                        if (appList.length && !appKey) {
+                            this.globalAppKey = appTypeList[0];
                         }
                         resolve(res)
                     })

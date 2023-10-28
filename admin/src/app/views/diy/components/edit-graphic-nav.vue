@@ -200,7 +200,6 @@
                 bgColorStart: '#F83287',
                 bgColorEnd: '#FE3423'
             }
-
         })
     }
 

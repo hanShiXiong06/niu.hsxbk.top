@@ -70,7 +70,7 @@ const menusTableData = reactive({
  */
 const getMenuList = () => {
     menusTableData.loading = true
-    getMenus('site').then(res => {
+    getMenus().then(res => {
         menusTableData.loading = false
         menusTableData.data = res.data
     }).catch(() => {

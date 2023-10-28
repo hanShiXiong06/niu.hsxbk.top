@@ -83,6 +83,7 @@ import { ElMessageBox, ElMessage } from 'element-plus'
 import { getWechatMenu, editWechatMenu } from '@/app/api/wechat'
 import menuForm from './components/menu-form.vue'
 import { useRouter, useRoute } from 'vue-router'
+
 const route = useRoute()
 const pageName = route.meta.title
 const router = useRouter()

@@ -67,6 +67,7 @@ import { img } from '@/utils/common'
 import { ElMessage } from 'element-plus'
 import Sortable, { SortableEvent } from 'sortablejs'
 import { useRoute } from 'vue-router'
+
 const route = useRoute()
 const pageName = route.meta.title
 

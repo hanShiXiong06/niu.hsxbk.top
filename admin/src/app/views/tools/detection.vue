@@ -83,9 +83,7 @@ const getSystemService = () => {
 	getSystem().then(res => {
 		systemService.value = res.data
 		loadingArr.server_load = false;
-		
-	})
-	.catch(()=>{
+	}).catch(()=>{
 		loadingArr.server_load = false;
 	})
 }

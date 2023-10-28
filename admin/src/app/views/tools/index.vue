@@ -44,7 +44,7 @@
 				</div>
 				<img src="@/app/assets/images/tools/tools_schedule.png" class="w-[256px] h-[148px]" />
 			</div>
-			<div class="w-[256px] h-[260px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer" @click="toLink('/tools/admin')">
+			<div class="w-[256px] h-[260px] tools-item-shadow mb-[24px] mx-[14px] rounded-[8px] flex flex-col cursor-pointer" @click="toLink('/tools/menu')">
 				<div class="flex-1 py-[19px] px-[24px] flex flex-col">
 					<span class="text-[16px] text-[#222] font-bold">菜单管理</span>
 					<p class="text-[13px] text-[#666] mt-[8px] multi-hidden">菜单管理</p>
@@ -78,6 +78,7 @@
     import storage from '@/utils/storage'
     import {findFirstValidRoute} from '@/router/routers'
     import {UserFilled} from '@element-plus/icons-vue'
+
     const router = useRouter()
 
 	const toLink = (link)=>{

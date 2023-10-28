@@ -145,12 +145,10 @@ const confirm = async (formEl: FormInstance | undefined) => {
 }
 
 const setFormData = async (row: any = null) => {
-
     formData.value = cloneDeep(Object.assign(initialFormData, row))
     showDialog.value = true
 }
 const beforeClose = (next: any) => {
-
     formRef.value?.clearValidate()
     next()
 }

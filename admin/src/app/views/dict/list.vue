@@ -65,6 +65,7 @@ import { ElMessageBox } from 'element-plus'
 import Edit from '@/app/views/dict/components/edit.vue'
 import dict from '@/app/views/dict/components/dict.vue'
 import { useRoute } from 'vue-router'
+
 const route = useRoute()
 const pageName = route.meta.title;
 

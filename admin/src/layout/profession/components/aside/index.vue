@@ -11,12 +11,12 @@
                         </div>
                         <span>{{ item.meta.app ? item.meta.parentTitle : item.meta.title }}</span>
                     </div>
-<!--                    <app-menu :isShowHover="twofloatMenu" :data="applyList" @child-click="toLink" hoverType='twofloatMenu'></app-menu>-->
+<!--                    <app-menu :isShowHover="twofloatMenu" :data="appList" @child-click="toLink" hoverType='twofloatMenu'></app-menu>-->
                 </div>
 
                 <el-scrollbar class="overflow-y-auto menus-wrap">
                     <el-menu class="apply-menu !border-0" :router="true" :unique-opened="true" :default-active="String(route.name)">
-                        <template v-if="applyTypeList.length">
+                        <template v-if="appTypeList.length">
                             <template v-for="(twoMenu, twoIndex) in item.children">
                                 <el-sub-menu :index="String(twoMenu.meta.title)" v-if="twoMenu.children && twoMenu.meta.show">
                                     <template #title>
@@ -100,7 +100,7 @@
 
                             <!-- 系统菜单 -->
                             <template
-                                v-if="applyTypeList.includes(localMenuKey) || otherTypeList.includes(localMenuKey)">
+                                v-if="appTypeList.includes(localMenuKey) || otherTypeList.includes(localMenuKey)">
                                 <div class="!border-0 !border-t-[1px] border-solid mx-[25px] bg-[#f7f7f7] my-[5px]"></div>
                                 <template v-for="(twoMenu, twoIndex) in menus">
                                     <el-sub-menu :index="String(twoMenu.meta.title)"
@@ -239,7 +239,7 @@
                         </template>
                         <!-- 浮动样式 -->
                         <div
-                            :class="['!border-0 border-solid mx-[25px] bg-[#f7f7f7] my-[5px]', !applyTypeList.length ? '' : '!border-t-[1px]']">
+                            :class="['!border-0 border-solid mx-[25px] bg-[#f7f7f7] my-[5px]', !appTypeList.length ? '' : '!border-t-[1px]']">
                         </div>
                         <template v-for="(twoMenu, twoIndex) in menus">
                             <el-sub-menu :index="String(twoMenu.meta.title)"
@@ -348,20 +348,20 @@ localMenuKey.value = storage.get('menuAppStorage')
 const isLoad = ref(false);
 
 // 应用跳转 start
-const applyList = ref([])
-const applyTypeList = ref([])
+const appList = ref([])
+const appTypeList = ref([])
 const otherTypeList = ref([]) // 存着插件\会员\应用管理
-const getApplelist = async () => {
+const getAppList = async () => {
     const res = await getApply()
-    applyList.value = applyList.value.concat(res.data)
-    applyList.value.forEach((item, index) => {
-        if (item.type == 'app') { applyTypeList.value.push(item.key) }
+    appList.value = appList.value.concat(res.data)
+    appList.value.forEach((item, index) => {
+        if (item.type == 'app') { appTypeList.value.push(item.key) }
         if (item.type == 'addon') { otherTypeList.value.push(item.key) }
     })
     otherTypeList.value = otherTypeList.value.concat(['member', 'app_center'])
     isLoad.value = true;
 }
-getApplelist()
+getAppList()
 // 应用跳转 end
 
 // 菜单
@@ -379,8 +379,8 @@ const menus = computed(() => {
         }
     })
     
-    if(applyList.value && applyList.value.length){
-        applyList.value.forEach((item,index) =>{
+    if(appList.value && appList.value.length){
+        appList.value.forEach((item,index) =>{
             menus.forEach((menuItem,menuIndex)=>{
                 if(item.key == menuItem.meta.key){
                     menuItem.meta.parentTitle = item.title;
@@ -391,14 +391,14 @@ const menus = computed(() => {
     }
 
     // 用于插件的卸载或安装
-    if(!applyList.value.length){
+    if(!appList.value.length){
         storage.set({ key: 'menuAppStorage', data: '' })
         globalAppKey.value = ""
     }
     
-    if(applyList.value.length && !globalAppKey.value){
-        storage.set({ key: 'menuAppStorage', data: applyTypeList.value[0] })
-        globalAppKey.value = applyTypeList.value[0]
+    if(appList.value.length && !globalAppKey.value){
+        storage.set({ key: 'menuAppStorage', data: appTypeList.value[0] })
+        globalAppKey.value = appTypeList.value[0]
     }
     return menus
 })
@@ -409,7 +409,7 @@ const dark = computed(() => {
 
 // 用于插件的卸载或安装
 watch(() =>userStore.globalAppKey, (val,old) => {
-    getApplelist();
+    getAppList();
 },{deep: true})
 
 
@@ -467,9 +467,9 @@ const sidebar = computed(() => {
 // 控制二级菜单的显示
 const isTwoMenuFn = (item) => {
     let bool = (otherTypeList.value.includes(localMenuKey.value) && globalAppKey.value == item.meta.app)
-        || (!applyTypeList.value.includes(localMenuKey.value) && !otherTypeList.value.includes(localMenuKey.value) && globalAppKey.value && globalAppKey.value == item.meta.app)
-        || (applyTypeList.value.includes(localMenuKey.value) && (item.meta.key == localMenuKey.value || item.meta.app == localMenuKey.value))
-        || (!applyTypeList.value.length && (item.meta.key == localMenuKey.value || item.meta.app == localMenuKey.value))
+        || (!appTypeList.value.includes(localMenuKey.value) && !otherTypeList.value.includes(localMenuKey.value) && globalAppKey.value && globalAppKey.value == item.meta.app)
+        || (appTypeList.value.includes(localMenuKey.value) && (item.meta.key == localMenuKey.value || item.meta.app == localMenuKey.value))
+        || (!appTypeList.value.length && (item.meta.key == localMenuKey.value || item.meta.app == localMenuKey.value))
     return bool;
 }
 

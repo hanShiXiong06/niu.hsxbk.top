@@ -37,13 +37,13 @@ import { useRoute, useRouter } from 'vue-router'
 const router = useRouter()
 // 提交信息
 let saveInfo = reactive({
-        head_img: '',
-        real_name: '',
-        original_password: '',
-        password: '',
-        password_copy: '',
-		username: ''
-    });
+    head_img: '',
+    real_name: '',
+    original_password: '',
+    password: '',
+    password_copy: '',
+    username: ''
+});
 
 const formRef = ref<FormInstance>();
 const loading = ref(true);
@@ -69,8 +69,7 @@ const getUserInfoFn = () => {
 }
 getUserInfoFn();
 
-
-// 跳转至开发者
+// 编辑个人中心
 const toEditPersonal = () => {
     router.push('/user/edit_center')
 }

@@ -249,8 +249,8 @@ import EditMember from '@/app/views/member/components/edit-member.vue'
 import colorGradient from '../../../../uniapp/src/uni_modules/vk-uview-ui/libs/function/colorGradient'
 import useAppStore from '@/stores/modules/app'
 import storage from '@/utils/storage'
+
 const theme = storage.get('theme') ?? {}
-console.log(theme)
 
 const route = useRoute()
 const pageName = route.meta.title

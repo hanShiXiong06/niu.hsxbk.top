@@ -67,8 +67,8 @@ import storage from '@/utils/storage'
 import { findFirstValidRoute } from '@/router/routers'
 import { UserFilled } from '@element-plus/icons-vue'
 import useUserStore from '@/stores/modules/user'
-const router = useRouter()
 
+const router = useRouter()
 const userStore = useUserStore()
 const loading = ref(true)
 const detail = reactive({
@@ -102,15 +102,12 @@ const getAuthaddonFn = () => {
 getAuthaddonFn()
 
 const itemPath = (data: any) => {
-    console.log(appLink.value)
     storage.set({ key: 'menuAppStorage', data: data.key })
     storage.set({ key: 'plugMenuTypeStorage', data: '' })
     const appMenuList = userStore.appMenuList
     appMenuList.push(data.key)
     userStore.setAppMenuList(appMenuList)
-    console.log(appLink.value)
     let name: any = appLink.value[data.key]
-    console.log(name)
     router.push({ name: name })
 }
 

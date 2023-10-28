@@ -10,7 +10,6 @@
             <el-form-item :label="t('sort')" prop="sort">
                 <el-input v-model="formData.sort" clearable :placeholder="t('sortPlaceholder')" class="input-width" type="number" />
             </el-form-item>
-
         </el-form>
 
         <template #footer>
@@ -49,12 +48,12 @@ const formRef = ref<FormInstance>()
 // 表单验证规则
 const formRules = computed(() => {
     return {
-    label_name: [
-        { required: true, message: t('labelNamePlaceholder'), trigger: 'blur' }
-    ],
-    sort:[
-        { validator: sortVerify, trigger: 'blur' }
-    ]
+        label_name: [
+            {required: true, message: t('labelNamePlaceholder'), trigger: 'blur'}
+        ],
+        sort: [
+            {validator: sortVerify, trigger: 'blur'}
+        ]
     }
 })
 

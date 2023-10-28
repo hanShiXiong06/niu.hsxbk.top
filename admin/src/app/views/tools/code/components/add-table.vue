@@ -30,6 +30,7 @@ import { ref, reactive, computed } from 'vue'
 import { t } from '@/lang'
 import { addGenerateTable, generateTable } from '@/app/api/tools'
 import { useRouter } from 'vue-router'
+
 const router = useRouter()
 let showDialog = ref(false)
 const search = ref('')

@@ -95,7 +95,7 @@ const onSave = async (formEl: FormInstance | undefined) => {
         if (valid) {
             setMemberConfig(formData).then(() => {
                 loading.value = false
-                getMemberNo();
+                getMemberNo(formEl);
             }).catch(() => {
                 loading.value = false
             })

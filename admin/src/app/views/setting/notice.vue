@@ -71,8 +71,8 @@ import { getNoticeList } from '@/app/api/notice'
 import Sms from '@/app/views/setting/components/notice-sms.vue'
 import Wechat from '@/app/views/setting/components/notice-wechat.vue'
 import Weapp from '@/app/views/setting/components/notice-weapp.vue'
-
 import { useRoute } from 'vue-router'
+
 const route = useRoute()
 const pageName = route.meta.title
 

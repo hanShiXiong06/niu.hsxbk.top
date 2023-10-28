@@ -61,6 +61,7 @@ import { t } from '@/lang'
 import { getWechatConfig } from '@/app/api/wechat'
 import { img } from '@/utils/common'
 import { useRouter, useRoute } from 'vue-router'
+
 const route = useRoute()
 const pageName = route.meta.title
 const router = useRouter()

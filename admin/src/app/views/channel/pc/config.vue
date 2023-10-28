@@ -34,7 +34,6 @@ import { useRouter, useRoute } from 'vue-router'
 
 const route = useRoute()
 const pageName = route.meta.title
-
 const loading = ref(true)
 
 const formData = reactive<Record<string, string | boolean>>({
@@ -52,7 +51,6 @@ const router = useRouter()
     formData.request_url = res.data.web_url + '/';
     loading.value = false;
 })
-
 
 /**
  * 复制

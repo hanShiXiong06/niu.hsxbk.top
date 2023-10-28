@@ -41,7 +41,7 @@
             <el-form-item :label="t('authId')" prop="api_url" v-show="formData.menu_type != 0">
                 <el-input v-model="formData.api_url" :placeholder="t('authIdPlaceholder')" class="input-width">
                     <template #append>
-                        <el-select class="w-[90px] border-none" v-model="method">
+                        <el-select class="w-[90px] border-none" v-model="formData.methods">
                             <el-option label="POST" value="post" />
                             <el-option label="GET" value="get" />
                             <el-option label="PUT" value="put" />
@@ -98,7 +98,6 @@ import { addMenu, editMenu, getMenuInfo, getSystemMenu,getAddonMenu } from '@/ap
 import { getAddonDevelop } from '@/app/api/tools'
 
 const showDialog = ref(false)
-const method = ref('post')
 const loading = ref(false)
 let popTitle: string = '';
 
@@ -114,7 +113,7 @@ const initialFormData = {
     api_url: '',
     router_path: '',
     view_path: '',
-    methods: '',
+    methods: 'post',
     sort: '',
     status: 1,
     is_show: 1,
@@ -219,7 +218,7 @@ const confirm = async (formEl: FormInstance | undefined) => {
             loading.value = true
 
             const data = formData
-            data.api_url = data.api_url ? `${data.api_url}/${method.value}` : ''
+            data.api_url = data.api_url ? `${data.api_url}/${formData.methods}` : ''
 
             save(data).then(res => {
                 loading.value = false

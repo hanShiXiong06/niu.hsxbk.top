@@ -72,8 +72,6 @@
 
 	const showDialog = ref(false)
 	
-	let iconSelect = ref('0')
-
     const showStyle = () => {
         showDialog.value = true
     }

@@ -32,7 +32,9 @@
                 <el-table v-if="localList[activeName].length" :data="info[activeName]" size="large" class="pt-[5px]">
                     <el-table-column :label="t('appName')" align="left" width="320">
                         <template #default="{ row }">
-                            <div class="flex items-center" :class="{'cursor-pointer': row.type == 'app' && Object.keys(row.install_info).length}" @click="itemPath(row)">
+                            <div class="flex items-center"
+                                :class="{ 'cursor-pointer': row.type == 'app' && Object.keys(row.install_info).length }"
+                                @click="itemPath(row)">
                                 <el-image class="w-[54px] h-[54px]" :src="row.icon" fit="contain">
                                     <template #error>
                                         <img class="w-[54px] h-[54px]" src="@/app/assets/images/icon-addon.png" alt="">
@@ -349,7 +351,7 @@
 <script lang="ts" setup>
 import { ref, reactive, watch, h } from 'vue'
 import { t } from '@/lang'
-import { getAddonLocal, uninstallAddon, installAddon, preInstallCheck, cloudInstallAddon, getAddonInstalltask, getAddonCloudInstallLog, preUninstallCheck } from '@/app/api/addon'
+import { getAddonLocal, uninstallAddon, installAddon, preInstallCheck, cloudInstallAddon, getAddonInstalltask, getAddonCloudInstallLog, preUninstallCheck, cancelInstall } from '@/app/api/addon'
 import { downloadVersion, getAuthinfo, setAuthinfo } from '@/app/api/module'
 import { ElMessageBox, ElNotification, FormInstance, FormRules } from 'element-plus'
 import { img } from '@/utils/common'
@@ -358,6 +360,7 @@ import { findFirstValidRoute } from '@/router/routers'
 import storage from '@/utils/storage'
 import { useRouter } from 'vue-router'
 import useUserStore from '@/stores/modules/user'
+
 const router = useRouter()
 const activeName = ref('installed')
 const loading = ref<Boolean>(true)
@@ -389,9 +392,9 @@ getAuthinfo().then(res => {
 /**
  * 本地下载的插件列表
  */
-//input 筛选
+// input 筛选
 const search_name = ref('')
-//表格展示数据
+// 表格展示数据
 const info = ref({
     installed: [],
     uninstalled: [],
@@ -459,8 +462,8 @@ const itemPath = (data: any) => {
         const appMenuList = userStore.appMenuList
         appMenuList.push(data.key)
         userStore.setAppMenuList(appMenuList)
-        let name:any = appLink.value[data.key]
-        router.push({ name: name })
+        const name: any = appLink.value[data.key]
+        router.push({ name })
     }
 }
 
@@ -481,11 +484,11 @@ const installCheckResult = ref({})
  */
 const installAddonFn = (key: string) => {
     currAddon.value = key
-    installStep.value = 1
-    installShowDialog.value = true
-    installAfterTips.value = []
 
     preInstallCheck(key).then(res => {
+        installStep.value = 1
+        installShowDialog.value = true
+        installAfterTips.value = []
         installCheckResult.value = res.data
         userStore.clearRouters()
     }).catch(() => { })
@@ -676,6 +679,7 @@ const installShowDialogClose = (done: () => {}) => {
                 type: 'warning'
             }
         ).then(() => {
+            cancelInstall(currAddon.value)
             done()
         }).catch(() => { })
     } else done()
@@ -737,8 +741,8 @@ const save = async (formEl: FormInstance | undefined) => {
                 .then(() => {
                     saveLoading.value = false
                     setTimeout(() => {
-                        location.reload();
-                    }, 1000);
+                        location.reload()
+                    }, 1000)
                 })
                 .catch(() => {
                     saveLoading.value = false

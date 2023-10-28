@@ -89,7 +89,6 @@ import { useClipboard } from '@vueuse/core'
 import { getUrl } from '@/app/api/sys'
 
 const pageTemplate: any = reactive({})
-
 const router = useRouter()
 const route = useRoute()
 const pageName = route.meta.title;

@@ -125,7 +125,6 @@ const loadUserList = (page: number = 1) => {
         page: userTableData.page,
         limit: userTableData.limit,
         username: userTableData.searchParam.seach
-
     }).then(res => {
         userTableData.loading = false
         userTableData.data = res.data.data

@@ -30,7 +30,11 @@
                         <div class="w-[230px] mx-auto"><img src="@/app/assets/images/index/apply_empty.png" class="max-w-full" alt=""></div>
                     </template>
                     <template #description>
-                        <p class="flex items-center"><span>{{ t('descriptionLeft') }}</span><el-link type="primary" @click="goRouter">{{ t('link') }}</el-link><span>{{ t('descriptionRight') }}</span></p>
+                        <p class="flex items-center">
+                            <span>{{ t('descriptionLeft') }}</span>
+                            <el-link type="primary" @click="goRouter">{{ t('link') }}</el-link>
+                            <span>{{ t('descriptionRight') }}</span>
+                        </p>
                     </template>
                 </el-empty>
             </div>
@@ -46,6 +50,7 @@ import { t } from '@/lang'
 import { getAuthaddon } from '@/app/api/auth'
 import { img } from '@/utils/common'
 import { useRouter } from 'vue-router'
+
 const router = useRouter()
 import useUserStore from '@/stores/modules/user'
 const userStore = useUserStore()

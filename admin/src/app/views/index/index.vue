@@ -3,17 +3,17 @@
         <el-card class="box-card !border-none" shadow="never" >
             <div class="flex justify-between items-center">
                 <span class="text-[20px]">应用管理</span>
-				<el-form :inline="true" :model="applyList.search" ref="searchFormRef">
+				<el-form :inline="true" :model="appList.search" ref="searchFormRef">
 				    <el-form-item :label="t('appName')" prop="title">
-				        <el-input v-model="applyList.search.title" :placeholder="t('appNamePlaceholder')" />
+				        <el-input v-model="appList.search.title" :placeholder="t('appNamePlaceholder')" />
 				    </el-form-item>
 				    <el-form-item>
-				        <el-button type="primary" @click="getApplelist()">{{ t('search') }}</el-button>
+				        <el-button type="primary" @click="getAppList()">{{ t('search') }}</el-button>
 				    </el-form-item>
 				</el-form>
             </div>
-            <div class="flex flex-wrap plug-list pb-10 plug-large" v-if="applyList.list.length">
-                <div v-for="(item, index) in applyList.list" :key="index + 'b'">
+            <div class="flex flex-wrap plug-list pb-10 plug-large" v-if="appList.list.length">
+                <div v-for="(item, index) in appList.list" :key="index + 'b'">
                     <div class="relative app-item cursor-pointer px-4 mr-4 mt-[20px] bg-[#f7f7f7] border-[1px] hover:border-primary">
                         <div @click="toLink(item.key)"  class="flex py-5 items-center">
                             <div class="flex justify-center items-center">
@@ -32,7 +32,7 @@
                     </div>
                 </div>
             </div>
-			<div class="empty flex items-center  justify-center" v-if="!loading&&!applyList.list.length" >
+			<div class="empty flex items-center  justify-center" v-if="!loading&&!appList.list.length" >
 			    <el-empty :description="t('emptyAppData')" />
 			</div>
         </el-card>
@@ -52,7 +52,7 @@ import storage from '@/utils/storage'
 var key = storage.get('menuAppStorage')
 const userStore = useUserStore()
 const router = useRouter()
-const applyList = reactive({
+const appList = reactive({
     list: [],
 	search: {
 		title: "",
@@ -60,9 +60,9 @@ const applyList = reactive({
 	}
 })
 let loading = ref(true)
-const getApplelist = async () => {
-    const res = await getApply({title: applyList.search.title,support_app:applyList.search.key})
-    applyList.list = res.data.filter(el=>{
+const getAppList = async () => {
+    const res = await getApply({title: appList.search.title,support_app:appList.search.key})
+    appList.list = res.data.filter(el=>{
         return appLink.value[el.key] &&el.type == 'addon'
     })
     loading.value = false
@@ -80,7 +80,7 @@ const getAppLink = () => {
             }
         }
     })
-    getApplelist()
+    getAppList()
 }
 getAppLink()
 

@@ -85,3 +85,12 @@ export function getAddonCloudInstallLog(addon: string) {
 export function preUninstallCheck(addon: string) {
     return request.get(`addon/uninstall/check/${addon}`, { timeout: 30 * 1000 })
 }
+
+/**
+ * 取消插件安装
+ * @param addon
+ * @returns
+ */
+export function cancelInstall(addon: string) {
+    return request.put(`addon/install/cancel/${addon}`, {}, { showErrorMessage: false })
+}

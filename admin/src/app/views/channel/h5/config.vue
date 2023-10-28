@@ -49,7 +49,6 @@ const formData = reactive<Record<string, string | boolean>>({
 
 const formRef = ref<FormInstance>()
 
-
 /**
  * 获取h5配置
  */
@@ -64,7 +63,6 @@ getH5Config().then(res => {
  getUrl().then(res => {
     formData.request_url = res.data.wap_url + '/'
 })
-
 
 /**
  * 复制
