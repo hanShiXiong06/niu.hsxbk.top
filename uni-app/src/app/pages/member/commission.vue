@@ -41,6 +41,7 @@
 	import { t } from '@/locale'
 	import { moneyFormat, redirect, img } from '@/utils/common';
 	import useMemberStore from '@/stores/member'
+
 	const memberStore = useMemberStore();
 	const applyCashOut = ()=> {
 	    uni.setStorageSync('cashOutAccountType', 'commission')

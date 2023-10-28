@@ -22,6 +22,7 @@
 	import useMescroll from '@/components/mescroll/hooks/useMescroll.js';
 	import { getBalanceList, getMoneyList, getCommissionList} from '@/app/api/member';
 	import { onPageScroll, onReachBottom, onLoad, onShow } from '@dcloudio/uni-app';
+
 	const { mescrollInit, downCallback, getMescroll } = useMescroll(onPageScroll, onReachBottom);
 
 	const type = ref('')

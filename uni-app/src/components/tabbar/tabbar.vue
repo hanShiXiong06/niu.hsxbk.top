@@ -1,6 +1,7 @@
 <template>
-	<u-tabbar :value="value" @change="tabbarChange" zIndex="9999" :fixed="true" :placeholder="true" :safeAreaInsetBottom="true"
-		:inactive-color="tabbar.textColor" :active-color="tabbar.textHoverColor" v-if="tabbar">
+	<u-tabbar :value="value" @change="tabbarChange" zIndex="9999" :fixed="true" :placeholder="true"
+		:safeAreaInsetBottom="true" :inactive-color="tabbar.textColor" :active-color="tabbar.textHoverColor"
+		v-if="tabbar">
 		<block v-for="item in tabbar.list">
 			<u-tabbar-item :style="{'background-color': tabbar.backgroundColor}" :text="item.text"
 				:icon="img(value == item.link.url ? item.iconSelectPath : item.iconPath)" :name="item.link.url"
@@ -29,7 +30,10 @@
 	})
 
 	const tabbarChange = (name : string) => {
-		redirect({ url: `${name}` })
+		redirect({
+			url: `${name}`,
+			mode: 'reLaunch'
+		})
 	}
 </script>
 

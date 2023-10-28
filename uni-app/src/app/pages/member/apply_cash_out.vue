@@ -132,8 +132,7 @@
     const cashOutMoney = computed(() => {
         return memberStore.info ? memberStore.info[ applyData.account_type ] : 0
     })
-	
-    
+
     watch(() => applyData.transfer_type, (nval) => {
         switch (nval) {
             case 'bank':

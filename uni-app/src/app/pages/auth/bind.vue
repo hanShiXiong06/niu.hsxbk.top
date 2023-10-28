@@ -87,7 +87,6 @@
     const rules = {
         'mobile': [
             {
-
                 type: 'string',
                 required: true,
                 message: t('mobilePlaceholder'),

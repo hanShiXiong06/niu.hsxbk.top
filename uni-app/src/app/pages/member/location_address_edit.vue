@@ -61,7 +61,7 @@
         lat: '',
         lng: '',
         address: '',
-        address_name: '学府街学府街学府街',
+        address_name: '学府街',
         full_address: '',
         is_default: 0,
         area: '',
@@ -151,8 +151,6 @@
         	}
         });
     }
-
-
 </script>
 
 <style lang="scss" scoped></style>

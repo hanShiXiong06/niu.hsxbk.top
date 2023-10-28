@@ -387,7 +387,6 @@
 
 				diyComponent.value.list.forEach((item, index) => {
 					item.imgWidth += 'px';
-					item.imgHeight;
 				});
 			}
 		});

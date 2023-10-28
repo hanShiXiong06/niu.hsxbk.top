@@ -83,7 +83,7 @@
 		}
 
 		if (diyComponent.value.list.length == 0) {
-			getWapIndexList().then((res) => {
+			getWapIndexList({}).then((res) => {
 				list.value = res.data;
 			})
 		} else {
