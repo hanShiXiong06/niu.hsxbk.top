@@ -51,6 +51,8 @@ Route::group(function () {
     Route::get('app/list', 'addon.App/getAppList');
     //已安装有效应用
     Route::get('app/getAddonList', 'addon.Addon/getAddonList');
+    // 取消安装任务
+    Route::put('addon/install/cancel/:addon', 'addon.Addon/cancleInstall');
 
     /******************************************************************开发插件 *******************************************************/
     //开发插件列表

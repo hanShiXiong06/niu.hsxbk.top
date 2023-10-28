@@ -122,6 +122,10 @@ class CoreAddonInstallService extends CoreAddonBaseService
 
         $to_resource_dir = public_path() . 'addon' . DIRECTORY_SEPARATOR . $this->addon . DIRECTORY_SEPARATOR;
 
+        if (!is_dir($this->root_path . 'admin' . DIRECTORY_SEPARATOR)) throw new CommonException('ADMIN_DIR_NOT_EXIST');
+        if (!is_dir($this->root_path . 'web' . DIRECTORY_SEPARATOR)) throw new CommonException('WEB_DIR_NOT_EXIST');
+        if (!is_dir($this->root_path . 'uni-app' . DIRECTORY_SEPARATOR)) throw new CommonException('UNIAPP_DIR_NOT_EXIST');
+
         // 配置文件
         $package_path = $this->install_addon_path . 'package' . DIRECTORY_SEPARATOR;
         $package_file = [];
@@ -145,10 +149,10 @@ class CoreAddonInstallService extends CoreAddonBaseService
         if (is_dir($from_wap_dir)) $data['dir']['is_readable'][] = ['dir' => str_replace(project_path(), '', $from_wap_dir), 'status' => is_readable($from_wap_dir)];
         if (is_dir($from_resource_dir)) $data['dir']['is_readable'][] = ['dir' => str_replace(project_path(), '', $from_resource_dir), 'status' => is_readable($from_resource_dir)];
 
-        if (is_dir($to_admin_dir)) $data['dir']['is_write'][] = ['dir' => str_replace(project_path(), '', $to_admin_dir), 'status' => is_write($to_admin_dir)];
-        if (is_dir($to_web_dir)) $data['dir']['is_write'][] = ['dir' => str_replace(project_path(), '', $to_web_dir), 'status' => is_write($to_web_dir)];
-        if (is_dir($to_wap_dir)) $data['dir']['is_write'][] = ['dir' => str_replace(project_path(), '', $to_wap_dir), 'status' => is_write($to_wap_dir)];
-        if (is_dir($to_resource_dir)) $data['dir']['is_write'][] = ['dir' => str_replace(project_path(), '', $to_resource_dir), 'status' => is_write($to_resource_dir)];
+        $data['dir']['is_write'][] = ['dir' => str_replace(project_path(), '', $to_admin_dir), 'status' => is_dir($to_admin_dir) ? is_write($to_admin_dir) : mkdir($to_admin_dir, 0777, true)];
+        $data['dir']['is_write'][] = ['dir' => str_replace(project_path(), '', $to_web_dir), 'status' => is_dir($to_web_dir) ? is_write($to_web_dir) : mkdir($to_web_dir, 0777, true)];
+        $data['dir']['is_write'][] = ['dir' => str_replace(project_path(), '', $to_wap_dir), 'status' => is_dir($to_wap_dir) ? is_write($to_wap_dir) : mkdir($to_wap_dir, 0777, true)];
+        $data['dir']['is_write'][] = ['dir' => str_replace(project_path(), '', $to_resource_dir), 'status' => is_dir($to_resource_dir) ? is_write($to_resource_dir) : mkdir($to_resource_dir, 0777, true)];
 
         $check_res = array_merge(
             array_column($data['dir']['is_readable'], 'status'),
@@ -204,10 +208,10 @@ class CoreAddonInstallService extends CoreAddonBaseService
             foreach ($install_step as $step) {
                 $this->install_task['step'][] = $step;
                 $this->$step();
+                if ($step != 'handleAddonInstall') Cache::set('install_task', $this->install_task);
             }
-            if ($mode == 'cloud') {
-                Cache::set('install_task', $this->install_task);
-            } else {
+
+            if ($mode != 'cloud') {
                 // 配置文件
                 $package_path = $this->install_addon_path . 'package' . DIRECTORY_SEPARATOR;
                 $package_file = [];
@@ -246,11 +250,20 @@ class CoreAddonInstallService extends CoreAddonBaseService
             @$this->uninstallWap();
         }
 
-        if ($install_task['mode'] == 'cloud') {
-            $this->revertFrontendBackup();
+        if (in_array('backupFrontend', $install_task['step'])) {
+            @$this->revertFrontendBackup();
         }
 
         Cache::set('install_task', null);
+        Cache::set($this->cache_key . '_install_check', null);
+    }
+
+    /**
+     * 取消安装任务
+     * @return void
+     */
+    public function cancleInstall() {
+        if (Cache::get('install_task')) $this->installExceptionHandle();
     }
 
     /**
@@ -399,6 +412,7 @@ class CoreAddonInstallService extends CoreAddonBaseService
         }
         // 清除插件安装中标识
         Cache::delete('install_task');
+        Cache::delete($this->cache_key . '_install_check');
         return true;
     }
 

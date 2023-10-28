@@ -77,7 +77,7 @@ class Local extends BaseUpload
     public function base64(string $content, ?string $key = null)
     {
 
-        mkdirs_or_notexist($key);
+        mkdirs_or_notexist(dirname($key));
         file_put_contents(url_to_path($key), base64_decode($content));
         return true;
     }

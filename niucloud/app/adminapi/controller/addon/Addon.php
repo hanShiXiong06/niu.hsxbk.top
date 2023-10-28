@@ -15,6 +15,7 @@ use app\dict\addon\AddonDict;
 use app\service\admin\addon\AddonService;
 use app\service\core\addon\CoreAddonService;
 use core\base\BaseAdminController;
+use think\App;
 use think\facade\Cache;
 use think\Response;
 
@@ -72,7 +73,17 @@ class Addon extends BaseAdminController
      */
     public function installCheck($addon)
     {
-        return (new AddonService())->installCheck($addon);
+        return success(data:(new AddonService())->installCheck($addon));
+    }
+
+    /**
+     * 取消安装
+     * @param $addon
+     * @return mixed
+     */
+    public function cancleInstall($addon)
+    {
+        return success(data:(new AddonService())->cancleInstall($addon));
     }
 
     /**
@@ -92,7 +103,7 @@ class Addon extends BaseAdminController
      */
     public function uninstallCheck($addon)
     {
-        return (new AddonService())->uninstallCheck($addon);
+        return success(data:(new AddonService())->uninstallCheck($addon));
     }
 
     /**

@@ -240,6 +240,10 @@ return [
     'ADDON_KEY_IS_EXIST' => '已存在相同插件标识的应用',
     'ADDON_IS_INSTALLED_NOT_ALLOW_DEL' => '已安装的插件不允许删除',
     'ADDON_ZIP_ERROR' => '插件压缩失败',
+    'ADMIN_DIR_NOT_EXIST' => '未找到admin源码所在目录',
+    'WEB_DIR_NOT_EXIST' => '未找到web源码所在目录',
+    'UNIAPP_DIR_NOT_EXIST' => '未找到uni-app源码所在目录',
+
 
     // 云服务
     'CLOUD_WEAPP_COMPILE_NOT_EXIST' => '未找到微信小程序编译包',

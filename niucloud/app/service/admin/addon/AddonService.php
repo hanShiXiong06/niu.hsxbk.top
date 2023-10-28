@@ -96,8 +96,17 @@ class AddonService extends BaseAdminService
      */
     public function installCheck(string $addon)
     {
-        $data = ( new CoreAddonInstallService($addon) )->installCheck();
-        return success('SUCCESS', $data);
+        return ( new CoreAddonInstallService($addon) )->installCheck();
+    }
+
+    /**
+     * 取消安装任务
+     * @param string $addon
+     * @return Response
+     */
+    public function cancleInstall(string $addon)
+    {
+        return ( new CoreAddonInstallService($addon) )->cancleInstall();
     }
 
     /**
@@ -105,8 +114,7 @@ class AddonService extends BaseAdminService
      * @return void
      */
     public function uninstallCheck(string $addon) {
-        $data = ( new CoreAddonInstallService($addon) )->uninstallCheck();
-        return success('SUCCESS', $data);
+        return ( new CoreAddonInstallService($addon) )->uninstallCheck();
     }
 
     /**

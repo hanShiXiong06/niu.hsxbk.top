@@ -63,7 +63,7 @@ class CorePayChannelService extends BaseCoreService
             $pay_type_list = PayDict::getPayType($temp_channel_pay_list);
         }
 
-        $pay_type_list = array_values(array_filter(event('AllowPayTypeByTrade', [ 'channel' => $channel, 'trade_type' => $trade_type, 'pay_type_list' => $pay_type_list ])))[ 0 ] ?? [];
+        $pay_type_list = array_values(array_filter(event('AllowPayTypeByTrade', [ 'channel' => $channel, 'trade_type' => $trade_type, 'pay_type_list' => $pay_type_list ])))[ 0 ] ?? $pay_type_list;
         // 线下支付做处理
         if (!empty($pay_type_list) && isset($pay_type_list[ PayDict::OFFLINEPAY ])) {
             $temp_channel_pay_list = array_column($channel_pay_list, null, 'type');
