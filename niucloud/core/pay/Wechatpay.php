@@ -48,6 +48,7 @@ class Wechatpay extends BasePay
      */
     public function mp(array $params)
     {
+        dd($params);
         $result = $this->returnFormat(Pay::wechat()->mp([
             'out_trade_no' => $params['out_trade_no'],
             'description' => $params['boby'],

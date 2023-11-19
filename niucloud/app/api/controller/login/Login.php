@@ -40,6 +40,7 @@ class Login extends BaseController
         return success($result);
 
     }
+   
 
     /**
      * 登出

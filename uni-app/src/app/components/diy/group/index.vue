@@ -30,6 +30,15 @@
             <template v-if="component.componentName == 'Text'">
                 <diy-text :component="component" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount"></diy-text>
             </template>
+            <template v-if="component.componentName == 'GoodsList'">
+                <diy-goods-list :component="component" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount"></diy-goods-list>
+            </template>
+            <template v-if="component.componentName == 'ShopSearch'">
+                <diy-shop-search :component="component" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount"></diy-shop-search>
+            </template>
+            <template v-if="component.componentName == 'Article'">
+                <diy-article :component="component" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount"></diy-article>
+            </template>
         </view>
         <template v-if="diyStore.mode == '' && data.global.bottomTabBarSwitch">
             <view class="pt-[20rpx]"></view>
@@ -38,6 +47,9 @@
     </view>
 </template>
 <script lang="ts" setup>
+   import diyGoodsList from '@/shop/components/diy/goods-list/index.vue';
+   import diyShopSearch from '@/shop/components/diy/shop-search/index.vue';
+   import diyArticle from '@/cms/components/diy/article/index.vue';
    import useDiyStore from '@/app/stores/diy';
    import { onMounted, nextTick, computed, ref,watch } from 'vue';
    import Sortable from 'sortablejs';

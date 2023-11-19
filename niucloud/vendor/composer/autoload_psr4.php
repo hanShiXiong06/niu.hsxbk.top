@@ -75,6 +75,10 @@ return array(
     'Cron\\' => array($vendorDir . '/dragonmantank/cron-expression/src/Cron'),
     'Complex\\' => array($vendorDir . '/markbaker/complex/classes/src'),
     'Carbon\\' => array($vendorDir . '/nesbot/carbon/src/Carbon'),
+    'Alipay\\OpenAPISDK\\' => array($vendorDir . '/alipaysdk/openapi/v3/src'),
+    'Alipay\\EasySDK\\' => array($vendorDir . '/alipaysdk/easysdk/php/src'),
+    'AlibabaCloud\\Tea\\FileForm\\' => array($vendorDir . '/alibabacloud/tea-fileform/src'),
+    'AlibabaCloud\\Tea\\' => array($vendorDir . '/alibabacloud/tea/src'),
     'AlibabaCloud\\Client\\' => array($vendorDir . '/alibabacloud/client/src'),
     'Adbar\\' => array($vendorDir . '/adbario/php-dot-notation/src'),
 );

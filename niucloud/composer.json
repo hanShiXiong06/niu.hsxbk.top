@@ -53,7 +53,9 @@
         "nesbot/carbon": "2.66.0",
         "ext-zip": "*",
         "tencentcloud/sms": "^3.0",
-        "mjaschen/phpgeo": "^4.2"
+        "mjaschen/phpgeo": "^4.2",
+        "alipaysdk/openapi": "^2.3",
+        "alipaysdk/easysdk": "^2.0"
     },
     "require-dev": {
         "symfony/var-dumper": "v4.4.47",

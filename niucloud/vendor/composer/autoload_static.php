@@ -9,15 +9,15 @@ class ComposerStaticInitf082efa3600aae2b847c3e8b4e641a4e
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
-        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
-        '9b552a3cc426e3287cc811caefa3cf53' => __DIR__ . '/..' . '/topthink/think-helper/src/helper.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '9b552a3cc426e3287cc811caefa3cf53' => __DIR__ . '/..' . '/topthink/think-helper/src/helper.php',
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '35fab96057f1bf5e7aba31a8a6d5fdde' => __DIR__ . '/..' . '/topthink/think-orm/stubs/load_stubs.php',
+        'd767e4fc2dc52fe66584ab8c6684783e' => __DIR__ . '/..' . '/adbario/php-dot-notation/src/helpers.php',
         'a1105708a18b76903365ca1c4aa61b02' => __DIR__ . '/..' . '/symfony/translation/Resources/functions.php',
         '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
-        'd767e4fc2dc52fe66584ab8c6684783e' => __DIR__ . '/..' . '/adbario/php-dot-notation/src/helpers.php',
         '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
         'c5521cebe610a9bf42c44b3a5163adfd' => __DIR__ . '/..' . '/overtrue/socialite/src/Contracts/FactoryInterface.php',
@@ -176,6 +176,10 @@ class ComposerStaticInitf082efa3600aae2b847c3e8b4e641a4e
         ),
         'A' => 
         array (
+            'Alipay\\OpenAPISDK\\' => 18,
+            'Alipay\\EasySDK\\' => 15,
+            'AlibabaCloud\\Tea\\FileForm\\' => 26,
+            'AlibabaCloud\\Tea\\' => 17,
             'AlibabaCloud\\Client\\' => 20,
             'Adbar\\' => 6,
         ),
@@ -464,6 +468,22 @@ class ComposerStaticInitf082efa3600aae2b847c3e8b4e641a4e
         'Carbon\\' => 
         array (
             0 => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon',
+        ),
+        'Alipay\\OpenAPISDK\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/alipaysdk/openapi/v3/src',
+        ),
+        'Alipay\\EasySDK\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/alipaysdk/easysdk/php/src',
+        ),
+        'AlibabaCloud\\Tea\\FileForm\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/alibabacloud/tea-fileform/src',
+        ),
+        'AlibabaCloud\\Tea\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/alibabacloud/tea/src',
         ),
         'AlibabaCloud\\Client\\' => 
         array (

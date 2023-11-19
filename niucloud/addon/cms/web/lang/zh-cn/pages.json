@@ -1,0 +1,10 @@
+{
+    "pages": {
+        "cms": {
+            "article": {
+                "list": "文章",
+                "detail": "文章"
+            }
+        }
+    }
+}

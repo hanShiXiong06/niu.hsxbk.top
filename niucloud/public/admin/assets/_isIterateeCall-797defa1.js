@@ -1,0 +1,1 @@
+import{A as i,h as t,E as f}from"./plugin-vue_export-helper-c018272e.js";import{A as n}from"./event-3e082a4a.js";function p(e,s,r){if(!i(r))return!1;var a=typeof s;return(a=="number"?n(r)&&t(s,r.length):a=="string"&&s in r)?f(r[s],e):!1}export{p as i};
